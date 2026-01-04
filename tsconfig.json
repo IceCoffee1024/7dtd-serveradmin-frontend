@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "esnext", // Latest ECMAScript syntax
+    "jsx": "preserve", // Keep JSX for Vue compiler
+    "lib": [
+      "esnext", // Modern JS APIs (Promise, Map, Set, async/await, etc.)
+      "dom" // Browser APIs (Document, fetch, etc.)
+    ],
+    "useDefineForClassFields": true, // Standard class field semantics
+    "baseUrl": "./", // Module resolution base
+    "module": "esnext", // ES modules for tree-shaking
+    "moduleResolution": "bundler", // Vite-optimized resolution
+    "paths": {
+      "~/*": [
+        "src/*"
+      ] // Path alias for cleaner imports
+    },
+    "resolveJsonModule": true, // Allow importing JSON modules like `import data from './data.json'`
+    "types": [
+      "vite/client", // Vite env types (import.meta) (https://vite.dev/guide/features#client-types)
+      "element-plus/global", // Element Plus global components (https://element-plus.org/en-US/guide/quickstart#volar-support)
+      "unplugin-icons/types/vue"
+      // "@intlify/unplugin-vue-i18n/messages" // i18n message types (https://github.com/intlify/bundle-tools/blob/main/packages/unplugin-vue-i18n/README.md#types)
+    ],
+    "allowImportingTsExtensions": true, // Allow importing TypeScript files with extensions
+    // "allowJs": true, // Allow JavaScript files to be compiled
+    "strict": true, // All strict checks enabled
+    "noEmit": true, // Type checking only (Vite handles build)
+    "sourceMap": true, // Enable debugging in DevTools
+    "esModuleInterop": true, // Better CommonJS interop (No need import * as xx from 'xx'.)
+    "isolatedModules": true, // Enforce single-file compilation (disallows const enum, etc.)
+    "verbatimModuleSyntax": true, // Enforce type imports use `import type`, and type exports use `export type`
+    "skipLibCheck": true // Skip checking .d.ts files for speed
+  },
+  "vueCompilerOptions": {
+    "target": 3 // Vue 3 compiler target
+  },
+  "include": [
+    "src/**/*.ts", // TypeScript files
+    "src/**/*.d.ts", // Type declarations
+    "src/**/*.tsx", // TypeScript JSX
+    "src/**/*.vue" // Vue SFCs
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "common": {
+    "projectName": "Element Plus 模板",
+    "unknown": "未知",
+    "yes": "是",
+    "no": "否",
+    "day": "天",
+    "hour": "小时",
+    "minute": "分钟",
+    "second": "秒",
+    "lessThan": "小于",
+    "moreThan": "大于",
+    "equal": "等于",
+    "cancel": "取消",
+    "update": "更新",
+    "save": "保存",
+    "batchDelete": "批量删除",
+    "backToHome": "返回首页",
+    "delete": "删除",
+    "deleteSuccess": "删除成功",
+    "confirmDelete": "确定要删除吗？",
+    "apply": "应用"
+  },
+  "menus": {
+    "home": "首页"
+  },
+  "layout": {
+    "header": {
+      "expandMenu": "展开菜单",
+      "collapseMenu": "折叠菜单",
+      "switchLang": "切换语言",
+      "fullscreen": "全屏",
+      "exitFullscreen": "退出全屏",
+      "themeConfiguration": "主题配置",
+      "appearance": "外观",
+      "layout": "布局",
+      "general": "通用",
+      "preset": "预设",
+      "themeScheme": "主题方案",
+      "grayscale": "灰色模式",
+      "colorWeakness": "色弱模式",
+      "themeColor": "主题颜色",
+      "primaryColor": "主色",
+      "infoColor": "信息色",
+      "successColor": "成功色",
+      "warningColor": "警告色",
+      "dangerColor": "危险色",
+      "surfaceColor": "背景色",
+      "layoutMode": "布局模式",
+      "verticalMode": "左侧菜单模式",
+      "horizontalMode": "顶部菜单模式",
+      "headerSettings": "头部设置",
+      "headerHeight": "头部高度",
+      "showLogo": "显示 Logo",
+      "showTitle": "显示标题",
+      "showMenuCollapseBtn": "显示菜单折叠按钮",
+      "showBreadcrumb": "显示面包屑",
+      "showBreadcrumbIcon": "显示面包屑图标",
+      "topMenuAlignment": "顶部菜单对齐方式",
+      "left": "左",
+      "center": "居中",
+      "right": "右",
+      "showFullscreenBtn": "显示全屏按钮",
+      "showLanguageSwitchBtn": "显示语言切换按钮",
+      "showThemeConfigBtn": "显示主题配置按钮",
+      "sidebarSettings": "侧边栏设置",
+      "sidebarWidth": "侧边栏宽度",
+      "sidebarCollapsedWidth": "侧边栏折叠宽度",
+      "tabSettings": "标签栏设置",
+      "showTab": "显示标签栏",
+      "tabHeight": "标签栏高度",
+      "showTabIcon": "显示标签栏图标",
+      "tabStyle": "标签栏样式",
+      "googleStyle": "谷歌风格",
+      "buttonStyle": "按钮风格",
+      "smoothStyle": "滑块风格",
+      "footerSettings": "页脚设置",
+      "showFooter": "显示页脚",
+      "footerHeight": "页脚高度",
+      "presets": {
+        "blue": {
+          "name": "经典蓝",
+          "description": "标准商务配色，沉稳且易于识别。"
+        },
+        "violet": {
+          "name": "现代紫",
+          "description": "灵动优雅的色彩，赋予界面现代科技感。"
+        },
+        "teal": {
+          "name": "清新青",
+          "description": "柔和自然的青蓝色调，视觉体验清新舒适。"
+        },
+        "pink": {
+          "name": "活力粉",
+          "description": "热情而温暖，为应用注入更多情感与生命力。"
+        },
+        "tan": {
+          "name": "复古棕",
+          "description": "独特的复古大地色系，质朴且富有高级感。"
+        },
+        "zinc": {
+          "name": "极简灰",
+          "description": "极简主义美学，营造专业、冷静的工业质感。"
+        }
+      },
+      "showTransitionAnimation": "显示过渡动画",
+      "tableSize": "表格尺寸",
+      "small": "小",
+      "default": "默认",
+      "large": "大",
+      "scrollMode": "滚动模式",
+      "outerScroll": "外层滚动",
+      "innerScroll": "主体滚动",
+      "close": "关闭",
+      "closeOthers": "关闭其他",
+      "closeLeft": "关闭左侧",
+      "closeRight": "关闭右侧",
+      "closeAll": "关闭所有",
+      "contextMenuStyle": "右键菜单样式",
+      "defaultStyle": "默认风格",
+      "flatStyle": "扁平风格",
+      "win10Style": "Windows 10 风格",
+      "macStyle": "Mac 风格",
+      "popBoxStyle": "弹出框风格",
+      "elementPlusStyle": "Element Plus 风格",
+      "sweetAlert2Style": "SweetAlert2 风格",
+      "bootstrap5Style": "Bootstrap 5 风格",
+      "bootstrap4Style": "Bootstrap 4 风格",
+      "materialUIStyle": "Material UI 风格",
+      "bulmaStyle": "Bulma 风格"
+    }
+  },
+  "composables": {
+    "usePopup": {
+      "warningTitle": "警告",
+      "confirmButtonText": "确定",
+      "cancelButtonText": "取消"
+    }
+  }
+}

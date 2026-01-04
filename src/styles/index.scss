@@ -1,0 +1,74 @@
+/* Global Styles */
+
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+html {
+  overflow-x: clip;
+  overflow-x: hidden;
+  // font-size: 14px;
+}
+
+body {
+  font-family:
+    Inter, system-ui, Avenir, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    '微软雅黑', Arial, sans-serif;
+
+  // Control the smoothness of font rendering to make text appear clearer across different browsers and operating systems.
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // text-el-primary, text-el-regular, text-el-secondary, text-el-placeholder
+  color: var(--el-text-color-primary);
+
+  --uno: bg-base;
+
+  .el-card {
+    --uno: bg-card;
+  }
+
+  .el-menu {
+    --el-menu-bg-color: transparent;
+    html:not(.dark) & {
+      --el-menu-hover-bg-color: var(--el-color-primary-light-8);
+    }
+  }
+
+  --el-bg-color: var(--colors-surface-50);
+  .dark & {
+    --el-bg-color: var(--colors-surface-950);
+  }
+}
+
+code {
+  border-radius: 2px;
+  padding: 2px 4px;
+  background-color: var(--el-bg-color-page);
+  color: var(--colors-primary);
+}
+
+#nprogress {
+  pointer-events: none;
+
+  .bar {
+    background: var(--colors-primary);
+    opacity: 0.75;
+    position: fixed;
+    z-index: 1031;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+  }
+}
+
+.app-color-weak {
+  filter: hue-rotate(30deg);
+}
+.app-grayscale {
+  filter: grayscale(1);
+}

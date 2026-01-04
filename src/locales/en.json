@@ -1,0 +1,140 @@
+{
+  "common": {
+    "projectName": "Element Plus Template",
+    "unknown": "Unknown",
+    "yes": "Yes",
+    "no": "No",
+    "day": "Day | Day | Days",
+    "hour": "Hour | Hour | Hours",
+    "minute": "Minute | Minute | Minutes",
+    "second": "Second | Second | Seconds",
+    "lessThan": "Less Than",
+    "moreThan": "More Than",
+    "equal": "Equal",
+    "cancel": "Cancel",
+    "update": "Update",
+    "save": "Save",
+    "batchDelete": "Batch Delete",
+    "backToHome": "Back to Home",
+    "delete": "Delete",
+    "deleteSuccess": "Delete Success",
+    "confirmDelete": "Are you sure you want to delete?",
+    "apply": "Apply"
+  },
+  "menus": {
+    "home": "Home"
+  },
+  "layout": {
+    "header": {
+      "expandMenu": "Expand Menu",
+      "collapseMenu": "Collapse Menu",
+      "switchLang": "Switch Language",
+      "fullscreen": "Fullscreen",
+      "exitFullscreen": "Exit Fullscreen",
+      "themeConfiguration": "Theme Configuration",
+      "appearance": "Appearance",
+      "layout": "Layout",
+      "general": "General",
+      "preset": "Preset",
+      "themeScheme": "Theme Scheme",
+      "grayscale": "Grayscale",
+      "colorWeakness": "Color Weakness",
+      "themeColor": "Theme Color",
+      "primaryColor": "Primary Color",
+      "infoColor": "Info Color",
+      "successColor": "Success Color",
+      "warningColor": "Warning Color",
+      "dangerColor": "Danger Color",
+      "surfaceColor": "Surface Color",
+      "layoutMode": "Layout Mode",
+      "verticalMode": "Vertical Mode",
+      "horizontalMode": "Horizontal Mode",
+      "headerSettings": "Header Settings",
+      "headerHeight": "Header Height",
+      "showLogo": "Show Logo",
+      "showTitle": "Show Title",
+      "showMenuCollapseBtn": "Show Menu Collapse Button",
+      "showBreadcrumb": "Show Breadcrumb",
+      "showBreadcrumbIcon": "Show Breadcrumb Icon",
+      "topMenuAlignment": "Top Menu Alignment",
+      "left": "Left",
+      "center": "Center",
+      "right": "Right",
+      "showFullscreenBtn": "Show Fullscreen Button",
+      "showLanguageSwitchBtn": "Show Language Switch Button",
+      "showThemeConfigBtn": "Show Theme Configuration Button",
+      "sidebarSettings": "Sidebar Settings",
+      "sidebarWidth": "Sidebar Width",
+      "sidebarCollapsedWidth": "Sidebar Collapsed Width",
+      "tabSettings": "Tab Settings",
+      "showTab": "Show Tab",
+      "tabHeight": "Tab Height",
+      "showTabIcon": "Show Tab Icon",
+      "tabStyle": "Tab Style",
+      "googleStyle": "Google Style",
+      "buttonStyle": "Button Style",
+      "smoothStyle": "Smooth Style",
+      "footerSettings": "Footer Settings",
+      "showFooter": "Show Footer",
+      "footerHeight": "Footer Height",
+      "presets": {
+        "blue": {
+          "name": "Classic Blue",
+          "description": "The professional standard. A trustworthy and balanced color scheme for enterprise applications."
+        },
+        "violet": {
+          "name": "Modern Violet",
+          "description": "An elegant, tech-forward palette that brings a vibrant and sophisticated feel to your interface."
+        },
+        "teal": {
+          "name": "Fresh Teal",
+          "description": "A calm, nature-inspired aesthetic that promotes clarity and a refreshing user experience."
+        },
+        "pink": {
+          "name": "Vibrant Pink",
+          "description": "Warm and energetic. A passionate color palette designed to inspire creativity and engagement."
+        },
+        "tan": {
+          "name": "Retro Tan",
+          "description": "An earthy, organic palette with a premium vintage feel, perfect for artisanal or high-end branding."
+        },
+        "zinc": {
+          "name": "Minimal Zinc",
+          "description": "A refined grayscale aesthetic focusing on industrial precision and professional minimalism."
+        }
+      },
+      "showTransitionAnimation": "Show Transition Animation",
+      "tableSize": "Table Size",
+      "small": "Small",
+      "default": "Default",
+      "large": "Large",
+      "scrollMode": "Scroll Mode",
+      "outerScroll": "Outer Scroll",
+      "innerScroll": "Inner Scroll",
+      "close": "Close",
+      "closeOthers": "Close Others",
+      "closeLeft": "Close Left",
+      "closeRight": "Close Right",
+      "closeAll": "Close All",
+      "contextMenuStyle": "Right-click Menu Style",
+      "defaultStyle": "Default Style",
+      "flatStyle": "Flat Style",
+      "win10Style": "Windows 10 Style",
+      "macStyle": "Mac Style",
+      "popBoxStyle": "Popup Box Style",
+      "elementPlusStyle": "Element Plus Style",
+      "sweetAlert2Style": "SweetAlert2 Style",
+      "bootstrap5Style": "Bootstrap 5 Style",
+      "bootstrap4Style": "Bootstrap 4 Style",
+      "materialUIStyle": "Material UI Style",
+      "bulmaStyle": "Bulma Style"
+    }
+  },
+  "composables": {
+    "usePopup": {
+      "warningTitle": "Warning",
+      "confirmButtonText": "OK",
+      "cancelButtonText": "Cancel"
+    }
+  }
+}
