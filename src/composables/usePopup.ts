@@ -1,3 +1,4 @@
+import type { MessageBoxInputData } from 'element-plus';
 import type { SweetAlertTheme } from 'sweetalert2';
 import { useZIndex } from 'element-plus';
 import Swal from 'sweetalert2';
@@ -125,7 +126,7 @@ export function usePopup() {
                 const result = options.inputValidator!(value);
                 return result === undefined ? true : result;
               },
-        });
+        }) as MessageBoxInputData;
         return value;
       }
       catch {

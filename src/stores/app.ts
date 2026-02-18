@@ -57,7 +57,7 @@ const BASE_THEME_SETTINGS = {
     tableSize: 'default',
     scrollMode: 'outer',
     contextMenuStyle: 'default',
-    popBoxStyle: 'element-plus',
+    popBoxStyle: 'sweetalert2',
   },
 } as const satisfies App.ThemeSettings;
 
