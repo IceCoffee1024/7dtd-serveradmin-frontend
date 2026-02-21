@@ -1,6 +1,6 @@
 {
   "common": {
-    "projectName": "Element Plus 模板",
+    "projectName": "天依七日杀服务器管理系统",
     "unknown": "未知",
     "yes": "是",
     "no": "否",
@@ -22,7 +22,18 @@
     "apply": "应用"
   },
   "menus": {
-    "home": "首页"
+    "login": "登录",
+    "dashboard": "仪表盘"
+  },
+  "utils": {
+    "http": {
+      "400": "请求参数错误，请检查后重试",
+      "401": "登录状态已过期，请重新登录",
+      "403": "当前操作无权限，请联系管理员",
+      "404": "请求资源不存在，请稍后重试",
+      "500": "服务器异常，请稍后再试",
+      "timeout": "网络请求超时，请检查网络连接"
+    }
   },
   "layout": {
     "header": {
@@ -135,6 +146,23 @@
       "warningTitle": "警告",
       "confirmButtonText": "确定",
       "cancelButtonText": "取消"
+    }
+  },
+  "views": {
+    "dashboard": {
+      "welcome": "欢迎使用天依七日杀服务器管理系统！",
+      "description": "这是一个基于 Vue 3 和 Element Plus 构建的现代化服务器管理系统，旨在为七日杀服务器管理员提供高效、便捷的管理工具。"
+    },
+    "login": {
+      "password": "密码",
+      "username": "用户名",
+      "submit": "登 录",
+      "forgotPassword": "忘记密码?",
+      "rememberMe": "记住账号",
+      "failedTitle": "登录失败！",
+      "successTitle": "欢迎回来！",
+      "failedMessage": "用户名或密码不正确，请重试",
+      "successMessage": "登录成功。"
     }
   }
 }

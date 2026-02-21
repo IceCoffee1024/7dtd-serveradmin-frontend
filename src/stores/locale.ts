@@ -3,7 +3,7 @@ import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { LOCALE_CONFIGS, STORAGE_LOCALE_KEY, SUPPORT_LOCALES } from '~/locales/constant';
 import { setDayjsLanguage } from '~/plugins/dayjs';
-import { setElementLanguage } from '~/plugins/element-plus';
+import { setElementLanguage } from '~/plugins/elementPlus';
 import { i18n, setI18nLanguage } from '~/plugins/i18n';
 import { setValibotLanguage } from '~/plugins/valibot';
 

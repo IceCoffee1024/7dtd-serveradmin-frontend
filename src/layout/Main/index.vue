@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { useTheme } from '~/composables';
-import { useKeepAliveStore } from '~/stores/keep-alive';
+import { useKeepAliveStore } from '~/stores/keepAlive';
 
 const route = useRoute();
 const router = useRouter();

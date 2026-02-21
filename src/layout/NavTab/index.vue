@@ -2,7 +2,7 @@
 import ContextMenu from '@imengyu/vue3-context-menu';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from '~/composables';
-import { useNavTabStore } from '~/stores/nav-tab';
+import { useNavTabStore } from '~/stores/navTab';
 import { markIcon } from '~/utils';
 
 type TabStyle = App.ThemeSettings['layout']['tab']['style'];

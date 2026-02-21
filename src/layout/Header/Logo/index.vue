@@ -15,7 +15,7 @@ interface Props {
 <template>
   <RouterLink to="/" class="nowrap-hidden flex-center">
     <el-image v-if="showLogo" src="/favicon.svg" class="size-32px" />
-    <h2 v-if="showTitle" class="font-bold pl-8px transition duration-300 ease-in-out text-base text-primary">
+    <h2 v-if="showTitle" class="text-base font-bold pl-8px transition duration-300 ease-in-out text-primary">
       {{ $t('common.projectName') }}
     </h2>
   </RouterLink>

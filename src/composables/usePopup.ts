@@ -31,7 +31,6 @@ export function usePopup() {
         container.style.zIndex = nextZIndex().toString();
       }
     },
-    heightAuto: false,
   });
 
   function isElementPlusPopBox() {
@@ -58,7 +57,7 @@ export function usePopup() {
   const toast = (options: PopupOptions) => {
     if (isElementPlusPopBox()) {
       ElMessage({
-        message: options.text,
+        message: options.title ? `${options.title} ${options.text}` : options.text,
         type: getElementPlusType(options.type),
         grouping: true,
         showClose: true,
@@ -68,6 +67,7 @@ export function usePopup() {
     }
     else {
       MySwal.fire({
+        title: options.title,
         text: options.text,
         icon: options.type || 'info',
         toast: true,
@@ -106,6 +106,7 @@ export function usePopup() {
         confirmButtonText: t('composables.usePopup.confirmButtonText'),
         cancelButtonText: t('composables.usePopup.cancelButtonText'),
         theme: getThemeForSweetAlert(),
+        heightAuto: false,
       });
       return isConfirmed;
     }
@@ -144,6 +145,7 @@ export function usePopup() {
         confirmButtonText: t('composables.usePopup.confirmButtonText'),
         cancelButtonText: t('composables.usePopup.cancelButtonText'),
         theme: getThemeForSweetAlert(),
+        heightAuto: false,
         inputValidator: options.inputValidator === undefined
           ? undefined
           : (value: string) => {

@@ -1,6 +1,6 @@
 {
   "common": {
-    "projectName": "Element Plus Template",
+    "projectName": "7 Days to Die Server Admin",
     "unknown": "Unknown",
     "yes": "Yes",
     "no": "No",
@@ -22,7 +22,18 @@
     "apply": "Apply"
   },
   "menus": {
-    "home": "Home"
+    "login": "Login",
+    "dashboard": "Dashboard"
+  },
+  "utils": {
+    "http": {
+      "400": "Bad Request. Please verify your input.",
+      "401": "Unauthorized. Please login again.",
+      "403": "Access Denied. You don't have permission.",
+      "404": "Not Found. The resource does not exist.",
+      "500": "Server Error. Something went wrong on our end.",
+      "timeout": "Request Timeout. Please check your connection."
+    }
   },
   "layout": {
     "header": {
@@ -135,6 +146,23 @@
       "warningTitle": "Warning",
       "confirmButtonText": "OK",
       "cancelButtonText": "Cancel"
+    }
+  },
+  "views": {
+    "dashboard": {
+      "welcome": "Welcome to the Tianyi 7 Days to Die Server Management System!",
+      "description": "This is a modern server management system built with Vue 3 and Element Plus, designed to provide efficient and convenient management tools for 7 Days to Die server administrators."
+    },
+    "login": {
+      "failedTitle": "Login Failed!",
+      "password": "Password",
+      "username": "Username",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot Password?",
+      "rememberMe": "Remember Me",
+      "successTitle": "Welcome Back!",
+      "failedMessage": "Username or password is incorrect, please try again",
+      "successMessage": "You have been successfully signed in."
     }
   }
 }

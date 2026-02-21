@@ -1,9 +1,9 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
-import { setupAutoAnimate } from './plugins/auto-animate';
+import { setupAutoAnimate } from './plugins/autoAnimate';
 
-import { setupElementPlus } from './plugins/element-plus';
+import { setupElementPlus } from './plugins/elementPlus';
 import { setupI18n } from './plugins/i18n';
 import { setupPinia } from './plugins/pinia';
 import router from './router';

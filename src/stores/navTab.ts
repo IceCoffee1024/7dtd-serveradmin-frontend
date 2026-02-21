@@ -2,7 +2,7 @@ import type { RouteLocationNormalized } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { useMenus } from '~/composables';
-import { useKeepAliveStore } from '~/stores/keep-alive';
+import { useKeepAliveStore } from '~/stores/keepAlive';
 
 export interface TabItem {
   title: string;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTheme } from '~/composables';
-import { currentLanguage as elementLocale } from '~/plugins/element-plus';
+import { currentLanguage as elementLocale } from '~/plugins/elementPlus';
 
 const { initTheme } = useTheme();
 initTheme();

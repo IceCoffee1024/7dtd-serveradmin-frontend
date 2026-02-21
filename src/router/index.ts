@@ -5,6 +5,7 @@ import Layout from '~/layout/index.vue';
 import { i18n, isSupportedLocale } from '~/plugins/i18n';
 import nProgress from '~/plugins/nprogress';
 import { useLocaleStore } from '~/stores/locale';
+import { useUserInfoStore } from '~/stores/userInfo';
 import { markIcon } from '~/utils/index';
 
 const { t, locale } = i18n.global;
@@ -13,7 +14,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: () => {
-      return { name: 'Home', params: { locale: locale.value } };
+      return { name: 'Dashboard', params: { locale: locale.value } };
     },
     children: [
       {
@@ -34,21 +35,27 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/500.vue'),
         meta: { title: '500', hidden: true },
       },
+      {
+        path: 'login',
+        name: 'Login',
+        component: () => import('../views/Login/index.vue'),
+        meta: { title: () => t('menus.login'), hidden: true },
+      },
     ],
   },
   {
     path: '/:locale/',
     component: Layout,
     redirect: (to) => {
-      return { name: 'Home', params: { locale: to.params.locale } };
+      return { name: 'Dashboard', params: { locale: to.params.locale } };
     },
     children: [
       {
-        name: 'Home',
-        path: 'home',
-        component: () => import('../views/Home/index.vue'),
+        name: 'Dashboard',
+        path: 'dashboard',
+        component: () => import('../views/Dashboard/index.vue'),
         meta: {
-          title: () => t('menus.home'),
+          title: () => t('menus.dashboard'),
           icon: markIcon(() => import('~icons/mdi/home')),
           keepAlive: true,
           requiresAuth: true,
@@ -122,6 +129,17 @@ function updateDocumentTitle(routeTitle?: string | (() => string)) {
 
 router.beforeEach(async (to) => {
   nProgress.start();
+
+  // Check if this route requires authorization and if the user has logged in
+  if (to.meta.requiresAuth) {
+    const userInfoStore = useUserInfoStore();
+    const isLoggedIn = await userInfoStore.isLoggedIn();
+
+    if (!isLoggedIn) {
+      // If not, redirect to the login page
+      return `/login?redirect=${to.fullPath}`;
+    }
+  }
 
   const paramsLocale = to.params.locale || locale.value;
 
