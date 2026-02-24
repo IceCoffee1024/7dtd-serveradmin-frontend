@@ -64,7 +64,7 @@ async function handleLogin() {
   <div class="flex-center size-screen bg-base">
     <!-- From Uiverse.io by themrsami -->
     <div class="py-3 relative sm:mx-auto sm:max-w-xl">
-      <div class="mx-8 px-4 py-10 border rounded-3xl border-card shadow-card relative bg-card md:mx-0 sm:p-10">
+      <div class="mx-8 px-4 py-10 border rounded-3xl border-card w-500px shadow-card relative bg-card md:mx-0 sm:p-10">
         <el-form ref="loginFormRef" :model="loginForm" :rules="rules" @submit.prevent="handleLogin">
           <div class="flex items-center justify-center space-x-5">
             <div class="text-2xl tracking-wide font-extrabold flex">

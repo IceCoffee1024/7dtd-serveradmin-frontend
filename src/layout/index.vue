@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core';
 import { addUnit } from 'element-plus/es/utils/index';
 import { useTheme } from '~/composables';

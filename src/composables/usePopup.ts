@@ -80,15 +80,15 @@ export function usePopup() {
     }
   };
 
-  const confirm = async (options: PopupOptions) => {
+  const confirm = async (options?: PopupOptions) => {
     if (isElementPlusPopBox()) {
       try {
-        await ElMessageBox.confirm(options.text, options.title || t('composables.usePopup.warningTitle'), {
+        await ElMessageBox.confirm(options?.text || t('composables.usePopup.warningText'), options?.title || t('composables.usePopup.warningTitle'), {
           confirmButtonText: t('composables.usePopup.confirmButtonText'),
           cancelButtonText: t('composables.usePopup.cancelButtonText'),
-          showCancelButton: options.showCancelButton ?? true,
-          type: getElementPlusType(options.type) || 'warning',
-          icon: getElementPlusIcon(options.type),
+          showCancelButton: options?.showCancelButton ?? true,
+          type: getElementPlusType(options?.type) || 'warning',
+          icon: getElementPlusIcon(options?.type),
         });
         return true;
       }
@@ -98,10 +98,10 @@ export function usePopup() {
     }
     else {
       const { isConfirmed } = await MySwal.fire({
-        title: options.title || t('composables.usePopup.warningTitle'),
-        text: options.text,
-        icon: options.type || 'warning',
-        showCancelButton: options.showCancelButton ?? true,
+        title: options?.title || t('composables.usePopup.warningTitle'),
+        text: options?.text || t('composables.usePopup.warningText'),
+        icon: options?.type || 'warning',
+        showCancelButton: options?.showCancelButton ?? true,
         confirmButtonColor: 'var(--colors-primary)',
         confirmButtonText: t('composables.usePopup.confirmButtonText'),
         cancelButtonText: t('composables.usePopup.cancelButtonText'),

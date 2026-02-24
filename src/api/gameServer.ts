@@ -18,10 +18,10 @@ export function executeConsoleCommand(command: string, inMainThread: boolean = t
 // #region Statistics
 /**
  * Retrieves global game server statistics such as player counts and uptime.
- * @returns {Promise} Server stats payload.
+ * @returns {Promise<API.GameServer.Stats>} Server stats payload.
  */
 export function getStats() {
-  return http.get('/GameServer/Stats');
+  return http.get<API.GameServer.Stats>('/GameServer/Stats');
 }
 // #endregion
 

@@ -87,10 +87,10 @@ export default defineConfig(({ mode }) => {
       }),
     ],
 
-    ssr: {
-      // TODO: workaround until they support native ESM
-      noExternal: ['element-plus'],
-    },
+    // ssr: {
+    //   // TODO: workaround until they support native ESM
+    //   noExternal: ['element-plus'],
+    // },
 
     base: env.VITE_APP_PUBLIC_BASE_PATH,
     server: {

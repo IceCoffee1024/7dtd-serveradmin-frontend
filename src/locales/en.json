@@ -138,20 +138,105 @@
       "bootstrap5Style": "Bootstrap 5 Style",
       "bootstrap4Style": "Bootstrap 4 Style",
       "materialUIStyle": "Material UI Style",
-      "bulmaStyle": "Bulma Style"
+      "bulmaStyle": "Bulma Style",
+      "logout": "Logout"
     }
   },
   "composables": {
     "usePopup": {
       "warningTitle": "Warning",
       "confirmButtonText": "OK",
-      "cancelButtonText": "Cancel"
+      "cancelButtonText": "Cancel",
+      "warningText": "Are you sure you want to proceed?"
     }
   },
   "views": {
     "dashboard": {
-      "welcome": "Welcome to the Tianyi 7 Days to Die Server Management System!",
-      "description": "This is a modern server management system built with Vue 3 and Element Plus, designed to provide efficient and convenient management tools for 7 Days to Die server administrators."
+      "headers": {
+        "overview": "Overview",
+        "status": "Status",
+        "monitor": "Monitor",
+        "recentActivity": "Recent Activity",
+        "systemPlatformInfo": "System Platform Information",
+        "historyPlayers": "History Players",
+        "entities": "Entities",
+        "fps": "FPS",
+        "residentSetSize": "RSS",
+        "heap": "Heap",
+        "chunks": "Chunks",
+        "chunkGameObjects": "CGO",
+        "items": "Items"
+      },
+      "overview": {
+        "serverName": "Server Name",
+        "region": "Server Region",
+        "language": "Server Language",
+        "serverIp": "Server IP",
+        "uptime": "Server Uptime",
+        "gameTime": "Game Time",
+        "serverPort": "Server Port",
+        "gameName": "Game Name",
+        "gameMode": "Game Mode",
+        "serverVersion": "Server Version",
+        "gameWorld": "Game World",
+        "gameDifficulty": "Game Difficulty",
+        "gameDifficultys": {
+          "0": "Scavenger",
+          "1": "Adventurer",
+          "2": "Nomad",
+          "3": "Warrior",
+          "4": "Survivalist",
+          "5": "Insane"
+        },
+        "uptimeFormat": "{hours} : {minutes} : {seconds} | {days} : {hours} : {minutes} : {seconds}",
+        "gameTimeFormat": "Day {days}, {hours} : {minutes}"
+      },
+      "status": {
+        "freeSlots": "Free Slots",
+        "players": "Players",
+        "onlinePlayers": "Online Players",
+        "maxOnlinePlayers": "Max Online Players",
+        "zombies": "Zombies",
+        "activeZombies": "Active Zombies",
+        "maxZombies": "Max Zombies",
+        "animals": "Animals",
+        "activeAnimals": "Active Animals",
+        "maxAnimals": "Max Animals",
+        "memory": "Memory",
+        "usedMemory": "Used Memory",
+        "freeMemory": "Free Memory",
+        "totalMemory": "Total Memory",
+        "disk": "Disk",
+        "usedDisk": "Used Disk",
+        "freeDisk": "Free Disk",
+        "totalDisk": "Total Disk"
+      },
+      "monitor": {
+        "cpu": "CPU",
+        "ram": "RAM",
+        "usage": "Usage (%)",
+        "time": "Time",
+        "network": "Network",
+        "trafficIn": "Traffic In",
+        "trafficOut": "Traffic Out"
+      },
+      "systemInfo": {
+        "deviceName": "Device Name",
+        "deviceModel": "Device Model",
+        "deviceType": "Device Type",
+        "deviceUniqueIdentifier": "Device Unique Identifier",
+        "operatingSystem": "Operating System",
+        "processorType": "Processor Type",
+        "processorCount": "Processor Count",
+        "processorFrequency": "Processor Frequency",
+        "systemMemorySize": "System Memory Size",
+        "userName": "User Name"
+      },
+      "recentActivity": {
+        "login": "Login Success",
+        "playerEnterGame": "Player: {0} Entered Game",
+        "playerLeaveGame": "Player: {0} Left Game"
+      }
     },
     "login": {
       "failedTitle": "Login Failed!",

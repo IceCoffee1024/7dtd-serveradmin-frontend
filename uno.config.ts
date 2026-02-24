@@ -17,10 +17,7 @@ export default defineConfig({
   shortcuts: [
     {
       'flex-center': 'flex justify-center items-center',
-    },
-    {
       'ellipsis-text': 'overflow-hidden whitespace-nowrap text-ellipsis',
-      'text-overflow': 'overflow-hidden text-ellipsis',
     },
     {
       // theme colors
