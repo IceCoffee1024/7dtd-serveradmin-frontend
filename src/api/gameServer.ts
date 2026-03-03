@@ -8,7 +8,7 @@ import http from '~/utils/http';
  * @returns {Promise} Execution result notice.
  */
 export function executeConsoleCommand(command: string, inMainThread: boolean = true) {
-  return http.post('/GameServer/ExecuteConsoleCommand', {
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/ExecuteConsoleCommand', {
     command,
     inMainThread,
   });
@@ -33,7 +33,7 @@ export function getStats() {
  * @returns {Promise} Server response acknowledgment.
  */
 export function sendGlobalMessage(message: string, senderName: string | null = null) {
-  return http.post('/GameServer/SendGlobalMessage', { message, senderName });
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/SendGlobalMessage', { message, senderName });
 }
 /**
  * Sends a direct private message to a specific player by ID or name.
@@ -43,7 +43,11 @@ export function sendGlobalMessage(message: string, senderName: string | null = n
  * @returns {Promise} Server response acknowledgment.
  */
 export function sendPrivateMessage(targetPlayerIdOrName: string | number, message: string, senderName: string | null = null) {
-  return http.post('/GameServer/SendPrivateMessage', { targetPlayerIdOrName, message, senderName });
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/SendPrivateMessage', {
+    targetPlayerIdOrName: String(targetPlayerIdOrName),
+    message,
+    senderName,
+  });
 }
 // #endregion
 
@@ -52,7 +56,7 @@ export function sendPrivateMessage(targetPlayerIdOrName: string | number, messag
  * @returns {Promise} Allowed command metadata.
  */
 export function getAllowedCommands() {
-  return http.get('/GameServer/AllowedCommands');
+  return http.get<API.GameServer.AllowedCommand[]>('/GameServer/AllowedCommands');
 }
 
 /**
@@ -60,7 +64,7 @@ export function getAllowedCommands() {
  * @returns {Promise} Server configuration details.
  */
 export function getServerConfig() {
-  return http.get('/GameServer/Config');
+  return http.get<API.GameServer.ServerConfig>('/GameServer/Config');
 }
 
 /**
@@ -68,8 +72,8 @@ export function getServerConfig() {
  * @param {object} config Configuration object accepted by the server API.
  * @returns {Promise} Confirmation of the update operation.
  */
-export function updateServerConfig(config: object) {
-  return http.post('/GameServer/Config', config);
+export function updateServerConfig(config: API.GameServer.ServerConfig) {
+  return http.post<unknown>('/GameServer/Config', config);
 }
 
 // #region Players
@@ -78,8 +82,8 @@ export function updateServerConfig(config: object) {
  * @param {object} params Query parameters such as pagination or filters.
  * @returns {Promise} Online player list.
  */
-export function getOnlinePlayers(params: object) {
-  return http.get('/GameServer/OnlinePlayers', { params });
+export function getOnlinePlayers(params: API.GameServer.OnlinePlayerQuery) {
+  return http.get<API.GameServer.PagedDto<API.GameServer.OnlinePlayer>>('/GameServer/OnlinePlayers', { params });
 }
 
 /**
@@ -88,7 +92,7 @@ export function getOnlinePlayers(params: object) {
  * @returns {Promise} Player record.
  */
 export function getOnlinePlayer(playerId: string) {
-  return http.get(`/GameServer/OnlinePlayers/${playerId}`);
+  return http.get<API.GameServer.OnlinePlayer>(`/GameServer/OnlinePlayers/${playerId}`);
 }
 
 /**
@@ -96,8 +100,8 @@ export function getOnlinePlayer(playerId: string) {
  * @param {object} params Search and pagination filters.
  * @returns {Promise} History player list.
  */
-export function getHistoryPlayers(params: object) {
-  return http.get('/GameServer/HistoryPlayers', { params });
+export function getHistoryPlayers(params: API.GameServer.HistoryPlayerQuery) {
+  return http.get<API.GameServer.PagedDto<API.GameServer.HistoryPlayer>>('/GameServer/HistoryPlayers', { params });
 }
 
 /**
@@ -106,7 +110,7 @@ export function getHistoryPlayers(params: object) {
  * @returns {Promise} Historical player data.
  */
 export function getHistoryPlayer(playerId: string) {
-  return http.get(`/GameServer/HistoryPlayers/${playerId}`);
+  return http.get<API.GameServer.HistoryPlayer>(`/GameServer/HistoryPlayers/${playerId}`);
 }
 
 /**
@@ -115,8 +119,8 @@ export function getHistoryPlayer(playerId: string) {
  * @param {string} language Language code used for localization.
  * @returns {Promise} Inventory payload.
  */
-export function getPlayerInventory(playerId: string, language: string) {
-  return http.get(`/GameServer/PlayerInventory/${playerId}`, { params: { language } });
+export function getPlayerInventory(playerId: string, language: API.GameServer.Language) {
+  return http.get<API.GameServer.Inventory>(`/GameServer/PlayerInventory/${playerId}`, { params: { language } });
 }
 
 /**
@@ -125,8 +129,8 @@ export function getPlayerInventory(playerId: string, language: string) {
  * @param {string} language Language code for skill descriptions.
  * @returns {Promise} Skill set payload.
  */
-export function getPlayerSkills(playerId: string, language: string) {
-  return http.get(`/GameServer/PlayerSkills/${playerId}`, { params: { language } });
+export function getPlayerSkills(playerId: string, language: API.GameServer.Language) {
+  return http.get<API.GameServer.PlayerSkill[]>(`/GameServer/PlayerSkills/${playerId}`, { params: { language } });
 }
 
 /**
@@ -135,7 +139,7 @@ export function getPlayerSkills(playerId: string, language: string) {
  * @returns {Promise} Player detail response.
  */
 export function getPlayerDetails(playerId: string) {
-  return http.get(`/GameServer/PlayerDetails/${playerId}`);
+  return http.get<API.GameServer.PlayerDetails>(`/GameServer/PlayerDetails/${playerId}`);
 }
 // #endregion
 
@@ -145,7 +149,7 @@ export function getPlayerDetails(playerId: string) {
  * @returns {Promise} Map metadata payload.
  */
 export function getMapInfo() {
-  return http.get('/GameServer/MapInfo');
+  return http.get<API.GameServer.MapInfo>('/GameServer/MapInfo');
 }
 
 /**
@@ -153,7 +157,7 @@ export function getMapInfo() {
  * @returns {Promise} Map render job reference.
  */
 export function renderFullMap() {
-  return http.post('/GameServer/RenderFullMap');
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/RenderFullMap');
 }
 
 /**
@@ -161,7 +165,7 @@ export function renderFullMap() {
  * @returns {Promise} Partial map render job reference.
  */
 export function renderExploredArea() {
-  return http.post('/GameServer/RenderExploredArea');
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/RenderExploredArea');
 }
 // #endregion
 
@@ -171,8 +175,8 @@ export function renderExploredArea() {
  * @param {string} entityType Type filter recognized by the API.
  * @returns {Promise} Location list.
  */
-export function getLocations(entityType: string) {
-  return http.get('/GameServer/Locations', { params: { entityType } });
+export function getLocations(entityType: API.GameServer.EntityType) {
+  return http.get<API.GameServer.EntityBasicInfo[]>('/GameServer/Locations', { params: { entityType } });
 }
 
 /**
@@ -181,7 +185,7 @@ export function getLocations(entityType: string) {
  * @returns {Promise} Location details.
  */
 export function getLocation(entityId: number) {
-  return http.get(`/GameServer/Locations/${entityId}`);
+  return http.get<API.GameServer.EntityBasicInfo>(`/GameServer/Locations/${entityId}`);
 }
 // #endregion
 
@@ -191,8 +195,8 @@ export function getLocation(entityId: number) {
  * @param {string} language Language code (e.g., en, zh-cn).
  * @returns {Promise} Key/value localization entries.
  */
-export function getLocalizationDict(language: string) {
-  return http.get('/GameServer/Localization', { params: { language } });
+export function getLocalizationDict(language: API.GameServer.Language) {
+  return http.get<API.GameServer.LocalizationDict>('/GameServer/Localization', { params: { language } });
 }
 /**
  * Looks up a single localization entry by key.
@@ -201,15 +205,15 @@ export function getLocalizationDict(language: string) {
  * @param {boolean} [isCaseInsensitive] Case-insensitive lookup flag.
  * @returns {Promise} Localization entry.
  */
-export function getLocalizationByKey(key: string, language: string, isCaseInsensitive: boolean = false) {
-  return http.get(`/GameServer/Localization/${key}`, { params: { language, caseInsensitive: isCaseInsensitive } });
+export function getLocalizationByKey(key: string, language: API.GameServer.Language, isCaseInsensitive: boolean = false) {
+  return http.get<string>(`/GameServer/Localization/${key}`, { params: { language, caseInsensitive: isCaseInsensitive } });
 }
 /**
  * Retrieves the list of languages that the server currently supports.
  * @returns {Promise} Supported language codes.
  */
 export function getKnownLanguages() {
-  return http.get('/GameServer/KnownLanguages');
+  return http.get<string>('/GameServer/KnownLanguages');
 }
 // #endregion
 
@@ -219,7 +223,7 @@ export function getKnownLanguages() {
  * @returns {Promise} Land claim entries with owner info.
  */
 export function getLandClaims() {
-  return http.get('/GameServer/LandClaims');
+  return http.get<API.GameServer.LandClaims>('/GameServer/LandClaims');
 }
 /**
  * Deletes every land claim associated with a player identifier.
@@ -227,7 +231,7 @@ export function getLandClaims() {
  * @returns {Promise} Deletion result.
  */
 export function removePlayerLandClaim(playerId: string) {
-  return http.delete(`/GameServer/LandClaims/${playerId}`);
+  return http.delete<API.GameServer.CommandExecutionResult>(`/GameServer/LandClaims/${playerId}`);
 }
 /**
  * Removes a claim located at the supplied coordinates.
@@ -237,7 +241,7 @@ export function removePlayerLandClaim(playerId: string) {
  * @returns {Promise} Deletion acknowledgement.
  */
 export function removePlayerLandClaimByPosition(x: number, y: number, z: number) {
-  return http.delete(`/GameServer/LandClaims`, { data: { x, y, z } });
+  return http.delete<API.GameServer.CommandExecutionResult>(`/GameServer/LandClaims`, { data: { x, y, z } });
 }
 // #endregion
 
@@ -247,7 +251,7 @@ export function removePlayerLandClaimByPosition(x: number, y: number, z: number)
  * @returns {Promise} Server settings payload.
  */
 export function getServerSettings() {
-  return http.get('/GameServer/ServerSettings');
+  return http.get<API.GameServer.ServerSettings>('/GameServer/ServerSettings');
 }
 
 /**
@@ -255,8 +259,8 @@ export function getServerSettings() {
  * @param {object} settings Edited settings object.
  * @returns {Promise} Update confirmation.
  */
-export function updateServerSettings(settings: object) {
-  return http.put('/GameServer/ServerSettings', settings);
+export function updateServerSettings(settings: API.GameServer.ServerSettings) {
+  return http.put<unknown>('/GameServer/ServerSettings', settings);
 }
 // #endregion
 
@@ -266,8 +270,8 @@ export function updateServerSettings(settings: object) {
  * @param {object} params Filters such as pagination or status.
  * @returns {Promise} Banned player list.
  */
-export function getBannedPlayers(params: object) {
-  return http.get('/GameServer/Bans', { params });
+export function getBannedPlayers(params: API.GameServer.ListQuery = {}) {
+  return http.get<API.GameServer.BanEntry[]>('/GameServer/Bans', { params });
 }
 /**
  * Adds or extends a ban for a specified player.
@@ -278,7 +282,7 @@ export function getBannedPlayers(params: object) {
  * @returns {Promise} Ban operation result.
  */
 export function banPlayer(playerId: string, bannedUntil: string, displayName: string, reason: string | null = null) {
-  return http.post('/GameServer/Bans', { playerId, bannedUntil, displayName, reason });
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/Bans', { playerId, bannedUntil, displayName, reason });
 }
 /**
  * Lifts bans for one or more players.
@@ -286,7 +290,7 @@ export function banPlayer(playerId: string, bannedUntil: string, displayName: st
  * @returns {Promise} Unban acknowledgement.
  */
 export function unbanPlayers(playerIds: string[]) {
-  return http.delete(`/GameServer/Bans`, { params: { playerIds } });
+  return http.delete<API.GameServer.CommandExecutionResult>(`/GameServer/Bans`, { params: { playerIds } });
 }
 // #endregion
 
@@ -296,8 +300,8 @@ export function unbanPlayers(playerIds: string[]) {
  * @param {object} params Optional pagination or search filters.
  * @returns {Promise} Whitelist entries.
  */
-export function getWhitelistedPlayers(params: object) {
-  return http.get('/GameServer/Whitelist', { params });
+export function getWhitelistedPlayers(params: API.GameServer.ListQuery = {}) {
+  return http.get<API.GameServer.WhitelistEntry[]>('/GameServer/Whitelist', { params });
 }
 /**
  * Adds a player to the whitelist so they bypass restrictions.
@@ -306,7 +310,7 @@ export function getWhitelistedPlayers(params: object) {
  * @returns {Promise} Addition result.
  */
 export function addPlayerToWhitelist(playerId: string, displayName: string) {
-  return http.post('/GameServer/Whitelist', { playerId, displayName });
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/Whitelist', { playerId, displayName });
 }
 /**
  * Removes players from the whitelist.
@@ -314,7 +318,7 @@ export function addPlayerToWhitelist(playerId: string, displayName: string) {
  * @returns {Promise} Removal confirmation.
  */
 export function removePlayerFromWhitelist(playerIds: string[]) {
-  return http.delete(`/GameServer/Whitelist`, { params: { playerIds } });
+  return http.delete<API.GameServer.CommandExecutionResult>(`/GameServer/Whitelist`, { params: { playerIds } });
 }
 // #endregion
 
@@ -324,8 +328,8 @@ export function removePlayerFromWhitelist(playerIds: string[]) {
  * @param {object} params Pagination or search filters.
  * @returns {Promise} Admin user list.
  */
-export function getAdminUsers(params: object) {
-  return http.get('/GameServer/AdminUsers', { params });
+export function getAdminUsers(params: API.GameServer.ListQuery = {}) {
+  return http.get<API.GameServer.AdminUser[]>('/GameServer/AdminUsers', { params });
 }
 
 /**
@@ -333,8 +337,8 @@ export function getAdminUsers(params: object) {
  * @param {object} data Admin user payload (playerId, permissions, etc.).
  * @returns {Promise} Creation result.
  */
-export function addAdminUser(data: object) {
-  return http.post('/GameServer/AdminUsers', data);
+export function addAdminUser(data: API.GameServer.AdminUser) {
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/AdminUsers', data);
 }
 
 /**
@@ -343,7 +347,7 @@ export function addAdminUser(data: object) {
  * @returns {Promise} Deletion confirmation.
  */
 export function deleteAdminUsers(playerIds: string[]) {
-  return http.delete('/GameServer/AdminUsers', { params: { playerIds } });
+  return http.delete<API.GameServer.CommandExecutionResult>('/GameServer/AdminUsers', { params: { playerIds } });
 }
 
 /**
@@ -351,8 +355,8 @@ export function deleteAdminUsers(playerIds: string[]) {
  * @param {object} params Filtering criteria.
  * @returns {Promise} Command permission list.
  */
-export function getCommandPermissions(params: object) {
-  return http.get('/GameServer/CommandPermissions', { params });
+export function getCommandPermissions(params: API.GameServer.ListQuery = {}) {
+  return http.get<API.GameServer.ListResponse<API.GameServer.CommandPermission>>('/GameServer/CommandPermissions', { params });
 }
 
 /**
@@ -360,17 +364,17 @@ export function getCommandPermissions(params: object) {
  * @param {object} data Permission payload describing commands and rules.
  * @returns {Promise} Creation result.
  */
-export function addCommandPermission(data: object) {
-  return http.post('/GameServer/CommandPermissions', data);
+export function addCommandPermission(data: API.GameServer.CommandPermissionCreate) {
+  return http.post<API.GameServer.CommandExecutionResult>('/GameServer/CommandPermissions', data);
 }
 
 /**
  * Removes assigned command permissions for the provided players.
- * @param {Array<string>} playerIds Identifiers whose permissions to delete.
+ * @param {Array<string>} commands Command names whose permissions should be deleted.
  * @returns {Promise} Deletion confirmation.
  */
-export function deleteCommandPermissions(playerIds: string[]) {
-  return http.delete('/GameServer/CommandPermissions', { params: { playerIds } });
+export function deleteCommandPermissions(commands: string[]) {
+  return http.delete<API.GameServer.CommandExecutionResult>('/GameServer/CommandPermissions', { params: { commands } });
 }
 // #endregion
 
@@ -380,15 +384,15 @@ export function deleteCommandPermissions(playerIds: string[]) {
  * @returns {Promise} App settings object.
  */
 export function getAppSettings() {
-  return http.get('/AppSettings');
+  return http.get<API.GameServer.AppSettings>('/AppSettings');
 }
 /**
  * Updates application settings like theme or notification preferences.
  * @param {object} settings New settings object.
  * @returns {Promise} Update response.
  */
-export function updateAppSettings(settings: object) {
-  return http.put('/AppSettings', settings);
+export function updateAppSettings(settings: API.GameServer.AppSettings) {
+  return http.put<unknown>('/AppSettings', settings);
 }
 // #endregion
 
@@ -398,7 +402,7 @@ export function updateAppSettings(settings: object) {
  * @returns {Promise} Mod metadata list.
  */
 export function getMods() {
-  return http.get('/GameServer/Mods');
+  return http.get<API.GameServer.ListResponse<API.GameServer.ModInfo>>('/GameServer/Mods');
 }
 
 // export const uploadMod = (formData) => {
@@ -413,6 +417,6 @@ export function getMods() {
  * @returns {Promise} Toggle result.
  */
 export function toggleModStatus(folderName: string) {
-  return http.put(`/GameServer/Mods?folderName=${folderName}`);
+  return http.put<unknown>(`/GameServer/Mods?folderName=${folderName}`);
 }
 // #endregion

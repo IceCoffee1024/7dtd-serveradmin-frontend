@@ -1,5 +1,34 @@
 declare namespace API {
   namespace GameServer {
+    interface LegacyListResponse<T> {
+      items?: T[];
+      data?: T[];
+      total?: number;
+      [key: string]: unknown;
+    }
+
+    type ListResponse<T> = (T[] & { items?: T[]; data?: T[]; total?: number }) | LegacyListResponse<T>;
+
+    interface PagedDto<T> {
+      total: number;
+      items: T[];
+    }
+
+    type CommandExecutionResult = string[];
+
+    type ServerConfig = Record<string, string>;
+    type ServerSettings = Record<string, string>;
+    type LocalizationDict = Record<string, string>;
+
+    interface AppSettings {
+      webUrl?: string;
+      userName?: string;
+      password?: string;
+      accessTokenExpireTime?: number;
+      refreshTokenExpireTime?: number;
+      serverConfigFile?: string;
+    }
+
     interface Stats {
       uptime: number;
       gameTime: {
@@ -37,18 +66,298 @@ declare namespace API {
       gameDifficulty: number;
     }
 
-    interface PlayerBasicInfoDto {
+    type OnlinePlayerQueryOrder
+      = 'EntityId'
+        | 'PlayerName'
+        | 'Ping'
+        | 'PermissionLevel'
+        | 'ZombieKills'
+        | 'PlayerKills'
+        | 'Deaths'
+        | 'Level'
+        | 'ExpToNextLevel'
+        | 'SkillPoints'
+        | 'GameStage';
+
+    type HistoryPlayerQueryOrder
+      = 'EntityId'
+        | 'PlayerName'
+        | 'PermissionLevel'
+        | 'IsOffline'
+        | 'PlayGroup'
+        | 'LastLogin';
+
+    interface OnlinePlayerQuery {
+      pageNumber?: number;
+      pageSize?: number;
+      keyword?: string;
+      order?: OnlinePlayerQueryOrder;
+      desc?: boolean;
+    }
+
+    interface HistoryPlayerQuery {
+      pageNumber?: number;
+      pageSize?: number;
+      keyword?: string;
+      order?: HistoryPlayerQueryOrder;
+      desc?: boolean;
+    }
+
+    interface ListQuery {
+      pageNumber?: number;
+      pageSize?: number;
+      keyword?: string;
+      order?: string;
+      desc?: boolean;
+    }
+
+    interface PositionDto {
+      x: number;
+      y: number;
+      z: number;
+    }
+
+    interface PlayerBasicInfo {
       entityId: number;
       playerId: string;
       platformId: string;
       playerName: string;
-      position: {
-        x: number;
-        y: number;
-        z: number;
-      };
+      position: PositionDto;
       ip?: string;
       ping?: number;
+    }
+
+    interface PlayerBasicInfoDto extends PlayerBasicInfo {}
+
+    interface OnlinePlayer extends PlayerBasicInfo {
+      permissionLevel: number;
+      isAdmin: boolean;
+      isTwitchEnabled: boolean;
+      isTwitchSafe: boolean;
+      zombieKills: number;
+      playerKills: number;
+      deaths: number;
+      level: number;
+      expToNextLevel: number;
+      skillPoints: number;
+      gameStage: number;
+    }
+
+    interface Backpack {
+      entityId: number;
+      position: PositionDto;
+      timestamp: number;
+    }
+
+    interface QuestPositionData {
+      questCode: number;
+      positionDataType: string;
+      blockPosition: PositionDto;
+    }
+
+    interface HistoryPlayer extends PlayerBasicInfo {
+      permissionLevel: number;
+      isAdmin: boolean;
+      isOffline: boolean;
+      playGroup: string;
+      lastLogin: string;
+      acl?: string[];
+      landClaimBlocks?: PositionDto[];
+      backpacks?: Backpack[];
+      bedroll?: PositionDto;
+      questPositions?: QuestPositionData[];
+      ownedVendingMachinePositions?: PositionDto[];
+    }
+
+    interface PlayerStats {
+      health: number;
+      stamina: number;
+      food: number;
+      water: number;
+    }
+
+    interface OwnedEntity {
+      id: number;
+      classId: number;
+      lastKnownPosition: PositionDto;
+      hasLastKnownPosition: boolean;
+    }
+
+    interface PlayerProfile {
+      isMale: boolean;
+      raceName: string;
+      variantNumber: number;
+      eyeColor: string;
+      hairName: string;
+      hairColor: string;
+      mustacheName: string;
+      chopsName: string;
+      beardName: string;
+      profileArchetype: string;
+      entityClassName: string;
+    }
+
+    interface PlayerDetails extends HistoryPlayer {
+      lastSpawnPosition: PositionDto;
+      score: number;
+      stats?: PlayerStats;
+      isLandProtectionActive: boolean;
+      distanceWalked: number;
+      totalItemsCrafted: number;
+      longestLife: number;
+      currentLife: number;
+      totalTimePlayed: number;
+      rentedVMPosition: PositionDto;
+      rentalEndTime: number;
+      rentalEndDay: number;
+      spawnPoints: PositionDto[];
+      alreadyCraftedList: string[];
+      unlockedRecipeList: string[];
+      favoriteRecipeList: string[];
+      ownedEntities: OwnedEntity[];
+      playerProfile?: PlayerProfile;
+    }
+
+    interface InvItem {
+      itemName: string;
+      iconName: string;
+      iconColor?: string;
+      localizationName: string;
+      count: number;
+      maxStackAllowed: number;
+      quality?: number;
+      qualityColor?: string;
+      useTimes: number;
+      maxUseTimes: number;
+      isMod: boolean;
+      isBlock: boolean;
+      parts?: InvItem[];
+    }
+
+    interface Inventory {
+      bag: InvItem[];
+      belt: InvItem[];
+      equipment: (InvItem | null)[];
+    }
+
+    interface PlayerSkill {
+      name?: string;
+      localizationName?: string;
+      localizationDesc?: string;
+      localizationLongDesc?: string;
+      level: number;
+      minLevel: number;
+      maxLevel: number;
+      costForNextLevel: number;
+      iconName?: string;
+      type?: string;
+      children?: PlayerSkill[];
+    }
+
+    interface AllowedCommand {
+      commands?: string[];
+      description?: string;
+      help?: string;
+      permissionLevel?: number;
+    }
+
+    interface GlobalMessage {
+      message: string;
+      senderName?: string | null;
+    }
+
+    interface PrivateMessage extends GlobalMessage {
+      targetPlayerIdOrName: string;
+    }
+
+    interface AdminUser {
+      [key: string]: unknown;
+      playerId: string;
+      permissionLevel?: number;
+      displayName?: string;
+    }
+
+    interface CommandPermissionCreate {
+      command: string;
+      permissionLevel: number;
+    }
+
+    interface CommandPermission extends CommandPermissionCreate {
+      [key: string]: unknown;
+      description?: string;
+    }
+
+    interface BanEntry {
+      [key: string]: unknown;
+      bannedUntil: string;
+      displayName?: string;
+      playerId: string;
+      reason?: string;
+    }
+
+    interface WhitelistEntry {
+      [key: string]: unknown;
+      displayName?: string;
+      playerId: string;
+    }
+
+    type Language
+      = 'File'
+        | 'Type'
+        | 'UsedInMainMenu'
+        | 'NoTranslate'
+        | 'English'
+        | 'ContextAlternateText'
+        | 'German'
+        | 'Spanish'
+        | 'French'
+        | 'Italian'
+        | 'Japanese'
+        | 'Koreana'
+        | 'Polish'
+        | 'Brazilian'
+        | 'Russian'
+        | 'Turkish'
+        | 'Schinese'
+        | 'Tchinese';
+
+    interface MapInfo {
+      blockSize: number;
+      maxZoom: number;
+    }
+
+    type EntityType = 'OfflinePlayer' | 'OnlinePlayer' | 'Zombie' | 'Animal' | 'Bandit' | 'Hostiles';
+
+    interface EntityBasicInfo {
+      entityId: number;
+      entityName: string;
+      position: PositionDto;
+      entityType: EntityType;
+      playerId?: string;
+    }
+
+    interface ClaimOwner extends PlayerBasicInfo {
+      claimActive: boolean;
+      lastLogin: string;
+      claimPositions: PositionDto[];
+    }
+
+    interface LandClaims {
+      claimOwners: ClaimOwner[];
+      claimSize: number;
+    }
+
+    interface ModInfo {
+      [key: string]: unknown;
+      name?: string;
+      displayName?: string;
+      description?: string;
+      author?: string;
+      website?: string;
+      version?: string;
+      isLoaded: boolean;
+      isUninstalled: boolean;
+      folderName: string;
     }
 
     type RespawnType = 'NewGame' | 'LoadedGame' | 'Died' | 'Teleport' | 'EnterMultiplayer' | 'JoinMultiplayer' | 'Unknown';

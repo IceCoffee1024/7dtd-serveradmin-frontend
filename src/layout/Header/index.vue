@@ -56,7 +56,7 @@ async function handleCommand(command: string) {
     <div v-if="isTopMenu" class="mx-16px flex flex-1" :class="topMenuAlignmentClass">
       <MenuTree :menus="menus" mode="horizontal" :ellipsis="false" />
     </div>
-    <div class="flex gap-8px justify-end" :class="{ 'flex-1': !isTopMenu }">
+    <div class="icon-btns flex gap-8px justify-end" :class="{ 'flex-1': !isTopMenu }">
       <IconButton a-tag href="https://github.com/IceCoffee1024/7dtd-serveradmin-frontend">
         <icon-mdi:github />
       </IconButton>
@@ -93,9 +93,11 @@ async function handleCommand(command: string) {
   </div>
 </template>
 
-<style lang="scss">
-.el-button + .el-button {
-  margin-left: 0;
+<style lang="scss" scoped>
+.icon-btns {
+  :deep(.el-button + .el-button) {
+    margin-left: 0;
+  }
 }
 .el-button.is-text {
   color: var(--el-text-color-primary);

@@ -22,10 +22,29 @@ export const EVENT_TYPES = {
   // UI: {
   //   THEME_CHANGE: 'UI:ThemeChange',
   // },
-};
+} as const;
+
+export interface WelcomeEventPayload {
+  message?: string;
+}
+
+export interface LogCallbackPayload {
+  message?: string;
+  logType?: string;
+}
+
+export interface ChatMessagePayload {
+  message?: string;
+  timestamp?: string;
+  senderName?: string;
+}
 
 export interface Events {
-  [key: symbol]: any;
+  [key: string]: unknown;
+  [key: symbol]: unknown;
+  [EVENT_TYPES.GAME.WELCOME]: WelcomeEventPayload;
+  [EVENT_TYPES.GAME.LOG_CALLBACK]: LogCallbackPayload;
+  [EVENT_TYPES.GAME.CHAT_MESSAGE]: ChatMessagePayload;
   [EVENT_TYPES.GAME.PLAYER_SPAWNED_IN_WORLD]: {
     playerInfo: API.GameServer.PlayerBasicInfoDto;
     respawnType: API.GameServer.RespawnType;

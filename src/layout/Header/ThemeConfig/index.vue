@@ -350,9 +350,9 @@ const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
 }
 
 .setting-section {
-  --uno: flex flex-col gap-12px items-stretch;
+  @apply: flex flex-col gap-12px items-stretch;
   & > div {
-    --uno: flex items-center justify-between;
+    @apply: flex items-center justify-between;
   }
 }
 

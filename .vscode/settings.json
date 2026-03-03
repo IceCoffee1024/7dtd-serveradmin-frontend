@@ -45,5 +45,10 @@
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "*.env": ".env.*"
-  }
+  },
+
+  "tailwindCSS.includeLanguages": {
+    "vue": "html"
+  },
+  "css.customData": [".vscode/tailwind.json"]
 }

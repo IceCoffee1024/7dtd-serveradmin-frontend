@@ -103,9 +103,9 @@ onDeactivated(pause);
 
 <style lang="scss" scoped>
 .stats-content {
-  --uno: 'lg:col-span-2 xl:col-span-3 2xl:col-span-3 3xl:col-span-2';
+  @apply: lg:col-span-2 xl:col-span-3 2xl:col-span-3 3xl:col-span-2;
   span {
-    --uno: 'text-primary ms-2';
+    @apply: text-primary ms-2;
   }
 }
 </style>

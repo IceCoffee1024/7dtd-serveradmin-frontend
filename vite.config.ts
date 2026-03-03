@@ -100,6 +100,10 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_DEV_API_PROXY_TARGET,
           changeOrigin: true,
         },
+        '/swagger': {
+          target: env.VITE_DEV_API_PROXY_TARGET,
+          changeOrigin: true,
+        },
       },
     },
   };

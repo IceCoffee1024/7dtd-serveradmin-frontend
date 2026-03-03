@@ -62,45 +62,94 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'multi-level-menu',
+        name: 'PlayerList',
+        path: 'player-list',
+        component: () => import('../views/PlayerList/index.vue'),
         meta: {
-          title: 'Multi-level Menu',
-          icon: markIcon(() => import('~icons/mdi/menu')),
+          title: () => t('menus.playerList'),
+          icon: markIcon(() => import('~icons/mdi/account-group')),
+          requiresAuth: true,
         },
-        children: [
-          {
-            name: 'MultiLevelMenu11',
-            path: '1-1',
-            component: () => import('../views/MultiLevelMenu/1-1/index.vue'),
-            meta: {
-              title: 'Menu 1-1',
-            },
-          },
-          {
-            path: '1-2',
-            meta: {
-              title: 'Menu 1-2',
-            },
-            children: [
-              {
-                name: 'MultiLevelMenu121',
-                path: '1',
-                component: () => import('../views/MultiLevelMenu/1-2/1/index.vue'),
-                meta: {
-                  title: 'Menu 1-2-1',
-                },
-              },
-              {
-                name: 'MultiLevelMenu122',
-                path: '2',
-                component: () => import('../views/MultiLevelMenu/1-2/2/index.vue'),
-                meta: {
-                  title: 'Menu 1-2-2',
-                },
-              },
-            ],
-          },
-        ],
+      },
+      {
+        name: 'GameChat',
+        path: 'game-chat',
+        component: () => import('../views/GameChat/index.vue'),
+        meta: {
+          title: () => t('menus.gameChat'),
+          icon: markIcon(() => import('~icons/mdi/chat')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'ServerConfig',
+        path: 'server-config',
+        component: () => import('../views/ServerConfig/index.vue'),
+        meta: {
+          title: () => t('menus.serverConfig'),
+          icon: markIcon(() => import('~icons/ic/baseline-settings')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'BanWhitelist',
+        path: 'ban-whitelist',
+        component: () => import('../views/BanWhitelist/index.vue'),
+        meta: {
+          title: () => t('menus.banWhitelist'),
+          icon: markIcon(() => import('~icons/mdi/list-status')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Permission',
+        path: 'permission',
+        component: () => import('../views/Permission/index.vue'),
+        meta: {
+          title: () => t('menus.permissions'),
+          icon: markIcon(() => import('~icons/mdi/account-key')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'ModManagement',
+        path: 'mod-management',
+        component: () => import('../views/ModManagement/index.vue'),
+        meta: {
+          title: () => t('menus.modManagement'),
+          icon: markIcon(() => import('~icons/mdi/puzzle')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Console',
+        path: 'console',
+        component: () => import('../views/Console/index.vue'),
+        meta: {
+          title: () => t('menus.console'),
+          icon: markIcon(() => import('~icons/mdi/console')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'AppSettings',
+        path: 'app-settings',
+        component: () => import('../views/AppSettings/index.vue'),
+        meta: {
+          title: () => t('menus.appSettings'),
+          icon: markIcon(() => import('~icons/mdi/cog')),
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'ApiDocumentation',
+        path: 'swagger',
+        redirect: '/swagger',
+        meta: {
+          title: () => t('menus.apiDocumentation'),
+          icon: markIcon(() => import('~icons/mdi/file-document')),
+          link: '/swagger',
+        },
       },
     ],
   },

@@ -1,7 +1,6 @@
 import { useStorage } from '@vueuse/core';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
-import { computed, watch } from 'vue'; // Ensure vue APIs are imported if auto-import is not enabled
 import { useRoute, useRouter } from 'vue-router';
 import * as authApi from '~/api/auth';
 

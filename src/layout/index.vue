@@ -72,28 +72,28 @@ const isTransparentBorder = computed(() => {
 
 <style scoped lang="scss">
 .header-container {
-  --uno: border-b border-card transition-all-300 inset-x-0 top-0 fixed z-1 backdrop-blur-md;
+  @apply: border-b border-card transition-all-300 inset-x-0 top-0 fixed z-1 backdrop-blur-md;
   .header {
-    --uno: transition-all-300 px-16px;
+    @apply: transition-all-300 px-16px;
   }
   .nav-tab {
-    --uno: transition-all-300 px-16px border-t border-base;
+    @apply: transition-all-300 px-16px border-t border-base;
   }
 }
 
 .sidebar {
-  --uno: left-0 bottom-0 overflow-y-auto fixed shadow-card transition-all-300 bg-base z-2;
+  @apply: left-0 bottom-0 overflow-y-auto fixed shadow-card transition-all-300 bg-base z-2;
 }
 
 .content {
-  --uno: flex flex-col h-full transition-all-300;
+  @apply: flex flex-col h-full transition-all-300;
 
   .main {
-    --uno: p-16px;
+    @apply: p-16px;
   }
 
   .footer {
-    --uno: mt-auto;
+    @apply: mt-auto;
   }
 }
 </style>

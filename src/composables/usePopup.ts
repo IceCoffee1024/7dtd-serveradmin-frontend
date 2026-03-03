@@ -2,9 +2,9 @@ import type { MessageBoxInputData } from 'element-plus';
 import type { SweetAlertTheme } from 'sweetalert2';
 import { useZIndex } from 'element-plus';
 import Swal from 'sweetalert2';
-import QuestionCircle from '~icons/line-md/question-circle';
 import { useTheme } from '~/composables';
 import { i18n } from '~/plugins/i18n';
+import { markIcon } from '~/utils';
 import 'sweetalert2/themes/bootstrap-5.css';
 import 'sweetalert2/themes/bootstrap-4.css';
 import 'sweetalert2/themes/material-ui.css';
@@ -51,7 +51,7 @@ export function usePopup() {
   }
 
   function getElementPlusIcon(type: PopupOptions['type']) {
-    return type === 'question' ? QuestionCircle : undefined;
+    return type === 'question' ? markIcon(() => import('~icons/line-md/question-circle')) : undefined;
   }
 
   const toast = (options: PopupOptions) => {

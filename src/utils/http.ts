@@ -1,9 +1,9 @@
 import axios from 'axios';
 import qs from 'qs';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { authUrl } from '~/api/auth';
 import { usePopup } from '~/composables/usePopup';
+import { i18n } from '~/plugins/i18n';
 import nProgress from '~/plugins/nprogress';
 import { useUserInfoStore } from '~/stores/userInfo';
 
@@ -49,7 +49,7 @@ service.interceptors.response.use(
 
     const data = error.response.data;
     const { toast } = usePopup();
-    const { t } = useI18n();
+    const { t } = i18n.global;
 
     switch (error.response.status) {
       case 401:

@@ -1,6 +1,6 @@
 import type { FormRules } from 'element-plus';
 import type { AsyncComponentLoader, FunctionalComponent, SVGAttributes } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { i18n } from '~/plugins/i18n';
 import v from '~/plugins/valibot';
 
 export function markIcon(loader: AsyncComponentLoader<FunctionalComponent<SVGAttributes>>) {
@@ -64,7 +64,7 @@ export function formatPosition(position: { x: number; y: number; z: number } | n
 }
 
 export function formatMinute(totalMinute: number) {
-  const { t } = useI18n();
+  const { t } = i18n.global;
   if (totalMinute < 1) {
     return `${t('common.lessThan')} 1 ${t('common.minute')}`;
   }

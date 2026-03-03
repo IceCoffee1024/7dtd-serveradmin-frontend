@@ -132,6 +132,6 @@ function formatGameDifficulty(gameDifficulty: number) {
 
 <style lang="scss" scoped>
 .content {
-  --uno: 'ms-3 text-primary 3xl:whitespace-nowrap';
+  @apply: ms-3 text-primary 3xl:whitespace-nowrap;
 }
 </style>

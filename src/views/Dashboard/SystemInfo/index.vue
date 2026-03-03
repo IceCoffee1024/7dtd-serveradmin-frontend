@@ -30,10 +30,10 @@ defineProps<Props>();
 
 <style lang="scss" scoped>
 .system-info {
-  --uno: 'grid grid-cols-[auto_1fr] gap-4';
+  @apply: grid grid-cols-[auto_1fr] gap-4;
   span {
     &:nth-child(even) {
-      --uno: 'text-el-secondary ellipsis-text';
+      @apply: text-el-secondary ellipsis-text;
     }
   }
 }

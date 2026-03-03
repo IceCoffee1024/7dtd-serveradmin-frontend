@@ -42,7 +42,7 @@ const BASE_THEME_SETTINGS = {
       collapsedWidth: 64,
     },
     tab: {
-      visible: true,
+      visible: false,
       height: 40,
       showIcon: true,
       style: 'google',
@@ -55,7 +55,7 @@ const BASE_THEME_SETTINGS = {
   general: {
     showTransitionAnimation: true,
     tableSize: 'default',
-    scrollMode: 'outer',
+    scrollMode: 'inner',
     contextMenuStyle: 'default',
     popBoxStyle: 'sweetalert2',
   },

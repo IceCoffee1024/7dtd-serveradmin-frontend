@@ -25,10 +25,10 @@ body {
   // text-el-primary, text-el-regular, text-el-secondary, text-el-placeholder
   color: var(--el-text-color-primary);
 
-  --uno: bg-base;
+  @apply: bg-base;
 
   .el-card {
-    --uno: bg-card;
+    @apply: bg-card;
   }
 
   .el-menu {
