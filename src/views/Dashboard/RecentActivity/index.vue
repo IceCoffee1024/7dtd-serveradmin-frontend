@@ -3,60 +3,29 @@ import { storeToRefs } from 'pinia';
 import { useRecentActivityStore } from '~/stores/recentActivity';
 
 const { activities } = storeToRefs(useRecentActivityStore());
+
+const ACTIVITY_TONE_COLOR_MAP = {
+  success: 'var(--el-color-success)',
+  danger: 'var(--el-color-danger)',
+} as const;
+
+function resolveToneColor(tone: keyof typeof ACTIVITY_TONE_COLOR_MAP): string {
+  return ACTIVITY_TONE_COLOR_MAP[tone];
+}
 </script>
 
 <template>
-  <div class="activity-list h-62 overflow-y-auto" :class="{ '!pe-2': activities.length > 3 }">
-    <div v-for="(activity, index) in activities" :key="index" class="activity-item">
-      <component :is="activity.icon" :style="{ color: activity.color }" />
-      <div class="activity-content">
-        <span class="activity-text">{{ activity.text }}</span>
-        <span class="activity-time">{{ activity.time }}</span>
+  <div class="py-2 flex flex-col gap-3 h-62 overflow-y-auto" :class="{ '!pe-2': activities.length > 3 }">
+    <div
+      v-for="(activity, index) in activities"
+      :key="index"
+      class="p-3 border rounded-lg flex gap-3 items-center bg-surface-50 border-surface-200 dark:bg-surface-800 dark:border-surface-700"
+    >
+      <component :is="activity.icon" :style="{ color: resolveToneColor(activity.tone) }" />
+      <div class="flex flex-col gap-1">
+        <span class="text-sm font-500">{{ activity.text }}</span>
+        <span class="text-xs text-surface-600 dark:text-surface-400">{{ activity.time }}</span>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border: 1px solid var(--colors-surface-200);
-  border-radius: 0.5rem;
-  background-color: var(--colors-surface-50);
-}
-
-.dark .activity-item {
-  background-color: var(--colors-surface-800);
-  border-color: var(--colors-surface-700);
-}
-
-.activity-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.activity-text {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.activity-time {
-  font-size: 0.75rem;
-  color: var(--colors-surface-600);
-}
-
-.dark .activity-time {
-  color: var(--colors-surface-400);
-}
-</style>

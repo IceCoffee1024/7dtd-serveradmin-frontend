@@ -98,7 +98,12 @@ export const useUserInfoStore = defineStore('userInfo', () => {
     router.push(sanitizeRedirect(rawRedirect));
   };
 
-  const signOut = async () => {
+  /**
+   * Clears current authentication data and optionally navigates to login page.
+   * @param shouldNavigate - Whether to redirect to login route after clearing auth state.
+   * @returns Promise that resolves when sign-out state reset is completed.
+   */
+  const signOut = async (shouldNavigate = true) => {
     // Resetting to initial values will automatically trigger dynamicStorage.removeItem via VueUse.
     authData.value = {
       username: '',
@@ -107,7 +112,9 @@ export const useUserInfoStore = defineStore('userInfo', () => {
       refreshToken: '',
     };
 
-    router.push('/login');
+    if (shouldNavigate) {
+      router.push('/login');
+    }
   };
 
   const refresh = async () => {

@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
+import { setupAuthEventHandler } from './plugins/authEventHandler';
 import { setupAutoAnimate } from './plugins/autoAnimate';
 
 import { setupElementPlus } from './plugins/elementPlus';
@@ -18,6 +19,7 @@ setupPinia(app);
 setupI18n(app);
 
 app.use(router);
+setupAuthEventHandler(router);
 
 setupElementPlus(app);
 setupAutoAnimate(app);

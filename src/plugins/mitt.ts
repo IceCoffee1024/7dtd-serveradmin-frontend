@@ -1,6 +1,10 @@
 import mitt from 'mitt';
 
 export const EVENT_TYPES = {
+  AUTH: {
+    UNAUTHORIZED: 'Auth.Unauthorized',
+    FORBIDDEN: 'Auth.Forbidden',
+  },
   GAME: {
     WELCOME: 'Game.Welcome',
     LOG_CALLBACK: 'Game.LogCallback',
@@ -42,6 +46,12 @@ export interface ChatMessagePayload {
 export interface Events {
   [key: string]: unknown;
   [key: symbol]: unknown;
+  [EVENT_TYPES.AUTH.UNAUTHORIZED]: {
+    source: 'http';
+  };
+  [EVENT_TYPES.AUTH.FORBIDDEN]: {
+    source: 'http';
+  };
   [EVENT_TYPES.GAME.WELCOME]: WelcomeEventPayload;
   [EVENT_TYPES.GAME.LOG_CALLBACK]: LogCallbackPayload;
   [EVENT_TYPES.GAME.CHAT_MESSAGE]: ChatMessagePayload;

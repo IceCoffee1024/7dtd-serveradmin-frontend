@@ -1,9 +1,9 @@
 import axios from 'axios';
 import qs from 'qs';
-import { useRouter } from 'vue-router';
 import { authUrl } from '~/api/auth';
 import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';
+import emitter, { EVENT_TYPES } from '~/plugins/mitt';
 import nProgress from '~/plugins/nprogress';
 import { useUserInfoStore } from '~/stores/userInfo';
 
@@ -58,8 +58,7 @@ service.interceptors.response.use(
           text: t('utils.http.401'),
           type: 'warning',
         });
-        const userInfoStore = useUserInfoStore();
-        await userInfoStore.signOut();
+        emitter.emit(EVENT_TYPES.AUTH.UNAUTHORIZED, { source: 'http' });
         break;
       }
       case 403:
@@ -68,8 +67,7 @@ service.interceptors.response.use(
           text: t('utils.http.403'),
           type: 'warning',
         });
-        const router = useRouter();
-        router.push('/403');
+        emitter.emit(EVENT_TYPES.AUTH.FORBIDDEN, { source: 'http' });
         break;
       }
       case 404:

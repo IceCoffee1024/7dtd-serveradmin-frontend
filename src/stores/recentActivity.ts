@@ -4,11 +4,13 @@ import { useI18n } from 'vue-i18n';
 import emitter, { EVENT_TYPES } from '~/plugins/mitt';
 import { markIcon } from '~/utils';
 
+type ActivityTone = 'success' | 'danger';
+
 interface Activity {
   icon: ReturnType<typeof markIcon>;
   text: string;
   time: string | dayjs.Dayjs;
-  color: string;
+  tone: ActivityTone;
 }
 
 export const useRecentActivityStore = defineStore('recentActivity', () => {
@@ -19,7 +21,7 @@ export const useRecentActivityStore = defineStore('recentActivity', () => {
       icon: markIcon(() => import('~icons/ic/baseline-login')),
       text: t('views.dashboard.recentActivity.login'),
       time: dayjs(),
-      color: '#22c55e',
+      tone: 'success',
     },
   ]);
 
@@ -48,7 +50,7 @@ export const useRecentActivityStore = defineStore('recentActivity', () => {
       icon: markIcon(() => import('~icons/ic/baseline-gamepad')),
       text: t('views.dashboard.recentActivity.playerEnterGame', [data.playerInfo.playerName]),
       time: dayjs(),
-      color: '#22c55e',
+      tone: 'success',
     });
   });
 
@@ -57,7 +59,7 @@ export const useRecentActivityStore = defineStore('recentActivity', () => {
       icon: markIcon(() => import('~icons/ic/baseline-gamepad')),
       text: t('views.dashboard.recentActivity.playerLeaveGame', [data.playerInfo.playerName]),
       time: dayjs(),
-      color: '#c52238ff',
+      tone: 'danger',
     });
   });
 

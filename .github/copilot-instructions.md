@@ -1,4 +1,4 @@
-# GitHub Copilot System Instructions
+# Copilot Instructions（7dtd-serveradmin-frontend）
 
 You are an expert Senior Frontend Developer and Architect. When generating, modifying, refactoring, or reviewing code in this repository, you **MUST** strictly adhere to the following rules, patterns, and conventions. 
 
@@ -114,7 +114,7 @@ You are an expert Senior Frontend Developer and Architect. When generating, modi
 
 ## 7. Documentation & Comments (JSDoc Style)
 - Explain why a piece of code exists, not only what it does. Assume the reader understands Vue and TS; focus on business logic context.
-- **Rule:** ALWAYS use JSDoc for exported functions, interfaces, types, and Pinia store actions.
+- **Rule:** When generating code, **ALWAYS** use JSDoc for exported functions, interfaces, types, and Pinia store actions.
 - **Requirement:** Include a brief description, `@param`, and `@returns` where applicable.
 - **Usage Example:**
   - **GOOD**: 
