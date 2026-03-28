@@ -43,9 +43,8 @@ export interface ChatMessagePayload {
   senderName?: string;
 }
 
-export interface Events {
-  [key: string]: unknown;
-  [key: symbol]: unknown;
+// eslint-disable-next-line ts/consistent-type-definitions
+export type Events = {
   [EVENT_TYPES.AUTH.UNAUTHORIZED]: {
     source: 'http';
   };
@@ -56,16 +55,16 @@ export interface Events {
   [EVENT_TYPES.GAME.LOG_CALLBACK]: LogCallbackPayload;
   [EVENT_TYPES.GAME.CHAT_MESSAGE]: ChatMessagePayload;
   [EVENT_TYPES.GAME.PLAYER_SPAWNED_IN_WORLD]: {
-    playerInfo: API.GameServer.PlayerBasicInfoDto;
+    playerInfo: API.GameServer.PlayerBasicInfo;
     respawnType: API.GameServer.RespawnType;
     timestamp: string;
   };
   [EVENT_TYPES.GAME.PLAYER_DISCONNECTED]: {
-    playerInfo: API.GameServer.PlayerBasicInfoDto;
+    playerInfo: API.GameServer.PlayerBasicInfo;
     gameShuttingDown: boolean;
     timestamp: string;
   };
-}
+};
 
 const emitter = mitt<Events>();
 

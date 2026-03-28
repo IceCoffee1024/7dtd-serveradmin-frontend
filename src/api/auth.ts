@@ -1,13 +1,19 @@
 import http from '~/utils/http';
 
-export const authUrl = '/oauth/token';
+export const AUTH_PATH = 'oauth/token';
 
 /**
  * Sign in
  * @returns Promise resolving to the sign-in response.
  */
 export function signIn(username: string, password: string) {
-  return http.post<API.Auth.SignInResponse>(authUrl, { grant_type: 'password', username, password }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+  return http.post<API.Auth.SignInResponse>(AUTH_PATH, {
+    body: new URLSearchParams({
+      grant_type: 'password',
+      username,
+      password,
+    }),
+  }).json();
 }
 
 /**
@@ -15,5 +21,10 @@ export function signIn(username: string, password: string) {
  * @returns Promise resolving to the refresh response.
  */
 export function refreshToken(refreshToken: string) {
-  return http.post<API.Auth.SignInResponse>(authUrl, { grant_type: 'refresh_token', refresh_token: refreshToken }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+  return http.post<API.Auth.SignInResponse>(AUTH_PATH, {
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
+  }).json();
 }

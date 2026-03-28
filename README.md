@@ -15,7 +15,7 @@ A Vue 3 + Vite + Element Plus admin frontend for 7 Days to Die server operations
 - Routing: hash mode routes are wrapped by `Layout`, support localized entry points like `/:locale/dashboard`, and include 403/404/500 pages plus multi-level menu demos.
 - State: Pinia stores manage `locale`, `nav-tab`, `keep-alive` behaviors while `composables/usePopup`, `useMenus`, and `useTheme` encapsulate UI concerns.
 - Internationalization: `vue-i18n` with `@intlify/unplugin-vue-i18n`, browser language detection, persisted preference, and runtime loading of `locales/en.json` and `locales/zh-cn.json`.
-- Plugin suite: auto-animate, nprogress, mitt, dayjs, valibot, axios, qs, sweetalert2, and @imengyu/vue3-context-menu provide a production-ready toolbox.
+- Plugin suite: auto-animate, nprogress, mitt, dayjs, valibot, sweetalert2, and @imengyu/vue3-context-menu provide a production-ready toolbox.
 - UnoCSS + Sass: `virtual:uno.css` plus `src/styles/index.scss` cover atomic utilities, dark css vars, and Element Plus theme overrides.
 
 ## Quick Start
@@ -107,7 +107,7 @@ Routes are defined in `src/router/index.ts` and wrapped by `Layout` to generate 
 - `nprogress`: loading progress bar hooked into navigation guards.
 - `mitt`: global event bus (`plugins/mitt.ts`).
 - `dayjs`: centralized plugin mixins and locale extensions in `plugins/dayjs.ts`.
-- `axios` + `qs`: request helpers used by API modules in `src/api` and the shared HTTP wrapper in `src/utils/http.ts`.
+- `ky`: request helpers used by API modules in `src/api` and the shared HTTP wrapper in `src/utils/http.ts`.
 - `sweetalert2`: high-quality modal examples in `components/MessageBoxDemo.vue`.
 - `UnoCSS`: typography, color, and animation presets declared via `uno.config.ts`.
 - `@imengyu/vue3-context-menu`: context menu support across views (global styles already imported).

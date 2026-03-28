@@ -38,7 +38,7 @@
   "include": [
     "src/**/*.ts", // TypeScript files
     "src/**/*.d.ts", // Type declarations
-    "src/**/*.tsx", // TypeScript JSX
+    // "src/**/*.tsx", // TypeScript JSX
     "src/**/*.vue" // Vue SFCs
   ]
 }

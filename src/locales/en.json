@@ -23,7 +23,8 @@
     "confirmDelete": "Are you sure you want to delete?",
     "apply": "Apply",
     "reset": "Reset",
-    "close": "Close"
+    "close": "Close",
+    "player": "Player"
   },
   "menus": {
     "login": "Login",
@@ -382,8 +383,9 @@
       "region": "Region File",
       "landClaim": "Land Claim",
       "zombie": "Zombie",
+      "hostiles": "Hostiles",
       "animal": "Animal",
-      "historyPlayer": "Player (History)",
+      "offlinePlayer": "Player (Offline)",
       "onlinePlayer": "Player (Online)",
       "mousePos": "Mouse pos",
       "lastClick": "Last click",
@@ -397,7 +399,13 @@
       "landOwner": "Land Owner",
       "removeLandClaim": "Remove",
       "removeLandClaimConfirm": "Are you sure you want to remove the land claim?",
-      "dragendTelePlayerConfirm": "Are you sure you want to teleport player: {0} to the target location {1}?"
+      "dragendTelePlayerConfirm": "Are you sure you want to teleport player: {0} to the target location {1}?",
+      "gameTimeLoading": "Loading ...",
+      "gameTimeFormat": "Day {days}, {hours}:{minutes}",
+      "claimActive": "Active",
+      "claimInactive": "Inactive",
+      "claimStatus": "Claim Status",
+      "viewPlayerInventory": "View Inventory"
     },
     "permission": {
       "adminUser": "Admin User",

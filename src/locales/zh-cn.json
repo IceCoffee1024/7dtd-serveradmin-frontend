@@ -23,7 +23,8 @@
     "confirmDelete": "确定要删除吗？",
     "apply": "应用",
     "reset": "重置",
-    "close": "关闭"
+    "close": "关闭",
+    "player": "玩家"
   },
   "menus": {
     "login": "登录",
@@ -382,8 +383,9 @@
       "region": "区域文件",
       "landClaim": "领地石",
       "zombie": "僵尸",
+      "hostiles": "敌对生物",
       "animal": "动物",
-      "historyPlayer": "玩家 (历史)",
+      "offlinePlayer": "玩家 (离线)",
       "onlinePlayer": "玩家 (在线)",
       "mousePos": "鼠标位置",
       "lastClick": "上次点击",
@@ -397,7 +399,13 @@
       "landOwner": "领地所有者",
       "removeLandClaim": "移除领地石",
       "removeLandClaimConfirm": "您确定要移除领地石吗?",
-      "dragendTelePlayerConfirm": "确定将玩家: {0} 传送到目标地点 {1} 吗?"
+      "dragendTelePlayerConfirm": "确定将玩家: {0} 传送到目标地点 {1} 吗?",
+      "gameTimeLoading": "加载中...",
+      "gameTimeFormat": "第 {days} 天 {hours}:{minutes}",
+      "claimActive": "已激活",
+      "claimInactive": "已失效",
+      "claimStatus": "领地状态",
+      "viewPlayerInventory": "查看背包"
     },
     "appSettings": {
       "empty": "暂无应用设置。",

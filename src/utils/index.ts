@@ -57,7 +57,7 @@ export function bytesToMB(bytes: number, decimalPlaces = 0) {
   return Number(megabytes.toFixed(decimalPlaces));
 }
 
-export function formatPosition(position: { x: number; y: number; z: number } | null | undefined) {
+export function formatPosition(position: API.GameServer.Position | null | undefined) {
   if (!position)
     return '';
   return `${position.x}, ${position.y}, ${position.z}`;

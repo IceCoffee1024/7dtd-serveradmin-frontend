@@ -19,7 +19,7 @@
 - 路由：hash 路由配合 `Layout` 包裹，主入口支持本地化路径（如 `/:locale/dashboard`），内置 403/404/500 页面与多级菜单样例。
 - 状态管理：Pinia 负责 `locale`、`nav-tab`、`keep-alive` 等中台行为，`composables/usePopup` / `useMenus` / `useTheme` 封装常用交互。
 - 国际化：内置 `vue-i18n` + `@intlify/unplugin-vue-i18n`，支持本地推荐、浏览器语言检测与动态加载语言包。
-- 插件链：包含 `@formkit/auto-animate`、`nprogress`、`mitt`、`dayjs`、`valibot` 等，配合 `axios`、`qs`、`sweetalert2` 与 `@imengyu/vue3-context-menu` 构建实用工具。
+- 插件链：包含 `@formkit/auto-animate`、`nprogress`、`mitt`、`dayjs`、`valibot` 等，配合 `ky`、`sweetalert2` 与 `@imengyu/vue3-context-menu` 构建实用工具。
 - UnoCSS + Sass：`virtual:uno.css` + 自定义 `styles/index.scss` 实现原子类、暗黑 css-vars 与 Element Plus 主题的统一。
 
 ## 快速开始
@@ -111,7 +111,7 @@ VITE_DEV_API_PROXY_TARGET=http://7dtdserver.local:8088
 - `nprogress`：路由守卫搭配 `router.beforeEach` 与 `afterEach` 控制页面加载进度条。
 - `mitt`：全局事件总线（`plugins/mitt.ts`）便于跨组件通信。
 - `dayjs`：在 `plugins/dayjs.ts` 中统一扩展插件与 locale 设置。
-- `axios` + `qs`：请求工具，配合 `src/api` 模块与 `src/utils/http.ts` 的封装统一处理接口调用。
+- `ky`：请求工具，配合 `src/api` 模块与 `src/utils/http.ts` 的封装统一处理接口调用。
 - `sweetalert2`：高颜值弹窗示例存在于 `components/MessageBoxDemo.vue`。
 - `UnoCSS`：通过 `uno.config.ts` 声明 typography preset、主题色、动画效果。
 - `@imengyu/vue3-context-menu`：在视图中提供右键菜单支持（全局样式已引入）。

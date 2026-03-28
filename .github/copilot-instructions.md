@@ -1,4 +1,4 @@
-# Copilot Instructions（7dtd-serveradmin-frontend）
+# Copilot Instructions
 
 You are an expert Senior Frontend Developer and Architect. When generating, modifying, refactoring, or reviewing code in this repository, you **MUST** strictly adhere to the following rules, patterns, and conventions. 
 
@@ -22,7 +22,7 @@ You are an expert Senior Frontend Developer and Architect. When generating, modi
 - **Styling Engine:** UnoCSS 66+ (Use the **presetWind4**, compatibility with Tailwind4 CSS)
 - **Validation:** Valibot (Use for all schema-based validation, especially form data)
 - **Linting/Formatting:** @antfu/eslint-config via `eslint.config.ts` (Flat Config, modern style).
-- **Http Client:** Axios (**MUST** use the custom wrapper)
+- **Http Client:** Ky (**MUST** use the custom wrapper)
 - **Internationalization:** Vue-i18n 11+
 - **Event Handling:** Mitt (Use ONLY for decoupled global events that Pinia shouldn't handle)
 - **Reactive Logic:** @vueuse/core (Always check for a VueUse composable before writing custom logic)
@@ -130,7 +130,7 @@ You are an expert Senior Frontend Developer and Architect. When generating, modi
   ```
   - **AVOID**: 
   ```typescript
-  const formatData = (d: string) => { ... }
+  const formatDate = (d: string) => { ... }
   ```
 
 ## 8. Error Handling & Best Practices

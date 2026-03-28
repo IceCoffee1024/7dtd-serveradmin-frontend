@@ -9,7 +9,7 @@ declare namespace API {
 
     type ListResponse<T> = (T[] & { items?: T[]; data?: T[]; total?: number }) | LegacyListResponse<T>;
 
-    interface PagedDto<T> {
+    interface Paged<T> {
       total: number;
       items: T[];
     }
@@ -111,7 +111,7 @@ declare namespace API {
       desc?: boolean;
     }
 
-    interface PositionDto {
+    interface Position {
       x: number;
       y: number;
       z: number;
@@ -122,12 +122,12 @@ declare namespace API {
       playerId: string;
       platformId: string;
       playerName: string;
-      position: PositionDto;
+      position: Position;
       ip?: string;
       ping?: number;
     }
 
-    interface PlayerBasicInfoDto extends PlayerBasicInfo {}
+    interface PlayerBasicInfo extends PlayerBasicInfo {}
 
     interface OnlinePlayer extends PlayerBasicInfo {
       permissionLevel: number;
@@ -145,14 +145,14 @@ declare namespace API {
 
     interface Backpack {
       entityId: number;
-      position: PositionDto;
+      position: Position;
       timestamp: number;
     }
 
     interface QuestPositionData {
       questCode: number;
       positionDataType: string;
-      blockPosition: PositionDto;
+      blockPosition: Position;
     }
 
     interface HistoryPlayer extends PlayerBasicInfo {
@@ -162,11 +162,11 @@ declare namespace API {
       playGroup: string;
       lastLogin: string;
       acl?: string[];
-      landClaimBlocks?: PositionDto[];
+      landClaimBlocks?: Position[];
       backpacks?: Backpack[];
-      bedroll?: PositionDto;
+      bedroll?: Position;
       questPositions?: QuestPositionData[];
-      ownedVendingMachinePositions?: PositionDto[];
+      ownedVendingMachinePositions?: Position[];
     }
 
     interface PlayerStats {
@@ -179,7 +179,7 @@ declare namespace API {
     interface OwnedEntity {
       id: number;
       classId: number;
-      lastKnownPosition: PositionDto;
+      lastKnownPosition: Position;
       hasLastKnownPosition: boolean;
     }
 
@@ -198,7 +198,7 @@ declare namespace API {
     }
 
     interface PlayerDetails extends HistoryPlayer {
-      lastSpawnPosition: PositionDto;
+      lastSpawnPosition: Position;
       score: number;
       stats?: PlayerStats;
       isLandProtectionActive: boolean;
@@ -207,10 +207,10 @@ declare namespace API {
       longestLife: number;
       currentLife: number;
       totalTimePlayed: number;
-      rentedVMPosition: PositionDto;
+      rentedVMPosition: Position;
       rentalEndTime: number;
       rentalEndDay: number;
-      spawnPoints: PositionDto[];
+      spawnPoints: Position[];
       alreadyCraftedList: string[];
       unlockedRecipeList: string[];
       favoriteRecipeList: string[];
@@ -324,6 +324,9 @@ declare namespace API {
     interface MapInfo {
       blockSize: number;
       maxZoom: number;
+      chunkSize: number;
+      regionSize: number;
+      worldSize: number;
     }
 
     type EntityType = 'OfflinePlayer' | 'OnlinePlayer' | 'Zombie' | 'Animal' | 'Bandit' | 'Hostiles';
@@ -331,7 +334,7 @@ declare namespace API {
     interface EntityBasicInfo {
       entityId: number;
       entityName: string;
-      position: PositionDto;
+      position: Position;
       entityType: EntityType;
       playerId?: string;
     }
@@ -339,7 +342,7 @@ declare namespace API {
     interface ClaimOwner extends PlayerBasicInfo {
       claimActive: boolean;
       lastLogin: string;
-      claimPositions: PositionDto[];
+      claimPositions: Position[];
     }
 
     interface LandClaims {

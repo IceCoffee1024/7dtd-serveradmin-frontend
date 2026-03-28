@@ -12,10 +12,11 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
 
+const COMPONENTS_INCLUDE = [/\.vue$/, /\.vue\?vue/, /\.md$/];
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-  process.env.BROWSER = env.VITE_DEV_BROWSER;
   return {
     resolve: {
       alias: {
@@ -30,7 +31,7 @@ export default defineConfig(({ mode }) => {
         // Allow auto load markdown components under `./src/components/`
         extensions: ['vue', 'md'],
         // Allow auto import and register components used in markdown
-        include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
+        include: COMPONENTS_INCLUDE,
         resolvers: [
           // Auto register Element Plus components
           ElementPlusResolver(),
@@ -91,10 +92,17 @@ export default defineConfig(({ mode }) => {
     //   // TODO: workaround until they support native ESM
     //   noExternal: ['element-plus'],
     // },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use '~/styles/variables.scss' as *;`,
+        },
+      },
+    },
 
     base: env.VITE_APP_PUBLIC_BASE_PATH,
     server: {
-      open: env.VITE_DEV_OPEN_BROWSER === 'true',
+      open: true,
       proxy: {
         '/api': {
           target: env.VITE_DEV_API_PROXY_TARGET,
@@ -106,5 +114,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+
+    // build: {
+    //   sourcemap: true,
+    // },
   };
 });

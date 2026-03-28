@@ -1,5 +1,4 @@
-import type { LocationQuery, RouteRecordRaw } from 'vue-router';
-import qs from 'qs';
+import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Layout from '~/layout/index.vue';
 import { i18n, isSupportedLocale } from '~/plugins/i18n';
@@ -69,6 +68,16 @@ const routes: RouteRecordRaw[] = [
           title: () => t('menus.playerList'),
           icon: markIcon(() => import('~icons/mdi/account-group')),
           requiresAuth: true,
+        },
+      },
+      {
+        name: 'GPSMap',
+        path: 'gps-map',
+        component: () => import('../views/GPSMap/index.vue'),
+        meta: {
+          title: () => t('menus.gpsMap'),
+          icon: markIcon(() => import('~icons/mdi/map')),
+          isRequireAuth: true,
         },
       },
       {
@@ -162,8 +171,6 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
-  parseQuery: (query: string) => qs.parse(query) as LocationQuery,
-  stringifyQuery: qs.stringify,
 });
 
 function getMenuLabel(title: string | (() => string) | undefined): string {
