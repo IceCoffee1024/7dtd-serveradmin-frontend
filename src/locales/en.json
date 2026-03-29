@@ -13,6 +13,7 @@
     "lessThan": "Less Than",
     "moreThan": "More Than",
     "equal": "Equal",
+    "confirm": "Confirm",
     "cancel": "Cancel",
     "update": "Update",
     "save": "Save",
@@ -49,7 +50,15 @@
       "refresh": "Refresh",
       "noData": "No Data",
       "exportCSV": "Export CSV",
-      "add": "Add"
+      "add": "Add",
+      "search": "Search",
+      "reset": "Reset",
+      "pleaseInput": "Please Input",
+      "operation": "Operation"
+    },
+    "myForm": {
+      "pleaseInput": "Please Input",
+      "pleaseSelect": "Please Select"
     },
     "playerInventoryDialog": {
       "header": "Player Inventory",
@@ -269,6 +278,7 @@
         "overview": "Overview",
         "status": "Status",
         "monitor": "Monitor",
+        "quickActions": "Quick Actions",
         "recentActivity": "Recent Activity",
         "systemPlatformInfo": "System Platform Information",
         "historyPlayers": "History Players",
@@ -332,6 +342,19 @@
         "network": "Network",
         "trafficIn": "Traffic In",
         "trafficOut": "Traffic Out"
+      },
+      "quickActions": {
+        "restartTitle": "Restart Server",
+        "shutdownTitle": "Shutdown Server",
+        "restartButton": "Restart Server",
+        "shutdownButton": "Shutdown Server",
+        "restartConfirm": "Are you sure you want to restart the server? Connected players may be disconnected.",
+        "shutdownConfirm": "Are you sure you want to shut down the server? This will interrupt the current service.",
+        "restartSuccess": "Restart command sent",
+        "shutdownSuccess": "Shutdown command sent",
+        "restartError": "Failed to send restart command",
+        "shutdownError": "Failed to send shutdown command",
+        "hint": "High-risk operation. Make sure no one is performing critical actions before continuing."
       },
       "systemInfo": {
         "deviceName": "Device Name",

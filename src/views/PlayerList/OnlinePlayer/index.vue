@@ -1,79 +1,76 @@
 <script setup lang="ts">
-import type { MyTableFetchResult } from '~/composables/useMyTable';
+import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/useMyTable';
+import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useI18n } from 'vue-i18n';
 import { getOnlinePlayers } from '~/api/gameServer';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { formatPosition } from '~/utils';
 
-const tableRef = ref();
+type OnlinePlayerRow = API.GameServer.OnlinePlayer;
+
 const { t } = useI18n();
-const columns = computed(() => [
-  { field: 'playerName', header: t('views.playerList.playerName'), sortable: true, frozen: true, class: 'min-w-40' },
-  { field: 'entityId', header: t('views.playerList.entityId'), sortable: true, class: 'min-w-30' },
-  { field: 'level', header: t('views.playerList.level'), sortable: true, class: 'min-w-30' },
-  { field: 'gameStage', header: t('views.playerList.gameStage'), sortable: true, class: 'min-w-40' },
-  { field: 'zombieKills', header: t('views.playerList.zombieKills'), sortable: true, class: 'min-w-40' },
-  { field: 'playerKills', header: t('views.playerList.playerKills'), sortable: true, class: 'min-w-40' },
-  { field: 'deaths', header: t('views.playerList.deaths'), sortable: true, class: 'min-w-30' },
-  { field: 'ip', header: t('views.playerList.ip'), class: 'min-w-45' },
-  { field: 'ping', header: t('views.playerList.ping'), sortable: true, class: 'min-w-30' },
-  { field: 'position', header: t('views.playerList.position'), class: 'min-w-40' },
-  { field: 'expToNextLevel', header: t('views.playerList.expToNextLevel'), class: 'min-w-40' },
-  { field: 'skillPoints', header: t('views.playerList.skillPoints'), sortable: true, class: 'min-w-40' },
-  { field: 'isTwitchEnabled', header: t('views.playerList.isTwitchEnabled'), class: 'min-w-40' },
-  { field: 'playerId', header: t('views.playerList.playerId'), class: 'min-w-40' },
-  { field: 'platformId', header: t('views.playerList.platformId'), class: 'min-w-40' },
-  { field: 'permissionLevel', header: t('views.playerList.permissionLevel'), sortable: true, class: 'min-w-45' },
+
+const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
+  { prop: 'playerName', label: t('views.playerList.playerName'), slot: 'playerName', sortable: true, fixed: 'left' },
+  { prop: 'entityId', label: t('views.playerList.entityId'), sortable: true },
+  { prop: 'level', label: t('views.playerList.level'), sortable: true },
+  { prop: 'gameStage', label: t('views.playerList.gameStage'), sortable: true },
+  { prop: 'zombieKills', label: t('views.playerList.zombieKills'), sortable: true },
+  { prop: 'playerKills', label: t('views.playerList.playerKills'), sortable: true },
+  { prop: 'deaths', label: t('views.playerList.deaths'), sortable: true },
+  { prop: 'ip', label: t('views.playerList.ip') },
+  { prop: 'ping', label: t('views.playerList.ping'), sortable: true },
+  { prop: 'position', label: t('views.playerList.position'), slot: 'position' },
+  { prop: 'expToNextLevel', label: t('views.playerList.expToNextLevel') },
+  { prop: 'skillPoints', label: t('views.playerList.skillPoints'), sortable: true },
+  { prop: 'isTwitchEnabled', label: t('views.playerList.isTwitchEnabled'), slot: 'isTwitchEnabled' },
+  { prop: 'playerId', label: t('views.playerList.playerId') },
+  { prop: 'platformId', label: t('views.playerList.platformId') },
+  { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
 ]);
 
-const selectedRows = ref<API.GameServer.OnlinePlayer[]>([]);
+const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
+const playerSkillsDialogRef = useTemplateRef('playerSkillsDialogRef');
+const playerDetailsDialogRef = useTemplateRef('playerDetailsDialogRef');
 
-async function fetchData(params: { pageNumber: number; pageSize: number; order: string | null; desc: boolean; keyword: string }) {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<OnlinePlayerRow>> {
   const response = await getOnlinePlayers({
-    ...params,
-    order: (params.order ?? undefined) as API.GameServer.OnlinePlayerQuery['order'],
+    pageNumber: params.pageNumber,
+    pageSize: params.pageSize,
+    keyword: params.searchQuery?.trim() || undefined,
+    order: params.sortField as API.GameServer.OnlinePlayerQuery['order'],
+    desc: params.sortOrder === 'descending',
   });
 
   return {
-    items: response.items as unknown as Array<Record<string, unknown>>,
+    list: response.items,
     total: response.total,
-  } as MyTableFetchResult<Record<string, unknown>>;
+  };
 }
 
-const batchMenuItems = ref([]);
-const playerInventoryDialogRef = ref();
-const playerSkillsDialogRef = ref();
-const playerDetailsDialogRef = ref();
-
-const contextMenuItems = computed(() => [
+const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
   {
     label: t('views.playerList.viewInventory'),
-    command: (rowData?: Record<string, unknown>) => {
-      const row = rowData as API.GameServer.OnlinePlayer | undefined;
-      if (!row) {
+    command: (row) => {
+      if (!row)
         return;
-      }
-      playerInventoryDialogRef.value.show(row.playerId, row.playerName);
+      playerInventoryDialogRef.value?.show(row.playerId, row.playerName);
     },
   },
   {
     label: t('views.playerList.viewSkills'),
-    command: (rowData?: Record<string, unknown>) => {
-      const row = rowData as API.GameServer.OnlinePlayer | undefined;
-      if (!row) {
+    command: (row) => {
+      if (!row)
         return;
-      }
-      playerSkillsDialogRef.value.show(row.playerId, row.playerName);
+      playerSkillsDialogRef.value?.show(row.playerId, row.playerName);
     },
   },
   {
     label: t('views.playerList.viewDetails'),
-    command: (rowData?: Record<string, unknown>) => {
-      const row = rowData as API.GameServer.OnlinePlayer | undefined;
-      if (!row) {
+    command: (row) => {
+      if (!row)
         return;
-      }
-      playerDetailsDialogRef.value.show(row.playerId, row.playerName);
+      playerDetailsDialogRef.value?.show(row.playerId, row.playerName);
     },
   },
 ]);
@@ -82,30 +79,33 @@ const contextMenuItems = computed(() => [
 <template>
   <div class="h-[calc(100vh-250px)]">
     <MyTable
-      ref="tableRef"
-      v-model:selection="selectedRows"
-      data-key="playerId"
+      row-key="playerId"
       :columns="columns"
       :fetch-data="fetchData"
-      :batch-menu-items="batchMenuItems"
-      :is-show-edit-btn="false"
-      :is-show-delete-btn="false"
       :context-menu-items="contextMenuItems"
       :auto-refresh-interval="10"
       :is-show-add-btn="false"
+      :is-selectable="false"
+      :operation-column-width="110"
+      :is-show-edit-btn="false"
+      :is-show-delete-btn="false"
+      :auto-column-width="true"
     >
-      <template #playerName-body="{ data }">
-        <span class="flex items-center">
-          {{ data.playerName }}
-          <img v-if="data.isAdmin" :src="serverFavoriteImgUrl" width="20" :title="$t('views.playerList.admin')">
+      <template #playerName="{ row }">
+        <span class="flex gap-1 items-center">
+          <span>{{ row.playerName }}</span>
+          <img v-if="row.isAdmin" :src="serverFavoriteImgUrl" width="20" :title="t('views.playerList.admin')">
         </span>
       </template>
-      <template #position-body="{ data }">
-        {{ formatPosition(data.position) }}
+      <template #position="{ row }">
+        {{ formatPosition(row.position) }}
       </template>
-      <template #isTwitchEnabled-body="{ data }">
-        {{ data.isTwitchEnabled ? $t('common.yes') : $t('common.no') }}
+      <template #isTwitchEnabled="{ row }">
+        <el-tag :type="row.isTwitchEnabled ? 'success' : 'danger'">
+          {{ row.isTwitchEnabled ? $t('common.yes') : $t('common.no') }}
+        </el-tag>
       </template>
+      <template #operation />
     </MyTable>
     <PlayerInventoryDialog ref="playerInventoryDialogRef" />
     <PlayerSkillsDialog ref="playerSkillsDialogRef" />

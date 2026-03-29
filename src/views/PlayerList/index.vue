@@ -10,10 +10,10 @@ const activeTab = ref('online');
 <template>
   <el-card class="h-full" shadow="never">
     <el-tabs v-model="activeTab">
-      <el-tab-pane name="online" :label="$t('views.playerList.onlinePlayers')">
+      <el-tab-pane name="online" :label="$t('views.playerList.onlinePlayers')" lazy>
         <OnlinePlayer />
       </el-tab-pane>
-      <el-tab-pane name="history" :label="$t('views.playerList.historyPlayers')">
+      <el-tab-pane name="history" :label="$t('views.playerList.historyPlayers')" lazy>
         <HistoryPlayer />
       </el-tab-pane>
     </el-tabs>

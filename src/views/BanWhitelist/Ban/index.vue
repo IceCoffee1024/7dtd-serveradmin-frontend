@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/useMyTable';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import * as api from '~/api/gameServer';
@@ -7,26 +8,31 @@ import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-const tableRef = ref();
-const addOrEditDialogRef = ref();
+type BanEntryRow = API.GameServer.BanEntry;
+
+const tableRef = useTemplateRef('tableRef');
+const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
-const editData = ref<any>(null);
+const editData = ref<BanEntryRow | null>(null);
 
-const columns = computed(() => [
-  { field: 'playerId', header: t('views.banWhitelist.playerId'), class: 'min-w-40' },
-  { field: 'displayName', header: t('views.banWhitelist.displayName'), sortable: true, class: 'min-w-40' },
-  { field: 'bannedUntil', header: t('views.banWhitelist.bannedUntil'), sortable: true, class: 'min-w-40' },
-  { field: 'reason', header: t('views.banWhitelist.reason') },
+const columns = computed<MyTableColumn<BanEntryRow>[]>(() => [
+  { prop: 'playerId', label: t('views.banWhitelist.playerId'), className: 'min-w-40' },
+  { prop: 'displayName', label: t('views.banWhitelist.displayName'), sortable: true, className: 'min-w-40' },
+  { prop: 'bannedUntil', label: t('views.banWhitelist.bannedUntil'), slot: 'bannedUntil', sortable: true, className: 'min-w-40' },
+  { prop: 'reason', label: t('views.banWhitelist.reason') },
 ]);
 
-const selectedRows = ref<any[]>([]);
+const selectedRows = ref<BanEntryRow[]>([]);
 
-async function fetchData(params: any) {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<BanEntryRow>> {
   let data = await api.getBannedPlayers(params);
-  data = searchByKeyword(data, params.keyword, ['playerId', 'displayName', 'reason']);
-  data = orderByField(data, params.order, params.desc);
-  return { items: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize), total: data.length };
+  data = searchByKeyword(data, params.searchQuery?.trim() || '', ['playerId', 'displayName', 'reason']);
+  data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
+  return {
+    list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
+    total: data.length,
+  };
 }
 
 const batchMenuItems = computed(() => [
@@ -34,10 +40,10 @@ const batchMenuItems = computed(() => [
     icon: markIcon(() => import('~icons/mdi/delete-sweep')),
     label: t('common.batchDelete'),
     disabled: selectedRows.value.length === 0,
-    command: async () => {
+    action: async () => {
       if (await confirm()) {
         await api.unbanPlayers(selectedRows.value.map(row => row.playerId));
-        tableRef.value.reload();
+        tableRef.value?.reload();
       }
     },
   },
@@ -45,21 +51,21 @@ const batchMenuItems = computed(() => [
 
 function onAdd() {
   editData.value = null;
-  addOrEditDialogRef.value.show();
+  addOrEditDialogRef.value?.show();
 }
 
-function onEdit(rowData: any) {
+function onEdit(rowData: BanEntryRow) {
   editData.value = rowData;
-  addOrEditDialogRef.value.show();
+  addOrEditDialogRef.value?.show();
 }
 
-async function onDelete(rowData: any) {
+async function onDelete(rowData: BanEntryRow) {
   await api.unbanPlayers([rowData.playerId]);
-  tableRef.value.reload();
+  tableRef.value?.reload();
 }
 
 function onSaved() {
-  tableRef.value.reload();
+  tableRef.value?.reload();
   editData.value = null;
 }
 </script>
@@ -69,18 +75,17 @@ function onSaved() {
     <MyTable
       ref="tableRef"
       v-model:selection="selectedRows"
-      data-key="playerId"
+      row-key="playerId"
       :columns="columns"
       :fetch-data="fetchData"
       :batch-menu-items="batchMenuItems"
-      is-show-index
-      is-show-edit-btn
+      :is-show-index="true"
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"
     >
-      <template #bannedUntil-body="{ data }">
-        {{ dayjs(data.bannedUntil).format() }}
+      <template #bannedUntil="{ row }">
+        {{ dayjs(row.bannedUntil).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
     </MyTable>
     <AddOrEditDialog ref="addOrEditDialogRef" :edit-data="editData" @saved="onSaved" />

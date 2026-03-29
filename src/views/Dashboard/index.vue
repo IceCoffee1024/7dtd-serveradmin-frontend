@@ -4,6 +4,7 @@ import * as devicesApi from '~/api/devices';
 import * as gameServerApi from '~/api/gameServer';
 import Monitor from './Monitor/index.vue';
 import Overview from './Overview/index.vue';
+import QuickActions from './QuickActions/index.vue';
 import RecentActivity from './RecentActivity/index.vue';
 import Status from './Status/index.vue';
 import SystemInfo from './SystemInfo/index.vue';
@@ -62,7 +63,10 @@ onDeactivated(pause);
         </MyCard>
       </div>
       <div class="col-span-12 xl:col-span-4">
-        <MyCard :header="$t('views.dashboard.headers.recentActivity')">
+        <MyCard :header="$t('views.dashboard.headers.quickActions')">
+          <QuickActions />
+        </MyCard>
+        <MyCard :header="$t('views.dashboard.headers.recentActivity')" class="mt-4">
           <RecentActivity />
         </MyCard>
         <div class="mt-4 gap-4 grid grid-cols-6">

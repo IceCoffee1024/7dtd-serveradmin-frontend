@@ -1,0 +1,100 @@
+<script setup lang="ts" generic="T extends Record<string, any>">
+/**
+ * MyForm —— 配置化表单组件
+ * 职责：处理校验规则、动态显隐联动、表单级别禁用、栅格布局。
+ */
+import type { FormInstance } from 'element-plus';
+import type { MyFormField } from '~/composables/useMyForm';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FieldRenderer from './FieldRenderer.vue';
+
+interface Props {
+  fields: MyFormField<T>[];
+  disabled?: boolean;
+  labelWidth?: string | number;
+  gutter?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  labelWidth: '100px',
+  gutter: 16,
+});
+
+const formData = defineModel<Partial<T>>('modelValue', { required: true });
+const formRef = ref<FormInstance | null>(null);
+
+const { t } = useI18n();
+
+defineExpose({
+  validate: () => formRef.value?.validate(),
+  clearValidate: (props?: string | string[]) => formRef.value?.clearValidate(props),
+  resetFields: (props?: string | string[]) => formRef.value?.resetFields(props),
+});
+
+function getPlaceholder(field: MyFormField<T>): string {
+  if (field.placeholder)
+    return field.placeholder;
+  return ['input', 'input-number'].includes(field.el)
+    ? t('components.myForm.pleaseInput', { label: field.label })
+    : t('components.myForm.pleaseSelect', { label: field.label });
+}
+
+function getDisabled(field: MyFormField<T>): boolean {
+  if (props.disabled)
+    return true;
+  if (typeof field.disabled === 'function')
+    return field.disabled(formData.value ?? {});
+  return field.disabled ?? false;
+}
+
+function getRules(field: MyFormField<T>) {
+  if (props.disabled || !field.rules)
+    return [];
+  return Array.isArray(field.rules) ? field.rules : [field.rules];
+}
+</script>
+
+<template>
+  <el-form
+    ref="formRef"
+    :model="formData"
+    :disabled="disabled"
+    :label-width="labelWidth"
+    label-position="right"
+  >
+    <el-row :gutter="gutter">
+      <el-col
+        v-for="field in fields"
+        :key="field.prop"
+        :span="typeof field.span === 'number' ? field.span : (field.span === undefined ? 24 : undefined)"
+        v-bind="typeof field.span === 'object' ? field.span : {}"
+      >
+        <el-form-item
+          :label="field.label"
+          :prop="field.prop"
+          :rules="getRules(field)"
+        >
+          <FieldRenderer
+            v-model="(formData as any)[field.prop]"
+            :el="field.el"
+            :prop-name="field.prop"
+            :options="field.options"
+            :disabled="getDisabled(field)"
+            :placeholder="getPlaceholder(field)"
+            :is-view-mode="disabled"
+            v-bind="field.props"
+            @change="(val: any) => field.onChange?.(val, formData ?? {})"
+          >
+            <template #[field.prop]="scope">
+              <slot :name="field.prop" :model="formData" v-bind="scope" />
+            </template>
+          </FieldRenderer>
+        </el-form-item>
+      </el-col>
+
+      <slot name="row-append" />
+    </el-row>
+  </el-form>
+</template>

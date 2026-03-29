@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/useMyTable';
 import { useI18n } from 'vue-i18n';
 import * as api from '~/api/gameServer';
 import { usePopup } from '~/composables';
@@ -6,28 +7,34 @@ import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-const tableRef = ref();
-const addOrEditDialogRef = ref();
+type CommandPermissionRow = API.GameServer.CommandPermission;
+
+const tableRef = useTemplateRef('tableRef');
+const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
-const editData = ref<any>(null);
+const editData = ref<CommandPermissionRow | null>(null);
 
-const columns = computed(() => [
-  { field: 'command', header: t('views.permission.command'), class: 'min-w-40' },
-  { field: 'permissionLevel', header: t('views.permission.permissionLevel'), sortable: true, class: 'min-w-50' },
-  { field: 'description', header: t('views.permission.description'), class: 'min-w-40' },
+const columns = computed<MyTableColumn<CommandPermissionRow>[]>(() => [
+  { prop: 'command', label: t('views.permission.command'), className: 'min-w-40' },
+  { prop: 'permissionLevel', label: t('views.permission.permissionLevel'), sortable: true, className: 'min-w-50' },
+  { prop: 'description', label: t('views.permission.description'), className: 'min-w-40' },
 ]);
 
-const selectedRows = ref<any[]>([]);
+const selectedRows = ref<CommandPermissionRow[]>([]);
 
-async function fetchData(params: any) {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<CommandPermissionRow>> {
   const response = await api.getCommandPermissions(params);
-  const transform = (list: any[]) => orderByField(searchByKeyword(list, params.keyword, ['command', 'description']), params.order, params.desc);
+  const transform = (list: CommandPermissionRow[]) => orderByField(
+    searchByKeyword(list, params.searchQuery?.trim() || '', ['command', 'description']),
+    params.sortField ?? '',
+    params.sortOrder === 'descending',
+  );
 
   if (response?.items && Array.isArray(response.items)) {
     const items = transform(response.items);
     return {
-      items,
+      list: items,
       total: response.total ?? items.length,
     };
   }
@@ -35,14 +42,17 @@ async function fetchData(params: any) {
   if (response?.data && Array.isArray(response.data)) {
     const items = transform(response.data);
     return {
-      items,
+      list: items,
       total: response.total ?? items.length,
     };
   }
 
   const list = Array.isArray(response) ? response : [];
   const data = transform(list);
-  return { items: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize), total: data.length };
+  return {
+    list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
+    total: data.length,
+  };
 }
 
 const batchMenuItems = computed(() => [
@@ -50,10 +60,10 @@ const batchMenuItems = computed(() => [
     icon: markIcon(() => import('~icons/mdi/delete-sweep')),
     label: t('common.batchDelete'),
     disabled: selectedRows.value.length === 0,
-    command: async () => {
+    action: async () => {
       if (await confirm()) {
         await api.deleteCommandPermissions(selectedRows.value.map(row => row.command));
-        tableRef.value.reload();
+        tableRef.value?.reload();
       }
     },
   },
@@ -61,21 +71,21 @@ const batchMenuItems = computed(() => [
 
 function onAdd() {
   editData.value = null;
-  addOrEditDialogRef.value.show();
+  addOrEditDialogRef.value?.show();
 }
 
-function onEdit(rowData: any) {
+function onEdit(rowData: CommandPermissionRow) {
   editData.value = rowData;
-  addOrEditDialogRef.value.show();
+  addOrEditDialogRef.value?.show();
 }
 
-async function onDelete(rowData: any) {
+async function onDelete(rowData: CommandPermissionRow) {
   await api.deleteCommandPermissions([rowData.command]);
-  tableRef.value.reload();
+  tableRef.value?.reload();
 }
 
 function onSaved() {
-  tableRef.value.reload();
+  tableRef.value?.reload();
   editData.value = null;
 }
 </script>
@@ -85,13 +95,11 @@ function onSaved() {
     <MyTable
       ref="tableRef"
       v-model:selection="selectedRows"
-      data-key="command"
+      row-key="command"
       :columns="columns"
       :fetch-data="fetchData"
       :batch-menu-items="batchMenuItems"
-      is-show-index
-      is-show-edit-btn
-      is-show-add-btn
+      :is-show-index="true"
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"

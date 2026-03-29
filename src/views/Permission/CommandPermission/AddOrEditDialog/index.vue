@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import type { FormInstance, FormRules } from 'element-plus';
+import type { MyFormField } from '~/composables/useMyForm';
+import { useI18n } from 'vue-i18n';
 import { addCommandPermission } from '~/api/gameServer';
+import MyDialog from '~/components/MyDialog/index.vue';
+import MyForm from '~/components/MyForm/index.vue';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
@@ -8,6 +11,16 @@ interface FormModel {
     command: string;
     permissionLevel: number;
     description: string;
+}
+
+interface DialogExpose {
+    open: () => void;
+    close: () => void;
+}
+
+interface FormExpose {
+    validate: () => Promise<boolean>;
+    clearValidate: (props?: string | string[]) => void;
 }
 
 interface Props {
@@ -19,11 +32,13 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['saved']);
-const visible = ref(false);
-const loading = ref(false);
-const formRef = ref<FormInstance>();
+const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
+const formRef = useTemplateRef<FormExpose>('formRef');
+const { t } = useI18n();
 
 const isEdit = computed(() => !!props.editData);
+const dialogTitle = computed(() => (isEdit.value ? t('views.permission.editCommandPermission') : t('views.permission.addCommandPermission')));
+const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
 
 const form = reactive<FormModel>({
     command: '',
@@ -37,7 +52,38 @@ const CommandPermissionSchema = v.object({
     description: v.optional(v.string()),
 });
 
-const rules: FormRules = generateElementRules(CommandPermissionSchema);
+const rules = generateElementRules(CommandPermissionSchema);
+
+const fields = computed<MyFormField<FormModel>[]>(() => [
+    {
+        prop: 'command',
+        label: t('views.permission.command'),
+        el: 'input',
+        rules: rules.command,
+        disabled: () => isEdit.value,
+    },
+    {
+        prop: 'permissionLevel',
+        label: t('views.permission.permissionLevel'),
+        el: 'input-number',
+        props: {
+            min: 0,
+            max: 2000,
+            class: 'w-full',
+        },
+        rules: rules.permissionLevel,
+    },
+    {
+        prop: 'description',
+        label: t('views.permission.description'),
+        el: 'input',
+        props: {
+            type: 'textarea',
+            rows: 3,
+        },
+        rules: rules.description,
+    },
+]);
 
 function syncFormData() {
     if (props.editData) {
@@ -70,29 +116,22 @@ async function onSubmit() {
         return;
     }
 
-    loading.value = true;
     try {
-        await addCommandPermission(form);
+        await addCommandPermission({
+            command: form.command,
+            permissionLevel: form.permissionLevel,
+        });
         emit('saved');
-        visible.value = false;
+        dialogRef.value?.close();
     }
     catch (error) {
         console.error(error);
     }
-    finally {
-        loading.value = false;
-    }
-}
-
-async function onClose() {
-    visible.value = false;
-    await nextTick();
-    formRef.value?.clearValidate();
 }
 
 async function show() {
     syncFormData();
-    visible.value = true;
+    dialogRef.value?.open();
     await nextTick();
     formRef.value?.clearValidate();
 }
@@ -103,37 +142,19 @@ defineExpose({
 </script>
 
 <template>
-    <el-dialog
-        v-model="visible"
-        :title="isEdit ? $t('views.permission.editCommandPermission') : $t('views.permission.addCommandPermission')"
-        width="50rem"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        :show-close="false"
-    >
-        <el-form ref="formRef" :model="form" :rules="rules" label-width="130px" @submit.prevent="onSubmit">
-            <el-form-item :label="$t('views.permission.command')" prop="command">
-                <el-input v-model="form.command" :disabled="isEdit" />
-            </el-form-item>
-
-            <el-form-item :label="$t('views.permission.permissionLevel')" prop="permissionLevel">
-                <el-input-number v-model="form.permissionLevel" :min="0" :max="2000" class="w-full" />
-            </el-form-item>
-
-            <el-form-item :label="$t('views.permission.description')" prop="description">
-                <el-input v-model="form.description" type="textarea" :rows="3" />
-            </el-form-item>
-        </el-form>
-
-        <template #footer>
-            <el-button @click="onClose">
-                <icon-mdi:close class="mr-1" />
-                {{ $t('common.cancel') }}
-            </el-button>
-            <el-button type="primary" :loading="loading" @click="onSubmit">
-                <icon-mdi:check class="mr-1" />
-                {{ isEdit ? $t('common.update') : $t('common.save') }}
-            </el-button>
-        </template>
-    </el-dialog>
+  <MyDialog
+    ref="dialogRef"
+    :title="dialogTitle"
+    width="50rem"
+    :on-confirm="onSubmit"
+    :confirm-text="confirmText"
+    :cancel-text="t('common.cancel')"
+  >
+    <MyForm
+      ref="formRef"
+      v-model="form"
+      :fields="fields"
+      label-width="130px"
+    />
+  </MyDialog>
 </template>

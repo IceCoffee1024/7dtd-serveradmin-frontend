@@ -10,8 +10,8 @@ const activeTab = ref('admin-user');
 </script>
 
 <template>
-  <el-card class="h-full">
-    <el-tabs v-model="activeTab" class="h-full">
+  <el-card class="h-full" shadow="never">
+    <el-tabs v-model="activeTab">
       <el-tab-pane :label="$t('views.permission.adminUser')" name="admin-user">
         <AdminUser />
       </el-tab-pane>

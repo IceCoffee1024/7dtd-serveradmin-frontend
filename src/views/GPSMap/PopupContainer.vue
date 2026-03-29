@@ -2,8 +2,8 @@
 import type { EntityInfoFeatureData, LandClaimFeatureData } from './types';
 import { useMapPopup } from './composables/useMapPopup';
 import { LAYER_ID } from './constants';
-import EntityInfoDialog from './EntityInfoDialog.vue';
-import LandClaimDialog from './LandClaimDialog.vue';
+import EntityInfoPopup from './EntityInfoPopup.vue';
+import LandClaimPopup from './LandClaimPopup.vue';
 
 const { visible, activeLayerId, selectedData, emit, hide } = useMapPopup();
 </script>
@@ -15,12 +15,12 @@ const { visible, activeLayerId, selectedData, emit, hide } = useMapPopup();
         <span aria-hidden="true">×</span>
       </button>
       <div class="box">
-        <LandClaimDialog
+        <LandClaimPopup
           v-if="activeLayerId === LAYER_ID.LAND_CLAIMS_LAYER_GROUP"
           :data="(selectedData as LandClaimFeatureData)"
           @claim-removed="emit('landClaimRemoved')"
         />
-        <EntityInfoDialog
+        <EntityInfoPopup
           v-else-if="activeLayerId === LAYER_ID.OFFLINE_PLAYERS_CLUSTER_LAYER
             || activeLayerId === LAYER_ID.ONLINE_PLAYERS_CLUSTER_LAYER
             || activeLayerId === LAYER_ID.ANIMALS_CLUSTER_LAYER

@@ -11,6 +11,22 @@ export function executeConsoleCommand(command: string, inMainThread: boolean = t
     json: { command, inMainThread },
   }).json();
 }
+
+/**
+ * Sends a restart command to the game server.
+ * @returns Server response acknowledgment.
+ */
+export function restartServer() {
+  return executeConsoleCommand('ty-RestartServer');
+}
+
+/**
+ * Sends a shutdown command to the game server.
+ * @returns Server response acknowledgment.
+ */
+export function shutdownServer() {
+  return executeConsoleCommand('shutdown');
+}
 // #endregion
 
 // #region Statistics

@@ -67,25 +67,25 @@ declare namespace API {
     }
 
     type OnlinePlayerQueryOrder
-      = 'EntityId'
-        | 'PlayerName'
-        | 'Ping'
-        | 'PermissionLevel'
-        | 'ZombieKills'
-        | 'PlayerKills'
-        | 'Deaths'
-        | 'Level'
-        | 'ExpToNextLevel'
-        | 'SkillPoints'
-        | 'GameStage';
+      = 'entityId'
+        | 'playerName'
+        | 'ping'
+        | 'permissionLevel'
+        | 'zombieKills'
+        | 'playerKills'
+        | 'deaths'
+        | 'level'
+        | 'expToNextLevel'
+        | 'skillPoints'
+        | 'gameStage';
 
     type HistoryPlayerQueryOrder
-      = 'EntityId'
-        | 'PlayerName'
-        | 'PermissionLevel'
-        | 'IsOffline'
-        | 'PlayGroup'
-        | 'LastLogin';
+      = 'entityId'
+        | 'playerName'
+        | 'permissionLevel'
+        | 'isOffline'
+        | 'playGroup'
+        | 'lastLogin';
 
     interface OnlinePlayerQuery {
       pageNumber?: number;

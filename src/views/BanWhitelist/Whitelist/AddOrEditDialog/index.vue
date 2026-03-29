@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import type { FormInstance, FormRules } from 'element-plus';
+import type { MyFormField } from '~/composables/useMyForm';
+import { useI18n } from 'vue-i18n';
 import { addPlayerToWhitelist, removePlayerFromWhitelist } from '~/api/gameServer';
+import MyDialog from '~/components/MyDialog/index.vue';
+import MyForm from '~/components/MyForm/index.vue';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
@@ -16,12 +19,15 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   editData: null,
 });
+
 const emit = defineEmits(['saved']);
-const visible = ref(false);
-const loading = ref(false);
-const formRef = ref<FormInstance>();
+const dialogRef = useTemplateRef('dialogRef');
+const formRef = useTemplateRef('formRef');
+const { t } = useI18n();
 
 const isEdit = computed(() => !!props.editData);
+const dialogTitle = computed(() => (isEdit.value ? t('views.banWhitelist.editWhitelist') : t('views.banWhitelist.addWhitelist')));
+const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
 
 const form = reactive<FormModel>({
   playerId: '',
@@ -33,7 +39,23 @@ const WhitelistSchema = v.object({
   displayName: v.pipe(v.string(), v.minLength(1)),
 });
 
-const rules: FormRules = generateElementRules(WhitelistSchema);
+const rules = generateElementRules(WhitelistSchema);
+
+const fields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'playerId',
+    label: t('views.banWhitelist.playerId'),
+    el: 'input',
+    rules: rules.playerId,
+    disabled: () => isEdit.value,
+  },
+  {
+    prop: 'displayName',
+    label: t('views.banWhitelist.displayName'),
+    el: 'input',
+    rules: rules.displayName,
+  },
+]);
 
 function syncFormData() {
   if (props.editData) {
@@ -59,12 +81,11 @@ async function onSubmit() {
     return;
   }
 
-  const valid = await formRef.value.validate().catch(() => false);
+  const valid = await formRef.value.validate()?.catch(() => false);
   if (!valid) {
     return;
   }
 
-  loading.value = true;
   try {
     if (isEdit.value) {
       const oldPlayerId = props.editData?.playerId;
@@ -75,25 +96,16 @@ async function onSubmit() {
 
     await addPlayerToWhitelist(form.playerId, form.displayName);
     emit('saved');
-    visible.value = false;
+    dialogRef.value?.close();
   }
   catch (error) {
     console.error(error);
   }
-  finally {
-    loading.value = false;
-  }
-}
-
-async function onClose() {
-  visible.value = false;
-  await nextTick();
-  formRef.value?.clearValidate();
 }
 
 async function show() {
   syncFormData();
-  visible.value = true;
+  dialogRef.value?.open();
   await nextTick();
   formRef.value?.clearValidate();
 }
@@ -104,31 +116,19 @@ defineExpose({
 </script>
 
 <template>
-  <el-dialog
-    v-model="visible"
-    :title="isEdit ? $t('views.banWhitelist.editWhitelist') : $t('views.banWhitelist.addWhitelist')"
+  <MyDialog
+    ref="dialogRef"
+    :title="dialogTitle"
     width="50rem"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :show-close="false"
+    :on-confirm="onSubmit"
+    :confirm-text="confirmText"
+    :cancel-text="t('common.cancel')"
   >
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="130px" @submit.prevent="onSubmit">
-      <el-form-item :label="$t('views.banWhitelist.playerId')" prop="playerId">
-        <el-input v-model="form.playerId" :disabled="isEdit" />
-      </el-form-item>
-      <el-form-item :label="$t('views.banWhitelist.displayName')" prop="displayName">
-        <el-input v-model="form.displayName" />
-      </el-form-item>
-    </el-form>
-    <template #footer>
-      <el-button @click="onClose">
-        <icon-mdi:close class="mr-1" />
-        {{ $t('common.cancel') }}
-      </el-button>
-      <el-button type="primary" :loading="loading" @click="onSubmit">
-        <icon-mdi:check class="mr-1" />
-        {{ isEdit ? $t('common.update') : $t('common.save') }}
-      </el-button>
-    </template>
-  </el-dialog>
+    <MyForm
+      ref="formRef"
+      v-model="form"
+      :fields="fields"
+      label-width="130px"
+    />
+  </MyDialog>
 </template>

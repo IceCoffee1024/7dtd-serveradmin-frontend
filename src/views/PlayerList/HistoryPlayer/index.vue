@@ -1,74 +1,70 @@
 <script setup lang="ts">
-import type { MyTableFetchResult } from '~/composables/useMyTable';
+import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/useMyTable';
+import type { ContextMenuOption } from '~/plugins/contextMenu';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { getHistoryPlayers } from '~/api/gameServer';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { formatPosition } from '~/utils';
 
-const tableRef = ref(null);
+type HistoryPlayerRow = API.GameServer.HistoryPlayer;
+
 const { t } = useI18n();
-const columns = computed(() => [
-  { field: 'playerName', header: t('views.playerList.playerName'), sortable: true, frozen: true, class: 'min-w-40' },
-  { field: 'isOffline', header: t('views.playerList.status'), sortable: true, class: 'min-w-30' },
-  // { field: 'entityId', header: t('views.playerList.entityId'), sortable: true, class: 'min-w-30' },
-  { field: 'playGroup', header: t('views.playerList.playGroup'), sortable: true, class: 'min-w-35' },
-  { field: 'lastLogin', header: t('views.playerList.lastLogin'), sortable: true, class: 'min-w-45' },
-  { field: 'position', header: t('views.playerList.position'), class: 'min-w-40' },
-  { field: 'playerId', header: t('views.playerList.playerId') },
-  { field: 'platformId', header: t('views.playerList.platformId') },
-  { field: 'permissionLevel', header: t('views.playerList.permissionLevel'), sortable: true, class: 'min-w-45' },
-  { field: 'bedroll', header: t('views.playerList.bedroll'), class: 'min-w-40' },
+
+const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
+  { prop: 'playerName', label: t('views.playerList.playerName'), slot: 'playerName', sortable: true, fixed: 'left' },
+  { prop: 'isOffline', label: t('views.playerList.status'), slot: 'isOffline', sortable: true },
+  { prop: 'lastLogin', label: t('views.playerList.lastLogin'), slot: 'lastLogin', sortable: true },
+  { prop: 'position', label: t('views.playerList.position'), slot: 'position' },
+  { prop: 'playerId', label: t('views.playerList.playerId') },
+  { prop: 'platformId', label: t('views.playerList.platformId') },
+  { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
+  { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll' },
+  { prop: 'playGroup', label: t('views.playerList.playGroup'), sortable: true },
 ]);
 
-const selectedRows = ref<API.GameServer.HistoryPlayer[]>([]);
+const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
+const playerSkillsDialogRef = useTemplateRef('playerSkillsDialogRef');
+const playerDetailsDialogRef = useTemplateRef('playerDetailsDialogRef');
 
-async function fetchData(params: { pageNumber: number; pageSize: number; order: string | null; desc: boolean; keyword: string }) {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<HistoryPlayerRow>> {
   const response = await getHistoryPlayers({
-    ...params,
-    order: (params.order ?? undefined) as API.GameServer.HistoryPlayerQuery['order'],
+    pageNumber: params.pageNumber,
+    pageSize: params.pageSize,
+    keyword: params.searchQuery?.trim() || undefined,
+    order: params.sortField as API.GameServer.HistoryPlayerQuery['order'],
+    desc: params.sortOrder === 'descending',
   });
 
   return {
-    items: response.items as unknown as Array<Record<string, unknown>>,
+    list: response.items,
     total: response.total,
-  } as MyTableFetchResult<Record<string, unknown>>;
+  };
 }
 
-const batchMenuItems = ref([]);
-const playerInventoryDialogRef = ref();
-const playerSkillsDialogRef = ref();
-const playerDetailsDialogRef = ref();
-
-const contextMenuItems = computed(() => [
+const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
   {
     label: t('views.playerList.viewInventory'),
-    command: (rowData?: Record<string, unknown>) => {
-      const row = rowData as API.GameServer.HistoryPlayer | undefined;
-      if (!row) {
+    command: (row) => {
+      if (!row)
         return;
-      }
-      playerInventoryDialogRef.value.show(row.playerId, row.playerName);
+      playerInventoryDialogRef.value?.show(row.playerId, row.playerName);
     },
   },
   {
     label: t('views.playerList.viewSkills'),
-    command: (rowData?: Record<string, unknown>) => {
-      const row = rowData as API.GameServer.HistoryPlayer | undefined;
-      if (!row) {
+    command: (row) => {
+      if (!row)
         return;
-      }
-      playerSkillsDialogRef.value.show(row.playerId, row.playerName);
+      playerSkillsDialogRef.value?.show(row.playerId, row.playerName);
     },
   },
   {
     label: t('views.playerList.viewDetails'),
-    command: (rowData?: Record<string, unknown>) => {
-      const row = rowData as API.GameServer.HistoryPlayer | undefined;
-      if (!row) {
+    command: (row) => {
+      if (!row)
         return;
-      }
-      playerDetailsDialogRef.value.show(row.playerId, row.playerName);
+      playerDetailsDialogRef.value?.show(row.playerId, row.playerName);
     },
   },
 ]);
@@ -77,37 +73,38 @@ const contextMenuItems = computed(() => [
 <template>
   <div class="h-[calc(100vh-250px)]">
     <MyTable
-      ref="tableRef"
-      v-model:selection="selectedRows"
-      data-key="playerId"
+      row-key="playerId"
       :columns="columns"
       :fetch-data="fetchData"
-      :batch-menu-items="batchMenuItems"
-      :is-show-edit-btn="false"
-      :is-show-delete-btn="false"
       :context-menu-items="contextMenuItems"
       :is-show-add-btn="false"
+      :is-selectable="false"
+      :operation-column-width="110"
+      :is-show-edit-btn="false"
+      :is-show-delete-btn="false"
+      :auto-column-width="true"
     >
-      <template #playerName-body="{ data }">
-        <span class="flex items-center">
-          {{ data.playerName }}
-          <img v-if="data.isAdmin" :src="serverFavoriteImgUrl" width="20" :title="$t('views.playerList.admin')">
+      <template #playerName="{ row }">
+        <span class="flex gap-1 items-center">
+          <span>{{ row.playerName }}</span>
+          <img v-if="row.isAdmin" :src="serverFavoriteImgUrl" width="20" :title="t('views.playerList.admin')">
         </span>
       </template>
-      <template #lastLogin-body="{ data }">
-        {{ dayjs(data.lastLogin).format() }}
+      <template #lastLogin="{ row }">
+        {{ dayjs(row.lastLogin).format('YYYY-MM-DD HH:mm:ss') }}
       </template>
-      <template #position-body="{ data }">
-        {{ formatPosition(data.position) }}
+      <template #position="{ row }">
+        {{ formatPosition(row.position) }}
       </template>
-      <template #bedroll-body="{ data }">
-        {{ formatPosition(data.bedroll) }}
+      <template #bedroll="{ row }">
+        {{ formatPosition(row.bedroll) }}
       </template>
-      <template #isOffline-body="{ data }">
-        <el-tag :type="data.isOffline ? 'danger' : 'success'">
-          {{ data.isOffline ? $t('common.offline') : $t('common.online') }}
+      <template #isOffline="{ row }">
+        <el-tag :type="row.isOffline ? 'danger' : 'success'">
+          {{ row.isOffline ? $t('common.offline') : $t('common.online') }}
         </el-tag>
       </template>
+      <template #operation />
     </MyTable>
     <PlayerInventoryDialog ref="playerInventoryDialogRef" />
     <PlayerSkillsDialog ref="playerSkillsDialogRef" />
