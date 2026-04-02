@@ -12,7 +12,7 @@ export const useLocaleStore = defineStore('locale', () => {
   let lastLoadedLocale: string = '';
 
   const languageEnglishName = computed(() => {
-    return LOCALE_CONFIGS[storedLocale.value].englishName;
+    return LOCALE_CONFIGS[storedLocale.value].englishName as API.GameServer.Language;
   });
 
   const localeOptions = computed(() =>

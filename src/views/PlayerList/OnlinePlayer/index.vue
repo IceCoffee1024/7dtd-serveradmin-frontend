@@ -54,7 +54,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerInventoryDialogRef.value?.show(row.playerId, row.playerName);
+      playerInventoryDialogRef.value?.open(row.playerId, row.playerName);
     },
   },
   {
@@ -62,7 +62,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerSkillsDialogRef.value?.show(row.playerId, row.playerName);
+      playerSkillsDialogRef.value?.open(row.playerId, row.playerName);
     },
   },
   {
@@ -70,7 +70,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerDetailsDialogRef.value?.show(row.playerId, row.playerName);
+      playerDetailsDialogRef.value?.open(row.playerId, row.playerName);
     },
   },
 ]);

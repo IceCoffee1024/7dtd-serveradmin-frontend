@@ -10,7 +10,7 @@ const props = defineProps<Props>();
 const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
 
 function handleViewInventory() {
-  playerInventoryDialogRef.value?.show(props.data.playerId!, props.data.entityName);
+  playerInventoryDialogRef.value?.open(props.data.playerId!, props.data.entityName);
 }
 
 const { t } = useI18n();

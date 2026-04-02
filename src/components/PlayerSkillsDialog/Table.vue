@@ -40,7 +40,7 @@ watch(
     border
     class="w-full"
     size="small"
-    max-height="55vh"
+    max-height="calc(80vh - 120px)"
   >
     <template #empty>
       <div class="text-gray-500 py-4 text-center dark:text-gray-300">
@@ -50,14 +50,14 @@ watch(
 
     <el-table-column :label="$t('components.playerSkillsDialog.icon')" width="65">
       <template #default="{ row }">
-        <GameIcon is-ui-icon :icon-name="row.iconName || ''" :size="36" :preview="false" />
+        <GameIcon v-if="row.iconName" is-ui-icon :icon-name="row.iconName || ''" :size="36" :preview="false" />
       </template>
     </el-table-column>
 
     <el-table-column :label="$t('components.playerSkillsDialog.localizationName')" min-width="180">
       <template #default="{ row }">
         <el-tag :type="isSkillOrBookGroup(row) ? 'primary' : 'info'" effect="plain" disable-transitions>
-          {{ row.localizationName }}
+          {{ row.localizationName || row.name }}
         </el-tag>
       </template>
     </el-table-column>

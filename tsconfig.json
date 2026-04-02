@@ -8,6 +8,7 @@
     ],
     "useDefineForClassFields": true, // Standard class field semantics
     "baseUrl": "./", // Module resolution base
+    "ignoreDeprecations": "6.0", // Suppress deprecation warnings for TypeScript 6.0
     "module": "esnext", // ES modules for tree-shaking
     "moduleResolution": "bundler", // Vite-optimized resolution
     "paths": {

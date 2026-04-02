@@ -60,22 +60,23 @@ const fontSizePx = computed(() => {
 
 const { t } = useI18n();
 const tooltipContent = computed(() => {
-  return `${t('components.playerInventoryDialog.itemName')}: ${props.itemName}
-${t('components.playerInventoryDialog.iconName')}: ${props.iconName}
-${t('components.playerInventoryDialog.iconColor')}: ${props.iconColor || 'FFFFFF'}
-${t('components.playerInventoryDialog.localizationName')}: ${props.localizationName}
-${t('components.playerInventoryDialog.count')}: ${props.count}
-${t('components.playerInventoryDialog.maxStackAllowed')}: ${props.maxStackAllowed}
-${t('components.playerInventoryDialog.quality')}: ${props.quality ?? 0}
-${t('components.playerInventoryDialog.useTimes')}: ${props.useTimes}
-${t('components.playerInventoryDialog.maxUseTimes')}: ${props.maxUseTimes}
-${t('components.playerInventoryDialog.isMod')}: ${props.isMod ? t('common.yes') : t('common.no')}
+  return `
+${t('components.playerInventoryDialog.localizationName')}: ${props.localizationName} <br />
+${t('components.playerInventoryDialog.itemName')}: ${props.itemName} <br />
+${t('components.playerInventoryDialog.iconName')}: ${props.iconName} <br />
+${t('components.playerInventoryDialog.iconColor')}: ${props.iconColor || 'FFFFFF'} <br />
+${t('components.playerInventoryDialog.count')}: ${props.count} <br />
+${t('components.playerInventoryDialog.maxStackAllowed')}: ${props.maxStackAllowed} <br />
+${t('components.playerInventoryDialog.quality')}: ${props.quality ?? 0} <br />
+${t('components.playerInventoryDialog.useTimes')}: ${props.useTimes} <br />
+${t('components.playerInventoryDialog.maxUseTimes')}: ${props.maxUseTimes} <br />
+${t('components.playerInventoryDialog.isMod')}: ${props.isMod ? t('common.yes') : t('common.no')} <br />
 ${t('components.playerInventoryDialog.isBlock')}: ${props.isBlock ? t('common.yes') : t('common.no')}`;
 });
 </script>
 
 <template>
-  <el-tooltip :content="tooltipContent" placement="top" effect="dark" :show-after="200" popper-class="inventory-icon-tooltip">
+  <el-tooltip :content="tooltipContent" placement="top" effect="dark" :show-after="200" popper-class="inventory-icon-tooltip" raw-content>
     <div class="game-icon-ex" :style="{ backgroundColor }">
       <GameIcon :icon-name="iconName" :icon-color="iconColor" :size="size" />
       <template v-if="quality">

@@ -48,3 +48,9 @@ const previewSrcList = computed<string[]>(() => {
     fit="contain"
   />
 </template>
+
+<style scoped>
+html:not(.dark) .el-image {
+  background-color: #4d4d4d;
+}
+</style>

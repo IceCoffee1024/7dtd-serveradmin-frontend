@@ -16,10 +16,10 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   { prop: 'isOffline', label: t('views.playerList.status'), slot: 'isOffline', sortable: true },
   { prop: 'lastLogin', label: t('views.playerList.lastLogin'), slot: 'lastLogin', sortable: true },
   { prop: 'position', label: t('views.playerList.position'), slot: 'position' },
-  { prop: 'playerId', label: t('views.playerList.playerId') },
-  { prop: 'platformId', label: t('views.playerList.platformId') },
   { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
   { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll' },
+  { prop: 'playerId', label: t('views.playerList.playerId') },
+  { prop: 'platformId', label: t('views.playerList.platformId') },
   { prop: 'playGroup', label: t('views.playerList.playGroup'), sortable: true },
 ]);
 
@@ -48,7 +48,7 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerInventoryDialogRef.value?.show(row.playerId, row.playerName);
+      playerInventoryDialogRef.value?.open(row.playerId, row.playerName);
     },
   },
   {
@@ -56,7 +56,7 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerSkillsDialogRef.value?.show(row.playerId, row.playerName);
+      playerSkillsDialogRef.value?.open(row.playerId, row.playerName);
     },
   },
   {
@@ -64,7 +64,7 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerDetailsDialogRef.value?.show(row.playerId, row.playerName);
+      playerDetailsDialogRef.value?.open(row.playerId, row.playerName);
     },
   },
 ]);

@@ -23,7 +23,7 @@ const equipmentItems = computed<API.GameServer.InvItem[]>(() => {
 <template>
   <div class="flex gap-2">
     <div :style="{ minWidth: `${4 * iconSize + 50}px` }">
-      <el-tag class="my-1" type="info" effect="dark">
+      <el-tag class="my-1" type="primary" effect="dark">
         {{ $t('components.playerInventoryDialog.bag') }}
       </el-tag>
       <div class="flex flex-wrap gap-1 content-start overflow-y-auto" :style="{ height: `${5 * iconSize + 22}px` }">
@@ -31,7 +31,7 @@ const equipmentItems = computed<API.GameServer.InvItem[]>(() => {
       </div>
     </div>
     <div :style="{ minWidth: `${2 * iconSize + 8}px` }">
-      <el-tag class="my-1" type="info" effect="dark">
+      <el-tag class="my-1" type="primary" effect="dark">
         {{ $t('components.playerInventoryDialog.equipment') }}
       </el-tag>
       <div class="flex flex-wrap gap-1 h-full overflow-y-auto">
@@ -40,7 +40,7 @@ const equipmentItems = computed<API.GameServer.InvItem[]>(() => {
     </div>
   </div>
   <div>
-    <el-tag class="my-1" type="info" effect="dark">
+    <el-tag class="my-1" type="primary" effect="dark">
       {{ $t('components.playerInventoryDialog.belt') }}
     </el-tag>
     <div class="flex flex-wrap gap-1 overflow-y-auto" :style="{ height: `${iconSize + 8}px` }">

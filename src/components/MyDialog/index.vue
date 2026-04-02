@@ -11,6 +11,7 @@
  * 7. 细节优化：默认可拖拽，全屏按钮微调，默认宽度调整，关闭时清理上下文数据等。
  */
 
+import type { ElDialog } from 'element-plus';
 import { ref } from 'vue';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -29,11 +30,12 @@ export interface MyDialogExpose<T = any> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Props
 // ─────────────────────────────────────────────────────────────────────────────
-interface Props {
+type ElDialogProps = InstanceType<typeof ElDialog>['$props'];
+interface Props extends /* @vue-ignore */ ElDialogProps {
   /** 弹窗标题 */
   title: string;
-  /** 弹窗宽度，默认 50% */
-  width?: string | number;
+  /** 是否显示加载状态 */
+  loading?: boolean;
   /** 是否显示底部操作栏，默认 true */
   showFooter?: boolean;
   /**
@@ -50,7 +52,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  width: '50%',
+  loading: false,
   showFooter: true,
 });
 
@@ -62,7 +64,7 @@ const isFullscreen = ref(false);
 const isConfirmLoading = ref(false);
 
 /** 存储 open() 传入的上下文数据，通常用于区分新增/编辑，或作为表单初始值 */
-const contextData = ref<T | undefined>();
+const contextData = ref<T>();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 核心逻辑
@@ -138,34 +140,37 @@ defineExpose<MyDialogExpose<T>>({
   <el-dialog
     v-model="visible"
     :title="title"
-    :width="width"
     :fullscreen="isFullscreen"
     :destroy-on-close="true"
     :close-on-click-modal="false"
-    append-to-body
-    draggable
-    class="my-dialog-wrapper"
+    :append-to-body="true"
+    :draggable="true"
+    :align-center="true"
+    :show-close="false"
     @close="onDialogClose"
   >
     <template #header="{ titleId, titleClass }">
-      <div class="pr-8 flex w-full items-center justify-between">
+      <div class="flex w-full items-center justify-between">
         <span :id="titleId" :class="titleClass">{{ title }}</span>
-
-        <el-button link class="fullscreen-btn" @click="toggleFullscreen">
-          <el-icon size="16">
+        <span>
+          <IconButton
+            size="24" class="fullscreen-btn" :tooltip-content="isFullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
+            @click="toggleFullscreen"
+          >
             <icon-mdi:fullscreen v-if="!isFullscreen" />
             <icon-mdi:fullscreen-exit v-else />
-          </el-icon>
-        </el-button>
+          </IconButton>
+          <IconButton size="24" class="close-btn" :tooltip-content="$t('common.close')" @click="close">
+            <icon-mdi:close />
+          </IconButton>
+        </span>
       </div>
     </template>
-
-    <div class="my-dialog-body-container">
-      <slot :data="contextData" />
+    <div v-loading="loading">
+      <slot :data="contextData" :is-fullscreen="isFullscreen" />
     </div>
-
     <template v-if="showFooter" #footer>
-      <div class="dialog-footer">
+      <div v-loading="loading">
         <slot name="footer" :close="close" :confirm="handleConfirm" :loading="isConfirmLoading">
           <el-button @click="close">
             {{ cancelText || $t('common.cancel') || '取消' }}
@@ -184,44 +189,15 @@ defineExpose<MyDialogExpose<T>>({
 </template>
 
 <style scoped>
-/*
-  绝杀级 CSS 布局优化：
-  解决原生 el-dialog 内容过多时撑爆屏幕、出现双滚动条的痛点。
-*/
-
-/* 1. 限制弹窗整体的最大高度，并使用 flex 布局 */
-:deep(.el-dialog) {
-  display: flex;
-  flex-direction: column;
-  /* 非全屏时，最大高度为视口高度的 85% */
-  max-height: 85vh;
-  /* 调整顶部间距，比默认的 15vh 稍微靠上一点，视觉更舒服 */
-  margin-top: 7vh !important;
-  margin-bottom: 7vh !important;
-}
-
-/* 2. 让 Body 区域自动分配剩余空间，内容溢出时仅 Body 滚动 */
-:deep(.el-dialog__body) {
-  flex: 1;
-  min-height: 0; /* 必须，防止 flex 子项溢出 */
-  overflow-y: auto;
-  /* 优化默认的 padding，使其看起来更紧凑专业 */
-  padding: 20px 24px;
-}
-
-/* 3. 全屏模式下的样式覆盖 */
-:deep(.el-dialog.is-fullscreen) {
-  max-height: 100vh;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
 /* 全屏按钮的微调，避免与原生的关闭十字图标重叠 */
-.fullscreen-btn {
-  margin-right: -10px;
+.fullscreen-btn,
+.close-btn {
   color: var(--el-color-info);
 }
 .fullscreen-btn:hover {
   color: var(--el-color-primary);
+}
+.close-btn:hover {
+  color: var(--el-color-danger);
 }
 </style>

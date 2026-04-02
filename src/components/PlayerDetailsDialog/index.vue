@@ -2,6 +2,7 @@
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { getPlayerDetails } from '~/api/gameServer';
+import MyDialog from '~/components/MyDialog/index.vue';
 import { formatMinute, formatPosition } from '~/utils';
 
 defineOptions({ name: 'PlayerDetailsDialog' });
@@ -22,7 +23,7 @@ const rightTableData = computed<DetailRow[]>(() => {
   const mid = Math.ceil(modelValue.value.length / 2);
   return modelValue.value.slice(mid);
 });
-const visible = ref(false);
+const dialogRef = useTemplateRef('dialogRef');
 const loading = ref(false);
 const title = ref('');
 
@@ -43,11 +44,11 @@ function readStringArray(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-async function show(playerId: string, playerName: string) {
+async function open(playerId: string, playerName: string) {
   title.value = `${playerName} (${playerId})`;
   loading.value = true;
-  visible.value = true;
   try {
+    dialogRef.value?.open();
     modelValue.value = getModel(await getPlayerDetails(playerId));
   }
   finally {
@@ -60,7 +61,7 @@ function onDialogClosed() {
 }
 
 defineExpose({
-  show,
+  open,
 });
 
 function getModel(data: API.GameServer.PlayerDetails): DetailRow[] {
@@ -112,25 +113,16 @@ function getModel(data: API.GameServer.PlayerDetails): DetailRow[] {
 </script>
 
 <template>
-  <el-dialog
-    v-model="visible"
-    class="w-[64vw]"
+  <MyDialog
+    ref="dialogRef"
+    class="min-w-650px"
+    width="64%"
     :title="$t('components.playerDetailsDialog.header')"
-    destroy-on-close
-    append-to-body
+    :show-footer="false"
+    :loading="loading"
     @closed="onDialogClosed"
   >
-    <div v-if="loading" class="f-center h-[50vh]">
-      <el-skeleton animated class="w-full">
-        <template #template>
-          <div class="px-4 flex flex-col gap-3">
-            <el-skeleton-item v-for="idx in 10" :key="idx" variant="text" class="h-6" />
-          </div>
-        </template>
-      </el-skeleton>
-    </div>
-
-    <template v-else>
+    <div>
       <div class="text-sm font-semibold mb-3">
         {{ title }}
       </div>
@@ -144,12 +136,6 @@ function getModel(data: API.GameServer.PlayerDetails): DetailRow[] {
           <el-table-column prop="value" min-width="220" />
         </el-table>
       </div>
-    </template>
-
-    <template #footer>
-      <el-button @click="visible = false">
-        {{ $t('common.close') }}
-      </el-button>
-    </template>
-  </el-dialog>
+    </div>
+  </MyDialog>
 </template>

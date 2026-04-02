@@ -40,7 +40,12 @@ const http = ky.create({
 
         const { response } = error;
         if (response) {
-          data = await response.json<ErrorResponse>();
+          try {
+            data = await response.json<ErrorResponse>();
+          }
+          catch {
+            // Ignore JSON parsing errors
+          }
         }
 
         const { toast } = usePopup();
@@ -73,13 +78,13 @@ const http = ky.create({
             break;
           case 400:
             toast({
-              text: data?.message || data?.error || t('utils.http.400'),
+              text: `${t('utils.http.400')}: ${data?.message || data?.error}`,
               type: 'error',
             });
             break;
           case 500:
             toast({
-              text: data?.message || data?.error || t('utils.http.500'),
+              text: `${t('utils.http.500')}: ${data?.message || data?.error}`,
               type: 'error',
             });
             break;

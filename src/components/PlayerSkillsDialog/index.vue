@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { getPlayerSkills } from '~/api/gameServer';
+import MyDialog from '~/components/MyDialog/index.vue';
 import { useLocaleStore } from '~/stores/locale';
 import Table from './Table.vue';
 
@@ -9,7 +10,7 @@ defineOptions({ name: 'PlayerSkillsDialog' });
 type LayoutMode = 'fold' | 'expand';
 
 const modelValue = ref<API.GameServer.PlayerSkill[]>([]);
-const visible = ref(false);
+const dialogRef = useTemplateRef('dialogRef');
 const loading = ref(false);
 const title = ref('');
 const activeTab = ref('0');
@@ -28,13 +29,13 @@ function onDialogClosed() {
   activeTab.value = '0';
 }
 
-async function show(playerId: string, playerName: string) {
+async function open(playerId: string, playerName: string) {
   title.value = `${playerName} (${playerId})`;
   loading.value = true;
-  visible.value = true;
   activeTab.value = '0';
   try {
-    modelValue.value = await getPlayerSkills(playerId, localeStore.languageEnglishName as API.GameServer.Language);
+    dialogRef.value?.open();
+    modelValue.value = await getPlayerSkills(playerId, localeStore.languageEnglishName);
   }
   finally {
     loading.value = false;
@@ -42,34 +43,25 @@ async function show(playerId: string, playerName: string) {
 }
 
 defineExpose({
-  show,
+  open,
 });
 </script>
 
 <template>
-  <el-dialog
-    v-model="visible"
-    class="w-[64vw]"
+  <MyDialog
+    ref="dialogRef"
+    class="min-w-650px"
+    width="64%"
     :title="$t('components.playerSkillsDialog.header')"
-    append-to-body
-    destroy-on-close
+    :show-footer="false"
+    :loading="loading"
     @closed="onDialogClosed"
   >
-    <div v-if="loading" class="f-center h-[50vh]">
-      <el-skeleton animated class="w-full">
-        <template #template>
-          <div class="px-4 flex flex-col gap-3">
-            <el-skeleton-item v-for="idx in 10" :key="idx" variant="text" class="h-6" />
-          </div>
-        </template>
-      </el-skeleton>
-    </div>
-
-    <template v-else>
+    <div>
       <div class="mb-3 flex gap-4 items-center justify-between">
         <span>{{ title }}</span>
         <el-radio-group v-model="layout" size="small">
-          <el-radio-button v-for="item in options" :key="item.value" :label="item.value">
+          <el-radio-button v-for="item in options" :key="item.value" :value="item.value">
             <el-tooltip :content="item.label" placement="top">
               <el-icon>
                 <icon-mdi-unfold-less-horizontal v-if="item.value === 'fold'" />
@@ -81,7 +73,7 @@ defineExpose({
       </div>
 
       <el-tabs v-model="activeTab">
-        <el-tab-pane v-for="(item, index) in modelValue" :key="item.name || String(index)" :name="String(index)">
+        <el-tab-pane v-for="(item, index) in modelValue" :key="item.name || String(index)" :name="String(index)" lazy>
           <template #label>
             <div class="flex gap-1 items-center">
               <GameIcon v-if="item.iconName" is-ui-icon :icon-name="item.iconName" :size="24" :preview="false" />
@@ -91,12 +83,6 @@ defineExpose({
           <Table :table-data="item.children ?? []" :is-expand-all="layout === 'expand'" />
         </el-tab-pane>
       </el-tabs>
-    </template>
-
-    <template #footer>
-      <el-button @click="visible = false">
-        {{ $t('common.close') }}
-      </el-button>
-    </template>
-  </el-dialog>
+    </div>
+  </MyDialog>
 </template>

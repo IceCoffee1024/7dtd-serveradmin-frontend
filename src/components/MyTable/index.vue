@@ -47,24 +47,24 @@ import type {
   MyTableFetchResult,
 } from '~/composables/useMyTable';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElTable } from 'element-plus';
 import { computed, onMounted, ref, toRef, toValue, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
-// FIX: 新增 MySearchForm 导入，替代原来内联的搜索区域模板
-import MySearchForm from '~/components/MySearchForm/index.vue';
 import { usePopup, useTheme } from '~/composables';
-// FIX: 移除 SEARCH_COMPONENT_MAP，渲染已委托给 MyFieldRenderer（通过 MySearchForm）
-// FIX: 移除 applySearchTransform，transform 在 MySearchForm 内部执行，MyTable 不再直接调用
+// FIX: 移除 SEARCH_COMPONENT_MAP，渲染已委托给 MyFieldRenderer（通过 SearchForm）
+// FIX: 移除 applySearchTransform，transform 在 SearchForm 内部执行，MyTable 不再直接调用
 import { useMyTable } from '~/composables/useMyTable';
 import { showCustomContextMenu } from '~/plugins/contextMenu';
+// FIX: 新增 SearchForm 导入，替代原来内联的搜索区域模板
+import SearchForm from './SearchForm.vue';
 
 type FetchDataResult = MyTableFetchResult<T> | T[];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Props
 // ─────────────────────────────────────────────────────────────────────────────
-
-interface Props {
+type ElTableProps = InstanceType<typeof ElTable>['$props'];
+interface Props extends /* @vue-ignore */ ElTableProps {
   /** 列配置数组，泛型 T 保证 prop 字段受行数据类型约束 */
   columns?: MyTableColumn<T>[];
   /** 表格尺寸；不传时回退到全局主题的 general.tableSize */
@@ -107,7 +107,7 @@ interface Props {
   autoRefreshInterval?: number;
   /**
    * 是否显示顶部搜索区域。
-   * 即使为 true，若所有列均未配置 search 字段，MySearchForm 内部不会渲染任何内容。
+   * 即使为 true，若所有列均未配置 search 字段，SearchForm 内部不会渲染任何内容。
    * 默认 true。
    */
   showSearch?: boolean;
@@ -210,7 +210,7 @@ const {
   onPageSizeChange,
   onSort,
   // FIX: onSearch 签名已更新为接收 transformed 参数，
-  // 由 MySearchForm 的 @search 事件传入已执行过 applySearchTransform 的纯净参数。
+  // 由 SearchForm 的 @search 事件传入已执行过 applySearchTransform 的纯净参数。
   onSearch,
   onReset,
   getRowIndex,
@@ -224,8 +224,8 @@ const {
   resetSelection: () => { selectionModel.value = []; },
 });
 
-// FIX: 移除 searchColumns computed —— 已移入 MySearchForm 内部
-// FIX: 移除 getSearchValue / setSearchValue —— 已移入 MySearchForm 内部
+// FIX: 移除 searchColumns computed —— 已移入 SearchForm 内部
+// FIX: 移除 getSearchValue / setSearchValue —— 已移入 SearchForm 内部
 
 // ─────────────────────────────────────────────────────────────────────────────
 // enum 工具函数
@@ -420,11 +420,11 @@ defineExpose({
   <div class="flex flex-col gap-3 size-full">
     <!-- ─────────────────────────────────────────────────────────────────────
          搜索区域
-         FIX: 替换原来 60 行的内联 el-form 模板为 MySearchForm 组件调用。
+         FIX: 替换原来 60 行的内联 el-form 模板为 SearchForm 组件调用。
          - searchColumns 过滤、getSearchValue/setSearchValue、SEARCH_COMPONENT_MAP
-           均已移入 MySearchForm，MyTable 不再关心搜索栏如何渲染控件。
+           均已移入 SearchForm，MyTable 不再关心搜索栏如何渲染控件。
          - showSearch 为 false 时整个 el-card 不渲染。
-         - MySearchForm 内部判断是否有有效搜索列，无则不渲染，el-card 仍渲染
+         - SearchForm 内部判断是否有有效搜索列，无则不渲染，el-card 仍渲染
            但内容为空；如需连 card 都不渲染可在此加 v-if="showSearch"。
          ───────────────────────────────────────────────────────────────────── -->
     <el-card
@@ -434,11 +434,11 @@ defineExpose({
       :body-style="{ padding: '18px 18px 0 18px' }"
     >
       <!--
-        FIX: onSearch 现在接收 MySearchForm emit 出的已转换参数（transformed），
+        FIX: onSearch 现在接收 SearchForm emit 出的已转换参数（transformed），
         直接传给 useMyTable 的 onSearch(transformed)，不再在此处执行 transform。
         onReset 仍由 useMyTable 负责（清空 searchParam + 恢复 defaultValue + 重新加载）。
       -->
-      <MySearchForm
+      <SearchForm
         v-model="searchParam"
         :columns="props.columns"
         :loading="loading"
@@ -533,7 +533,7 @@ defineExpose({
       </div>
 
       <div class="flex-1 min-h-0">
-        <el-table
+        <ElTable
           v-loading="loading"
           :data="tableData"
           :size="resolvedTableSize"
@@ -636,7 +636,7 @@ defineExpose({
               </div>
             </template>
           </el-table-column>
-        </el-table>
+        </ElTable>
       </div>
 
       <div class="mt-3 flex items-center justify-end">
