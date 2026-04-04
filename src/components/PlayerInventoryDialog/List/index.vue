@@ -33,3 +33,12 @@ const equipmentItems = computed<API.GameServer.InvItem[]>(() => {
     </el-tab-pane>
   </el-tabs>
 </template>
+
+<style scoped lang="scss">
+.el-tabs {
+  height: calc(100% - 40px);
+  .el-tab-pane {
+    height: 100%;
+  }
+}
+</style>

@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { getPlayerDetails } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
+import { useLatestAsync } from '~/composables/useLatestAsync';
 import { formatMinute, formatPosition } from '~/utils';
 
 defineOptions({ name: 'PlayerDetailsDialog' });
@@ -14,17 +15,26 @@ interface DetailRow {
 
 const { t } = useI18n();
 
-const modelValue = ref<DetailRow[]>([]);
+const {
+  data,
+  pending: loading,
+  execute: executeLatest,
+  reset,
+} = useLatestAsync<DetailRow[]>({
+  initialValue: [],
+});
+
 const leftTableData = computed<DetailRow[]>(() => {
-  const mid = Math.ceil(modelValue.value.length / 2);
-  return modelValue.value.slice(0, mid);
+  const rows = data.value ?? [];
+  const mid = Math.ceil(rows.length / 2);
+  return rows.slice(0, mid);
 });
 const rightTableData = computed<DetailRow[]>(() => {
-  const mid = Math.ceil(modelValue.value.length / 2);
-  return modelValue.value.slice(mid);
+  const rows = data.value ?? [];
+  const mid = Math.ceil(rows.length / 2);
+  return rows.slice(mid);
 });
 const dialogRef = useTemplateRef('dialogRef');
-const loading = ref(false);
 const title = ref('');
 
 function formatDayTime(days: number | undefined, time: number | undefined): string {
@@ -46,18 +56,15 @@ function readStringArray(value: unknown): string {
 
 async function open(playerId: string, playerName: string) {
   title.value = `${playerName} (${playerId})`;
-  loading.value = true;
-  try {
-    dialogRef.value?.open();
-    modelValue.value = getModel(await getPlayerDetails(playerId));
-  }
-  finally {
-    loading.value = false;
-  }
+  reset();
+  dialogRef.value?.open();
+
+  await executeLatest(async () => getModel(await getPlayerDetails(playerId)));
 }
 
 function onDialogClosed() {
-  modelValue.value = [];
+  title.value = '';
+  reset();
 }
 
 defineExpose({
@@ -126,16 +133,19 @@ function getModel(data: API.GameServer.PlayerDetails): DetailRow[] {
       <div class="text-sm font-semibold mb-3">
         {{ title }}
       </div>
-      <div class="gap-2 grid grid-cols-2 overflow-auto">
-        <el-table :data="leftTableData" stripe show-overflow-tooltip border :show-header="false">
-          <el-table-column prop="label" min-width="180" class-name="font-semibold" />
-          <el-table-column prop="value" min-width="220" />
-        </el-table>
-        <el-table :data="rightTableData" stripe show-overflow-tooltip border :show-header="false">
-          <el-table-column prop="label" min-width="180" class-name="font-semibold" />
-          <el-table-column prop="value" min-width="220" />
-        </el-table>
-      </div>
+      <template v-if="data?.length">
+        <div class="gap-2 grid grid-cols-2 overflow-auto">
+          <el-table :data="leftTableData" stripe show-overflow-tooltip border :show-header="false">
+            <el-table-column prop="label" min-width="180" class-name="font-semibold" />
+            <el-table-column prop="value" min-width="220" />
+          </el-table>
+          <el-table :data="rightTableData" stripe show-overflow-tooltip border :show-header="false">
+            <el-table-column prop="label" min-width="180" class-name="font-semibold" />
+            <el-table-column prop="value" min-width="220" />
+          </el-table>
+        </div>
+      </template>
+      <el-empty v-else class="h-full" />
     </div>
   </MyDialog>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { MyDialogExpose } from '../MyDialog/index.vue';
 import { useI18n } from 'vue-i18n';
 import { getPlayerInventory } from '~/api/gameServer';
+import { useLatestAsync } from '~/composables/useLatestAsync';
 import { useLocaleStore } from '~/stores/locale';
 import Grid from './Grid/index.vue';
 import List from './List/index.vue';
@@ -9,8 +9,6 @@ import List from './List/index.vue';
 type LayoutMode = 'list' | 'grid';
 
 const { t } = useI18n();
-const modelValue = ref<API.GameServer.Inventory>();
-const layout = ref<LayoutMode>('grid');
 
 const options = computed(() => [
   { label: t('components.playerInventoryDialog.list'), value: 'list' },
@@ -18,24 +16,27 @@ const options = computed(() => [
 ]);
 
 const dialogRef = useTemplateRef('dialogRef');
-const loading = ref(false);
 const title = ref('');
+const layout = ref<LayoutMode>('grid');
 const localeStore = useLocaleStore();
 
+const {
+  data,
+  pending: loading,
+  execute: executeLatest,
+  reset,
+} = useLatestAsync<API.GameServer.Inventory>();
+
 function onDialogClosed(): void {
-  modelValue.value = undefined;
+  reset();
 }
 
 async function open(playerId: string, playerName: string): Promise<void> {
   title.value = `${playerName} (${playerId})`;
-  loading.value = true;
-  try {
-    const data = await getPlayerInventory(playerId, localeStore.languageEnglishName);
-    dialogRef.value?.open(data);
-  }
-  finally {
-    loading.value = false;
-  }
+  reset();
+  dialogRef.value?.open();
+
+  await executeLatest(() => getPlayerInventory(playerId, localeStore.languageEnglishName));
 }
 
 defineExpose({
@@ -46,7 +47,7 @@ defineExpose({
 <template>
   <MyDialog
     ref="dialogRef"
-    v-slot="{ data, isFullscreen }"
+    v-slot="{ isFullscreen }"
     class="min-w-650px"
     width="64%"
     :title="$t('components.playerInventoryDialog.header')"
@@ -54,8 +55,8 @@ defineExpose({
     :loading="loading"
     @closed="onDialogClosed"
   >
-    <div>
-      <div class="mb-3 flex gap-4 items-center justify-between">
+    <div :style="{ height: isFullscreen ? 'calc(100vh - 80px)' : '618px' }">
+      <div class="text-lg mb-3 flex gap-4 items-center justify-between">
         <span>{{ title }}</span>
         <el-radio-group v-model="layout" size="small">
           <el-radio-button v-for="item in options" :key="item.value" :value="item.value">
@@ -68,18 +69,21 @@ defineExpose({
           </el-radio-button>
         </el-radio-group>
       </div>
-      <List
-        v-if="layout === 'list'"
-        :bag="data?.bag ?? []"
-        :belt="data?.belt ?? []"
-        :equipment="data?.equipment ?? []"
-      />
-      <Grid
-        v-else
-        :bag="data?.bag ?? []"
-        :belt="data?.belt ?? []"
-        :equipment="data?.equipment ?? []"
-      />
+      <template v-if="data">
+        <List
+          v-if="layout === 'list'"
+          :bag="data.bag ?? []"
+          :belt="data.belt ?? []"
+          :equipment="data.equipment ?? []"
+        />
+        <Grid
+          v-else-if="layout === 'grid'"
+          :bag="data.bag ?? []"
+          :belt="data.belt ?? []"
+          :equipment="data.equipment ?? []"
+        />
+      </template>
+      <el-empty v-else class="h-full" />
     </div>
   </MyDialog>
 </template>

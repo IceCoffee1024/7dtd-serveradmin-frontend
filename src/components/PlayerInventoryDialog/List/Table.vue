@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <el-table :data="tableData" stripe border size="small" max-height="calc(80vh - 120px)">
+  <el-table :data="tableData" stripe border size="small" height="100%">
     <template #empty>
       <div class="text-gray-500 py-4 text-center dark:text-gray-300">
         {{ $t('components.myTable.noData') }}

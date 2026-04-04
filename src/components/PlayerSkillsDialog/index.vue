@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { getPlayerSkills } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
+import { useLatestAsync } from '~/composables/useLatestAsync';
 import { useLocaleStore } from '~/stores/locale';
 import Table from './Table.vue';
 
@@ -9,9 +10,7 @@ defineOptions({ name: 'PlayerSkillsDialog' });
 
 type LayoutMode = 'fold' | 'expand';
 
-const modelValue = ref<API.GameServer.PlayerSkill[]>([]);
 const dialogRef = useTemplateRef('dialogRef');
-const loading = ref(false);
 const title = ref('');
 const activeTab = ref('0');
 
@@ -19,27 +18,35 @@ const { t } = useI18n();
 const localeStore = useLocaleStore();
 const layout = ref<LayoutMode>('expand');
 
+const {
+  data,
+  pending: loading,
+  execute: executeLatest,
+  reset,
+} = useLatestAsync<API.GameServer.PlayerSkill[]>({
+  initialValue: [],
+});
+
 const options = computed<Array<{ label: string; value: LayoutMode }>>(() => [
   { label: t('components.playerSkillsDialog.fold'), value: 'fold' },
   { label: t('components.playerSkillsDialog.expand'), value: 'expand' },
 ]);
 
 function onDialogClosed() {
-  modelValue.value = [];
+  reset();
+  title.value = '';
   activeTab.value = '0';
+  layout.value = 'expand';
 }
 
 async function open(playerId: string, playerName: string) {
   title.value = `${playerName} (${playerId})`;
-  loading.value = true;
+  reset();
   activeTab.value = '0';
-  try {
-    dialogRef.value?.open();
-    modelValue.value = await getPlayerSkills(playerId, localeStore.languageEnglishName);
-  }
-  finally {
-    loading.value = false;
-  }
+  layout.value = 'expand';
+  dialogRef.value?.open();
+
+  await executeLatest(() => getPlayerSkills(playerId, localeStore.languageEnglishName));
 }
 
 defineExpose({
@@ -72,17 +79,20 @@ defineExpose({
         </el-radio-group>
       </div>
 
-      <el-tabs v-model="activeTab">
-        <el-tab-pane v-for="(item, index) in modelValue" :key="item.name || String(index)" :name="String(index)" lazy>
-          <template #label>
-            <div class="flex gap-1 items-center">
-              <GameIcon v-if="item.iconName" is-ui-icon :icon-name="item.iconName" :size="24" :preview="false" />
-              <span>{{ `${item.localizationName || item.name} (${$t('components.playerSkillsDialog.level')} ${item.level})` }}</span>
-            </div>
-          </template>
-          <Table :table-data="item.children ?? []" :is-expand-all="layout === 'expand'" />
-        </el-tab-pane>
-      </el-tabs>
+      <template v-if="data?.length">
+        <el-tabs v-model="activeTab">
+          <el-tab-pane v-for="(item, index) in data" :key="item.name || String(index)" :name="String(index)" lazy>
+            <template #label>
+              <div class="flex gap-1 items-center">
+                <GameIcon v-if="item.iconName" is-ui-icon :icon-name="item.iconName" :size="24" :preview="false" />
+                <span>{{ `${item.localizationName || item.name} (${$t('components.playerSkillsDialog.level')} ${item.level})` }}</span>
+              </div>
+            </template>
+            <Table :table-data="item.children ?? []" :is-expand-all="layout === 'expand'" />
+          </el-tab-pane>
+        </el-tabs>
+      </template>
+      <el-empty v-else class="h-full" />
     </div>
   </MyDialog>
 </template>
