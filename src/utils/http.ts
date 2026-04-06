@@ -39,6 +39,18 @@ const http = ky.create({
         let data: ErrorResponse | null = null;
 
         const { response } = error;
+        if (!response) {
+          const { toast } = usePopup();
+          const { t } = i18n.global;
+
+          toast({
+            text: t('utils.http.500'),
+            type: 'error',
+          });
+
+          return error;
+        }
+
         if (response) {
           try {
             data = await response.json<ErrorResponse>();

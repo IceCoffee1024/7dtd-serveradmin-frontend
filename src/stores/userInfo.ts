@@ -6,6 +6,7 @@ import * as authApi from '~/api/auth';
 
 export const useUserInfoStore = defineStore('userInfo', () => {
   const keyPrefix = 'userInfo.';
+  let refreshPromise: Promise<void> | null = null;
 
   // 1. Initialize "remember me" status, prioritizing existing configuration.
   const isRememberMeKey = `${keyPrefix}isRememberMe`;
@@ -98,12 +99,29 @@ export const useUserInfoStore = defineStore('userInfo', () => {
     router.push(sanitizeRedirect(rawRedirect));
   };
 
+  async function refreshAccessToken(): Promise<void> {
+    if (!refreshPromise) {
+      refreshPromise = (async () => {
+        const data = await authApi.refreshToken(authData.value.refreshToken);
+        authData.value.accessToken = data.access_token;
+        authData.value.expiresAt = dayjs().add(data.expires_in, 'second').toISOString();
+        authData.value.refreshToken = data.refresh_token;
+      })().finally(() => {
+        refreshPromise = null;
+      });
+    }
+
+    await refreshPromise;
+  }
+
   /**
    * Clears current authentication data and optionally navigates to login page.
    * @param shouldNavigate - Whether to redirect to login route after clearing auth state.
    * @returns Promise that resolves when sign-out state reset is completed.
    */
   const signOut = async (shouldNavigate = true) => {
+    refreshPromise = null;
+
     // Resetting to initial values will automatically trigger dynamicStorage.removeItem via VueUse.
     authData.value = {
       username: '',
@@ -117,13 +135,6 @@ export const useUserInfoStore = defineStore('userInfo', () => {
     }
   };
 
-  const refresh = async () => {
-    const data = await authApi.refreshToken(authData.value.refreshToken);
-    authData.value.accessToken = data.access_token;
-    authData.value.expiresAt = dayjs().add(data.expires_in, 'second').toISOString();
-    authData.value.refreshToken = data.refresh_token;
-  };
-
   const isLoggedIn = async () => {
     try {
       if (!authData.value.accessToken) {
@@ -131,7 +142,7 @@ export const useUserInfoStore = defineStore('userInfo', () => {
       }
 
       if (dayjs().isAfter(dayjs(authData.value.expiresAt))) {
-        await refresh();
+        await refreshAccessToken();
       }
 
       return true;
@@ -152,7 +163,7 @@ export const useUserInfoStore = defineStore('userInfo', () => {
 
   const getAccessToken = async () => {
     if (dayjs().isAfter(dayjs(authData.value.expiresAt))) {
-      await refresh();
+      await refreshAccessToken();
     }
     return authData.value.accessToken;
   };

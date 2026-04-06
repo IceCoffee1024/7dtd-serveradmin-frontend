@@ -47,14 +47,14 @@ import type {
   MyTableColumn,
   MyTableFetchParams,
   MyTableFetchResult,
-} from '~/composables/useMyTable';
+} from '~/composables/table';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { computed, onMounted, ref, toRef, toValue, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { usePopup, useTheme } from '~/composables';
 // FIX: 移除 SEARCH_COMPONENT_MAP，渲染已委托给 MyFieldRenderer（通过 SearchForm）
 // FIX: 移除 applySearchTransform，transform 在 SearchForm 内部执行，MyTable 不再直接调用
-import { useMyTable } from '~/composables/useMyTable';
+import { useMyTable } from '~/composables/table';
 import { showCustomContextMenu } from '~/plugins/contextMenu';
 // FIX: 新增 SearchForm 导入，替代原来内联的搜索区域模板
 import SearchForm from './SearchForm.vue';
@@ -228,6 +228,12 @@ const {
   resetSelection: () => { selectionModel.value = []; },
 });
 
+type RenderableColumn = Omit<MyTableColumn<T>, 'prop'> & { prop?: string };
+
+const renderableSelectedColumns = computed<RenderableColumn[]>(() =>
+  selectedColumns.value as RenderableColumn[],
+);
+
 // FIX: 移除 searchColumns computed —— 已移入 SearchForm 内部
 // FIX: 移除 getSearchValue / setSearchValue —— 已移入 SearchForm 内部
 
@@ -236,7 +242,7 @@ const {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function getTagType(
-  col: MyTableColumn<T>,
+  col: RenderableColumn,
   value: any,
 ): 'success' | 'info' | 'warning' | 'danger' | undefined {
   if (!col.enum)
@@ -245,7 +251,7 @@ function getTagType(
   return enums.find(item => item.value === value)?.tagType ?? 'info';
 }
 
-function getEnumLabel(col: MyTableColumn<T>, value: any): string {
+function getEnumLabel(col: RenderableColumn, value: any): string {
   if (!col.enum)
     return String(value ?? '');
   const enums = toValue(col.enum);
@@ -290,6 +296,13 @@ async function onConfirmDelete(rowData: T) {
   }
 }
 
+function getCellValue(row: T, col: RenderableColumn): unknown {
+  if (!col.prop)
+    return undefined;
+
+  return (row as Record<string, unknown>)[col.prop];
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // attrs 透传处理
 // ─────────────────────────────────────────────────────────────────────────────
@@ -304,7 +317,7 @@ const rowKey = computed(() => {
   return raw.rowKey ?? raw['row-key'] ?? 'id';
 });
 
-function toColumnProps(col: MyTableColumn<T>) {
+function toColumnProps(col: RenderableColumn) {
   const {
     slot: _slot,
     isShow: _isShow,
@@ -364,7 +377,7 @@ function estimateCharWidth(str: string): number {
  * 避免深度遍历大数组带来的性能开销。
  */
 watch([tableData, resolvedTableSize], ([newData, newSize]) => {
-  const autoCols = selectedColumns.value.filter(c =>
+  const autoCols = renderableSelectedColumns.value.filter(c =>
     c.prop
     && (props.autoColumnWidth || c.autoWidth)
     && !c.width);
@@ -588,7 +601,7 @@ defineExpose({
             </template>
           </el-table-column>
 
-          <template v-for="col in selectedColumns" :key="String(col.prop)">
+          <template v-for="col in renderableSelectedColumns" :key="String(col.prop)">
             <el-table-column
               v-bind="toColumnProps(col)"
               :min-width="(autoColumnWidth || col.autoWidth) && !col.width && !col.minWidth ? dynamicColumnWidths[col.prop as string] : col.minWidth"
@@ -599,13 +612,13 @@ defineExpose({
 
                 <el-tag
                   v-else-if="col.enum"
-                  :type="getTagType(col, scope.row[col.prop as keyof T])"
+                  :type="getTagType(col, getCellValue(scope.row, col))"
                 >
-                  {{ getEnumLabel(col, scope.row[col.prop as keyof T]) }}
+                  {{ getEnumLabel(col, getCellValue(scope.row, col)) }}
                 </el-tag>
 
                 <span v-else>
-                  {{ col.prop ? scope.row[col.prop as keyof T] : '' }}
+                  {{ getCellValue(scope.row, col) ?? '' }}
                 </span>
               </template>
             </el-table-column>

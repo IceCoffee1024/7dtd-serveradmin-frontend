@@ -20,25 +20,25 @@ const routes: RouteRecordRaw[] = [
         path: '403',
         name: '403',
         component: () => import('../views/403.vue'),
-        meta: { title: '403', hidden: true },
+        meta: { title: '403', hidden: true, requiresAuth: false },
       },
       {
         path: '404',
         name: '404',
         component: () => import('../views/404.vue'),
-        meta: { title: '404', hidden: true },
+        meta: { title: '404', hidden: true, requiresAuth: false },
       },
       {
         path: '500',
         name: '500',
         component: () => import('../views/500.vue'),
-        meta: { title: '500', hidden: true },
+        meta: { title: '500', hidden: true, requiresAuth: false },
       },
       {
         path: 'login',
         name: 'Login',
         component: () => import('../views/Login/index.vue'),
-        meta: { title: () => t('menus.login'), hidden: true },
+        meta: { title: () => t('menus.login'), hidden: true, requiresAuth: false },
       },
     ],
   },
@@ -75,7 +75,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.gpsMap'),
           icon: markIcon(() => import('~icons/mdi/map')),
-          isRequireAuth: true,
         },
       },
       {

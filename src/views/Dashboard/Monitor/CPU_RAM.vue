@@ -29,7 +29,7 @@ const MAX_DATA_POINTS = 8;
  * @param {object} currentCpuTimes The cpuTimes object at the current time point.
  * @returns {number} The percentage of CPU usage (0-100).
  */
-function calculateCpuUsage(previousCpuTimes: CpuTimes, currentCpuTimes: CpuTimes) {
+function calculateCpuUsage(previousCpuTimes: Exclude<CpuTimes, null>, currentCpuTimes: Exclude<CpuTimes, null>) {
   // 1. Calculate the change in each metric between two time points
   const idleTimeDelta = currentCpuTimes.idleTime - previousCpuTimes.idleTime;
   const kernelTimeDelta = currentCpuTimes.kernelTime - previousCpuTimes.kernelTime;

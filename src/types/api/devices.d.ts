@@ -6,14 +6,14 @@ declare namespace API {
         idleTime: number;
         kernelTime: number;
         userTime: number;
-      };
+      } | null;
       memoryInfo: {
         totalPhysicalMemory: number;
         availablePhysicalMemory: number;
         usedPercentage: number;
         totalVirtualMemory: number;
         availableVirtualMemory: number;
-      };
+      } | null;
       diskInfos: {
         name: string;
         driveType: 'Unknown' | 'NoRootDirectory' | 'Removable' | 'Fixed' | 'Network' | 'CDRom' | 'Ram';
@@ -21,14 +21,14 @@ declare namespace API {
         freeSpace: number;
         totalSize: number;
         usedSize: number;
-        rootPath: string;
+        rootPath: string | null;
       }[];
       networkInfos: {
         id: string;
         mac: string;
         name: string;
         trademark: string;
-        networkType: 'Unknown';
+        networkType: string;
         speed: number;
         ipAddresses: string[];
         bytesReceived: number;

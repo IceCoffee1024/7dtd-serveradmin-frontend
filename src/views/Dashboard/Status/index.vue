@@ -56,6 +56,10 @@ watch(
       return;
     }
 
+    if (!newMetrics.memoryInfo) {
+      return;
+    }
+
     memoryStatus.used = bytesToMB(newMetrics.memoryInfo.totalPhysicalMemory - newMetrics.memoryInfo.availablePhysicalMemory);
     memoryStatus.free = bytesToMB(newMetrics.memoryInfo.availablePhysicalMemory);
     memoryStatus.centerText = `${newMetrics.memoryInfo.usedPercentage} %`;

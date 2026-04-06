@@ -67,25 +67,25 @@ declare namespace API {
     }
 
     type OnlinePlayerQueryOrder
-      = 'entityId'
-        | 'playerName'
-        | 'ping'
-        | 'permissionLevel'
-        | 'zombieKills'
-        | 'playerKills'
-        | 'deaths'
-        | 'level'
-        | 'expToNextLevel'
-        | 'skillPoints'
-        | 'gameStage';
+      = 'EntityId'
+        | 'PlayerName'
+        | 'Ping'
+        | 'PermissionLevel'
+        | 'ZombieKills'
+        | 'PlayerKills'
+        | 'Deaths'
+        | 'Level'
+        | 'ExpToNextLevel'
+        | 'SkillPoints'
+        | 'GameStage';
 
     type HistoryPlayerQueryOrder
-      = 'entityId'
-        | 'playerName'
-        | 'permissionLevel'
-        | 'isOffline'
-        | 'playGroup'
-        | 'lastLogin';
+      = 'EntityId'
+        | 'PlayerName'
+        | 'PermissionLevel'
+        | 'IsOffline'
+        | 'PlayGroup'
+        | 'LastLogin';
 
     interface OnlinePlayerQuery {
       pageNumber?: number;
@@ -123,8 +123,8 @@ declare namespace API {
       platformId: string;
       playerName: string;
       position: Position;
-      ip?: string;
-      ping?: number;
+      ip: string | null;
+      ping: number | null;
     }
 
     interface PlayerBasicInfo extends PlayerBasicInfo {}
@@ -161,12 +161,12 @@ declare namespace API {
       isOffline: boolean;
       playGroup: string;
       lastLogin: string;
-      acl?: string[];
-      landClaimBlocks?: Position[];
-      backpacks?: Backpack[];
-      bedroll?: Position;
-      questPositions?: QuestPositionData[];
-      ownedVendingMachinePositions?: Position[];
+      acl: string[] | null;
+      landClaimBlocks: Position[] | null;
+      backpacks: Backpack[] | null;
+      bedroll: Position | null;
+      questPositions: QuestPositionData[] | null;
+      ownedVendingMachinePositions: Position[] | null;
     }
 
     interface PlayerStats {
@@ -200,7 +200,7 @@ declare namespace API {
     interface PlayerDetails extends HistoryPlayer {
       lastSpawnPosition: Position;
       score: number;
-      stats?: PlayerStats;
+      stats: PlayerStats | null;
       isLandProtectionActive: boolean;
       distanceWalked: number;
       totalItemsCrafted: number;
@@ -215,7 +215,7 @@ declare namespace API {
       unlockedRecipeList: string[];
       favoriteRecipeList: string[];
       ownedEntities: OwnedEntity[];
-      playerProfile?: PlayerProfile;
+      playerProfile: PlayerProfile | null;
     }
 
     interface InvItem {
@@ -251,14 +251,14 @@ declare namespace API {
       costForNextLevel: number;
       iconName?: string;
       type?: string;
-      children?: PlayerSkill[];
+      children: PlayerSkill[] | null;
     }
 
     interface AllowedCommand {
-      commands?: string[];
-      description?: string;
-      help?: string;
-      permissionLevel?: number;
+      commands: string[];
+      description: string;
+      help: string;
+      permissionLevel: number;
     }
 
     interface GlobalMessage {
@@ -273,8 +273,8 @@ declare namespace API {
     interface AdminUser {
       [key: string]: unknown;
       playerId: string;
-      permissionLevel?: number;
-      displayName?: string;
+      permissionLevel: number;
+      displayName: string;
     }
 
     interface CommandPermissionCreate {
@@ -284,20 +284,20 @@ declare namespace API {
 
     interface CommandPermission extends CommandPermissionCreate {
       [key: string]: unknown;
-      description?: string;
+      description: string | null;
     }
 
     interface BanEntry {
       [key: string]: unknown;
       bannedUntil: string;
-      displayName?: string;
+      displayName: string | null;
       playerId: string;
-      reason?: string;
+      reason: string | null;
     }
 
     interface WhitelistEntry {
       [key: string]: unknown;
-      displayName?: string;
+      displayName: string | null;
       playerId: string;
     }
 

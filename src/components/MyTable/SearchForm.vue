@@ -1,10 +1,10 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 import type { MyFormField, OptionItem } from '~/composables/useMyForm';
-import type { MyTableColumn } from '~/composables/useMyTable';
+import type { MyTableColumn } from '~/composables/table';
 import { computed, toValue } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MyForm from '~/components/MyForm/index.vue';
-import { applySearchTransform } from '~/composables/useMyTable';
+import { applySearchTransform } from '~/composables/table';
 
 interface Props {
   columns: MyTableColumn<T>[];

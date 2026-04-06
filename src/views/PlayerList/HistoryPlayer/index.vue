@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/useMyTable';
+import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
@@ -55,7 +55,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     pageSize: params.pageSize,
     keyword: params.search?.keyword?.trim() || undefined,
     order: params.sortField as API.GameServer.HistoryPlayerQuery['order'],
-    desc: params.sortOrder === 'descending',
+    desc: !params.sortOrder ? undefined : params.sortOrder === 'descending',
   });
 
   return {
