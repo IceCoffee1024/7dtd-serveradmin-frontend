@@ -11,18 +11,7 @@ import type {
   UploadProps,
 } from 'element-plus';
 import type { MaybeRef } from 'vue';
-import {
-  ElCheckboxGroup,
-  ElDatePicker,
-  ElInput,
-  ElInputNumber,
-  ElRadioGroup,
-  ElSelect,
-  ElSwitch,
-  ElUpload,
-} from 'element-plus';
 import { cloneDeep } from 'es-toolkit';
-
 import { computed, nextTick, ref } from 'vue';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -91,6 +80,17 @@ export type ResponsiveSpan = number | {
   xl?: number;
 };
 
+/**
+ * Help tooltip shown next to a form field label.
+ * The content should explain why the value matters or how it is used.
+ */
+export interface MyFormFieldTooltip {
+  /** Tooltip text shown on hover. */
+  content: string;
+  /** Optional placement for the hover bubble. */
+  placement?: string;
+}
+
 export interface MyFormField<
   T extends Record<string, any> = Record<string, any>,
   El extends FormElType = FormElType,
@@ -106,12 +106,12 @@ export interface MyFormField<
   disabled?: boolean | ((model: Partial<T>) => boolean);
   onChange?: (val: any, model: Partial<T>) => void;
   placeholder?: string;
+  tooltip?: string | MyFormFieldTooltip;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // useMyForm Options
 // ─────────────────────────────────────────────────────────────────────────────
-
 export interface UseMyFormOptions<T extends Record<string, any>> {
   fields: MyFormField<T>[];
   defaultValues?: () => Partial<T>;

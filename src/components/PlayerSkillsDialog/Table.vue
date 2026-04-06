@@ -40,7 +40,7 @@ watch(
     border
     class="w-full"
     size="small"
-    max-height="calc(80vh - 120px)"
+    height="100%"
   >
     <template #empty>
       <div class="text-gray-500 py-4 text-center dark:text-gray-300">
@@ -48,7 +48,7 @@ watch(
       </div>
     </template>
 
-    <el-table-column :label="$t('components.playerSkillsDialog.icon')" width="65">
+    <el-table-column :label="$t('components.playerSkillsDialog.icon')" width="100">
       <template #default="{ row }">
         <GameIcon v-if="row.iconName" is-ui-icon :icon-name="row.iconName || ''" :size="36" :preview="false" />
       </template>
@@ -90,3 +90,16 @@ watch(
     <el-table-column prop="localizationDesc" :label="$t('components.playerSkillsDialog.localizationDesc')" min-width="220" show-overflow-tooltip />
   </el-table>
 </template>
+
+<style lang="scss" scoped>
+.el-table {
+  :deep(.cell) {
+    button {
+      margin-right: 4px;
+      .el-icon {
+        font-size: 18px;
+      }
+    }
+  }
+}
+</style>

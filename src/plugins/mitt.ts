@@ -53,6 +53,7 @@ export type Events = {
   };
   [EVENT_TYPES.GAME.WELCOME]: WelcomeEventPayload;
   [EVENT_TYPES.GAME.LOG_CALLBACK]: LogCallbackPayload;
+  [EVENT_TYPES.GAME.GAME_START_DONE]: void;
   [EVENT_TYPES.GAME.CHAT_MESSAGE]: ChatMessagePayload;
   [EVENT_TYPES.GAME.PLAYER_SPAWNED_IN_WORLD]: {
     playerInfo: API.GameServer.PlayerBasicInfo;

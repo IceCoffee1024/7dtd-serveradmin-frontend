@@ -16,17 +16,28 @@ const { confirm } = usePopup();
 const editData = ref<CommandPermissionRow | null>(null);
 
 const columns = computed<MyTableColumn<CommandPermissionRow>[]>(() => [
-  { prop: 'command', label: t('views.permission.command'), className: 'min-w-40' },
-  { prop: 'permissionLevel', label: t('views.permission.permissionLevel'), sortable: true, className: 'min-w-50' },
-  { prop: 'description', label: t('views.permission.description'), className: 'min-w-40' },
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    isShow: false,
+    exportable: false,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+    },
+  },
+  { prop: 'command', label: t('views.permission.command') },
+  { prop: 'permissionLevel', label: t('views.permission.permissionLevel'), sortable: true },
+  { prop: 'description', label: t('views.permission.description') },
 ]);
 
 const selectedRows = ref<CommandPermissionRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<CommandPermissionRow>> {
   const response = await api.getCommandPermissions(params);
+  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
   const transform = (list: CommandPermissionRow[]) => orderByField(
-    searchByKeyword(list, params.searchQuery?.trim() || '', ['command', 'description']),
+    searchByKeyword(list, keyword, ['command', 'description']),
     params.sortField ?? '',
     params.sortOrder === 'descending',
   );
@@ -100,6 +111,7 @@ function onSaved() {
       :fetch-data="fetchData"
       :batch-menu-items="batchMenuItems"
       :is-show-index="true"
+      :auto-column-width="true"
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"

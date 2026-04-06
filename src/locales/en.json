@@ -25,6 +25,7 @@
     "apply": "Apply",
     "reset": "Reset",
     "close": "Close",
+    "edit": "Edit",
     "player": "Player"
   },
   "menus": {
@@ -53,8 +54,13 @@
       "add": "Add",
       "search": "Search",
       "reset": "Reset",
+      "autoRefresh": "Auto Refresh",
+      "refreshInterval": "Refresh Interval",
+      "secondsUnit": "sec",
       "pleaseInput": "Please Input",
-      "operation": "Operation"
+      "operation": "Operation",
+      "batchActions": "Batch Actions",
+      "moreActions": "More Actions"
     },
     "myForm": {
       "pleaseInput": "Please Input",
@@ -154,6 +160,9 @@
       "fullscreen": "Fullscreen",
       "exitFullscreen": "Exit Fullscreen",
       "themeConfiguration": "Theme Configuration",
+      "github": "GitHub",
+      "community": "Community",
+      "userMenu": "User Menu",
       "appearance": "Appearance",
       "layout": "Layout",
       "general": "General",
@@ -687,6 +696,14 @@
           "group": "Game Difficulty",
           "desc": "Can new players joining the server for the first time select to join near any friend playing at the same time? 0 = Disabled, 1 = Always, 2 = Only near friends in forest biome"
         },
+        "CameraRestrictionMode": {
+          "group": "Game Difficulty",
+          "desc": "Camera restriction mode. 0 = Players can freely swap between first and third person camera modes, 1 = Restricted to first person, 2 = Restricted to third person"
+        },
+        "JarRefund": {
+          "group": "Game Difficulty",
+          "desc": "Empty jar refund percentage. The percentage of empty jars returned after consuming an item. Available values: 0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100"
+        },
         "MaxSpawnedZombies": {
           "group": "Performance",
           "desc": "Maximum number of spawned zombies. This setting covers the entire map, there can only be so many zombies on the entire map at once. Changing this setting can have a huge impact on performance"
@@ -730,6 +747,10 @@
         "ZombieBMMove": {
           "group": "Zombie Settings",
           "desc": "Zombie BM Move. 0-4 (Walk, Jog, Run, Sprint, Nightmare)"
+        },
+        "AISmellMode": {
+          "group": "Zombie Settings",
+          "desc": "AI smell mode. 0-5 (off, walk, jog, run, sprint, nightmare)"
         },
         "BloodMoonFrequency": {
           "group": "Zombie Settings",
@@ -846,6 +867,13 @@
         "refreshTokenExpireTime": "Refresh Token Expire Time",
         "serverConfigFile": "Server Config File"
       },
+      "tooltips": {
+        "webUrl": "Base address used by the frontend to reach the API. Include http or https.",
+        "password": "Password used to log into the admin backend and must match the server account.",
+        "accessTokenExpireTime": "Lifetime of the access token, in seconds.",
+        "refreshTokenExpireTime": "Lifetime of the refresh token, in seconds.",
+        "serverConfigFile": "Path to the server config file to edit. Relative paths or server-directory paths both work."
+      },
       "actions": {
         "save": "Save Settings",
         "reset": "Reset"
@@ -896,7 +924,31 @@
       "addBan": "Add Ban",
       "editBan": "Edit Ban",
       "addWhitelist": "Add Whitelist",
-      "editWhitelist": "Edit Whitelist"
+      "editWhitelist": "Edit Whitelist",
+      "tooltips": {
+        "playerId": "Unique player identifier, usually a SteamID64.",
+        "displayName": "The name shown in the list so operators can identify the target quickly.",
+        "bannedUntil": "Leave this empty for a permanent ban; otherwise set the expiry time.",
+        "reason": "Record why the player was banned or removed for later audit and troubleshooting."
+      }
+    },
+    "permission": {
+      "adminUser": "Admin User",
+      "addAdminUser": "Add Admin User",
+      "editAdminUser": "Edit Admin User",
+      "addCommandPermission": "Add Command Permission",
+      "editCommandPermission": "Edit Command Permission",
+      "commandPermission": "Command Permission",
+      "command": "Command",
+      "description": "Description",
+      "permissionLevel": "Permission Level",
+      "tooltips": {
+        "playerId": "Unique player identifier to grant permissions to, usually a SteamID64.",
+        "displayName": "Display name used to recognize this account in the admin panel.",
+        "permissionLevel": "Server permission level. Higher values usually mean more privileges.",
+        "command": "The console command name this rule applies to.",
+        "description": "Optional note describing the purpose or constraint of this command rule."
+      }
     }
   }
 }

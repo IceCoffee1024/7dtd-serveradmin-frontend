@@ -5,7 +5,7 @@ import { addPlayerToWhitelist, removePlayerFromWhitelist } from '~/api/gameServe
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import v from '~/plugins/valibot';
-import { generateElementRules } from '~/utils';
+import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
   playerId: string;
@@ -46,14 +46,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'playerId',
     label: t('views.banWhitelist.playerId'),
     el: 'input',
-    rules: rules.playerId,
+    tooltip: t('views.banWhitelist.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
     el: 'input',
-    rules: rules.displayName,
+    tooltip: t('views.banWhitelist.tooltips.displayName'),
   },
 ]);
 
@@ -78,28 +78,35 @@ watch(
 
 async function onSubmit() {
   if (!formRef.value) {
-    return;
+    return false;
   }
 
   const valid = await formRef.value.validate()?.catch(() => false);
   if (!valid) {
-    return;
+    return false;
   }
 
   try {
     if (isEdit.value) {
       const oldPlayerId = props.editData?.playerId;
       if (oldPlayerId) {
-        await removePlayerFromWhitelist([oldPlayerId]);
+        const removeResult = await removePlayerFromWhitelist([oldPlayerId]);
+        if (!showCommandResult(removeResult, t('common.update')))
+          return false;
       }
     }
 
-    await addPlayerToWhitelist(form.playerId, form.displayName);
+    const result = await addPlayerToWhitelist(form.playerId, form.displayName);
+    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+      return false;
+
     emit('saved');
     dialogRef.value?.close();
+    return true;
   }
   catch (error) {
     console.error(error);
+    return false;
   }
 }
 
@@ -129,6 +136,7 @@ defineExpose({
       v-model="form"
       :fields="fields"
       label-width="130px"
+      :rules="rules"
     />
   </MyDialog>
 </template>

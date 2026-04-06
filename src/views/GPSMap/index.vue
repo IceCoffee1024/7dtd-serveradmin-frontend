@@ -2,6 +2,7 @@
 import type Map from 'ol/Map';
 import { getMapInfo } from '~/api/gameServer';
 import { initOpenLayers } from './openlayers/initOpenLayers';
+import { layerRegistry } from './openlayers/mapRegistry';
 import PopupContainer from './PopupContainer.vue';
 import { MapLifecycle } from './types';
 
@@ -34,6 +35,8 @@ onUnmounted(() => {
     map.setTarget(undefined);
     mapInstanceRef.value = undefined;
   }
+
+  layerRegistry.clear();
 });
 
 onActivated(() => {

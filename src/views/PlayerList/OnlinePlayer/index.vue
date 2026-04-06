@@ -10,7 +10,24 @@ type OnlinePlayerRow = API.GameServer.OnlinePlayer;
 
 const { t } = useI18n();
 
+const isAutoRefreshEnabled = ref(true);
+const autoRefreshInterval = ref(10);
+
+const resolvedAutoRefreshInterval = computed(() =>
+  isAutoRefreshEnabled.value ? autoRefreshInterval.value : 0,
+);
+
 const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    isShow: false,
+    exportable: false,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+    },
+  },
   { prop: 'playerName', label: t('views.playerList.playerName'), slot: 'playerName', sortable: true, fixed: 'left' },
   { prop: 'entityId', label: t('views.playerList.entityId'), sortable: true },
   { prop: 'level', label: t('views.playerList.level'), sortable: true },
@@ -20,10 +37,15 @@ const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
   { prop: 'deaths', label: t('views.playerList.deaths'), sortable: true },
   { prop: 'ip', label: t('views.playerList.ip') },
   { prop: 'ping', label: t('views.playerList.ping'), sortable: true },
-  { prop: 'position', label: t('views.playerList.position'), slot: 'position' },
+  { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as API.GameServer.Position | null | undefined) },
   { prop: 'expToNextLevel', label: t('views.playerList.expToNextLevel') },
   { prop: 'skillPoints', label: t('views.playerList.skillPoints'), sortable: true },
-  { prop: 'isTwitchEnabled', label: t('views.playerList.isTwitchEnabled'), slot: 'isTwitchEnabled' },
+  {
+    prop: 'isTwitchEnabled',
+    label: t('views.playerList.isTwitchEnabled'),
+    slot: 'isTwitchEnabled',
+    exportFormatter: value => (value ? t('common.yes') : t('common.no')),
+  },
   { prop: 'playerId', label: t('views.playerList.playerId') },
   { prop: 'platformId', label: t('views.playerList.platformId') },
   { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
@@ -37,7 +59,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
   const response = await getOnlinePlayers({
     pageNumber: params.pageNumber,
     pageSize: params.pageSize,
-    keyword: params.searchQuery?.trim() || undefined,
+    keyword: params.search?.keyword?.trim() || undefined,
     order: params.sortField as API.GameServer.OnlinePlayerQuery['order'],
     desc: params.sortOrder === 'descending',
   });
@@ -83,7 +105,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       :columns="columns"
       :fetch-data="fetchData"
       :context-menu-items="contextMenuItems"
-      :auto-refresh-interval="10"
+      :auto-refresh-interval="resolvedAutoRefreshInterval"
       :is-show-add-btn="false"
       :is-selectable="false"
       :operation-column-width="110"
@@ -91,6 +113,32 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       :is-show-delete-btn="false"
       :auto-column-width="true"
     >
+      <template #footer-left="{ tableSize }">
+        <div class="footer-refresh-row">
+          <el-checkbox v-model="isAutoRefreshEnabled" :size="tableSize">
+            {{ t('components.myTable.autoRefresh') }}
+          </el-checkbox>
+
+          <div class="footer-refresh-row__interval">
+            <span class="footer-refresh-row__label">
+              {{ t('components.myTable.refreshInterval') }}
+            </span>
+            <el-input-number
+              v-model="autoRefreshInterval"
+              :disabled="!isAutoRefreshEnabled"
+              :min="5"
+              :max="300"
+              :step="5"
+              controls-position="right"
+              :size="tableSize"
+              class="footer-refresh-row__input"
+            />
+            <span class="footer-refresh-row__label">
+              {{ t('components.myTable.secondsUnit') }}
+            </span>
+          </div>
+        </div>
+      </template>
       <template #playerName="{ row }">
         <span class="flex gap-1 items-center">
           <span>{{ row.playerName }}</span>
@@ -112,3 +160,28 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
     <PlayerDetailsDialog ref="playerDetailsDialogRef" />
   </div>
 </template>
+
+<style scoped>
+.footer-refresh-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.footer-refresh-row__interval {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.footer-refresh-row__label {
+  color: var(--el-text-color-regular);
+}
+
+.footer-refresh-row__input {
+  width: 112px;
+}
+</style>

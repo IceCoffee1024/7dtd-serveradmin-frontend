@@ -5,30 +5,30 @@ import { addCommandPermission } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import v from '~/plugins/valibot';
-import { generateElementRules } from '~/utils';
+import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
-    command: string;
-    permissionLevel: number;
-    description: string;
+  command: string;
+  permissionLevel: number;
+  description: string;
 }
 
 interface DialogExpose {
-    open: () => void;
-    close: () => void;
+  open: () => void;
+  close: () => void;
 }
 
 interface FormExpose {
-    validate: () => Promise<boolean>;
-    clearValidate: (props?: string | string[]) => void;
+  validate: () => Promise<boolean>;
+  clearValidate: (props?: string | string[]) => void;
 }
 
 interface Props {
-    editData?: Record<string, unknown> | null;
+  editData?: Record<string, unknown> | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    editData: null,
+  editData: null,
 });
 
 const emit = defineEmits(['saved']);
@@ -41,103 +41,111 @@ const dialogTitle = computed(() => (isEdit.value ? t('views.permission.editComma
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
 
 const form = reactive<FormModel>({
-    command: '',
-    permissionLevel: 2000,
-    description: '',
+  command: '',
+  permissionLevel: 2000,
+  description: '',
 });
 
 const CommandPermissionSchema = v.object({
-    command: v.pipe(v.string(), v.minLength(1)),
-    permissionLevel: v.pipe(v.number(), v.minValue(0), v.maxValue(2000)),
-    description: v.optional(v.string()),
+  command: v.pipe(v.string(), v.minLength(1)),
+  permissionLevel: v.pipe(v.number(), v.minValue(0), v.maxValue(2000)),
+  description: v.optional(v.string()),
 });
 
 const rules = generateElementRules(CommandPermissionSchema);
 
 const fields = computed<MyFormField<FormModel>[]>(() => [
-    {
-        prop: 'command',
-        label: t('views.permission.command'),
-        el: 'input',
-        rules: rules.command,
-        disabled: () => isEdit.value,
+  {
+    prop: 'command',
+    label: t('views.permission.command'),
+    el: 'input',
+    rules: rules.command,
+    tooltip: t('views.permission.tooltips.command'),
+    disabled: () => isEdit.value,
+  },
+  {
+    prop: 'permissionLevel',
+    label: t('views.permission.permissionLevel'),
+    el: 'input-number',
+    props: {
+      min: 0,
+      max: 2000,
+      class: 'w-full',
     },
-    {
-        prop: 'permissionLevel',
-        label: t('views.permission.permissionLevel'),
-        el: 'input-number',
-        props: {
-            min: 0,
-            max: 2000,
-            class: 'w-full',
-        },
-        rules: rules.permissionLevel,
+    rules: rules.permissionLevel,
+    tooltip: t('views.permission.tooltips.permissionLevel'),
+  },
+  {
+    prop: 'description',
+    label: t('views.permission.description'),
+    el: 'input',
+    props: {
+      type: 'textarea',
+      rows: 3,
     },
-    {
-        prop: 'description',
-        label: t('views.permission.description'),
-        el: 'input',
-        props: {
-            type: 'textarea',
-            rows: 3,
-        },
-        rules: rules.description,
-    },
+    rules: rules.description,
+    tooltip: t('views.permission.tooltips.description'),
+  },
 ]);
 
 function syncFormData() {
-    if (props.editData) {
-        form.command = String(props.editData.command ?? '');
-        form.permissionLevel = Number(props.editData.permissionLevel ?? 2000);
-        form.description = String(props.editData.description ?? '');
-    }
-    else {
-        form.command = '';
-        form.permissionLevel = 2000;
-        form.description = '';
-    }
+  if (props.editData) {
+    form.command = String(props.editData.command ?? '');
+    form.permissionLevel = Number(props.editData.permissionLevel ?? 2000);
+    form.description = String(props.editData.description ?? '');
+  }
+  else {
+    form.command = '';
+    form.permissionLevel = 2000;
+    form.description = '';
+  }
 }
 
 watch(
-    () => props.editData,
-    () => {
-        syncFormData();
-    },
-    { immediate: true },
+  () => props.editData,
+  () => {
+    syncFormData();
+  },
+  { immediate: true },
 );
 
 async function onSubmit() {
-    if (!formRef.value) {
-        return;
-    }
+  if (!formRef.value) {
+    return false;
+  }
 
-    const valid = await formRef.value.validate().catch(() => false);
-    if (!valid) {
-        return;
-    }
+  const valid = await formRef.value.validate().catch(() => false);
+  if (!valid) {
+    return false;
+  }
 
-    try {
-        await addCommandPermission({
-            command: form.command,
-            permissionLevel: form.permissionLevel,
-        });
-        emit('saved');
-        dialogRef.value?.close();
-    }
-    catch (error) {
-        console.error(error);
-    }
+  try {
+    const result = await addCommandPermission({
+      command: form.command,
+      permissionLevel: form.permissionLevel,
+    });
+    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+      return false;
+
+    emit('saved');
+    dialogRef.value?.close();
+    return true;
+  }
+  catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
 async function show() {
-    syncFormData();
-    dialogRef.value?.open();
-    await nextTick();
-    formRef.value?.clearValidate();
+  syncFormData();
+  dialogRef.value?.open();
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 defineExpose({
-    show,
+  show,
 });
 </script>
 

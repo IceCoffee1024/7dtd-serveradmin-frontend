@@ -16,16 +16,27 @@ const { confirm } = usePopup();
 const editData = ref<AdminUserRow | null>(null);
 
 const columns = computed<MyTableColumn<AdminUserRow>[]>(() => [
-  { prop: 'playerId', label: t('views.banWhitelist.playerId'), className: 'min-w-40' },
-  { prop: 'displayName', label: t('views.banWhitelist.displayName'), sortable: true, className: 'min-w-40' },
-  { prop: 'permissionLevel', label: t('views.permission.permissionLevel'), sortable: true, className: 'min-w-40' },
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    isShow: false,
+    exportable: false,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+    },
+  },
+  { prop: 'playerId', label: t('views.banWhitelist.playerId') },
+  { prop: 'displayName', label: t('views.banWhitelist.displayName'), sortable: true },
+  { prop: 'permissionLevel', label: t('views.permission.permissionLevel'), sortable: true },
 ]);
 
 const selectedRows = ref<AdminUserRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<AdminUserRow>> {
   let data = await api.getAdminUsers(params);
-  data = searchByKeyword(data, params.searchQuery?.trim() || '', ['playerId', 'displayName']);
+  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  data = searchByKeyword(data, keyword, ['playerId', 'displayName']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {
     list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
@@ -78,6 +89,7 @@ function onSaved() {
       :fetch-data="fetchData"
       :batch-menu-items="batchMenuItems"
       :is-show-index="true"
+      :auto-column-width="true"
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"

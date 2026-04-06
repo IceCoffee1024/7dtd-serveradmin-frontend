@@ -76,7 +76,7 @@ function getChartData(newDate?: dayjs.Dayjs, newData?: number[]): ChartData<'lin
     const now = dayjs();
     result.labels = Array.from({ length: MAX_DATA_POINTS }, (_, index) => now.subtract((MAX_DATA_POINTS - index - 1) * 3, 'seconds').format('HH:mm:ss'));
     for (let i = 0, len = result.datasets.length; i < len; i++) {
-      result.datasets[i].data = Array.from({ length: MAX_DATA_POINTS }, () => 0);
+      result.datasets[i].data = Array.from({ length: MAX_DATA_POINTS }).fill(0) as number[];
     }
   }
   else {

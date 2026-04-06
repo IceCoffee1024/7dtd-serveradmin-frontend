@@ -6,7 +6,7 @@ import { banPlayer, unbanPlayers } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import v from '~/plugins/valibot';
-import { generateElementRules } from '~/utils';
+import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
   playerId: string;
@@ -54,6 +54,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.banWhitelist.playerId'),
     el: 'input',
     rules: rules.playerId,
+    tooltip: t('views.banWhitelist.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
@@ -72,6 +73,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       class: 'w-full',
     },
     rules: rules.bannedUntil,
+    tooltip: t('views.banWhitelist.tooltips.bannedUntil'),
   },
   {
     prop: 'reason',
@@ -82,6 +84,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       rows: 3,
     },
     rules: rules.reason,
+    tooltip: t('views.banWhitelist.tooltips.reason'),
   },
 ]);
 
@@ -110,34 +113,41 @@ watch(
 
 async function onSubmit() {
   if (!formRef.value) {
-    return;
+    return false;
   }
 
   const valid = await formRef.value.validate()?.catch(() => false);
   if (!valid || !form.bannedUntil) {
-    return;
+    return false;
   }
 
   try {
     if (isEdit.value) {
       const oldPlayerId = props.editData?.playerId;
       if (oldPlayerId) {
-        await unbanPlayers([oldPlayerId]);
+        const unbanResult = await unbanPlayers([oldPlayerId]);
+        if (!showCommandResult(unbanResult, t('common.update')))
+          return false;
       }
     }
 
-    await banPlayer(
+    const result = await banPlayer(
       form.playerId,
       dayjs(form.bannedUntil).toISOString(),
       form.displayName,
       form.reason || null,
     );
 
+    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+      return false;
+
     emit('saved');
     dialogRef.value?.close();
+    return true;
   }
   catch (error) {
     console.error(error);
+    return false;
   }
 }
 

@@ -7,7 +7,7 @@ import type {
 } from 'element-plus';
 import type { MaybeRef, Ref } from 'vue';
 // FormElType、OptionItem、FORM_COMPONENT_MAP 已内聚到渲染引擎
-import type { FormElType, OptionItem } from '~/composables/useMyForm';
+import type { FormElType, MyFormFieldTooltip, OptionItem } from '~/composables/useMyForm';
 
 import { useIntervalFn } from '@vueuse/core';
 import {
@@ -97,6 +97,8 @@ export interface SearchProps<El extends SearchElType = SearchElType> {
    * 不填时按列配置数组的原始顺序排列。
    */
   order?: number;
+  /** 右侧帮助提示，适合解释该搜索条件的业务含义或填写规则。 */
+  tooltip?: string | MyFormFieldTooltip;
   /**
    * 该搜索项占用的栅格列数（1-24，对应 el-col 的 span）。
    * 不填时默认为 6（一行四列布局）。
@@ -220,6 +222,11 @@ export interface MyTableColumn<T extends Record<string, any> = Record<string, an
    * 默认为 true；设为 false 可排除敏感列或纯操作列。
    */
   exportable?: boolean;
+  /**
+   * CSV 导出时对单元格值做最后一次格式化。
+   * 适用于 slot 渲染的列、对象 / 数组字段或需要和展示文案保持一致的值。
+   */
+  exportFormatter?: (value: unknown, row: T) => string | number | boolean | null | undefined;
   /**
    * 是否根据内容自动估算列宽。
    * 遍历当前页数据取最长字符串，结合表头长度综合计算，
@@ -522,7 +529,7 @@ export function useMyTable<T extends Record<string, any>>(options: UseMyTableOpt
     }
 
     const cols = allColumns.value.filter(c => c.prop && c.exportable !== false);
-    const headers = cols.map(c => c.label).join(',');
+    const headers = cols.map(c => escapeCsvCell(c.label)).join(',');
 
     function escapeCsvCell(val: unknown): string {
       const str = String(val ?? '');
@@ -534,22 +541,41 @@ export function useMyTable<T extends Record<string, any>>(options: UseMyTableOpt
     }
 
     // 🌟 新增：支持 user.name 这种深层路径解析
-    const resolvePath = (obj: any, path: string) => path.split('.').reduce((o, i) => o?.[i], obj);
+    const resolvePath = (obj: unknown, path: string): unknown => path.split('.').reduce<unknown>((current, segment) => {
+      if (current != null && typeof current === 'object' && segment in current)
+        return (current as Record<string, unknown>)[segment];
+      return undefined;
+    }, obj);
+
+    const normalizeCsvValue = (val: unknown): string => {
+      if (val == null)
+        return '';
+      if (typeof val === 'string')
+        return val;
+      if (typeof val === 'number' || typeof val === 'boolean' || typeof val === 'bigint')
+        return String(val);
+      if (val instanceof Date)
+        return val.toISOString();
+      if (typeof val === 'object')
+        return JSON.stringify(val);
+      return String(val);
+    };
 
     const rows = tableData.value.map(row =>
       cols.map((c) => {
         // 1. 获取原始值（支持点语法）
-        let rawVal = resolvePath(row, c.prop as string);
+        const rawVal = resolvePath(row, c.prop as string);
+        let exportVal = c.exportFormatter ? c.exportFormatter(rawVal, row) : rawVal;
 
         // 2. 🌟 新增：如果该列配置了字典(enum)，自动翻译为 label 输出
-        if (c.enum) {
+        if (!c.exportFormatter && c.enum) {
           const enums = toValue(c.enum);
           const matched = enums.find(e => e.value === rawVal);
           if (matched)
-            rawVal = matched.label;
+            exportVal = matched.label;
         }
 
-        return escapeCsvCell(rawVal);
+        return escapeCsvCell(normalizeCsvValue(exportVal));
       }).join(','),
     );
 

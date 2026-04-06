@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { FormInstance, FormRules } from 'element-plus';
+import type { FormRules } from 'element-plus';
+import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
 import { getAppSettings, updateAppSettings } from '~/api/gameServer';
+import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
@@ -20,7 +22,12 @@ interface FormModel {
   serverConfigFile: string;
 }
 
-const formRef = ref<FormInstance>();
+interface FormExpose {
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
+}
+
+const formRef = ref<FormExpose>();
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 
@@ -48,6 +55,59 @@ const AppSettingsSchema = v.object({
 });
 
 const rules: FormRules = generateElementRules(AppSettingsSchema);
+
+const fields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'webUrl',
+    label: t('views.appSettings.fields.webUrl'),
+    el: 'input',
+    rules: rules.webUrl,
+    tooltip: t('views.appSettings.tooltips.webUrl'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'userName',
+    label: t('views.appSettings.fields.userName'),
+    el: 'input',
+    rules: rules.userName,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'password',
+    label: t('views.appSettings.fields.password'),
+    el: 'input',
+    props: { showPassword: true, autocomplete: 'new-password' },
+    rules: rules.password,
+    tooltip: t('views.appSettings.tooltips.password'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'serverConfigFile',
+    label: t('views.appSettings.fields.serverConfigFile'),
+    el: 'input',
+    rules: rules.serverConfigFile,
+    tooltip: t('views.appSettings.tooltips.serverConfigFile'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'accessTokenExpireTime',
+    label: t('views.appSettings.fields.accessTokenExpireTime'),
+    el: 'input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    rules: rules.accessTokenExpireTime,
+    tooltip: t('views.appSettings.tooltips.accessTokenExpireTime'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'refreshTokenExpireTime',
+    label: t('views.appSettings.fields.refreshTokenExpireTime'),
+    el: 'input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    rules: rules.refreshTokenExpireTime,
+    tooltip: t('views.appSettings.tooltips.refreshTokenExpireTime'),
+    span: { xs: 24, md: 12 },
+  },
+]);
 
 function readString(data: Record<string, unknown>, pascalKey: string, camelKey: string): string {
   const pascalValue = data[pascalKey];
@@ -176,42 +236,17 @@ onMounted(() => {
       </el-skeleton>
     </div>
     <template v-else>
-      <el-form
+      <MyForm
         id="appSettingsForm"
         ref="formRef"
-        :model="form"
-        :rules="rules"
+        v-model="form"
+        :fields="fields"
         label-position="top"
-        class="flex flex-col gap-6"
+        label-width="auto"
+        :gutter="16"
+        class="app-settings-form"
         @submit.prevent="onSubmit"
-      >
-        <div class="gap-4 grid md:grid-cols-2">
-          <el-form-item :label="t('views.appSettings.fields.webUrl')" prop="webUrl">
-            <el-input v-model="form.webUrl" autocomplete="off" />
-          </el-form-item>
-          <el-form-item :label="t('views.appSettings.fields.userName')" prop="userName">
-            <el-input v-model="form.userName" autocomplete="off" />
-          </el-form-item>
-        </div>
-
-        <div class="gap-4 grid md:grid-cols-2">
-          <el-form-item :label="t('views.appSettings.fields.password')" prop="password">
-            <el-input v-model="form.password" show-password autocomplete="new-password" />
-          </el-form-item>
-          <el-form-item :label="t('views.appSettings.fields.serverConfigFile')" prop="serverConfigFile">
-            <el-input v-model="form.serverConfigFile" autocomplete="off" />
-          </el-form-item>
-        </div>
-
-        <div class="gap-4 grid md:grid-cols-2">
-          <el-form-item :label="t('views.appSettings.fields.accessTokenExpireTime')" prop="accessTokenExpireTime">
-            <el-input-number v-model="form.accessTokenExpireTime" :min="0" :precision="0" class="w-full" />
-          </el-form-item>
-          <el-form-item :label="t('views.appSettings.fields.refreshTokenExpireTime')" prop="refreshTokenExpireTime">
-            <el-input-number v-model="form.refreshTokenExpireTime" :min="0" :precision="0" class="w-full" />
-          </el-form-item>
-        </div>
-      </el-form>
+      />
 
       <div class="mt-4 flex gap-2 justify-end">
         <el-button :disabled="isSubmitting" @click="onReset">

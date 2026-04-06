@@ -59,7 +59,7 @@ export function useCommandHistory(options: UseCommandHistoryOptions = {}): UseCo
    */
   const addCommandToHistory = (command: string): void => {
     const trimmedCommand = command.trim();
-    if (trimmedCommand && history.value[history.value.length - 1] !== trimmedCommand) {
+    if (trimmedCommand && history.value.at(-1) !== trimmedCommand) {
       history.value.push(trimmedCommand);
       if (history.value.length > maxSize) {
         history.value.shift();

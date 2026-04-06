@@ -1,5 +1,6 @@
 import type { FormRules } from 'element-plus';
 import type { AsyncComponentLoader, FunctionalComponent, SVGAttributes } from 'vue';
+import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';
 import v from '~/plugins/valibot';
 
@@ -114,4 +115,31 @@ export function orderByField(data: any[], field: string, desc: boolean = false) 
     }
     return 0;
   });
+}
+
+const DEFAULT_COMMAND_ERROR_PATTERN = /not valid|not a valid|invalid|error|failed|unable|cannot|not found|does not exist/i;
+
+/**
+ * Displays a toast for a command-style API result and returns whether the result should be treated as successful.
+ * @param result - The command result returned by the backend.
+ * @param fallbackText - Fallback text to show when the result array is empty.
+ * @param errorPattern - Optional pattern used to detect error-like messages.
+ * @returns `true` when the result looks successful; otherwise `false`.
+ */
+export function showCommandResult(
+  result: API.GameServer.CommandExecutionResult | undefined,
+  fallbackText: string,
+  errorPattern: RegExp = DEFAULT_COMMAND_ERROR_PATTERN,
+): boolean {
+  const { toast } = usePopup();
+  const messages = Array.isArray(result) ? result.filter(Boolean) : [];
+  const text = messages.join('\n').trim() || fallbackText;
+  const isError = messages.some(message => errorPattern.test(message));
+
+  toast({
+    type: isError ? 'error' : 'success',
+    text,
+  });
+
+  return !isError;
 }

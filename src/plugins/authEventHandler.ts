@@ -5,16 +5,18 @@ import emitter, { EVENT_TYPES } from './mitt';
 
 const AUTH_EVENT_DEBOUNCE_MS = 120;
 const AUTH_HANDLER_COOLDOWN_MS = 500;
+const LOGIN_ROUTE_RE = /^\/login(?:$|\?)/;
+const FORBIDDEN_ROUTE_RE = /^\/403(?:$|\?)/;
 
 let isHandlingUnauthorized = false;
 let isHandlingForbidden = false;
 
 function isLoginRoute(path: string): boolean {
-  return /^\/login(?:$|\?)/.test(path);
+  return LOGIN_ROUTE_RE.test(path);
 }
 
 function isForbiddenRoute(path: string): boolean {
-  return /^\/403(?:$|\?)/.test(path);
+  return FORBIDDEN_ROUTE_RE.test(path);
 }
 
 function sanitizeRedirect(redirect: string): string {

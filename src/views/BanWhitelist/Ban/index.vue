@@ -17,9 +17,19 @@ const { confirm } = usePopup();
 const editData = ref<BanEntryRow | null>(null);
 
 const columns = computed<MyTableColumn<BanEntryRow>[]>(() => [
-  { prop: 'playerId', label: t('views.banWhitelist.playerId'), className: 'min-w-40' },
-  { prop: 'displayName', label: t('views.banWhitelist.displayName'), sortable: true, className: 'min-w-40' },
-  { prop: 'bannedUntil', label: t('views.banWhitelist.bannedUntil'), slot: 'bannedUntil', sortable: true, className: 'min-w-40' },
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    isShow: false,
+    exportable: false,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+    },
+  },
+  { prop: 'playerId', label: t('views.banWhitelist.playerId') },
+  { prop: 'displayName', label: t('views.banWhitelist.displayName'), sortable: true },
+  { prop: 'bannedUntil', label: t('views.banWhitelist.bannedUntil'), slot: 'bannedUntil', sortable: true },
   { prop: 'reason', label: t('views.banWhitelist.reason') },
 ]);
 
@@ -27,7 +37,8 @@ const selectedRows = ref<BanEntryRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<BanEntryRow>> {
   let data = await api.getBannedPlayers(params);
-  data = searchByKeyword(data, params.searchQuery?.trim() || '', ['playerId', 'displayName', 'reason']);
+  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  data = searchByKeyword(data, keyword, ['playerId', 'displayName', 'reason']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {
     list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
@@ -80,6 +91,7 @@ function onSaved() {
       :fetch-data="fetchData"
       :batch-menu-items="batchMenuItems"
       :is-show-index="true"
+      :auto-column-width="true"
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"

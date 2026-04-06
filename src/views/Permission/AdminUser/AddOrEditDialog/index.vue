@@ -5,7 +5,7 @@ import { addAdminUser } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import v from '~/plugins/valibot';
-import { generateElementRules } from '~/utils';
+import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
   playerId: string;
@@ -60,6 +60,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.banWhitelist.playerId'),
     el: 'input',
     rules: rules.playerId,
+    tooltip: t('views.permission.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
@@ -72,12 +73,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       class: 'w-full',
     },
     rules: rules.permissionLevel,
+    tooltip: t('views.permission.tooltips.permissionLevel'),
   },
   {
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
     el: 'input',
     rules: rules.displayName,
+    tooltip: t('views.permission.tooltips.displayName'),
   },
 ]);
 
@@ -104,21 +107,26 @@ watch(
 
 async function onSubmit() {
   if (!formRef.value) {
-    return;
+    return false;
   }
 
   const valid = await formRef.value.validate().catch(() => false);
   if (!valid) {
-    return;
+    return false;
   }
 
   try {
-    await addAdminUser(form);
+    const result = await addAdminUser(form);
+    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+      return false;
+
     emit('saved');
     dialogRef.value?.close();
+    return true;
   }
   catch (error) {
     console.error(error);
+    return false;
   }
 }
 

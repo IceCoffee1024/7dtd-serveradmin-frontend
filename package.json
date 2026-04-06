@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "eslint \"src/**/*.{ts,vue}\"",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit"
   },

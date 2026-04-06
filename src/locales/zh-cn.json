@@ -25,6 +25,7 @@
     "apply": "应用",
     "reset": "重置",
     "close": "关闭",
+    "edit": "编辑",
     "player": "玩家"
   },
   "menus": {
@@ -53,8 +54,13 @@
       "add": "新增",
       "search": "搜索",
       "reset": "重置",
+      "autoRefresh": "自动刷新",
+      "refreshInterval": "刷新间隔",
+      "secondsUnit": "秒",
       "pleaseInput": "请输入",
-      "operation": "操作"
+      "operation": "操作",
+      "batchActions": "批量操作",
+      "moreActions": "更多操作"
     },
     "myForm": {
       "pleaseInput": "请输入",
@@ -154,6 +160,9 @@
       "fullscreen": "全屏",
       "exitFullscreen": "退出全屏",
       "themeConfiguration": "主题配置",
+      "github": "GitHub",
+      "community": "社区",
+      "userMenu": "用户菜单",
       "appearance": "外观",
       "layout": "布局",
       "general": "通用",
@@ -443,6 +452,13 @@
         "refreshTokenExpireTime": "刷新令牌过期时间",
         "serverConfigFile": "服务器配置文件"
       },
+      "tooltips": {
+        "webUrl": "前端访问后端 API 的基础地址，通常需要包含 http 或 https。",
+        "password": "用于登录后台的密码，需要与服务端账号保持一致。",
+        "accessTokenExpireTime": "访问令牌的有效期，单位为秒。",
+        "refreshTokenExpireTime": "刷新令牌的有效期，单位为秒。",
+        "serverConfigFile": "要编辑的服务器配置文件路径，可以是相对路径或服务器目录下的路径。"
+      },
       "actions": {
         "save": "保存设置",
         "reset": "重置"
@@ -722,6 +738,14 @@
           "group": "游戏难度",
           "desc": "新玩家首次加入服务器时是否可以选择靠近同时在线的朋友? 0 = 禁用, 1 = 始终, 2 = 仅在森林生物群落附近的朋友"
         },
+        "CameraRestrictionMode": {
+          "group": "游戏难度",
+          "desc": "摄像机限制模式。0 = 玩家可以自由切换第一/第三人称视角, 1 = 仅限第一人称, 2 = 仅限第三人称"
+        },
+        "JarRefund": {
+          "group": "游戏难度",
+          "desc": "空玻璃罐返还比例。玩家消耗物品后返还空罐的百分比。可选值：0、5、10、20、30、40、50、60、70、80、90、100"
+        },
         "MaxSpawnedZombies": {
           "group": "性能相关",
           "desc": "最大刷新丧尸数量。该设置覆盖整个地图, 整个地图上同时只能有这么多僵尸。更改此设置会对性能产生巨大影响"
@@ -765,6 +789,10 @@
         "ZombieBMMove": {
           "group": "僵尸设置",
           "desc": "僵尸BM移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
+        },
+        "AISmellMode": {
+          "group": "僵尸设置",
+          "desc": "AI 嗅觉模式。0-5（关闭、步行、慢跑、跑步、冲刺、噩梦）"
         },
         "BloodMoonFrequency": {
           "group": "僵尸设置",
@@ -885,7 +913,13 @@
       "addBan": "添加黑名单",
       "editBan": "编辑黑名单",
       "addWhitelist": "添加白名单",
-      "editWhitelist": "编辑白名单"
+      "editWhitelist": "编辑白名单",
+      "tooltips": {
+        "playerId": "玩家的唯一标识，通常填写 SteamID64。",
+        "displayName": "在名单中显示的名称，便于识别目标玩家。",
+        "bannedUntil": "暂时封禁时填写到期时间；永久封禁请保持为空。",
+        "reason": "记录封禁或移除原因，方便后续审计和排查。"
+      }
     },
     "permission": {
       "adminUser": "管理员用户",
@@ -896,7 +930,14 @@
       "description": "描述",
       "addAdminUser": "新增管理员",
       "editAdminUser": "编辑管理员",
-      "permissionLevel": "权限级别"
+      "permissionLevel": "权限级别",
+      "tooltips": {
+        "playerId": "要授予权限的玩家唯一标识，通常填写 SteamID64。",
+        "displayName": "用于后台识别该账号的显示名称。",
+        "permissionLevel": "服务器权限等级，数值越接近上限，权限通常越高。",
+        "command": "这条规则对应的控制台命令名称。",
+        "description": "可选说明，用于记录这条命令权限的用途或限制。"
+      }
     }
   }
 }

@@ -114,13 +114,13 @@ defineExpose({
         <span :id="titleId" :class="titleClass" class="font-bold">{{ title }}</span>
         <span>
           <IconButton
-            size="24" class="fullscreen-btn" :tooltip-content="isFullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
+            icon-size="24" class="fullscreen-btn" :tooltip-content="isFullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
             @click="toggleFullscreen"
           >
             <icon-mdi:fullscreen v-if="!isFullscreen" />
             <icon-mdi:fullscreen-exit v-else />
           </IconButton>
-          <IconButton size="24" class="close-btn" :tooltip-content="$t('common.close')" @click="close">
+          <IconButton icon-size="24" class="close-btn" :tooltip-content="$t('common.close')" @click="close">
             <icon-mdi:close />
           </IconButton>
         </span>

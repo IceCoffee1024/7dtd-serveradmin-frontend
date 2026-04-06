@@ -13,13 +13,23 @@ const tableRef = useTemplateRef('tableRef');
 type ModItem = API.GameServer.ModInfo;
 
 const columns = computed<MyTableColumn<ModItem>[]>(() => [
-  { prop: 'displayName', label: t('views.modManagement.columns.displayName'), slot: 'displayName', sortable: true, className: 'min-w-60' },
-  { prop: 'author', label: t('views.modManagement.columns.author'), sortable: true, className: 'min-w-40' },
-  { prop: 'version', label: t('views.modManagement.columns.version'), sortable: true, className: 'min-w-28' },
-  { prop: 'website', label: t('views.modManagement.columns.website'), slot: 'website', className: 'min-w-60' },
-  { prop: 'isLoaded', label: t('views.modManagement.columns.loaded'), slot: 'isLoaded', className: 'min-w-32 text-center' },
-  { prop: 'isUninstalled', label: t('views.modManagement.columns.uninstalled'), slot: 'isUninstalled', className: 'min-w-36 text-center' },
-  { prop: 'actions', label: t('views.modManagement.columns.actions'), slot: 'actions', exportable: false, className: 'min-w-40 text-center' },
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    isShow: false,
+    exportable: false,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+    },
+  },
+  { prop: 'displayName', label: t('views.modManagement.columns.displayName'), slot: 'displayName', sortable: true },
+  { prop: 'author', label: t('views.modManagement.columns.author'), sortable: true },
+  { prop: 'version', label: t('views.modManagement.columns.version'), sortable: true },
+  { prop: 'website', label: t('views.modManagement.columns.website'), slot: 'website' },
+  { prop: 'isLoaded', label: t('views.modManagement.columns.loaded'), slot: 'isLoaded', className: 'text-center' },
+  { prop: 'isUninstalled', label: t('views.modManagement.columns.uninstalled'), slot: 'isUninstalled', className: 'text-center' },
+  { prop: 'actions', label: t('views.modManagement.columns.actions'), slot: 'actions', exportable: false, className: 'text-center' },
 ]);
 
 const pendingIds = ref(new Set<string>());
@@ -48,7 +58,8 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
   const list = Array.isArray(response)
     ? response
     : (response?.items ?? response?.data ?? []);
-  let data = searchByKeyword(list, params.searchQuery?.trim() || '', ['displayName', 'name', 'author', 'folderName', 'description']);
+  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  let data = searchByKeyword(list, keyword, ['displayName', 'name', 'author', 'folderName', 'description']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {
     list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
@@ -94,6 +105,8 @@ defineExpose({ reload: () => tableRef.value?.reload() });
       :is-show-add-btn="false"
       :is-show-edit-btn="false"
       :is-show-delete-btn="false"
+      :show-operation-column="false"
+      :auto-column-width="true"
     >
       <template #displayName="{ row }">
         <div class="flex flex-col gap-1">

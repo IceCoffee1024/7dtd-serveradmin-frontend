@@ -57,7 +57,6 @@ const routes: RouteRecordRaw[] = [
           title: () => t('menus.dashboard'),
           icon: markIcon(() => import('~icons/mdi/home')),
           keepAlive: true,
-          requiresAuth: true,
         },
       },
       {
@@ -67,7 +66,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.playerList'),
           icon: markIcon(() => import('~icons/mdi/account-group')),
-          requiresAuth: true,
         },
       },
       {
@@ -87,7 +85,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.gameChat'),
           icon: markIcon(() => import('~icons/mdi/chat')),
-          requiresAuth: true,
         },
       },
       {
@@ -97,7 +94,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.serverConfig'),
           icon: markIcon(() => import('~icons/ic/baseline-settings')),
-          requiresAuth: true,
         },
       },
       {
@@ -107,7 +103,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.banWhitelist'),
           icon: markIcon(() => import('~icons/mdi/list-status')),
-          requiresAuth: true,
         },
       },
       {
@@ -117,7 +112,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.permissions'),
           icon: markIcon(() => import('~icons/mdi/account-key')),
-          requiresAuth: true,
         },
       },
       {
@@ -127,7 +121,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.modManagement'),
           icon: markIcon(() => import('~icons/mdi/puzzle')),
-          requiresAuth: true,
         },
       },
       {
@@ -137,7 +130,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.console'),
           icon: markIcon(() => import('~icons/mdi/console')),
-          requiresAuth: true,
         },
       },
       {
@@ -147,7 +139,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.appSettings'),
           icon: markIcon(() => import('~icons/mdi/cog')),
-          requiresAuth: true,
         },
       },
       {
@@ -158,6 +149,7 @@ const routes: RouteRecordRaw[] = [
           title: () => t('menus.apiDocumentation'),
           icon: markIcon(() => import('~icons/mdi/file-document')),
           link: '/swagger',
+          requiresAuth: false,
         },
       },
     ],
@@ -187,7 +179,7 @@ router.beforeEach(async (to) => {
   nProgress.start();
 
   // Check if this route requires authorization and if the user has logged in
-  if (to.meta.requiresAuth) {
+  if (to.meta.requiresAuth !== false) {
     const userInfoStore = useUserInfoStore();
     const isLoggedIn = await userInfoStore.isLoggedIn();
 

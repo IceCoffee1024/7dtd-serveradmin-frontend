@@ -12,12 +12,34 @@ type HistoryPlayerRow = API.GameServer.HistoryPlayer;
 const { t } = useI18n();
 
 const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    isShow: false,
+    exportable: false,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+    },
+  },
   { prop: 'playerName', label: t('views.playerList.playerName'), slot: 'playerName', sortable: true, fixed: 'left' },
-  { prop: 'isOffline', label: t('views.playerList.status'), slot: 'isOffline', sortable: true },
-  { prop: 'lastLogin', label: t('views.playerList.lastLogin'), slot: 'lastLogin', sortable: true },
-  { prop: 'position', label: t('views.playerList.position'), slot: 'position' },
+  {
+    prop: 'isOffline',
+    label: t('views.playerList.status'),
+    slot: 'isOffline',
+    sortable: true,
+    exportFormatter: value => (value ? t('common.offline') : t('common.online')),
+  },
+  {
+    prop: 'lastLogin',
+    label: t('views.playerList.lastLogin'),
+    slot: 'lastLogin',
+    sortable: true,
+    exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
+  },
+  { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as API.GameServer.Position | null | undefined) },
   { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
-  { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll' },
+  { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll', exportFormatter: value => formatPosition(value as API.GameServer.Position | null | undefined) },
   { prop: 'playerId', label: t('views.playerList.playerId') },
   { prop: 'platformId', label: t('views.playerList.platformId') },
   { prop: 'playGroup', label: t('views.playerList.playGroup'), sortable: true },
@@ -31,7 +53,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
   const response = await getHistoryPlayers({
     pageNumber: params.pageNumber,
     pageSize: params.pageSize,
-    keyword: params.searchQuery?.trim() || undefined,
+    keyword: params.search?.keyword?.trim() || undefined,
     order: params.sortField as API.GameServer.HistoryPlayerQuery['order'],
     desc: params.sortOrder === 'descending',
   });

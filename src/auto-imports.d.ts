@@ -7,8 +7,16 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const ElCheckboxGroup: typeof import('element-plus/es').ElCheckboxGroup
+  const ElDatePicker: typeof import('element-plus/es').ElDatePicker
+  const ElInput: typeof import('element-plus/es').ElInput
+  const ElInputNumber: typeof import('element-plus/es').ElInputNumber
   const ElMessage: typeof import('element-plus/es').ElMessage
   const ElMessageBox: typeof import('element-plus/es').ElMessageBox
+  const ElRadioGroup: typeof import('element-plus/es').ElRadioGroup
+  const ElSelect: typeof import('element-plus/es').ElSelect
+  const ElSwitch: typeof import('element-plus/es').ElSwitch
+  const ElUpload: typeof import('element-plus/es').ElUpload
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const customRef: typeof import('vue').customRef

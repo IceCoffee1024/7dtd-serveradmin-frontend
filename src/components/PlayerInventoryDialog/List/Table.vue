@@ -5,7 +5,7 @@ interface Props {
   tableData?: API.GameServer.InvItem[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   tableData: () => [],
 });
 </script>

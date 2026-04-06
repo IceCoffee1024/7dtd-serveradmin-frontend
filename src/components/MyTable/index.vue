@@ -16,8 +16,9 @@
  * - CSV 导出：通过 onExportCSV 导出当前页数据
  *
  * 插槽：
- * - `toolbar-left`：工具栏左侧区域，默认渲染新增按钮
- * - `toolbar-right`：工具栏右侧区域，位于列选择器左侧
+ * - `toolbar-left`：工具栏左侧区域，默认渲染新增按钮，插槽参数包含 `tableSize`
+ * - `toolbar-right`：工具栏右侧区域，位于列选择器左侧，插槽参数包含 `tableSize`
+ * - `footer-left`：底部左侧区域，位于分页器左侧，适合放轻量状态或辅助控制，插槽参数包含 `tableSize`
  * - `[col.slot]`：数据列自定义渲染，slot scope 包含完整的 el-table scope 对象
  * - `operation`：操作列自定义内容，slot scope 为 `{ row: T }`
  *
@@ -40,6 +41,7 @@
  * ```
  */
 
+import type { ElTable } from 'element-plus';
 import type {
   BatchActionItem,
   MyTableColumn,
@@ -47,7 +49,6 @@ import type {
   MyTableFetchResult,
 } from '~/composables/useMyTable';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
-import { ElMessage, ElTable } from 'element-plus';
 import { computed, onMounted, ref, toRef, toValue, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { usePopup, useTheme } from '~/composables';
@@ -156,6 +157,8 @@ const emits = defineEmits<{
   delete: [row: T];
 }>();
 
+const NON_LATIN_CHAR_PATTERN = /[\u4E00-\u9FA5\uFF00-\uFFEF]/g;
+
 const { confirm } = usePopup();
 const { currentTheme } = useTheme();
 const { t } = useI18n();
@@ -215,6 +218,7 @@ const {
   onReset,
   getRowIndex,
   onBatchMenuCommand,
+  onExportCSV,
 } = useMyTable<T>({
   columns: computed(() => props.columns),
   fetchData: params => Promise.resolve(props.fetchData(params)),
@@ -321,7 +325,7 @@ function toColumnProps(col: MyTableColumn<T>) {
 }
 // 🌟 新增：判断是否真正存在有效的搜索列
 const hasSearchColumns = computed(() =>
-  props.columns.some(col => col.search?.el && col.isShow !== false && col.prop != null),
+  props.columns.some(col => col.search?.el && col.prop != null),
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -334,12 +338,24 @@ const dynamicColumnWidths = ref<Record<string, string>>({});
 /**
  * 字符宽度估算函数。
  * 中文/全角字符计为 2 个单位，其他字符计为 1 个单位。
- * 每单位约 10px，与主流 14px 字体 + letter-spacing 的实际渲染接近。
+ * 每单位约 8px，与主流 14px 字体 + letter-spacing 的实际渲染接近。
  */
-function estimateCharWidth(str: string, small: boolean): number {
+function estimateCharWidth(str: string): number {
   // \u4e00-\u9fa5：基本汉字；\uff00-\uffef：全角字符
-  // eslint-disable-next-line e18e/prefer-static-regex
-  return str.replace(/[\u4E00-\u9FA5\uFF00-\uFFEF]/g, 'aa').length * (small ? 8 : 10);
+
+  let scale: number; // 小号字体略微紧凑
+  switch (resolvedTableSize.value) {
+    case 'small':
+      scale = 7;
+      break;
+    case 'large':
+      scale = 8.3;
+      break;
+    default:
+      scale = 8.3;
+      break;
+  }
+  return str.replace(NON_LATIN_CHAR_PATTERN, 'aa').length * scale;
 }
 
 /**
@@ -347,7 +363,7 @@ function estimateCharWidth(str: string, small: boolean): number {
  * 不使用 deep watch，tableData 整体替换时浅监听即可触发，
  * 避免深度遍历大数组带来的性能开销。
  */
-watch(tableData, (newData) => {
+watch([tableData, resolvedTableSize], ([newData, newSize]) => {
   const autoCols = selectedColumns.value.filter(c =>
     c.prop
     && (props.autoColumnWidth || c.autoWidth)
@@ -367,7 +383,6 @@ watch(tableData, (newData) => {
     default: 24,
     large: 32,
   };
-  const isSmall = resolvedTableSize.value === 'small';
 
   autoCols.forEach((col) => {
     const prop = col.prop as string;
@@ -375,7 +390,7 @@ watch(tableData, (newData) => {
     const minPx = 80;
 
     // 表头宽度：文字估算 + 排序图标 + 左右 padding
-    let maxWidth = estimateCharWidth(col.label, isSmall) + (col.sortable ? 24 : 0) + paddingMap[resolvedTableSize.value];
+    let maxWidth = estimateCharWidth(col.label) + (col.sortable ? 24 : 0) + paddingMap[newSize];
 
     // 遍历当前页数据，取该列最长内容的估算宽度
     for (const row of newData) {
@@ -385,7 +400,7 @@ watch(tableData, (newData) => {
         : String((row as any)[prop] ?? '');
 
       // 单元格左右 padding 约 32px
-      const cellWidth = estimateCharWidth(cellText, isSmall) + paddingMap[resolvedTableSize.value];
+      const cellWidth = estimateCharWidth(cellText) + paddingMap[resolvedTableSize.value];
       if (cellWidth > maxWidth)
         maxWidth = cellWidth;
     }
@@ -417,40 +432,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 size-full">
-    <!-- ─────────────────────────────────────────────────────────────────────
-         搜索区域
-         FIX: 替换原来 60 行的内联 el-form 模板为 SearchForm 组件调用。
-         - searchColumns 过滤、getSearchValue/setSearchValue、SEARCH_COMPONENT_MAP
-           均已移入 SearchForm，MyTable 不再关心搜索栏如何渲染控件。
-         - showSearch 为 false 时整个 el-card 不渲染。
-         - SearchForm 内部判断是否有有效搜索列，无则不渲染，el-card 仍渲染
-           但内容为空；如需连 card 都不渲染可在此加 v-if="showSearch"。
-         ───────────────────────────────────────────────────────────────────── -->
-    <el-card
-      v-if="showSearch && hasSearchColumns"
-      shadow="never"
-      class="search-card b-none!"
-      :body-style="{ padding: '18px 18px 0 18px' }"
-    >
-      <!--
-        FIX: onSearch 现在接收 SearchForm emit 出的已转换参数（transformed），
-        直接传给 useMyTable 的 onSearch(transformed)，不再在此处执行 transform。
-        onReset 仍由 useMyTable 负责（清空 searchParam + 恢复 defaultValue + 重新加载）。
-      -->
-      <SearchForm
-        v-model="searchParam"
-        :columns="props.columns"
-        :loading="loading"
-        :size="resolvedTableSize"
-        @search="onSearch"
-        @reset="onReset"
-      />
-    </el-card>
-
-    <!-- ─────────────────────────────────────────────────────────────────────
-         主表格区域
-         ───────────────────────────────────────────────────────────────────── -->
+  <div class="flex flex-col size-full">
     <el-card
       shadow="never"
       class="table-main-card flex-1 b-none!"
@@ -461,37 +443,55 @@ defineExpose({
         flexDirection: 'column',
       }"
     >
+      <!--
+        FIX: onSearch 现在接收 SearchForm emit 出的已转换参数（transformed），
+        直接传给 useMyTable 的 onSearch(transformed)，不再在此处执行 transform。
+        onReset 仍由 useMyTable 负责（清空 searchParam + 恢复 defaultValue + 重新加载）。
+      -->
+      <div
+        v-if="showSearch && hasSearchColumns"
+        class="search-area"
+      >
+        <SearchForm
+          v-model="searchParam"
+          :columns="props.columns"
+          :loading="loading"
+          :size="resolvedTableSize"
+          @search="onSearch"
+          @reset="onReset"
+        />
+      </div>
+
       <!-- 工具栏 -->
       <div class="mb-3 flex items-center justify-between">
         <div class="flex gap-2">
-          <slot name="toolbar-left">
-            <el-tooltip
+          <slot name="toolbar-left" :table-size="resolvedTableSize">
+            <IconButton
               v-if="isShowAddBtn"
-              :content="$t('components.myTable.add')"
-              placement="top"
+              :button-size="resolvedTableSize"
+              circle
+              border
+              :tooltip-content="$t('components.myTable.add')"
+              @click="$emit('add')"
             >
-              <el-button :size="resolvedTableSize" type="primary" circle @click="$emit('add')">
-                <icon-mdi:plus />
-              </el-button>
-            </el-tooltip>
+              <icon-mdi:plus />
+            </IconButton>
           </slot>
 
           <el-dropdown
             v-if="batchMenuItems.length > 0 && selectionModel.length > 0"
             trigger="click"
           >
-            <el-button :size="resolvedTableSize" circle>
+            <IconButton :button-size="resolvedTableSize" circle border :tooltip-content="$t('components.myTable.batchActions')">
               <icon-ic:baseline-more-vert />
-            </el-button>
+            </IconButton>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item
                   v-for="item in batchMenuItems"
                   :key="item.label"
                   :divided="item.divided"
-                  :disabled="
-                    typeof item.disabled === 'function' ? item.disabled() : item.disabled
-                  "
+                  :disabled="typeof item.disabled === 'function' ? item.disabled() : item.disabled"
                   @click="onBatchMenuCommand(item)"
                 >
                   <component :is="item.icon" v-if="item.icon" class="mr-1" />
@@ -501,15 +501,30 @@ defineExpose({
             </template>
           </el-dropdown>
 
-          <el-tooltip :content="$t('components.myTable.refresh')" placement="top">
-            <el-button :size="resolvedTableSize" circle :loading="loading" @click="loadLazyData()">
-              <icon-mdi:refresh />
-            </el-button>
-          </el-tooltip>
+          <IconButton
+            :button-size="resolvedTableSize"
+            circle
+            border
+            :loading="loading"
+            :tooltip-content="$t('components.myTable.refresh')"
+            @click="loadLazyData()"
+          >
+            <icon-mdi:refresh />
+          </IconButton>
         </div>
 
         <div class="flex gap-2">
-          <slot name="toolbar-right" />
+          <slot name="toolbar-right" :table-size="resolvedTableSize" />
+
+          <IconButton
+            :button-size="resolvedTableSize"
+            circle
+            border
+            :tooltip-content="$t('components.myTable.exportCSV')"
+            @click="onExportCSV"
+          >
+            <icon-mdi:download />
+          </IconButton>
 
           <el-select
             :model-value="selectedColumns"
@@ -533,7 +548,7 @@ defineExpose({
       </div>
 
       <div class="flex-1 min-h-0">
-        <ElTable
+        <el-table
           v-loading="loading"
           :data="tableData"
           :size="resolvedTableSize"
@@ -605,41 +620,48 @@ defineExpose({
           >
             <template #default="scope">
               <div class="flex gap-1 items-center justify-center">
-                <slot name="operation" :row="scope.row">
-                  <el-button
+                <slot name="operation" :row="scope.row" :table-size="resolvedTableSize">
+                  <IconButton
                     v-if="isShowEditBtn"
                     circle
-                    :size="resolvedTableSize"
+                    :button-size="resolvedTableSize"
+                    :tooltip-content="$t('common.edit')"
                     @click="$emit('edit', scope.row)"
                   >
                     <icon-mdi:pencil />
-                  </el-button>
-                  <el-button
+                  </IconButton>
+                  <IconButton
                     v-if="isShowDeleteBtn"
                     circle
-                    :size="resolvedTableSize"
+                    :button-size="resolvedTableSize"
                     type="danger"
+                    :tooltip-content="$t('common.delete')"
                     @click="onConfirmDelete(scope.row)"
                   >
                     <icon-mdi:delete />
-                  </el-button>
+                  </IconButton>
                 </slot>
 
-                <el-button
+                <IconButton
                   v-if="isShowContextMenu"
                   circle
-                  :size="resolvedTableSize"
+                  :button-size="resolvedTableSize"
+                  :tooltip-content="$t('components.myTable.moreActions')"
                   @click="onToggleContextMenu($event, scope.row)"
                 >
                   <icon-ic:baseline-more-horiz />
-                </el-button>
+                </IconButton>
               </div>
             </template>
           </el-table-column>
-        </ElTable>
+        </el-table>
       </div>
 
-      <div class="mt-3 flex items-center justify-end">
+      <div class="mt-3 flex gap-3 items-center justify-between">
+        <div class="flex gap-3 min-w-0 items-center">
+          <slot name="footer-left" :table-size="resolvedTableSize" />
+        </div>
+
         <el-pagination
           :size="resolvedTableSize"
           :current-page="currentPage"
@@ -656,6 +678,12 @@ defineExpose({
 </template>
 
 <style scoped>
+.search-area {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+}
+
 .table-main-card :deep(.el-card__body) {
   height: 100%;
 }

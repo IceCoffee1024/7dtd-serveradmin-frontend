@@ -12,7 +12,7 @@ interface Props {
   showIcon?: boolean;
 }
 
-withDefaults (defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   tabStyle: 'google',
   showIcon: true,
 });
@@ -55,7 +55,7 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
       {
         icon: h(markIcon(() => import('~icons/line-md/arrow-close-right'))),
         label: t('layout.header.closeRight'),
-        disabled: navTabStore.tabsList.length === 1 || navTabStore.tabsList[navTabStore.tabsList.length - 1] === tabName,
+        disabled: navTabStore.tabsList.length === 1 || navTabStore.tabsList.at(-1) === tabName,
         onClick: () => {
           navTabStore.closeRightTabs(tabName);
         },

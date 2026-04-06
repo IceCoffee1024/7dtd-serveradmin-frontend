@@ -13,12 +13,14 @@ interface Props {
   fields: MyFormField<T>[];
   disabled?: boolean;
   labelWidth?: string | number;
+  labelPosition?: 'left' | 'right' | 'top';
   gutter?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   labelWidth: '100px',
+  labelPosition: 'right',
   gutter: 16,
 });
 
@@ -54,6 +56,18 @@ function getRules(field: MyFormField<T>) {
     return [];
   return Array.isArray(field.rules) ? field.rules : [field.rules];
 }
+
+function getTooltipContent(field: MyFormField<T>): string {
+  if (!field.tooltip)
+    return '';
+  return typeof field.tooltip === 'string' ? field.tooltip : field.tooltip.content;
+}
+
+function getTooltipPlacement(field: MyFormField<T>): string {
+  if (!field.tooltip || typeof field.tooltip === 'string')
+    return 'top';
+  return field.tooltip.placement ?? 'top';
+}
 </script>
 
 <template>
@@ -62,7 +76,7 @@ function getRules(field: MyFormField<T>) {
     :model="formData"
     :disabled="disabled"
     :label-width="labelWidth"
-    label-position="right"
+    :label-position="labelPosition"
   >
     <el-row :gutter="gutter">
       <el-col
@@ -72,10 +86,25 @@ function getRules(field: MyFormField<T>) {
         v-bind="typeof field.span === 'object' ? field.span : {}"
       >
         <el-form-item
-          :label="field.label"
           :prop="field.prop"
           :rules="getRules(field)"
         >
+          <template #label>
+            <span class="inline-flex" style="align-items: center; gap: 4px;">
+              <span>{{ field.label }}</span>
+              <el-tooltip
+                v-if="getTooltipContent(field)"
+                :content="getTooltipContent(field)"
+                :placement="getTooltipPlacement(field)"
+              >
+                <span class="inline-flex" style="align-items: center; color: var(--el-color-info); cursor: help;">
+                  <el-icon :size="14">
+                    <icon-mdi:help-circle-outline />
+                  </el-icon>
+                </span>
+              </el-tooltip>
+            </span>
+          </template>
           <FieldRenderer
             v-model="(formData as any)[field.prop]"
             :el="field.el"

@@ -52,25 +52,34 @@ function handleArrowDown() {
 }
 
 async function getAllowedCommands() {
-  const data = await gameServerApi.getAllowedCommands();
-  const processedCommands: CommandOption[] = [];
-  const lookupSet = new Set<string>();
-  data.forEach((group) => {
-    (group.commands ?? []).forEach((cmd) => {
-      processedCommands.push({
-        cmd,
-        desc: group.description ?? '',
-        help: group.help ?? '',
+  try {
+    const data = await gameServerApi.getAllowedCommands();
+    const processedCommands: CommandOption[] = [];
+    const lookupSet = new Set<string>();
+    data.forEach((group) => {
+      (group.commands ?? []).forEach((cmd) => {
+        processedCommands.push({
+          cmd,
+          desc: group.description ?? '',
+          help: group.help ?? '',
+        });
+        lookupSet.add(cmd.toLowerCase());
       });
-      lookupSet.add(cmd.toLowerCase());
     });
-  });
-  allCommands.value = processedCommands;
-  commandLookup.value = lookupSet;
+    allCommands.value = processedCommands;
+    commandLookup.value = lookupSet;
+  }
+  catch (error) {
+    console.error('[Console] Failed to load allowed commands:', error);
+  }
 }
 getAllowedCommands();
 
 emitter.on(EVENT_TYPES.GAME.GAME_START_DONE, getAllowedCommands);
+
+onUnmounted(() => {
+  emitter.off(EVENT_TYPES.GAME.GAME_START_DONE, getAllowedCommands);
+});
 
 async function sendCommand() {
   if (isSuggestionVisible.value) {

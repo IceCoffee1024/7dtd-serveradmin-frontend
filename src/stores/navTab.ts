@@ -108,7 +108,7 @@ export const useNavTabStore = defineStore('nav-tab', () => {
       return i >= index;
     });
 
-    if (!tabsList.value.find(i => i === activeTab.value)) {
+    if (!tabsList.value.includes(activeTab.value)) {
       activeTab.value = currentName;
     }
   }
@@ -122,7 +122,7 @@ export const useNavTabStore = defineStore('nav-tab', () => {
       return i <= index;
     });
 
-    if (!tabsList.value.find(i => i === activeTab.value)) {
+    if (!tabsList.value.includes(activeTab.value)) {
       activeTab.value = currentName;
     }
   }

@@ -276,7 +276,7 @@ export function getServerSettings() {
  * @returns Update confirmation.
  */
 export function updateServerSettings(settings: API.GameServer.ServerSettings) {
-  return http.put<unknown>('GameServer/ServerSettings', settings).json();
+  return http.put<unknown>('GameServer/ServerSettings', { json: settings }).json();
 }
 // #endregion
 

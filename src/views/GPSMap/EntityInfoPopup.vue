@@ -16,6 +16,7 @@ function handleViewInventory() {
 const { t } = useI18n();
 
 const title = computed(() => {
+  console.log('EntityInfoPopup title computed', props.data);
   switch (props.data.entityType) {
     case 'OfflinePlayer':
       return `${t('views.map.offlinePlayer')}: ${props.data.entityName} (${props.data.playerId})`;

@@ -184,6 +184,7 @@ const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
 | search | `SearchProps` | 搜索项配置 |
 | enum | `MaybeRef<EnumProps[]>` | 自动渲染 `ElTag` 的枚举配置 |
 | exportable | `boolean` | 是否允许导出 CSV，默认 `true` |
+| exportFormatter | `(value, row) => string` | 导出 CSV 前的最终格式化函数，适合对象字段或和展示文案保持一致的列 |
 
 示例：
 

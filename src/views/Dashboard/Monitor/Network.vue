@@ -40,7 +40,7 @@ function getDynamicYAxisOptions(maxBits: number): { unit: string; stepSize: numb
 
   const k = 1024;
   const presets = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-  const maxPreset = presets[presets.length - 1];
+  const maxPreset = presets.at(-1)!;
 
   let unitIndex = 0;
   let value = maxBits;
@@ -103,7 +103,7 @@ function getChartData(newDate?: dayjs.Dayjs, newData?: number[]): ChartData<'lin
     const now = dayjs();
     result.labels = Array.from({ length: MAX_DATA_POINTS }, (_, index) => now.subtract((MAX_DATA_POINTS - index - 1) * 3, 'seconds').format('HH:mm:ss'));
     for (let i = 0, len = result.datasets.length; i < len; i++) {
-      result.datasets[i].data = Array.from({ length: MAX_DATA_POINTS }, () => 0);
+      result.datasets[i].data = Array.from({ length: MAX_DATA_POINTS }).fill(0) as number[];
     }
   }
   else {

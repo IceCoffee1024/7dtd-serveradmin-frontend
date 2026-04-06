@@ -226,6 +226,14 @@ const reason = await prompt({ text: 'Reason for rejection', inputValidator: v =>
 if (reason !== undefined) { console.log(reason); }
 ```
 
+### 9.5 IconButton
+- Use `IconButton` for icon-only actions such as header controls, dialog close buttons, table toolbar actions, and small inline triggers.
+- Treat it as the standard wrapper around `el-button`: pass normal button props directly (`type`, `button-size`, `circle`, `plain`, `border`, `loading`, `a-tag`, `href`, etc.).
+- Use `button-size` for the underlying button sizing and `icon-size` for the glyph size; do not reuse a single `size` prop for both.
+- Provide the icon through the default slot, and prefer the auto-imported `icon-{prefix}-{name}` components.
+- Use `tooltip-content` for the label instead of wrapping `IconButton` in an extra `el-tooltip`; the component already handles tooltip behavior.
+- Keep the button visually compact and icon-first; use plain `el-button` only when the action needs visible text or custom content beyond a single icon.
+
 ## 10 Project Structure
 ```text
 .

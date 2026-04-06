@@ -57,7 +57,11 @@ async function handleCommand(command: string) {
       <MenuTree :menus="menus" mode="horizontal" :ellipsis="false" />
     </div>
     <div class="icon-btns flex gap-8px justify-end" :class="{ 'flex-1': !isTopMenu }">
-      <IconButton a-tag href="https://github.com/IceCoffee1024/7dtd-serveradmin-frontend">
+      <IconButton
+        a-tag
+        href="https://github.com/IceCoffee1024/7dtd-serveradmin-frontend"
+        :tooltip-content="$t('layout.header.github')"
+      >
         <icon-mdi:github />
       </IconButton>
       <IconButton
@@ -67,6 +71,7 @@ async function handleCommand(command: string) {
             ? 'https://qm.qq.com/cgi-bin/qm/qr?k=p3TKGDnBAxxyVsR79pF-WYHI3BjsYiHe&jump_from=webapi&authKey=wTpnGpOGOsAaNTD4TqL4kukLQnxT+TmDFQx803v+Q2zWU0E7LYuSkBQQI+WhrqFB'
             : 'https://discord.gg/zdnmngsBK4'
         "
+        :tooltip-content="$t('layout.header.community')"
       >
         <icon-mdi:qqchat v-if="isChinese" />
         <icon-ic:baseline-discord v-else />
@@ -77,7 +82,7 @@ async function handleCommand(command: string) {
       <ThemeConfig v-if="currentTheme.layout.header.showThemeConfigBtn" />
       <el-dropdown trigger="click" @command="handleCommand">
         <span>
-          <IconButton>
+          <IconButton :tooltip-content="$t('layout.header.userMenu')">
             <icon-mdi:account-circle />
           </IconButton>
         </span>
@@ -94,11 +99,6 @@ async function handleCommand(command: string) {
 </template>
 
 <style lang="scss" scoped>
-.icon-btns {
-  :deep(.el-button + .el-button) {
-    margin-left: 0;
-  }
-}
 .el-button.is-text {
   color: var(--el-text-color-primary);
 }
