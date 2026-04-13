@@ -68,7 +68,6 @@ export const useGameEventStore = defineStore('gameEvent', () => {
 
   /**
    * Clears the buffered log messages.
-   * @returns Nothing.
    */
   const clearLogs = () => {
     logs.value = [];
@@ -76,7 +75,6 @@ export const useGameEventStore = defineStore('gameEvent', () => {
 
   /**
    * Clears the buffered chat messages.
-   * @returns Nothing.
    */
   const clearChatMessages = () => {
     chatMessages.value = [];
@@ -84,7 +82,6 @@ export const useGameEventStore = defineStore('gameEvent', () => {
 
   /**
    * Resets all shared realtime game output.
-   * @returns Nothing.
    */
   const reset = () => {
     clearLogs();

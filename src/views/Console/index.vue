@@ -197,7 +197,13 @@ function handleVisibleChange(visible: boolean): void {
         @keydown.down.prevent="handleArrowDown"
       >
         <template #default="{ item }">
-          <el-tooltip :content="item.help" placement="top" :show-after="200" effect="dark">
+          <el-tooltip
+            :content="item.help"
+            placement="top"
+            :show-after="200"
+            effect="dark"
+            popper-class="console-command-tooltip"
+          >
             <div class="flex gap-3 w-full items-center">
               <div class="font-medium">
                 {{ item.cmd }}
@@ -218,3 +224,15 @@ function handleVisibleChange(visible: boolean): void {
     </div>
   </div>
 </template>
+
+<style scoped>
+:global(.console-command-tooltip) {
+  max-width: min(60vw, 40rem);
+  white-space: pre-line;
+}
+
+:global(.console-command-tooltip .el-tooltip__content) {
+  word-break: break-word;
+  line-height: 1.5;
+}
+</style>

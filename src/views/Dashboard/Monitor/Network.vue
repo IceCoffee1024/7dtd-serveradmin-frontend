@@ -21,6 +21,10 @@ const chartOptions = ref<ChartOptions<'line'>>();
 const MAX_DATA_POINTS = 8;
 const UNITS = ['b', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb']; // Define the base and units
 
+function sumValues(values: number[]): number {
+  return values.reduce((total, value) => total + value, 0);
+}
+
 function formatBytesToSpeed(bits: number, precision = 1) {
   if (bits === 0)
     return '0 b';
@@ -136,7 +140,10 @@ function getChartOptions(): ChartOptions<'line'> {
 
   const maxBytes = Math.max(...chartData.value.datasets.map(dataset => Math.max(...dataset.data as number[])));
   let yAxisConfig: { unit: string; stepSize: number };
-  if (maxBytes !== 0 && maxBytes === lastCache.value) {
+  if (maxBytes === 0) {
+    yAxisConfig = { unit: 'b', stepSize: 1 };
+  }
+  else if (maxBytes === lastCache.value) {
     yAxisConfig = lastCache.config;
   }
   else {
@@ -219,10 +226,14 @@ watch(
     const newDate = dayjs(newTime);
     const timeDifferenceInSeconds = newDate.diff(oldDate, 'millisecond') / 1000;
 
-    const newBytesReceived = newNet.map(i => i.bytesReceived).reduce((a, b) => a + b, 0);
-    const oldBytesReceived = oldNet.map(i => i.bytesReceived).reduce((a, b) => a + b, 0);
-    const newBytesSent = newNet.map(i => i.bytesSent).reduce((a, b) => a + b, 0);
-    const oldBytesSent = oldNet.map(i => i.bytesSent).reduce((a, b) => a + b, 0);
+    if (timeDifferenceInSeconds <= 0) {
+      return;
+    }
+
+    const newBytesReceived = sumValues(newNet.map(i => i.bytesReceived));
+    const oldBytesReceived = sumValues(oldNet.map(i => i.bytesReceived));
+    const newBytesSent = sumValues(newNet.map(i => i.bytesSent));
+    const oldBytesSent = sumValues(oldNet.map(i => i.bytesSent));
 
     const downloadSpeedInBytes = newBytesReceived - oldBytesReceived;
     const uploadSpeedInBytes = newBytesSent - oldBytesSent;

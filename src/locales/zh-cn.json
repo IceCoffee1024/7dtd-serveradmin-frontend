@@ -34,6 +34,7 @@
     "playerList": "玩家列表",
     "gpsMap": "GPS地图",
     "gameChat": "游戏聊天",
+    "chatManagement": "聊天管理",
     "serverConfig": "服务器配置",
     "banWhitelist": "黑白名单",
     "permissions": "权限管理",
@@ -465,6 +466,81 @@
       },
       "messages": {
         "saveSuccess": "应用设置已更新。"
+      }
+    },
+    "chatManagement": {
+      "tabs": {
+        "commonSettings": "公共聊天配置",
+        "coloredSettings": "颜色聊天配置",
+        "coloredProfiles": "颜色聊天条目"
+      },
+      "commonSettings": {
+        "fields": {
+          "globalServerName": "全局消息发送者",
+          "whisperServerName": "私聊消息发送者",
+          "chatCommandPrefixes": "命令前缀",
+          "allowNoPrefix": "允许无前缀命令",
+          "chatCommandSeparators": "命令参数分隔符"
+        },
+        "tooltips": {
+          "globalServerName": "服务端发送全局聊天消息时显示的名字。",
+          "whisperServerName": "服务端发送私聊消息时显示的名字。",
+          "chatCommandPrefixes": "多个前缀使用逗号分隔，例如 /,!。",
+          "allowNoPrefix": "启用后，普通全局聊天也可以被解析为命令。",
+          "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。"
+        },
+        "actions": {
+          "save": "保存公共聊天配置",
+          "reset": "重置"
+        },
+        "messages": {
+          "saveSuccess": "公共聊天配置已更新。"
+        }
+      },
+      "coloredSettings": {
+        "fields": {
+          "isEnabled": "启用颜色聊天",
+          "globalDefault": "全局频道默认色",
+          "whisperDefault": "私聊频道默认色",
+          "friendsDefault": "好友频道默认色",
+          "partyDefault": "队伍频道默认色",
+          "adminDefault": "管理员默认色",
+          "systemDefault": "系统消息默认色",
+          "allowPlayerColorTags": "允许玩家颜色标签"
+        },
+        "tooltips": {
+          "isEnabled": "是否启用 ColoredChat 功能。",
+          "allowPlayerColorTags": "启用后，玩家可以使用受控颜色标签语法。",
+          "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。"
+        },
+        "actions": {
+          "save": "保存颜色聊天配置",
+          "reset": "重置"
+        },
+        "messages": {
+          "saveSuccess": "颜色聊天配置已更新。"
+        }
+      },
+      "coloredProfiles": {
+        "addProfile": "新增聊天条目",
+        "editProfile": "编辑聊天条目",
+        "fields": {
+          "playerId": "玩家ID",
+          "customName": "自定义名称",
+          "nameColor": "名称颜色",
+          "textColor": "文本颜色",
+          "description": "备注",
+          "createdAt": "创建时间"
+        },
+        "tooltips": {
+          "playerId": "请输入稳定的跨平台 PlayerId，而不是临时 EntityId。",
+          "customName": "留空时使用玩家当前昵称。",
+          "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。",
+          "description": "用于记录此条目的用途和来源。"
+        },
+        "messages": {
+          "saveSuccess": "聊天条目已保存。"
+        }
       }
     },
     "modManagement": {

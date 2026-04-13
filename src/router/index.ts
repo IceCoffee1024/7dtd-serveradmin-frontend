@@ -87,6 +87,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'ChatManagement',
+        path: 'chat-management',
+        component: () => import('../views/ChatManagement/index.vue'),
+        meta: {
+          title: () => t('menus.chatManagement'),
+          icon: markIcon(() => import('~icons/mdi/chat-outline')),
+        },
+      },
+      {
         name: 'ServerConfig',
         path: 'server-config',
         component: () => import('../views/ServerConfig/index.vue'),

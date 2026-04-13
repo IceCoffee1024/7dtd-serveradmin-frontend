@@ -34,6 +34,7 @@
     "playerList": "Player List",
     "gpsMap": "GPS Map",
     "gameChat": "Game Chat",
+    "chatManagement": "Chat Management",
     "serverConfig": "Server Config",
     "appSettings": "App Settings",
     "banWhitelist": "Ban & Whitelist",
@@ -880,6 +881,81 @@
       },
       "messages": {
         "saveSuccess": "Application settings updated."
+      }
+    },
+    "chatManagement": {
+      "tabs": {
+        "commonSettings": "Common Chat Settings",
+        "coloredSettings": "Colored Chat Settings",
+        "coloredProfiles": "Colored Chat Profiles"
+      },
+      "commonSettings": {
+        "fields": {
+          "globalServerName": "Global Sender Name",
+          "whisperServerName": "Whisper Sender Name",
+          "chatCommandPrefixes": "Command Prefixes",
+          "allowNoPrefix": "Allow Prefixless Commands",
+          "chatCommandSeparators": "Command Separators"
+        },
+        "tooltips": {
+          "globalServerName": "Display name used when the server sends a global chat message.",
+          "whisperServerName": "Display name used when the server sends a whisper message.",
+          "chatCommandPrefixes": "Separate multiple prefixes with commas, for example /,!.",
+          "allowNoPrefix": "When enabled, plain global chat lines may be interpreted as commands.",
+          "chatCommandSeparators": "Separate multiple delimiters with commas. A single space is the usual default."
+        },
+        "actions": {
+          "save": "Save Common Chat Settings",
+          "reset": "Reset"
+        },
+        "messages": {
+          "saveSuccess": "Common chat settings have been updated."
+        }
+      },
+      "coloredSettings": {
+        "fields": {
+          "isEnabled": "Enable Colored Chat",
+          "globalDefault": "Global Default Color",
+          "whisperDefault": "Whisper Default Color",
+          "friendsDefault": "Friends Default Color",
+          "partyDefault": "Party Default Color",
+          "adminDefault": "Admin Default Color",
+          "systemDefault": "System Default Color",
+          "allowPlayerColorTags": "Allow Player Color Tags"
+        },
+        "tooltips": {
+          "isEnabled": "Controls whether the ColoredChat feature is active.",
+          "allowPlayerColorTags": "When enabled, players may use the controlled color tag syntax.",
+          "hexColor": "Enter a 6-digit hexadecimal color value such as FFCC00."
+        },
+        "actions": {
+          "save": "Save Colored Chat Settings",
+          "reset": "Reset"
+        },
+        "messages": {
+          "saveSuccess": "Colored chat settings have been updated."
+        }
+      },
+      "coloredProfiles": {
+        "addProfile": "Add Chat Profile",
+        "editProfile": "Edit Chat Profile",
+        "fields": {
+          "playerId": "Player ID",
+          "customName": "Custom Name",
+          "nameColor": "Name Color",
+          "textColor": "Text Color",
+          "description": "Description",
+          "createdAt": "Created At"
+        },
+        "tooltips": {
+          "playerId": "Use the stable cross-platform PlayerId, not the temporary EntityId.",
+          "customName": "Leave empty to keep using the player's live display name.",
+          "hexColor": "Enter a 6-digit hexadecimal color value such as FFCC00.",
+          "description": "Used to explain why this profile exists."
+        },
+        "messages": {
+          "saveSuccess": "Chat profile saved successfully."
+        }
       }
     },
     "modManagement": {

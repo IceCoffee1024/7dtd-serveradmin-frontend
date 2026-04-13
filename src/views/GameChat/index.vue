@@ -61,7 +61,7 @@ onDeactivated(() => {
 <template>
   <div class="flex flex-col h-full">
     <el-card class="flex-1" shadow="never">
-      <div ref="contentRef" class="h-[calc(100vh-210px)] overflow-y-auto">
+      <div ref="contentRef" class="h-[calc(100vh-220px)] overflow-y-auto">
         <p
           v-for="item in gameEventStore.chatMessages"
           :key="item.id"

@@ -4,6 +4,7 @@ import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';
 import emitter, { EVENT_TYPES } from '~/plugins/mitt';
 import nProgress from '~/plugins/nprogress';
+import { useLocaleStore } from '~/stores/locale';
 import { useUserInfoStore } from '~/stores/userInfo';
 
 interface ErrorResponse {
@@ -25,6 +26,9 @@ const http = ky.create({
           const token = await userInfoStore.getAccessToken();
           request.headers.set('Authorization', `Bearer ${token}`);
         }
+
+        const localeStore = useLocaleStore();
+        request.headers.set('X-Language', localeStore.languageEnglishName);
       },
     ],
     afterResponse: [

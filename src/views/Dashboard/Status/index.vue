@@ -17,6 +17,10 @@ interface Status {
   centerText: string;
 }
 
+function sumValues(values: number[]): number {
+  return values.reduce((total, value) => total + value, 0);
+}
+
 const playerStatus = reactive<Status>({ used: 0, free: 0, centerText: '' });
 const playerLegend = computed(() => [t('views.dashboard.status.onlinePlayers'), t('views.dashboard.status.freeSlots')]);
 const zombieStatus = reactive<Status>({ used: 0, free: 0, centerText: '' });
@@ -64,9 +68,14 @@ watch(
     memoryStatus.free = bytesToMB(newMetrics.memoryInfo.availablePhysicalMemory);
     memoryStatus.centerText = `${newMetrics.memoryInfo.usedPercentage} %`;
 
-    diskStatus.used = bytesToMB(newMetrics.diskInfos.map(i => i.usedSize).reduce((a, b) => a + b, 0));
-    diskStatus.free = bytesToMB(newMetrics.diskInfos.map(i => i.freeSpace).reduce((a, b) => a + b, 0));
-    diskStatus.centerText = `${((diskStatus.used / (diskStatus.free + diskStatus.used)) * 100) | 0} %`;
+    const diskUsed = sumValues(newMetrics.diskInfos.map(i => i.usedSize));
+    const diskFree = sumValues(newMetrics.diskInfos.map(i => i.freeSpace));
+
+    diskStatus.used = bytesToMB(diskUsed);
+    diskStatus.free = bytesToMB(diskFree);
+    diskStatus.centerText = diskUsed + diskFree > 0
+      ? `${((diskUsed / (diskFree + diskUsed)) * 100) | 0} %`
+      : '0 %';
   },
 );
 </script>
