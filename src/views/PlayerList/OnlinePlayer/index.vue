@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useI18n } from 'vue-i18n';
@@ -42,7 +42,7 @@ const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
   { prop: 'skillPoints', label: t('views.playerList.skillPoints'), sortable: true },
   {
     prop: 'isTwitchEnabled',
-    label: t('views.playerList.isTwitchEnabled'),
+    label: t('views.playerList.twitchEnabled'),
     slot: 'isTwitchEnabled',
     exportFormatter: value => (value ? t('common.yes') : t('common.no')),
   },

@@ -42,7 +42,7 @@
     "serverConfig": "Server Config",
     "appSettings": "App Settings",
     "banWhitelist": "Ban & Whitelist",
-    "permissions": "Permissions",
+    "permission": "Permissions",
     "modManagement": "Mod Management",
     "console": "Console",
     "apiDocumentation": "API Documentation"
@@ -67,8 +67,8 @@
       "batchActions": "Batch Actions",
       "moreActions": "More Actions",
       "filters": "Filters",
-      "filterCollapse": "Collapse",
-      "filterExpand": "Expand"
+      "collapse": "Collapse",
+      "expand": "Expand"
     },
     "myForm": {
       "pleaseInput": "Please Input",
@@ -92,13 +92,12 @@
       "qualityColor": "Quality Color",
       "useTimes": "Use Times",
       "maxUseTimes": "Max Use Times",
-      "isMod": "Is Mod",
-      "isBlock": "Is Block",
-      "mod": "Mod"
+      "mod": "Is Mod",
+      "block": "Is Block"
     },
     "playerSkillsDialog": {
       "header": "Player Skills",
-      "fold": "Fold",
+      "collapse": "Fold",
       "expand": "Expand",
       "name": "Name",
       "icon": "Icon",
@@ -116,8 +115,8 @@
       "playerId": "Player ID",
       "platformId": "Platform ID",
       "playGroup": "Play Group",
-      "isAdmin": "Is Admin",
-      "isOnline": "Is Online",
+      "admin": "Is Admin",
+      "online": "Is Online",
       "ip": "IP Address",
       "ping": "Ping",
       "position": "Position",
@@ -148,15 +147,15 @@
       "bedroll": "Bedroll",
       "active": "Active",
       "inactive": "Inactive"
-    },
+    }
   },
-  "utils": {
+  "errors": {
     "http": {
-      "400": "Bad Request. Please verify your input.",
-      "401": "Unauthorized. Please login again.",
-      "403": "Access Denied. You don't have permission.",
-      "404": "Not Found. The resource does not exist.",
-      "500": "Server Error. Something went wrong on our end.",
+      "badRequest": "Bad Request. Please verify your input.",
+      "unauthorized": "Unauthorized. Please login again.",
+      "forbidden": "Access Denied. You don't have permission.",
+      "notFound": "Not Found. The resource does not exist.",
+      "serverError": "Server Error. Something went wrong on our end.",
       "timeout": "Request Timeout. Please check your connection."
     }
   },
@@ -171,6 +170,7 @@
       "github": "GitHub",
       "community": "Community",
       "userMenu": "User Menu",
+      "logout": "Logout",
       "appearance": "Appearance",
       "layout": "Layout",
       "general": "General",
@@ -250,11 +250,6 @@
       "scrollMode": "Scroll Mode",
       "outerScroll": "Outer Scroll",
       "innerScroll": "Inner Scroll",
-      "close": "Close",
-      "closeOthers": "Close Others",
-      "closeLeft": "Close Left",
-      "closeRight": "Close Right",
-      "closeAll": "Close All",
       "contextMenuStyle": "Right-click Menu Style",
       "defaultStyle": "Default Style",
       "flatStyle": "Flat Style",
@@ -266,12 +261,18 @@
       "bootstrap5Style": "Bootstrap 5 Style",
       "bootstrap4Style": "Bootstrap 4 Style",
       "materialUIStyle": "Material UI Style",
-      "bulmaStyle": "Bulma Style",
-      "logout": "Logout"
+      "bulmaStyle": "Bulma Style"
+    },
+    "tabs": {
+      "close": "Close",
+      "closeOthers": "Close Others",
+      "closeLeft": "Close Left",
+      "closeRight": "Close Right",
+      "closeAll": "Close All"
     }
   },
-  "composables": {
-    "usePopup": {
+  "ui": {
+    "dialog": {
       "warningTitle": "Warning",
       "confirmButtonText": "OK",
       "cancelButtonText": "Cancel",
@@ -320,7 +321,7 @@
         "serverVersion": "Server Version",
         "gameWorld": "Game World",
         "gameDifficulty": "Game Difficulty",
-        "gameDifficultys": {
+        "gameDifficulties": {
           "0": "Scavenger",
           "1": "Adventurer",
           "2": "Nomad",
@@ -406,7 +407,7 @@
       "permissionLevel": "Permission Level",
       "ip": "IP Address",
       "ping": "Ping",
-      "isTwitchEnabled": "Twitch Enabled",
+      "twitchEnabled": "Twitch Enabled",
       "zombieKills": "Zombie Kills",
       "playerKills": "Player Kills",
       "deaths": "Deaths",

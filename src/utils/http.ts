@@ -1,4 +1,4 @@
-import ky from 'ky';
+﻿import ky from 'ky';
 import { AUTH_PATH } from '~/api/auth';
 import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';
@@ -48,7 +48,7 @@ const http = ky.create({
           const { t } = i18n.global;
 
           toast({
-            text: t('utils.http.500'),
+            text: t('errors.http.serverError'),
             type: 'error',
           });
 
@@ -71,7 +71,7 @@ const http = ky.create({
           case 401:
           {
             toast({
-              text: t('utils.http.401'),
+              text: t('errors.http.unauthorized'),
               type: 'warning',
             });
             emitter.emit(EVENT_TYPES.AUTH.UNAUTHORIZED, { source: 'http' });
@@ -80,7 +80,7 @@ const http = ky.create({
           case 403:
           {
             toast({
-              text: t('utils.http.403'),
+              text: t('errors.http.forbidden'),
               type: 'warning',
             });
             emitter.emit(EVENT_TYPES.AUTH.FORBIDDEN, { source: 'http' });
@@ -88,19 +88,19 @@ const http = ky.create({
           }
           case 404:
             toast({
-              text: t('utils.http.404'),
+              text: t('errors.http.notFound'),
               type: 'warning',
             });
             break;
           case 400:
             toast({
-              text: `${t('utils.http.400')}: ${data?.message || data?.error}`,
+              text: `${t('errors.http.badRequest')}: ${data?.message || data?.error}`,
               type: 'error',
             });
             break;
           case 500:
             toast({
-              text: `${t('utils.http.500')}: ${data?.message || data?.error}`,
+              text: `${t('errors.http.serverError')}: ${data?.message || data?.error}`,
               type: 'error',
             });
             break;

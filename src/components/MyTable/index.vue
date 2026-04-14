@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends Record<string, any>">
+﻿<script setup lang="ts" generic="T extends Record<string, any>">
 /**
  * MyTable —— 通用泛型表格组件
  *
@@ -493,7 +493,7 @@ defineExpose({
             {{ $t('components.myTable.filters') }}
           </span>
           <span class="inline-flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
-            {{ searchCollapsed ? $t('components.myTable.filterExpand') : $t('components.myTable.filterCollapse') }}
+            {{ searchCollapsed ? $t('components.myTable.expand') : $t('components.myTable.collapse') }}
             <el-icon
               class="transition-transform duration-200"
               :class="{ 'rotate-180': searchCollapsed }"

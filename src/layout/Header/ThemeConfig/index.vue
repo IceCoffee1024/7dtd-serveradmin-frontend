@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { useTheme } from '~/composables';
 import { useAppStore } from '~/stores/app';
 import ColorPalette from './ColorPalette/index.vue';

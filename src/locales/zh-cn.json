@@ -41,7 +41,7 @@
     "auditLogs": "日志审计",
     "serverConfig": "服务器配置",
     "banWhitelist": "黑白名单",
-    "permissions": "权限管理",
+    "permission": "权限管理",
     "modManagement": "模组管理",
     "console": "控制台",
     "appSettings": "应用设置",
@@ -67,8 +67,8 @@
       "batchActions": "批量操作",
       "moreActions": "更多操作",
       "filters": "筛选条件",
-      "filterCollapse": "收起",
-      "filterExpand": "展开"
+      "collapse": "收起",
+      "expand": "展开"
     },
     "myForm": {
       "pleaseInput": "请输入",
@@ -92,13 +92,12 @@
       "qualityColor": "品质颜色",
       "useTimes": "使用次数",
       "maxUseTimes": "最大使用次数",
-      "isMod": "是否为模组",
-      "isBlock": "是否为方块",
-      "mod": "模组"
+      "mod": "模组",
+      "block": "是否为方块"
     },
     "playerSkillsDialog": {
       "header": "玩家技能",
-      "fold": "折叠",
+      "collapse": "折叠",
       "expand": "展开",
       "name": "技能名称",
       "icon": "图标",
@@ -116,8 +115,8 @@
       "playerId": "玩家ID",
       "platformId": "平台ID",
       "playGroup": "游戏组",
-      "isAdmin": "是否为管理员",
-      "isOnline": "是否在线",
+      "admin": "是否为管理员",
+      "online": "是否在线",
       "ip": "IP地址",
       "ping": "Ping",
       "position": "位置",
@@ -150,13 +149,13 @@
       "inactive": "未启用"
     }
   },
-  "utils": {
+  "errors": {
     "http": {
-      "400": "请求参数错误，请检查后重试",
-      "401": "登录状态已过期，请重新登录",
-      "403": "当前操作无权限，请联系管理员",
-      "404": "请求资源不存在，请稍后重试",
-      "500": "服务器异常，请稍后再试",
+      "badRequest": "请求参数错误，请检查后重试",
+      "unauthorized": "登录状态已过期，请重新登录",
+      "forbidden": "当前操作无权限，请联系管理员",
+      "notFound": "请求资源不存在，请稍后重试",
+      "serverError": "服务器异常，请稍后再试",
       "timeout": "网络请求超时，请检查网络连接"
     }
   },
@@ -171,6 +170,7 @@
       "github": "GitHub",
       "community": "社区",
       "userMenu": "用户菜单",
+      "logout": "退出登录",
       "appearance": "外观",
       "layout": "布局",
       "general": "通用",
@@ -250,11 +250,6 @@
       "scrollMode": "滚动模式",
       "outerScroll": "外层滚动",
       "innerScroll": "主体滚动",
-      "close": "关闭",
-      "closeOthers": "关闭其他",
-      "closeLeft": "关闭左侧",
-      "closeRight": "关闭右侧",
-      "closeAll": "关闭所有",
       "contextMenuStyle": "右键菜单样式",
       "defaultStyle": "默认风格",
       "flatStyle": "扁平风格",
@@ -266,12 +261,18 @@
       "bootstrap5Style": "Bootstrap 5 风格",
       "bootstrap4Style": "Bootstrap 4 风格",
       "materialUIStyle": "Material UI 风格",
-      "bulmaStyle": "Bulma 风格",
-      "logout": "退出登录"
+      "bulmaStyle": "Bulma 风格"
+    },
+    "tabs": {
+      "close": "关闭",
+      "closeOthers": "关闭其他",
+      "closeLeft": "关闭左侧",
+      "closeRight": "关闭右侧",
+      "closeAll": "关闭所有"
     }
   },
-  "composables": {
-    "usePopup": {
+  "ui": {
+    "dialog": {
       "warningTitle": "警告",
       "confirmButtonText": "确定",
       "cancelButtonText": "取消",
@@ -320,7 +321,7 @@
         "serverVersion": "服务端版本",
         "gameWorld": "游戏世界",
         "gameDifficulty": "游戏难度",
-        "gameDifficultys": {
+        "gameDifficulties": {
           "0": "拾荒者",
           "1": "冒险家",
           "2": "流浪者",
@@ -406,7 +407,7 @@
       "permissionLevel": "权限级别",
       "ip": "IP 地址",
       "ping": "Ping",
-      "isTwitchEnabled": "是否启用 Twitch",
+      "twitchEnabled": "是否启用 Twitch",
       "zombieKills": "击杀僵尸",
       "playerKills": "击杀玩家",
       "deaths": "死亡次数",
@@ -849,7 +850,7 @@
         },
         "GameWorld": {
           "group": "游戏世界",
-          "desc": "游戏世界地图。Navezgane[固定地图], RWG[随机地图]（请参阅下文的 '世界种子' 和 '世界大小' 选项）或 'Worlds' 文件夹中任何已存在的世界名称（例如 'Navezgane'、'PREGEN01'......）"
+          "desc": "游戏世界地图。Navezgane[固定地图], RWG[随机地图]（请参阅下文的 \u0027世界种子\u0027 和 \u0027世界大小\u0027 选项）或 \u0027Worlds\u0027 文件夹中任何已存在的世界名称（例如 \u0027Navezgane\u0027、\u0027PREGEN01\u0027......）"
         },
         "WorldGenSeed": {
           "group": "游戏世界",

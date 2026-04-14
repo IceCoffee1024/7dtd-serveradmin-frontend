@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
 interface Props {
@@ -70,8 +70,8 @@ ${t('components.playerInventoryDialog.maxStackAllowed')}: ${props.maxStackAllowe
 ${t('components.playerInventoryDialog.quality')}: ${props.quality ?? 0} <br />
 ${t('components.playerInventoryDialog.useTimes')}: ${props.useTimes} <br />
 ${t('components.playerInventoryDialog.maxUseTimes')}: ${props.maxUseTimes} <br />
-${t('components.playerInventoryDialog.isMod')}: ${props.isMod ? t('common.yes') : t('common.no')} <br />
-${t('components.playerInventoryDialog.isBlock')}: ${props.isBlock ? t('common.yes') : t('common.no')}`;
+${t('components.playerInventoryDialog.mod')}: ${props.isMod ? t('common.yes') : t('common.no')} <br />
+${t('components.playerInventoryDialog.block')}: ${props.isBlock ? t('common.yes') : t('common.no')}`;
 });
 </script>
 

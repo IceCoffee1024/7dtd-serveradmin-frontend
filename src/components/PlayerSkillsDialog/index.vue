@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { getPlayerSkills } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
@@ -7,7 +7,7 @@ import Table from './Table.vue';
 
 defineOptions({ name: 'PlayerSkillsDialog' });
 
-type LayoutMode = 'fold' | 'expand';
+type LayoutMode = 'collapse' | 'expand';
 
 const dialogRef = useTemplateRef('dialogRef');
 const title = ref('');
@@ -26,7 +26,7 @@ const {
 });
 
 const options = computed<Array<{ label: string; value: LayoutMode }>>(() => [
-  { label: t('components.playerSkillsDialog.fold'), value: 'fold' },
+  { label: t('components.playerSkillsDialog.collapse'), value: 'collapse' },
   { label: t('components.playerSkillsDialog.expand'), value: 'expand' },
 ]);
 
@@ -70,7 +70,7 @@ defineExpose({
           <el-radio-button v-for="item in options" :key="item.value" :value="item.value">
             <el-tooltip :content="item.label" placement="top">
               <el-icon>
-                <icon-mdi-unfold-less-horizontal v-if="item.value === 'fold'" />
+                <icon-mdi-unfold-less-horizontal v-if="item.value === 'collapse'" />
                 <icon-mdi-unfold-more-horizontal v-else />
               </el-icon>
             </el-tooltip>

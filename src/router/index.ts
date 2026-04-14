@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from 'vue-router';
+﻿import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Layout from '~/layout/index.vue';
 import { i18n, isSupportedLocale } from '~/plugins/i18n';
@@ -143,7 +143,7 @@ const routes: RouteRecordRaw[] = [
         path: 'permission',
         component: () => import('../views/Permission/index.vue'),
         meta: {
-          title: () => t('menus.permissions'),
+          title: () => t('menus.permission'),
           icon: markIcon(() => import('~icons/mdi/account-key')),
         },
       },

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 interface Props {
   tableData: API.GameServer.PlayerSkill[];
   isExpandAll?: boolean;

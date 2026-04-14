@@ -1,4 +1,4 @@
-import type { MessageBoxInputData } from 'element-plus';
+﻿import type { MessageBoxInputData } from 'element-plus';
 import type { SweetAlertTheme } from 'sweetalert2';
 import { useZIndex } from 'element-plus';
 import Swal from 'sweetalert2';
@@ -83,9 +83,9 @@ export function usePopup() {
   const confirm = async (options?: PopupOptions) => {
     if (isElementPlusPopBox()) {
       try {
-        await ElMessageBox.confirm(options?.text || t('composables.usePopup.warningText'), options?.title || t('composables.usePopup.warningTitle'), {
-          confirmButtonText: t('composables.usePopup.confirmButtonText'),
-          cancelButtonText: t('composables.usePopup.cancelButtonText'),
+        await ElMessageBox.confirm(options?.text || t('ui.dialog.warningText'), options?.title || t('ui.dialog.warningTitle'), {
+          confirmButtonText: t('ui.dialog.confirmButtonText'),
+          cancelButtonText: t('ui.dialog.cancelButtonText'),
           showCancelButton: options?.showCancelButton ?? true,
           type: getElementPlusType(options?.type) || 'warning',
           icon: getElementPlusIcon(options?.type),
@@ -98,13 +98,13 @@ export function usePopup() {
     }
     else {
       const { isConfirmed } = await MySwal.fire({
-        title: options?.title || t('composables.usePopup.warningTitle'),
-        text: options?.text || t('composables.usePopup.warningText'),
+        title: options?.title || t('ui.dialog.warningTitle'),
+        text: options?.text || t('ui.dialog.warningText'),
         icon: options?.type || 'warning',
         showCancelButton: options?.showCancelButton ?? true,
         confirmButtonColor: 'var(--colors-primary)',
-        confirmButtonText: t('composables.usePopup.confirmButtonText'),
-        cancelButtonText: t('composables.usePopup.cancelButtonText'),
+        confirmButtonText: t('ui.dialog.confirmButtonText'),
+        cancelButtonText: t('ui.dialog.cancelButtonText'),
         theme: getThemeForSweetAlert(),
         heightAuto: false,
       });
@@ -117,8 +117,8 @@ export function usePopup() {
       try {
         const { value } = await ElMessageBox.prompt(options.text, options.title, {
           inputValue: options.inputValue,
-          confirmButtonText: t('composables.usePopup.confirmButtonText'),
-          cancelButtonText: t('composables.usePopup.cancelButtonText'),
+          confirmButtonText: t('ui.dialog.confirmButtonText'),
+          cancelButtonText: t('ui.dialog.cancelButtonText'),
           type: getElementPlusType(options.type),
           showCancelButton: options.showCancelButton ?? true,
           inputValidator: options.inputValidator === undefined
@@ -142,8 +142,8 @@ export function usePopup() {
         input: 'text',
         showCancelButton: options.showCancelButton ?? true,
         confirmButtonColor: 'var(--colors-primary)',
-        confirmButtonText: t('composables.usePopup.confirmButtonText'),
-        cancelButtonText: t('composables.usePopup.cancelButtonText'),
+        confirmButtonText: t('ui.dialog.confirmButtonText'),
+        cancelButtonText: t('ui.dialog.cancelButtonText'),
         theme: getThemeForSweetAlert(),
         heightAuto: false,
         inputValidator: options.inputValidator === undefined

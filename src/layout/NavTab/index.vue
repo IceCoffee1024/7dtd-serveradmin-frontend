@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import ContextMenu from '@imengyu/vue3-context-menu';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from '~/composables';
@@ -30,7 +30,7 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
     items: [
       {
         icon: h(markIcon(() => import('~icons/line-md/close'))),
-        label: t('layout.header.close'),
+        label: t('layout.tabs.close'),
         disabled: navTabStore.tabsList.length === 1,
         onClick: () => {
           navTabStore.removeTab(tabName);
@@ -38,7 +38,7 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
       },
       {
         icon: h(markIcon(() => import('~icons/line-md/close-circle'))),
-        label: t('layout.header.closeOthers'),
+        label: t('layout.tabs.closeOthers'),
         disabled: navTabStore.tabsList.length === 1,
         onClick: () => {
           navTabStore.closeOtherTabs(tabName);
@@ -46,7 +46,7 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
       },
       {
         icon: h(markIcon(() => import('~icons/line-md/arrow-close-left'))),
-        label: t('layout.header.closeLeft'),
+        label: t('layout.tabs.closeLeft'),
         disabled: navTabStore.tabsList.length === 1 || navTabStore.tabsList[0] === tabName,
         onClick: () => {
           navTabStore.closeLeftTabs(tabName);
@@ -54,7 +54,7 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
       },
       {
         icon: h(markIcon(() => import('~icons/line-md/arrow-close-right'))),
-        label: t('layout.header.closeRight'),
+        label: t('layout.tabs.closeRight'),
         disabled: navTabStore.tabsList.length === 1 || navTabStore.tabsList.at(-1) === tabName,
         onClick: () => {
           navTabStore.closeRightTabs(tabName);
@@ -62,7 +62,7 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
       },
       {
         icon: h(markIcon(() => import('~icons/line-md/close-circle-filled'))),
-        label: t('layout.header.closeAll'),
+        label: t('layout.tabs.closeAll'),
         disabled: navTabStore.tabsList.length === 1,
         onClick: () => {
           navTabStore.closeAllTabs();

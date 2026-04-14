@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { getPlayerDetails } from '~/api/gameServer';
@@ -80,8 +80,8 @@ function getModel(data: API.GameServer.PlayerDetails): DetailRow[] {
     { label: t('components.playerDetailsDialog.playerId'), value: data.playerId ?? '' },
     { label: t('components.playerDetailsDialog.platformId'), value: data.platformId ?? '' },
     { label: t('components.playerDetailsDialog.playGroup'), value: data.playGroup ?? '' },
-    { label: t('components.playerDetailsDialog.isAdmin'), value: data.isAdmin ? t('common.yes') : t('common.no') },
-    { label: t('components.playerDetailsDialog.isOnline'), value: !data.isOffline ? t('common.yes') : t('common.no') },
+    { label: t('components.playerDetailsDialog.admin'), value: data.isAdmin ? t('common.yes') : t('common.no') },
+    { label: t('components.playerDetailsDialog.online'), value: !data.isOffline ? t('common.yes') : t('common.no') },
     { label: t('components.playerDetailsDialog.ip'), value: data.ip ?? '' },
     { label: t('components.playerDetailsDialog.ping'), value: normalizeNumber(data.ping) },
     { label: t('components.playerDetailsDialog.position'), value: formatPosition(data.position) },
