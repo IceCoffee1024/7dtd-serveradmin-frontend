@@ -31,40 +31,6 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     },
   },
   {
-    prop: 'senderName',
-    label: t('views.gameChat.history.filters.senderName'),
-    sortable: true,
-    search: {
-      el: 'input',
-      props: { clearable: true },
-      order: 1,
-    },
-  },
-  {
-    prop: 'playerId',
-    label: t('views.gameChat.history.filters.playerId'),
-    sortable: true,
-    search: {
-      el: 'input',
-      props: { clearable: true },
-      order: 2,
-    },
-  },
-  {
-    prop: 'chatType',
-    label: t('views.gameChat.history.filters.chatType'),
-    sortable: true,
-    enum: chatTypeOptions,
-    search: {
-      el: 'select',
-      props: {
-        clearable: true,
-        placeholder: t('views.gameChat.history.placeholders.allChatTypes'),
-      },
-      order: 3,
-    },
-  },
-  {
     prop: 'timeRange',
     label: t('views.gameChat.history.filters.timeRange'),
     isShow: false,
@@ -98,12 +64,26 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     label: t('views.gameChat.history.columns.chatType'),
     sortable: true,
     width: 120,
+    enum: chatTypeOptions,
+    search: {
+      el: 'select',
+      props: {
+        clearable: true,
+        placeholder: t('views.gameChat.history.placeholders.allChatTypes'),
+      },
+      order: 3,
+    },
   },
   {
     prop: 'senderName',
     label: t('views.gameChat.history.columns.senderName'),
     sortable: true,
     minWidth: 160,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+      order: 1,
+    },
   },
   {
     prop: 'playerId',
@@ -111,6 +91,11 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     slot: 'playerId',
     sortable: true,
     minWidth: 180,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+      order: 2,
+    },
   },
   {
     prop: 'entityId',
@@ -185,7 +170,7 @@ function toOptionalString(value: unknown): string | undefined {
   }
 
   const trimmedValue = value.trim();
-  return trimmedValue ? trimmedValue : undefined;
+  return trimmedValue || undefined;
 }
 
 /**
@@ -212,17 +197,17 @@ function formatTimestamp(value: string): string {
       :auto-column-width="true"
     >
       <template #createdAt="{ row }">
-        <span class="font-mono text-xs text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
+        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
       </template>
 
       <template #playerId="{ row }">
-        <span class="font-mono text-xs text-gray-600 dark:text-gray-300">
+        <span class="text-xs text-gray-600 font-mono dark:text-gray-300">
           {{ row.playerId || t('views.gameChat.history.emptyPlayerId') }}
         </span>
       </template>
 
       <template #message="{ row }">
-        <div class="whitespace-pre-wrap break-words leading-6 text-sm text-gray-800 dark:text-gray-100">
+        <div class="text-sm text-gray-800 leading-6 whitespace-pre-wrap break-words dark:text-gray-100">
           {{ row.message }}
         </div>
       </template>

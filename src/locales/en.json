@@ -986,6 +986,7 @@
     },
     "chatSettings": {
       "fields": {
+        "isEnabled": "Enable Chat",
         "globalServerName": "Global Sender Name",
         "whisperServerName": "Whisper Sender Name",
         "chatCommandPrefixes": "Command Prefixes",
@@ -993,6 +994,7 @@
         "chatCommandSeparators": "Command Separators"
       },
       "tooltips": {
+        "isEnabled": "Chat is a core service required by all features that register chat commands. It cannot be disabled.",
         "globalServerName": "Display name used when the server sends a global chat message.",
         "whisperServerName": "Display name used when the server sends a whisper message.",
         "chatCommandPrefixes": "Separate multiple prefixes with commas, for example /,!.",
@@ -1051,9 +1053,16 @@
         },
         "tooltips": {
           "playerId": "Use the stable cross-platform PlayerId, not the temporary EntityId.",
-          "customName": "Leave empty to keep using the player's live display name.",
+          "customName": "Leave empty to use the player's live display name. Use the variables below to embed dynamic values.",
           "hexColor": "Enter a 6-digit hexadecimal color value such as FFCC00.",
           "description": "Used to explain why this profile exists."
+        },
+        "availableVariables": "Available variables",
+        "variables": {
+          "playerName": "Player's live display name",
+          "playerId": "Cross-platform player ID",
+          "entityId": "In-game entity ID",
+          "chatType": "Chat channel type"
         },
         "messages": {
           "saveSuccess": "Chat profile saved successfully."

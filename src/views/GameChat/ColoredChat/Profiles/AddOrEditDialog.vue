@@ -8,6 +8,14 @@ import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
+/** Variables supported by the CustomName template engine on the backend. */
+const COLORED_CHAT_NAME_VARIABLES = [
+  { key: '{playerName}', descriptionKey: 'views.coloredChat.profiles.variables.playerName' },
+  { key: '{playerId}', descriptionKey: 'views.coloredChat.profiles.variables.playerId' },
+  { key: '{entityId}', descriptionKey: 'views.coloredChat.profiles.variables.entityId' },
+  { key: '{chatType}', descriptionKey: 'views.coloredChat.profiles.variables.chatType' },
+] as const;
+
 interface FormModel {
   playerId: string;
   customName: string;
@@ -52,6 +60,7 @@ const HEX_COLOR_INPUT_SCHEMA = v.union([
 
 const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
+const customNameInputRef = useTemplateRef<{ input: HTMLInputElement }>('customNameInputRef');
 const { t } = useI18n();
 const { toast } = usePopup();
 
@@ -89,7 +98,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'customName',
     label: t('views.coloredChat.profiles.fields.customName'),
-    el: 'input',
+    el: 'custom',
     rules: rules.customName,
     tooltip: t('views.coloredChat.profiles.tooltips.customName'),
   },
@@ -198,6 +207,29 @@ async function onSubmit() {
   }
 }
 
+/**
+ * Inserts a variable token at the current cursor position in the customName input.
+ * Falls back to appending if the input reference is unavailable.
+ * @param variable - The variable token string to insert, e.g. '{playerName}'.
+ */
+function insertVariable(variable: string): void {
+  const inputEl = customNameInputRef.value?.input;
+  if (inputEl) {
+    const start = inputEl.selectionStart ?? form.customName.length;
+    const end = inputEl.selectionEnd ?? form.customName.length;
+    const current = form.customName || '';
+    form.customName = current.slice(0, start) + variable + current.slice(end);
+    nextTick(() => {
+      inputEl.focus();
+      const newPos = start + variable.length;
+      inputEl.setSelectionRange(newPos, newPos);
+    });
+  }
+  else {
+    form.customName = (form.customName || '') + variable;
+  }
+}
+
 async function show() {
   syncFormData();
   dialogRef.value?.open();
@@ -224,6 +256,35 @@ defineExpose({
       v-model="form"
       :fields="fields"
       label-width="130px"
-    />
+    >
+      <template #customName>
+        <div class="w-full flex flex-col gap-2">
+          <el-input
+            ref="customNameInputRef"
+            v-model="form.customName"
+            :placeholder="t('components.myForm.pleaseInput', { label: t('views.coloredChat.profiles.fields.customName') })"
+          />
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-xs text-gray-500 dark:text-gray-400">
+              {{ t('views.coloredChat.profiles.availableVariables') }}:
+            </span>
+            <el-tooltip
+              v-for="variable in COLORED_CHAT_NAME_VARIABLES"
+              :key="variable.key"
+              :content="t(variable.descriptionKey)"
+              placement="top"
+            >
+              <el-tag
+                type="primary"
+                class="cursor-pointer"
+                @click="insertVariable(variable.key)"
+              >
+                {{ variable.key }}
+              </el-tag>
+            </el-tooltip>
+          </div>
+        </div>
+      </template>
+    </MyForm>
   </MyDialog>
 </template>

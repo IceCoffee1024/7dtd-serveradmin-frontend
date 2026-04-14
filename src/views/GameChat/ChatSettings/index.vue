@@ -11,6 +11,7 @@ import { generateElementRules } from '~/utils';
 defineOptions({ name: 'ChatSettingsPage' });
 
 interface FormModel {
+  isEnabled: boolean;
   globalServerName: string;
   whisperServerName: string;
   chatCommandPrefixes: string;
@@ -32,6 +33,7 @@ const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
+    isEnabled: true,
     globalServerName: '',
     whisperServerName: '',
     chatCommandPrefixes: '/',
@@ -44,6 +46,7 @@ const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 
 const schema = v.object({
+  isEnabled: v.boolean(),
   globalServerName: v.optional(v.string()),
   whisperServerName: v.optional(v.string()),
   chatCommandPrefixes: v.pipe(v.string(), v.minLength(1)),
@@ -59,6 +62,16 @@ const booleanOptions = computed(() => [
 ]);
 
 const fields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'isEnabled',
+    label: t('views.chatSettings.fields.isEnabled'),
+    el: 'select',
+    options: booleanOptions.value,
+    rules: rules.isEnabled,
+    tooltip: t('views.chatSettings.tooltips.isEnabled'),
+    disabled: () => true,
+    span: { xs: 24, md: 12 },
+  },
   {
     prop: 'globalServerName',
     label: t('views.chatSettings.fields.globalServerName'),
@@ -111,6 +124,7 @@ function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel 
     chatCommandSeparators: [' '],
   };
   return {
+    isEnabled: true,
     globalServerName: source.globalServerName ?? '',
     whisperServerName: source.whisperServerName ?? '',
     chatCommandPrefixes: source.chatCommandPrefixes.join(','),
@@ -120,6 +134,7 @@ function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel 
 }
 
 function applyFormValues(values: FormModel): void {
+  form.isEnabled = true;
   form.globalServerName = values.globalServerName;
   form.whisperServerName = values.whisperServerName;
   form.chatCommandPrefixes = values.chatCommandPrefixes;

@@ -474,6 +474,7 @@
     },
     "chatSettings": {
       "fields": {
+        "isEnabled": "启用聊天功能",
         "globalServerName": "全局消息发送者",
         "whisperServerName": "私聊消息发送者",
         "chatCommandPrefixes": "命令前缀",
@@ -481,6 +482,7 @@
         "chatCommandSeparators": "命令参数分隔符"
       },
       "tooltips": {
+        "isEnabled": "聊天功能是系统核心服务，所有依赖聊天命令的功能均通过它注册和分发命令，不可禁用。",
         "globalServerName": "服务端发送全局聊天消息时显示的名字。",
         "whisperServerName": "服务端发送私聊消息时显示的名字。",
         "chatCommandPrefixes": "多个前缀使用逗号分隔，例如 /,!。",
@@ -564,9 +566,16 @@
         },
         "tooltips": {
           "playerId": "请输入稳定的跨平台 PlayerId，而不是临时 EntityId。",
-          "customName": "留空时使用玩家当前昵称。",
+          "customName": "留空时使用玩家当前昵称；支持使用下方变量嵌入动态内容。",
           "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。",
           "description": "用于记录此条目的用途和来源。"
+        },
+        "availableVariables": "可用变量",
+        "variables": {
+          "playerName": "玩家游戏昵称",
+          "playerId": "玩家跨平台 ID",
+          "entityId": "玩家实体 ID",
+          "chatType": "聊天频道类型"
         },
         "messages": {
           "saveSuccess": "聊天条目已保存。"

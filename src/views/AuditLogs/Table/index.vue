@@ -84,9 +84,11 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   },
   {
     prop: 'source',
-    label: t('views.auditLogs.filters.source'),
+    label: t('views.auditLogs.columns.source'),
+    slot: 'source',
     sortable: true,
     enum: sourceOptions,
+    width: 130,
     search: {
       el: 'select',
       props: {
@@ -98,8 +100,10 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   },
   {
     prop: 'operatorId',
-    label: t('views.auditLogs.filters.operatorId'),
+    label: t('views.auditLogs.columns.operatorId'),
+    slot: 'operatorId',
     sortable: true,
+    minWidth: 180,
     search: {
       el: 'input',
       props: { clearable: true },
@@ -108,9 +112,11 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   },
   {
     prop: 'actionType',
-    label: t('views.auditLogs.filters.actionType'),
+    label: t('views.auditLogs.columns.actionType'),
+    slot: 'actionType',
     sortable: true,
     enum: actionTypeOptions,
+    width: 130,
     search: {
       el: 'select',
       props: {
@@ -122,8 +128,9 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   },
   {
     prop: 'resourceType',
-    label: t('views.auditLogs.filters.resourceType'),
+    label: t('views.auditLogs.columns.resourceType'),
     sortable: true,
+    minWidth: 150,
     search: {
       el: 'input',
       props: { clearable: true },
@@ -132,8 +139,10 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   },
   {
     prop: 'resourceId',
-    label: t('views.auditLogs.filters.resourceId'),
+    label: t('views.auditLogs.columns.resourceId'),
+    slot: 'resourceId',
     sortable: true,
+    minWidth: 180,
     search: {
       el: 'input',
       props: { clearable: true },
@@ -142,9 +151,11 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   },
   {
     prop: 'succeeded',
-    label: t('views.auditLogs.filters.succeeded'),
+    label: t('views.auditLogs.columns.succeeded'),
+    slot: 'succeeded',
     sortable: true,
     enum: succeededOptions,
+    width: 110,
     search: {
       el: 'select',
       props: {
@@ -162,57 +173,16 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     width: 180,
   },
   {
-    prop: 'source',
-    label: t('views.auditLogs.columns.source'),
-    slot: 'source',
-    sortable: true,
-    width: 130,
-  },
-  {
-    prop: 'operatorId',
-    label: t('views.auditLogs.columns.operatorId'),
-    slot: 'operatorId',
-    sortable: true,
-    minWidth: 180,
-  },
-  {
     prop: 'operatorName',
     label: t('views.auditLogs.columns.operatorName'),
     sortable: true,
     minWidth: 160,
   },
   {
-    prop: 'actionType',
-    label: t('views.auditLogs.columns.actionType'),
-    slot: 'actionType',
-    sortable: true,
-    width: 130,
-  },
-  {
-    prop: 'resourceType',
-    label: t('views.auditLogs.columns.resourceType'),
-    sortable: true,
-    minWidth: 150,
-  },
-  {
-    prop: 'resourceId',
-    label: t('views.auditLogs.columns.resourceId'),
-    slot: 'resourceId',
-    sortable: true,
-    minWidth: 180,
-  },
-  {
     prop: 'summary',
     label: t('views.auditLogs.columns.summary'),
     slot: 'summary',
     minWidth: 260,
-  },
-  {
-    prop: 'succeeded',
-    label: t('views.auditLogs.columns.succeeded'),
-    slot: 'succeeded',
-    sortable: true,
-    width: 110,
   },
   {
     prop: 'errorMessage',
