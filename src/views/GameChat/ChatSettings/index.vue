@@ -2,13 +2,13 @@
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
-import { getCommonChatSettings, updateCommonChatSettings } from '~/api/chat';
+import { getChatSettings, resetChatSettings, updateChatSettings } from '~/api/chat';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
-defineOptions({ name: 'CommonChatSettings' });
+defineOptions({ name: 'ChatSettingsPage' });
 
 interface FormModel {
   globalServerName: string;
@@ -61,97 +61,61 @@ const booleanOptions = computed(() => [
 const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'globalServerName',
-    label: t('views.chatManagement.commonSettings.fields.globalServerName'),
+    label: t('views.chatSettings.fields.globalServerName'),
     el: 'input',
     rules: rules.globalServerName,
-    tooltip: t('views.chatManagement.commonSettings.tooltips.globalServerName'),
+    tooltip: t('views.chatSettings.tooltips.globalServerName'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'whisperServerName',
-    label: t('views.chatManagement.commonSettings.fields.whisperServerName'),
+    label: t('views.chatSettings.fields.whisperServerName'),
     el: 'input',
     rules: rules.whisperServerName,
-    tooltip: t('views.chatManagement.commonSettings.tooltips.whisperServerName'),
+    tooltip: t('views.chatSettings.tooltips.whisperServerName'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'chatCommandPrefixes',
-    label: t('views.chatManagement.commonSettings.fields.chatCommandPrefixes'),
+    label: t('views.chatSettings.fields.chatCommandPrefixes'),
     el: 'input',
     rules: rules.chatCommandPrefixes,
-    tooltip: t('views.chatManagement.commonSettings.tooltips.chatCommandPrefixes'),
+    tooltip: t('views.chatSettings.tooltips.chatCommandPrefixes'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'allowNoPrefix',
-    label: t('views.chatManagement.commonSettings.fields.allowNoPrefix'),
+    label: t('views.chatSettings.fields.allowNoPrefix'),
     el: 'select',
     options: booleanOptions.value,
     rules: rules.allowNoPrefix,
-    tooltip: t('views.chatManagement.commonSettings.tooltips.allowNoPrefix'),
+    tooltip: t('views.chatSettings.tooltips.allowNoPrefix'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'chatCommandSeparators',
-    label: t('views.chatManagement.commonSettings.fields.chatCommandSeparators'),
+    label: t('views.chatSettings.fields.chatCommandSeparators'),
     el: 'input',
     rules: rules.chatCommandSeparators,
-    tooltip: t('views.chatManagement.commonSettings.tooltips.chatCommandSeparators'),
+    tooltip: t('views.chatSettings.tooltips.chatCommandSeparators'),
     span: { xs: 24, md: 12 },
   },
 ]);
 
-function readString(data: Record<string, unknown>, pascalKey: string, camelKey: string, fallback: string = ''): string {
-  const pascalValue = data[pascalKey];
-  if (typeof pascalValue === 'string') {
-    return pascalValue;
-  }
-
-  const camelValue = data[camelKey];
-  if (typeof camelValue === 'string') {
-    return camelValue;
-  }
-
-  return fallback;
-}
-
-function readBoolean(data: Record<string, unknown>, pascalKey: string, camelKey: string, fallback: boolean = false): boolean {
-  const pascalValue = data[pascalKey];
-  if (typeof pascalValue === 'boolean') {
-    return pascalValue;
-  }
-
-  const camelValue = data[camelKey];
-  if (typeof camelValue === 'boolean') {
-    return camelValue;
-  }
-
-  return fallback;
-}
-
-function readStringArray(data: Record<string, unknown>, pascalKey: string, camelKey: string, fallback: string[]): string[] {
-  const pascalValue = data[pascalKey];
-  if (Array.isArray(pascalValue)) {
-    return pascalValue.filter((item): item is string => typeof item === 'string');
-  }
-
-  const camelValue = data[camelKey];
-  if (Array.isArray(camelValue)) {
-    return camelValue.filter((item): item is string => typeof item === 'string');
-  }
-
-  return fallback;
-}
-
-function mapSettings(data: API.Chat.CommonChatSettings | Record<string, unknown> | null | undefined): FormModel {
-  const source = (data ?? {}) as Record<string, unknown>;
+function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel {
+  const source = data ?? {
+    globalServerName: null,
+    whisperServerName: null,
+    chatCommandPrefixes: ['/'],
+    allowNoPrefix: false,
+    chatCommandSeparators: [' '],
+  };
   return {
-    globalServerName: readString(source, 'GlobalServerName', 'globalServerName'),
-    whisperServerName: readString(source, 'WhisperServerName', 'whisperServerName'),
-    chatCommandPrefixes: readStringArray(source, 'ChatCommandPrefixes', 'chatCommandPrefixes', ['/']).join(','),
-    allowNoPrefix: readBoolean(source, 'AllowNoPrefix', 'allowNoPrefix'),
-    chatCommandSeparators: readStringArray(source, 'ChatCommandSeparators', 'chatCommandSeparators', [' ']).join(','),
+    globalServerName: source.globalServerName ?? '',
+    whisperServerName: source.whisperServerName ?? '',
+    chatCommandPrefixes: source.chatCommandPrefixes.join(','),
+    allowNoPrefix: source.allowNoPrefix,
+    chatCommandSeparators: source.chatCommandSeparators.join(','),
   };
 }
 
@@ -173,7 +137,7 @@ function splitCommaSeparated(value: string, trimItems: boolean = true): string[]
 async function loadSettings() {
   isLoading.value = true;
   try {
-    const data = await getCommonChatSettings();
+    const data = await getChatSettings();
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -189,15 +153,32 @@ async function loadSettings() {
   }
 }
 
-function onReset() {
-  applyFormValues(initialValues.value);
-  nextTick(() => formRef.value?.clearValidate());
+async function onReset() {
+  isSubmitting.value = true;
+  try {
+    const data = await resetChatSettings();
+    initialValues.value = mapSettings(data);
+    applyFormValues(initialValues.value);
+    await nextTick();
+    formRef.value?.clearValidate();
+    toast({
+      type: 'success',
+      title: t('views.chatSettings.actions.reset'),
+      text: t('views.chatSettings.messages.resetSuccess'),
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isSubmitting.value = false;
+  }
 }
 
-function toPayload(values: FormModel): API.Chat.CommonChatSettings {
+function toPayload(values: FormModel): API.Chat.ChatSettings {
   return {
-    globalServerName: values.globalServerName || undefined,
-    whisperServerName: values.whisperServerName || undefined,
+    globalServerName: values.globalServerName || null,
+    whisperServerName: values.whisperServerName || null,
     chatCommandPrefixes: splitCommaSeparated(values.chatCommandPrefixes),
     allowNoPrefix: values.allowNoPrefix,
     chatCommandSeparators: splitCommaSeparated(values.chatCommandSeparators, false),
@@ -216,11 +197,11 @@ async function onSubmit() {
 
   isSubmitting.value = true;
   try {
-    await updateCommonChatSettings(toPayload(form));
+    await updateChatSettings(toPayload(form));
     toast({
       type: 'success',
-      title: t('views.chatManagement.commonSettings.actions.save'),
-      text: t('views.chatManagement.commonSettings.messages.saveSuccess'),
+      title: t('views.chatSettings.actions.save'),
+      text: t('views.chatSettings.messages.saveSuccess'),
     });
     await loadSettings();
   }
@@ -259,11 +240,11 @@ onMounted(() => {
       <div class="mt-4 flex gap-2 justify-end">
         <el-button :disabled="isSubmitting" @click="onReset">
           <el-icon><icon-mdi-refresh /></el-icon>
-          {{ t('views.chatManagement.commonSettings.actions.reset') }}
+          {{ t('views.chatSettings.actions.reset') }}
         </el-button>
         <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
-          {{ t('views.chatManagement.commonSettings.actions.save') }}
+          {{ t('views.chatSettings.actions.save') }}
         </el-button>
       </div>
     </template>

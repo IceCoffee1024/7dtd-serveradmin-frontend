@@ -1,41 +1,41 @@
 declare namespace API {
   namespace Chat {
-    interface CommonChatSettings {
-      globalServerName?: string;
-      whisperServerName?: string;
-      chatCommandPrefixes?: string[];
-      allowNoPrefix?: boolean;
-      chatCommandSeparators?: string[];
+    interface Paged<T> {
+      total: number;
+      items: T[];
     }
 
-    interface ColoredChatSettings {
-      isEnabled?: boolean;
-      globalDefault?: string;
-      whisperDefault?: string;
-      friendsDefault?: string;
-      partyDefault?: string;
-      adminDefault?: string;
-      systemDefault?: string;
-      allowPlayerColorTags?: boolean;
+    interface ChatSettings {
+      globalServerName: string | null;
+      whisperServerName: string | null;
+      chatCommandPrefixes: string[];
+      allowNoPrefix: boolean;
+      chatCommandSeparators: string[];
     }
 
-    interface ColoredChatProfile {
-      [key: string]: unknown;
+    interface ChatMessage {
       id: number;
-      playerId: string;
       createdAt: string;
-      customName?: string | null;
-      nameColor?: string | null;
-      textColor?: string | null;
-      description?: string | null;
+      entityId: number;
+      playerId: string | null;
+      chatType: string;
+      senderName: string;
+      message: string;
     }
 
-    interface ColoredChatProfileUpsert {
-      playerId: string;
-      customName?: string | null;
-      nameColor?: string | null;
-      textColor?: string | null;
-      description?: string | null;
+    type ChatMessageQueryOrder = 'CreatedAt' | 'EntityId' | 'PlayerId' | 'ChatType' | 'SenderName';
+
+    interface ChatMessageQuery {
+      pageNumber?: number;
+      pageSize?: number;
+      keyword?: string;
+      playerId?: string;
+      senderName?: string;
+      chatType?: string;
+      startTime?: string;
+      endTime?: string;
+      order?: ChatMessageQueryOrder;
+      desc?: boolean;
     }
   }
 }

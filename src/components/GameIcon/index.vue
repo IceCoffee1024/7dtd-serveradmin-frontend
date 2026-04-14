@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getItemIconUrl, getUiIconUrl } from '~/api/gameServer';
+
 interface Props {
   size?: number;
   iconName?: string;
@@ -20,12 +22,9 @@ function getIconUrl(category: 'UiIcons' | 'ItemIcons', iconName: string, iconCol
     return null;
   }
 
-  // Append color to the name if it exists and is not 'FFFFFF'
-  const name = iconColor && iconColor.toUpperCase() !== 'FFFFFF' ? `${iconName}__${iconColor}` : iconName;
-
-  // Dynamically create the path based on the category
-  const basePath = `${import.meta.env.VITE_API_BASE_URL}GameServer/${category}/`;
-  return `${basePath}${name}.png`;
+  return category === 'UiIcons'
+    ? getUiIconUrl(iconName, iconColor)
+    : getItemIconUrl(iconName, iconColor);
 }
 
 const src = computed<string | null>(() => {

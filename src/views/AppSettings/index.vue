@@ -109,43 +109,22 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function readString(data: Record<string, unknown>, pascalKey: string, camelKey: string): string {
-  const pascalValue = data[pascalKey];
-  if (typeof pascalValue === 'string') {
-    return pascalValue;
-  }
-
-  const camelValue = data[camelKey];
-  if (typeof camelValue === 'string') {
-    return camelValue;
-  }
-
-  return '';
-}
-
-function readNumber(data: Record<string, unknown>, pascalKey: string, camelKey: string): number {
-  const pascalValue = data[pascalKey];
-  if (typeof pascalValue === 'number') {
-    return pascalValue;
-  }
-
-  const camelValue = data[camelKey];
-  if (typeof camelValue === 'number') {
-    return camelValue;
-  }
-
-  return Number(pascalValue ?? camelValue ?? 0);
-}
-
-function mapSettings(data: API.GameServer.AppSettings | Record<string, unknown> | null | undefined): FormModel {
-  const source = (data ?? {}) as Record<string, unknown>;
+function mapSettings(data: API.GameServer.AppSettings | null | undefined): FormModel {
+  const source = data ?? {
+    webUrl: '',
+    userName: '',
+    password: '',
+    accessTokenExpireTime: 0,
+    refreshTokenExpireTime: 0,
+    serverConfigFile: '',
+  };
   return {
-    webUrl: readString(source, 'WebUrl', 'webUrl'),
-    userName: readString(source, 'UserName', 'userName'),
-    password: readString(source, 'Password', 'password'),
-    accessTokenExpireTime: readNumber(source, 'AccessTokenExpireTime', 'accessTokenExpireTime'),
-    refreshTokenExpireTime: readNumber(source, 'RefreshTokenExpireTime', 'refreshTokenExpireTime'),
-    serverConfigFile: readString(source, 'ServerConfigFile', 'serverConfigFile'),
+    webUrl: source.webUrl,
+    userName: source.userName,
+    password: source.password,
+    accessTokenExpireTime: source.accessTokenExpireTime,
+    refreshTokenExpireTime: source.refreshTokenExpireTime,
+    serverConfigFile: source.serverConfigFile,
   };
 }
 

@@ -1,13 +1,6 @@
 declare namespace API {
   namespace GameServer {
-    interface LegacyListResponse<T> {
-      items?: T[];
-      data?: T[];
-      total?: number;
-      [key: string]: unknown;
-    }
-
-    type ListResponse<T> = (T[] & { items?: T[]; data?: T[]; total?: number }) | LegacyListResponse<T>;
+    type StringDictionary = Record<string, string>;
 
     interface Paged<T> {
       total: number;
@@ -16,17 +9,19 @@ declare namespace API {
 
     type CommandExecutionResult = string[];
 
-    type ServerConfig = Record<string, string>;
-    type ServerSettings = Record<string, string>;
-    type LocalizationDict = Record<string, string>;
+    type ServerConfig = StringDictionary;
+    type ServerSettings = StringDictionary;
+    type LocalizationDict = StringDictionary;
 
     interface AppSettings {
-      webUrl?: string;
-      userName?: string;
-      password?: string;
-      accessTokenExpireTime?: number;
-      refreshTokenExpireTime?: number;
-      serverConfigFile?: string;
+      webUrl: string;
+      userName: string;
+      password: string;
+      accessTokenExpireTime: number;
+      refreshTokenExpireTime: number;
+      serverConfigFile: string;
+      databasePath?: string;
+      enableRequestLog?: boolean;
     }
 
     interface Stats {
@@ -271,7 +266,6 @@ declare namespace API {
     }
 
     interface AdminUser {
-      [key: string]: unknown;
       playerId: string;
       permissionLevel: number;
       displayName: string;
@@ -283,12 +277,10 @@ declare namespace API {
     }
 
     interface CommandPermission extends CommandPermissionCreate {
-      [key: string]: unknown;
       description: string | null;
     }
 
     interface BanEntry {
-      [key: string]: unknown;
       bannedUntil: string;
       displayName: string | null;
       playerId: string;
@@ -296,7 +288,6 @@ declare namespace API {
     }
 
     interface WhitelistEntry {
-      [key: string]: unknown;
       displayName: string | null;
       playerId: string;
     }
@@ -351,13 +342,12 @@ declare namespace API {
     }
 
     interface ModInfo {
-      [key: string]: unknown;
-      name?: string;
-      displayName?: string;
-      description?: string;
-      author?: string;
-      website?: string;
-      version?: string;
+      name: string;
+      displayName: string;
+      description: string;
+      author: string;
+      website: string;
+      version: string;
       isLoaded: boolean;
       isUninstalled: boolean;
       folderName: string;

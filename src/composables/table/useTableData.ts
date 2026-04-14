@@ -46,8 +46,8 @@ export function useTableData<T extends Record<string, any>>(options: UseTableDat
         totalRecords.value = result.total;
       }
     }
-    catch (error) {
-      console.error('[useMyTable] fetchData error:', error);
+    catch (fetchError) {
+      console.error('[useMyTable] fetchData error:', fetchError);
     }
     finally {
       loading.value = false;

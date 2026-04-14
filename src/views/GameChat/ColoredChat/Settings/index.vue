@@ -2,13 +2,13 @@
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
-import { getColoredChatSettings, updateColoredChatSettings } from '~/api/chat';
+import { getSettings, resetSettings, updateSettings } from '~/api/coloredChat';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
-defineOptions({ name: 'ColoredChatSettings' });
+defineOptions({ name: 'ColoredChatSettingsPage' });
 
 interface FormModel {
   isEnabled: boolean;
@@ -70,111 +70,92 @@ const booleanOptions = computed(() => [
 const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
-    label: t('views.chatManagement.coloredSettings.fields.isEnabled'),
+    label: t('views.coloredChat.settings.fields.isEnabled'),
     el: 'select',
     options: booleanOptions.value,
     rules: rules.isEnabled,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.isEnabled'),
+    tooltip: t('views.coloredChat.settings.tooltips.isEnabled'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'allowPlayerColorTags',
-    label: t('views.chatManagement.coloredSettings.fields.allowPlayerColorTags'),
+    label: t('views.coloredChat.settings.fields.allowPlayerColorTags'),
     el: 'select',
     options: booleanOptions.value,
     rules: rules.allowPlayerColorTags,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.allowPlayerColorTags'),
+    tooltip: t('views.coloredChat.settings.tooltips.allowPlayerColorTags'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'globalDefault',
-    label: t('views.chatManagement.coloredSettings.fields.globalDefault'),
+    label: t('views.coloredChat.settings.fields.globalDefault'),
     el: 'input',
     rules: rules.globalDefault,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'whisperDefault',
-    label: t('views.chatManagement.coloredSettings.fields.whisperDefault'),
+    label: t('views.coloredChat.settings.fields.whisperDefault'),
     el: 'input',
     rules: rules.whisperDefault,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'friendsDefault',
-    label: t('views.chatManagement.coloredSettings.fields.friendsDefault'),
+    label: t('views.coloredChat.settings.fields.friendsDefault'),
     el: 'input',
     rules: rules.friendsDefault,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'partyDefault',
-    label: t('views.chatManagement.coloredSettings.fields.partyDefault'),
+    label: t('views.coloredChat.settings.fields.partyDefault'),
     el: 'input',
     rules: rules.partyDefault,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'adminDefault',
-    label: t('views.chatManagement.coloredSettings.fields.adminDefault'),
+    label: t('views.coloredChat.settings.fields.adminDefault'),
     el: 'input',
     rules: rules.adminDefault,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'systemDefault',
-    label: t('views.chatManagement.coloredSettings.fields.systemDefault'),
+    label: t('views.coloredChat.settings.fields.systemDefault'),
     el: 'input',
     rules: rules.systemDefault,
-    tooltip: t('views.chatManagement.coloredSettings.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
 ]);
 
-function readString(data: Record<string, unknown>, pascalKey: string, camelKey: string, fallback: string): string {
-  const pascalValue = data[pascalKey];
-  if (typeof pascalValue === 'string') {
-    return pascalValue;
-  }
-
-  const camelValue = data[camelKey];
-  if (typeof camelValue === 'string') {
-    return camelValue;
-  }
-
-  return fallback;
-}
-
-function readBoolean(data: Record<string, unknown>, pascalKey: string, camelKey: string, fallback: boolean = false): boolean {
-  const pascalValue = data[pascalKey];
-  if (typeof pascalValue === 'boolean') {
-    return pascalValue;
-  }
-
-  const camelValue = data[camelKey];
-  if (typeof camelValue === 'boolean') {
-    return camelValue;
-  }
-
-  return fallback;
-}
-
-function mapSettings(data: API.Chat.ColoredChatSettings | Record<string, unknown> | null | undefined): FormModel {
-  const source = (data ?? {}) as Record<string, unknown>;
+function mapSettings(data: API.ColoredChat.Settings | null | undefined): FormModel {
+  const source = data ?? {
+    isEnabled: false,
+    globalDefault: null,
+    whisperDefault: null,
+    friendsDefault: null,
+    partyDefault: null,
+    adminDefault: null,
+    systemDefault: null,
+    allowPlayerColorTags: false,
+  };
   return {
-    isEnabled: readBoolean(source, 'IsEnabled', 'isEnabled'),
-    globalDefault: readString(source, 'GlobalDefault', 'globalDefault', 'FFFFFF'),
-    whisperDefault: readString(source, 'WhisperDefault', 'whisperDefault', 'D00000'),
-    friendsDefault: readString(source, 'FriendsDefault', 'friendsDefault', '00BB00'),
-    partyDefault: readString(source, 'PartyDefault', 'partyDefault', 'FFCC00'),
-    adminDefault: readString(source, 'AdminDefault', 'adminDefault', 'FF4D4D'),
-    systemDefault: readString(source, 'SystemDefault', 'systemDefault', 'FF8C00'),
-    allowPlayerColorTags: readBoolean(source, 'AllowPlayerColorTags', 'allowPlayerColorTags'),
+    isEnabled: source.isEnabled,
+    globalDefault: source.globalDefault ?? 'FFFFFF',
+    whisperDefault: source.whisperDefault ?? 'D00000',
+    friendsDefault: source.friendsDefault ?? '00BB00',
+    partyDefault: source.partyDefault ?? 'FFCC00',
+    adminDefault: source.adminDefault ?? 'FF4D4D',
+    systemDefault: source.systemDefault ?? 'FF8C00',
+    allowPlayerColorTags: source.allowPlayerColorTags,
   };
 }
 
@@ -192,7 +173,7 @@ function applyFormValues(values: FormModel): void {
 async function loadSettings() {
   isLoading.value = true;
   try {
-    const data = await getColoredChatSettings();
+    const data = await getSettings();
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -208,20 +189,37 @@ async function loadSettings() {
   }
 }
 
-function onReset() {
-  applyFormValues(initialValues.value);
-  nextTick(() => formRef.value?.clearValidate());
+async function onReset() {
+  isSubmitting.value = true;
+  try {
+    const data = await resetSettings();
+    initialValues.value = mapSettings(data);
+    applyFormValues(initialValues.value);
+    await nextTick();
+    formRef.value?.clearValidate();
+    toast({
+      type: 'success',
+      title: t('views.coloredChat.settings.actions.reset'),
+      text: t('views.coloredChat.settings.messages.resetSuccess'),
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isSubmitting.value = false;
+  }
 }
 
-function toPayload(values: FormModel): API.Chat.ColoredChatSettings {
+function toPayload(values: FormModel): API.ColoredChat.Settings {
   return {
     isEnabled: values.isEnabled,
-    globalDefault: values.globalDefault || undefined,
-    whisperDefault: values.whisperDefault || undefined,
-    friendsDefault: values.friendsDefault || undefined,
-    partyDefault: values.partyDefault || undefined,
-    adminDefault: values.adminDefault || undefined,
-    systemDefault: values.systemDefault || undefined,
+    globalDefault: values.globalDefault || null,
+    whisperDefault: values.whisperDefault || null,
+    friendsDefault: values.friendsDefault || null,
+    partyDefault: values.partyDefault || null,
+    adminDefault: values.adminDefault || null,
+    systemDefault: values.systemDefault || null,
     allowPlayerColorTags: values.allowPlayerColorTags,
   };
 }
@@ -238,11 +236,11 @@ async function onSubmit() {
 
   isSubmitting.value = true;
   try {
-    await updateColoredChatSettings(toPayload(form));
+    await updateSettings(toPayload(form));
     toast({
       type: 'success',
-      title: t('views.chatManagement.coloredSettings.actions.save'),
-      text: t('views.chatManagement.coloredSettings.messages.saveSuccess'),
+      title: t('views.coloredChat.settings.actions.save'),
+      text: t('views.coloredChat.settings.messages.saveSuccess'),
     });
     await loadSettings();
   }
@@ -281,11 +279,11 @@ onMounted(() => {
       <div class="mt-4 flex gap-2 justify-end">
         <el-button :disabled="isSubmitting" @click="onReset">
           <el-icon><icon-mdi-refresh /></el-icon>
-          {{ t('views.chatManagement.coloredSettings.actions.reset') }}
+          {{ t('views.coloredChat.settings.actions.reset') }}
         </el-button>
         <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
-          {{ t('views.chatManagement.coloredSettings.actions.save') }}
+          {{ t('views.coloredChat.settings.actions.save') }}
         </el-button>
       </div>
     </template>

@@ -1,5 +1,14 @@
 import http from '~/utils/http';
 
+function trimTrailingSlash(value: string): string {
+  return value.endsWith('/') ? value.slice(0, -1) : value;
+}
+
+function buildGameServerAssetUrl(path: string): string {
+  const baseUrl = trimTrailingSlash(import.meta.env.VITE_API_BASE_URL);
+  return `${baseUrl}/GameServer/${path}`;
+}
+
 // #region Console Commands
 /**
  * Sends a console command to the game server, optionally running it on the main thread.
@@ -91,7 +100,7 @@ export function getServerConfig() {
  * @returns Confirmation of the update operation.
  */
 export function updateServerConfig(config: API.GameServer.ServerConfig) {
-  return http.post<unknown>('GameServer/Config', config).json();
+  return http.put<unknown>('GameServer/Config', { json: config }).json();
 }
 
 // #region Players
@@ -132,23 +141,21 @@ export function getHistoryPlayer(playerId: string) {
 }
 
 /**
- * Loads a player's inventory, optionally translated to a language.
+ * Loads a player's inventory using the language resolved by the HTTP interceptor.
  * @param {string} playerId Player identifier.
- * @param {string} language Language code used for localization.
  * @returns Inventory payload.
  */
-export function getPlayerInventory(playerId: string, language: API.GameServer.Language) {
-  return http.get<API.GameServer.Inventory>(`GameServer/PlayerInventory/${playerId}`, { searchParams: { language } }).json();
+export function getPlayerInventory(playerId: string) {
+  return http.get<API.GameServer.Inventory>(`GameServer/PlayerInventory/${playerId}`).json();
 }
 
 /**
- * Fetches skill data for a player, with localization controls.
+ * Fetches skill data for a player using the language resolved by the HTTP interceptor.
  * @param {string} playerId Player identifier.
- * @param {string} language Language code for skill descriptions.
  * @returns Skill set payload.
  */
-export function getPlayerSkills(playerId: string, language: API.GameServer.Language) {
-  return http.get<API.GameServer.PlayerSkill[]>(`GameServer/PlayerSkills/${playerId}`, { searchParams: { language } }).json();
+export function getPlayerSkills(playerId: string) {
+  return http.get<API.GameServer.PlayerSkill[]>(`GameServer/PlayerSkills/${playerId}`).json();
 }
 
 /**
@@ -205,33 +212,76 @@ export function getLocations(entityType: API.GameServer.EntityType) {
 export function getLocation(entityId: number) {
   return http.get<API.GameServer.EntityBasicInfo>(`GameServer/Locations/${entityId}`).json();
 }
+
+/**
+ * Retrieves land-claim details for a single player.
+ * @param {string} playerId Player identifier.
+ * @returns Claim ownership details.
+ */
+export function getPlayerLandClaims(playerId: string) {
+  return http.get<API.GameServer.ClaimOwner>(`GameServer/LandClaims/${playerId}`).json();
+}
 // #endregion
 
 // #region Localization
 /**
- * Downloads the localization dictionary for a given language.
- * @param {string} language Language code (e.g., en, zh-cn).
+ * Downloads the localization dictionary using the language resolved by the HTTP interceptor.
  * @returns Key/value localization entries.
  */
-export function getLocalizationDict(language: API.GameServer.Language) {
-  return http.get<API.GameServer.LocalizationDict>('GameServer/Localization', { searchParams: { language } }).json();
+export function getLocalizationDict() {
+  return http.get<API.GameServer.LocalizationDict>('GameServer/Localization').json();
 }
 /**
  * Looks up a single localization entry by key.
  * @param {string} key Localization key to query.
- * @param {string} language Language code for the translation.
  * @param {boolean} [isCaseInsensitive] Case-insensitive lookup flag.
  * @returns Localization entry.
  */
-export function getLocalizationByKey(key: string, language: API.GameServer.Language, isCaseInsensitive: boolean = false) {
-  return http.get<string>(`GameServer/Localization/${key}`, { searchParams: { language, caseInsensitive: isCaseInsensitive } }).json();
+export function getLocalizationByKey(key: string, isCaseInsensitive: boolean = false) {
+  return http.get<string>(`GameServer/Localization/${key}`, { searchParams: { caseInsensitive: isCaseInsensitive } }).json();
 }
 /**
  * Retrieves the list of languages that the server currently supports.
  * @returns Supported language codes.
  */
 export function getKnownLanguages() {
-  return http.get<string>('GameServer/KnownLanguages').json();
+  return http.get<API.GameServer.Language[]>('GameServer/KnownLanguages').json();
+}
+// #endregion
+
+// #region Assets
+/**
+ * Builds the absolute URL for an item icon asset.
+ * @param {string} name Icon or item name without extension.
+ * @param {string} [iconColor] Optional hex tint suffix.
+ * @returns Absolute icon URL.
+ */
+export function getItemIconUrl(name: string, iconColor?: string) {
+  const resolvedName = iconColor && iconColor.toUpperCase() !== 'FFFFFF' ? `${name}__${iconColor}` : name;
+  return buildGameServerAssetUrl(`ItemIcons/${resolvedName}.png`);
+}
+
+/**
+ * Builds the absolute URL for a UI icon asset.
+ * @param {string} name UI icon name without extension.
+ * @param {string} [iconColor] Optional hex tint suffix.
+ * @returns Absolute icon URL.
+ */
+export function getUiIconUrl(name: string, iconColor?: string) {
+  const resolvedName = iconColor && iconColor.toUpperCase() !== 'FFFFFF' ? `${name}__${iconColor}` : name;
+  return buildGameServerAssetUrl(`UiIcons/${resolvedName}.png`);
+}
+
+/**
+ * Builds the absolute URL for a map tile image.
+ * @param {number} z Tile zoom level.
+ * @param {number} x Tile x coordinate.
+ * @param {number} y Tile y coordinate in TMS space.
+ * @param {string} accessToken Access token appended for tile authentication.
+ * @returns Absolute tile URL.
+ */
+export function getMapTileUrl(z: number, x: number, y: number, accessToken: string) {
+  return `${buildGameServerAssetUrl(`MapTile/${z}/${x}/${y}.png`)}?access_token=${encodeURIComponent(accessToken)}`;
 }
 // #endregion
 
@@ -372,7 +422,7 @@ export function deleteAdminUsers(playerIds: string[]) {
  * @returns Command permission list.
  */
 export function getCommandPermissions(params: API.GameServer.ListQuery = {}) {
-  return http.get<API.GameServer.ListResponse<API.GameServer.CommandPermission>>('GameServer/CommandPermissions', { searchParams: { ...params } }).json();
+  return http.get<API.GameServer.CommandPermission[]>('GameServer/CommandPermissions', { searchParams: { ...params } }).json();
 }
 
 /**
@@ -418,7 +468,7 @@ export function updateAppSettings(settings: API.GameServer.AppSettings) {
  * @returns Mod metadata list.
  */
 export function getMods() {
-  return http.get<API.GameServer.ListResponse<API.GameServer.ModInfo>>('GameServer/Mods').json();
+  return http.get<API.GameServer.ModInfo[]>('GameServer/Mods').json();
 }
 
 // export const uploadMod = (formData) => {

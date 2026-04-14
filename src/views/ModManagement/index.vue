@@ -55,11 +55,8 @@ function setPending(id: string, value: boolean) {
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<ModItem>> {
   const response = await getMods();
-  const list = Array.isArray(response)
-    ? response
-    : (response?.items ?? response?.data ?? []);
   const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
-  let data = searchByKeyword(list, keyword, ['displayName', 'name', 'author', 'folderName', 'description']);
+  let data = searchByKeyword(response, keyword, ['displayName', 'name', 'author', 'folderName', 'description']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {
     list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),

@@ -34,7 +34,11 @@
     "playerList": "玩家列表",
     "gpsMap": "GPS地图",
     "gameChat": "游戏聊天",
-    "chatManagement": "聊天管理",
+    "liveChat": "实时聊天",
+    "chatHistory": "历史聊天",
+    "chatSettings": "聊天设置",
+    "coloredChat": "彩色聊天",
+    "auditLogs": "日志审计",
     "serverConfig": "服务器配置",
     "banWhitelist": "黑白名单",
     "permissions": "权限管理",
@@ -468,79 +472,28 @@
         "saveSuccess": "应用设置已更新。"
       }
     },
-    "chatManagement": {
-      "tabs": {
-        "commonSettings": "公共聊天配置",
-        "coloredSettings": "颜色聊天配置",
-        "coloredProfiles": "颜色聊天条目"
+    "chatSettings": {
+      "fields": {
+        "globalServerName": "全局消息发送者",
+        "whisperServerName": "私聊消息发送者",
+        "chatCommandPrefixes": "命令前缀",
+        "allowNoPrefix": "允许无前缀命令",
+        "chatCommandSeparators": "命令参数分隔符"
       },
-      "commonSettings": {
-        "fields": {
-          "globalServerName": "全局消息发送者",
-          "whisperServerName": "私聊消息发送者",
-          "chatCommandPrefixes": "命令前缀",
-          "allowNoPrefix": "允许无前缀命令",
-          "chatCommandSeparators": "命令参数分隔符"
-        },
-        "tooltips": {
-          "globalServerName": "服务端发送全局聊天消息时显示的名字。",
-          "whisperServerName": "服务端发送私聊消息时显示的名字。",
-          "chatCommandPrefixes": "多个前缀使用逗号分隔，例如 /,!。",
-          "allowNoPrefix": "启用后，普通全局聊天也可以被解析为命令。",
-          "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。"
-        },
-        "actions": {
-          "save": "保存公共聊天配置",
-          "reset": "重置"
-        },
-        "messages": {
-          "saveSuccess": "公共聊天配置已更新。"
-        }
+      "tooltips": {
+        "globalServerName": "服务端发送全局聊天消息时显示的名字。",
+        "whisperServerName": "服务端发送私聊消息时显示的名字。",
+        "chatCommandPrefixes": "多个前缀使用逗号分隔，例如 /,!。",
+        "allowNoPrefix": "启用后，普通全局聊天也可以被解析为命令。",
+        "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。"
       },
-      "coloredSettings": {
-        "fields": {
-          "isEnabled": "启用颜色聊天",
-          "globalDefault": "全局频道默认色",
-          "whisperDefault": "私聊频道默认色",
-          "friendsDefault": "好友频道默认色",
-          "partyDefault": "队伍频道默认色",
-          "adminDefault": "管理员默认色",
-          "systemDefault": "系统消息默认色",
-          "allowPlayerColorTags": "允许玩家颜色标签"
-        },
-        "tooltips": {
-          "isEnabled": "是否启用 ColoredChat 功能。",
-          "allowPlayerColorTags": "启用后，玩家可以使用受控颜色标签语法。",
-          "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。"
-        },
-        "actions": {
-          "save": "保存颜色聊天配置",
-          "reset": "重置"
-        },
-        "messages": {
-          "saveSuccess": "颜色聊天配置已更新。"
-        }
+      "actions": {
+        "save": "保存聊天配置",
+        "reset": "恢复默认配置"
       },
-      "coloredProfiles": {
-        "addProfile": "新增聊天条目",
-        "editProfile": "编辑聊天条目",
-        "fields": {
-          "playerId": "玩家ID",
-          "customName": "自定义名称",
-          "nameColor": "名称颜色",
-          "textColor": "文本颜色",
-          "description": "备注",
-          "createdAt": "创建时间"
-        },
-        "tooltips": {
-          "playerId": "请输入稳定的跨平台 PlayerId，而不是临时 EntityId。",
-          "customName": "留空时使用玩家当前昵称。",
-          "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。",
-          "description": "用于记录此条目的用途和来源。"
-        },
-        "messages": {
-          "saveSuccess": "聊天条目已保存。"
-        }
+      "messages": {
+        "resetSuccess": "已恢复后端默认配置。",
+        "saveSuccess": "聊天配置已更新。"
       }
     },
     "modManagement": {
@@ -568,9 +521,169 @@
         "toggleSuccess": "模组状态已刷新。"
       }
     },
+    "coloredChat": {
+      "tabs": {
+        "settings": "彩色聊天配置",
+        "profiles": "彩色聊天条目"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用彩色聊天",
+          "globalDefault": "全局频道默认色",
+          "whisperDefault": "私聊频道默认色",
+          "friendsDefault": "好友频道默认色",
+          "partyDefault": "队伍频道默认色",
+          "adminDefault": "管理员默认色",
+          "systemDefault": "系统消息默认色",
+          "allowPlayerColorTags": "允许玩家颜色标签"
+        },
+        "tooltips": {
+          "isEnabled": "是否启用 ColoredChat 功能。",
+          "allowPlayerColorTags": "启用后，玩家可以使用受控颜色标签语法。",
+          "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。"
+        },
+        "actions": {
+          "save": "保存彩色聊天配置",
+          "reset": "恢复默认配置"
+        },
+        "messages": {
+          "resetSuccess": "已恢复后端默认配置。",
+          "saveSuccess": "彩色聊天配置已更新。"
+        }
+      },
+      "profiles": {
+        "addProfile": "新增聊天条目",
+        "editProfile": "编辑聊天条目",
+        "fields": {
+          "playerId": "玩家ID",
+          "customName": "自定义名称",
+          "nameColor": "名称颜色",
+          "textColor": "文本颜色",
+          "description": "备注",
+          "createdAt": "创建时间"
+        },
+        "tooltips": {
+          "playerId": "请输入稳定的跨平台 PlayerId，而不是临时 EntityId。",
+          "customName": "留空时使用玩家当前昵称。",
+          "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。",
+          "description": "用于记录此条目的用途和来源。"
+        },
+        "messages": {
+          "saveSuccess": "聊天条目已保存。"
+        }
+      }
+    },
     "gameChat": {
       "typeMessage": "输入消息",
-      "send": "发送"
+      "send": "发送",
+      "history": {
+        "columns": {
+          "createdAt": "时间",
+          "chatType": "频道",
+          "senderName": "发送者",
+          "playerId": "玩家 ID",
+          "entityId": "实体 ID",
+          "message": "消息内容"
+        },
+        "filters": {
+          "senderName": "发送者",
+          "playerId": "玩家 ID",
+          "chatType": "频道",
+          "timeRange": "时间范围"
+        },
+        "placeholders": {
+          "allChatTypes": "全部频道",
+          "timeRange": "选择时间范围"
+        },
+        "emptyPlayerId": "系统/未知"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "审计日志"
+      },
+      "sources": {
+        "api": "接口请求",
+        "chatCommand": "聊天命令",
+        "consoleCommand": "控制台命令",
+        "scheduler": "调度任务",
+        "system": "系统",
+        "gameEvent": "游戏事件"
+      },
+      "actionTypes": {
+        "create": "创建",
+        "update": "更新",
+        "delete": "删除",
+        "enable": "启用",
+        "disable": "禁用",
+        "execute": "执行",
+        "send": "发送",
+        "kick": "踢出",
+        "ban": "封禁",
+        "unban": "解封",
+        "restart": "重启",
+        "reload": "重载",
+        "grant": "授予",
+        "revoke": "撤销",
+        "import": "导入",
+        "export": "导出",
+        "reset": "重置",
+        "other": "其他"
+      },
+      "filters": {
+        "timeRange": "时间范围",
+        "source": "来源",
+        "operatorId": "操作人ID",
+        "actionType": "动作类型",
+        "resourceType": "资源类型",
+        "resourceId": "资源标识",
+        "succeeded": "执行结果"
+      },
+      "placeholders": {
+        "timeRange": "请选择时间范围",
+        "allSources": "全部来源",
+        "allActionTypes": "全部动作类型",
+        "allResults": "全部结果"
+      },
+      "columns": {
+        "createdAt": "发生时间",
+        "source": "来源",
+        "operatorId": "操作人ID",
+        "operatorName": "操作人名称",
+        "actionType": "动作类型",
+        "resourceType": "资源类型",
+        "resourceId": "资源标识",
+        "summary": "摘要",
+        "succeeded": "成功",
+        "errorMessage": "错误信息"
+      },
+      "empty": {
+        "operatorId": "匿名或系统",
+        "operatorName": "未知操作人",
+        "source": "未知来源",
+        "actionType": "未知动作",
+        "resourceType": "未指定",
+        "resourceId": "无",
+        "summary": "无摘要",
+        "timestamp": "未知时间",
+        "details": "无详情数据",
+        "errorMessage": "无"
+      },
+      "detailDialog": {
+        "title": "审计日志详情",
+        "actions": {
+          "copy": "复制详情"
+        },
+        "messages": {
+          "copySuccess": "详情已复制到剪贴板。",
+          "copyFailed": "复制失败，请稍后重试。"
+        },
+        "sections": {
+          "metadata": "元数据",
+          "summary": "执行结果",
+          "details": "详细上下文"
+        }
+      }
     },
     "serverConfig": {
       "settings": {

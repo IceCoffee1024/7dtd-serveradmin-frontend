@@ -4,12 +4,12 @@ import * as gameServerApi from '~/api/gameServer';
 import { useCommandHistory } from '~/composables';
 import { useGameEventStore } from '~/stores/gameEvent';
 
-defineOptions({ name: 'GameChat' });
+defineOptions({ name: 'LiveChat' });
 
 const { t } = useI18n();
 const gameEventStore = useGameEventStore();
-const inputRef = ref<HTMLInputElement>();
-const contentRef = ref<HTMLDivElement>();
+const inputRef = useTemplateRef<HTMLInputElement>('inputRef');
+const contentRef = useTemplateRef<HTMLDivElement>('contentRef');
 const isLoading = ref(false);
 const { currentCommand, navigateUp, navigateDown, addCommandToHistory, onInputChange } = useCommandHistory();
 

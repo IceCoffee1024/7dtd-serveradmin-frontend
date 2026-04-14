@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
-import { createColoredChatProfile, updateColoredChatProfile } from '~/api/chat';
+import { createProfile, updateProfile } from '~/api/coloredChat';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -35,13 +35,28 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['saved']);
+
+const PLAYER_ID_SCHEMA = v.pipe(
+  v.string(),
+  v.minLength(1),
+  v.regex(/^\S+$/),
+);
+
+const HEX_COLOR_INPUT_SCHEMA = v.union([
+  v.literal(''),
+  v.pipe(
+    v.string(),
+    v.regex(/^#?[0-9A-F]{6}$/i),
+  ),
+]);
+
 const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 const { t } = useI18n();
 const { toast } = usePopup();
 
 const isEdit = computed(() => !!props.editData);
-const dialogTitle = computed(() => (isEdit.value ? t('views.chatManagement.coloredProfiles.editProfile') : t('views.chatManagement.coloredProfiles.addProfile')));
+const dialogTitle = computed(() => (isEdit.value ? t('views.coloredChat.profiles.editProfile') : t('views.coloredChat.profiles.addProfile')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
 
 const form = reactive<FormModel>({
@@ -53,10 +68,10 @@ const form = reactive<FormModel>({
 });
 
 const schema = v.object({
-  playerId: v.pipe(v.string(), v.minLength(1)),
+  playerId: PLAYER_ID_SCHEMA,
   customName: v.optional(v.string()),
-  nameColor: v.optional(v.string()),
-  textColor: v.optional(v.string()),
+  nameColor: HEX_COLOR_INPUT_SCHEMA,
+  textColor: HEX_COLOR_INPUT_SCHEMA,
   description: v.optional(v.string()),
 });
 
@@ -65,43 +80,43 @@ const rules = generateElementRules(schema);
 const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'playerId',
-    label: t('views.chatManagement.coloredProfiles.fields.playerId'),
+    label: t('views.coloredChat.profiles.fields.playerId'),
     el: 'input',
     rules: rules.playerId,
-    tooltip: t('views.chatManagement.coloredProfiles.tooltips.playerId'),
+    tooltip: t('views.coloredChat.profiles.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
     prop: 'customName',
-    label: t('views.chatManagement.coloredProfiles.fields.customName'),
+    label: t('views.coloredChat.profiles.fields.customName'),
     el: 'input',
     rules: rules.customName,
-    tooltip: t('views.chatManagement.coloredProfiles.tooltips.customName'),
+    tooltip: t('views.coloredChat.profiles.tooltips.customName'),
   },
   {
     prop: 'nameColor',
-    label: t('views.chatManagement.coloredProfiles.fields.nameColor'),
+    label: t('views.coloredChat.profiles.fields.nameColor'),
     el: 'input',
     rules: rules.nameColor,
-    tooltip: t('views.chatManagement.coloredProfiles.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
     prop: 'textColor',
-    label: t('views.chatManagement.coloredProfiles.fields.textColor'),
+    label: t('views.coloredChat.profiles.fields.textColor'),
     el: 'input',
     rules: rules.textColor,
-    tooltip: t('views.chatManagement.coloredProfiles.tooltips.hexColor'),
+    tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
     prop: 'description',
-    label: t('views.chatManagement.coloredProfiles.fields.description'),
+    label: t('views.coloredChat.profiles.fields.description'),
     el: 'input',
     props: {
       type: 'textarea',
       rows: 3,
     },
     rules: rules.description,
-    tooltip: t('views.chatManagement.coloredProfiles.tooltips.description'),
+    tooltip: t('views.coloredChat.profiles.tooltips.description'),
   },
 ]);
 
@@ -122,6 +137,15 @@ function syncFormData() {
   }
 }
 
+function normalizePlayerId(value: string): string {
+  return value.trim();
+}
+
+function normalizeHexColor(value: string): string | null {
+  const normalizedValue = value.trim().replace(/^#/, '').toUpperCase();
+  return normalizedValue.length === 0 ? null : normalizedValue;
+}
+
 watch(
   () => props.editData,
   () => {
@@ -130,12 +154,12 @@ watch(
   { immediate: true },
 );
 
-function toPayload(): API.Chat.ColoredChatProfileUpsert {
+function toPayload(): API.ColoredChat.ProfileUpsert {
   return {
-    playerId: form.playerId,
+    playerId: normalizePlayerId(form.playerId),
     customName: form.customName || null,
-    nameColor: form.nameColor || null,
-    textColor: form.textColor || null,
+    nameColor: normalizeHexColor(form.nameColor),
+    textColor: normalizeHexColor(form.textColor),
     description: form.description || null,
   };
 }
@@ -152,16 +176,16 @@ async function onSubmit() {
 
   try {
     if (isEdit.value) {
-      await updateColoredChatProfile(toPayload());
+      await updateProfile(toPayload());
     }
     else {
-      await createColoredChatProfile(toPayload());
+      await createProfile(toPayload());
     }
 
     toast({
       type: 'success',
       title: isEdit.value ? t('common.update') : t('common.save'),
-      text: t('views.chatManagement.coloredProfiles.messages.saveSuccess'),
+      text: t('views.coloredChat.profiles.messages.saveSuccess'),
     });
 
     emit('saved');

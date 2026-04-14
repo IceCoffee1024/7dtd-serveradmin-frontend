@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/chat';
+import * as api from '~/api/coloredChat';
 import { usePopup } from '~/composables';
 import { markIcon } from '~/utils';
-import { orderByField, searchByKeyword } from '~/utils/index';
-import AddOrEditDialog from './AddOrEditDialog/index.vue';
+import AddOrEditDialog from './AddOrEditDialog.vue';
 
-type ColoredProfileRow = API.Chat.ColoredChatProfile;
+defineOptions({ name: 'ColoredProfilesPage' });
+
+type ColoredProfileRow = API.ColoredChat.Profile;
 
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
@@ -26,24 +27,34 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
       props: { clearable: true },
     },
   },
-  { prop: 'playerId', label: t('views.chatManagement.coloredProfiles.fields.playerId') },
-  { prop: 'customName', label: t('views.chatManagement.coloredProfiles.fields.customName') },
-  { prop: 'nameColor', label: t('views.chatManagement.coloredProfiles.fields.nameColor') },
-  { prop: 'textColor', label: t('views.chatManagement.coloredProfiles.fields.textColor') },
-  { prop: 'description', label: t('views.chatManagement.coloredProfiles.fields.description') },
-  { prop: 'createdAt', label: t('views.chatManagement.coloredProfiles.fields.createdAt'), sortable: true },
+  { prop: 'playerId', label: t('views.coloredChat.profiles.fields.playerId'), sortable: true },
+  { prop: 'customName', label: t('views.coloredChat.profiles.fields.customName'), sortable: true },
+  { prop: 'nameColor', label: t('views.coloredChat.profiles.fields.nameColor') },
+  { prop: 'textColor', label: t('views.coloredChat.profiles.fields.textColor') },
+  { prop: 'description', label: t('views.coloredChat.profiles.fields.description') },
+  { prop: 'createdAt', label: t('views.coloredChat.profiles.fields.createdAt'), sortable: true },
 ]);
 
 const selectedRows = ref<ColoredProfileRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<ColoredProfileRow>> {
-  let data = await api.getColoredChatProfiles();
-  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
-  data = searchByKeyword(data, keyword, ['playerId', 'customName', 'description', 'nameColor', 'textColor']);
-  data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
+  const response = await api.getProfiles({
+    pageNumber: params.pageNumber,
+    pageSize: params.pageSize,
+    keyword: params.search?.keyword?.trim() || params.searchQuery?.trim() || undefined,
+    order: params.sortField === 'createdAt'
+      ? 'CreatedAt'
+      : params.sortField === 'playerId'
+        ? 'PlayerId'
+        : params.sortField === 'customName'
+          ? 'CustomName'
+          : undefined,
+    desc: params.sortOrder === 'descending',
+  });
+
   return {
-    list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
-    total: data.length,
+    list: response.items,
+    total: response.total,
   };
 }
 
@@ -54,7 +65,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await api.deleteColoredChatProfiles(selectedRows.value.map(row => row.playerId));
+        await api.deleteProfiles(selectedRows.value.map(row => row.playerId));
         tableRef.value?.reload();
       }
     },
@@ -72,7 +83,7 @@ function onEdit(rowData: ColoredProfileRow) {
 }
 
 async function onDelete(rowData: ColoredProfileRow) {
-  await api.deleteColoredChatProfiles([rowData.playerId]);
+  await api.deleteProfiles([rowData.playerId]);
   tableRef.value?.reload();
 }
 

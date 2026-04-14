@@ -3,6 +3,7 @@ import type { SdtdMapInfo } from '../../types';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
 import TileGrid from 'ol/tilegrid/TileGrid';
+import { getMapTileUrl } from '~/api/gameServer';
 import { useUserInfoStore } from '~/stores/userInfo';
 import { LAYER_ID } from '../../constants';
 
@@ -38,9 +39,7 @@ export function createSdtdTileLayer(mapInfo: SdtdMapInfo, projection: Projection
       const tmsY = -y - 1; // Convert XYZ y to TMS y index.
 
       const token = useUserInfoStore().accessToken; // Current user access token.
-      const baseUrl = import.meta.env.VITE_API_BASE_URL;
-
-      return `${baseUrl}GameServer/MapTile/${z}/${x}/${tmsY}.png?access_token=${token}`;
+      return getMapTileUrl(z, x, tmsY, token);
     },
   });
 

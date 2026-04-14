@@ -34,7 +34,11 @@
     "playerList": "Player List",
     "gpsMap": "GPS Map",
     "gameChat": "Game Chat",
-    "chatManagement": "Chat Management",
+    "liveChat": "Live Chat",
+    "chatHistory": "Chat History",
+    "chatSettings": "Chat Settings",
+    "coloredChat": "Colored Chat",
+    "auditLogs": "Audit Logs",
     "serverConfig": "Server Config",
     "appSettings": "App Settings",
     "banWhitelist": "Ban & Whitelist",
@@ -141,7 +145,7 @@
       "bedroll": "Bedroll",
       "active": "Active",
       "inactive": "Inactive"
-    }
+    },
   },
   "utils": {
     "http": {
@@ -440,20 +444,117 @@
       "claimStatus": "Claim Status",
       "viewPlayerInventory": "View Inventory"
     },
-    "permission": {
-      "adminUser": "Admin User",
-      "addAdminUser": "Add Admin User",
-      "editAdminUser": "Edit Admin User",
-      "addCommandPermission": "Add Command Permission",
-      "editCommandPermission": "Edit Command Permission",
-      "commandPermission": "Command Permission",
-      "command": "Command",
-      "description": "Description",
-      "permissionLevel": "Permission Level"
-    },
     "gameChat": {
       "typeMessage": "Type a message",
-      "send": "Send"
+      "send": "Send",
+      "history": {
+        "columns": {
+          "createdAt": "Time",
+          "chatType": "Channel",
+          "senderName": "Sender",
+          "playerId": "Player ID",
+          "entityId": "Entity ID",
+          "message": "Message"
+        },
+        "filters": {
+          "senderName": "Sender",
+          "playerId": "Player ID",
+          "chatType": "Channel",
+          "timeRange": "Time Range"
+        },
+        "placeholders": {
+          "allChatTypes": "All Channels",
+          "timeRange": "Select time range"
+        },
+        "emptyPlayerId": "System / Unknown"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "Audit Logs"
+      },
+      "sources": {
+        "api": "API",
+        "chatCommand": "Chat Command",
+        "consoleCommand": "Console Command",
+        "scheduler": "Scheduler",
+        "system": "System",
+        "gameEvent": "Game Event"
+      },
+      "actionTypes": {
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "enable": "Enable",
+        "disable": "Disable",
+        "execute": "Execute",
+        "send": "Send",
+        "kick": "Kick",
+        "ban": "Ban",
+        "unban": "Unban",
+        "restart": "Restart",
+        "reload": "Reload",
+        "grant": "Grant",
+        "revoke": "Revoke",
+        "import": "Import",
+        "export": "Export",
+        "reset": "Reset",
+        "other": "Other"
+      },
+      "filters": {
+        "timeRange": "Time Range",
+        "source": "Source",
+        "operatorId": "Operator ID",
+        "actionType": "Action Type",
+        "resourceType": "Resource Type",
+        "resourceId": "Resource ID",
+        "succeeded": "Result"
+      },
+      "placeholders": {
+        "timeRange": "Select a time range",
+        "allSources": "All sources",
+        "allActionTypes": "All action types",
+        "allResults": "All results"
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "source": "Source",
+        "operatorId": "Operator ID",
+        "operatorName": "Operator Name",
+        "actionType": "Action Type",
+        "resourceType": "Resource Type",
+        "resourceId": "Resource ID",
+        "summary": "Summary",
+        "succeeded": "Succeeded",
+        "errorMessage": "Error Message"
+      },
+      "empty": {
+        "operatorId": "Anonymous or system",
+        "operatorName": "Unknown operator",
+        "source": "Unknown source",
+        "actionType": "Unknown action",
+        "resourceType": "Unspecified",
+        "resourceId": "None",
+        "summary": "No summary",
+        "timestamp": "Unknown time",
+        "details": "No detail payload",
+        "errorMessage": "None"
+      },
+      "detailDialog": {
+        "title": "Audit Log Details",
+        "actions": {
+          "copy": "Copy Details"
+        },
+        "messages": {
+          "copySuccess": "Details copied to clipboard.",
+          "copyFailed": "Failed to copy details. Please try again later."
+        },
+        "sections": {
+          "metadata": "Metadata",
+          "summary": "Execution Result",
+          "details": "Detailed Context"
+        }
+      }
     },
     "serverConfig": {
       "settings": {
@@ -883,36 +984,36 @@
         "saveSuccess": "Application settings updated."
       }
     },
-    "chatManagement": {
+    "chatSettings": {
+      "fields": {
+        "globalServerName": "Global Sender Name",
+        "whisperServerName": "Whisper Sender Name",
+        "chatCommandPrefixes": "Command Prefixes",
+        "allowNoPrefix": "Allow Prefixless Commands",
+        "chatCommandSeparators": "Command Separators"
+      },
+      "tooltips": {
+        "globalServerName": "Display name used when the server sends a global chat message.",
+        "whisperServerName": "Display name used when the server sends a whisper message.",
+        "chatCommandPrefixes": "Separate multiple prefixes with commas, for example /,!.",
+        "allowNoPrefix": "When enabled, plain global chat lines may be interpreted as commands.",
+        "chatCommandSeparators": "Separate multiple delimiters with commas. A single space is the usual default."
+      },
+      "actions": {
+        "save": "Save Chat Settings",
+        "reset": "Restore Default Settings"
+      },
+      "messages": {
+        "resetSuccess": "Backend default settings have been restored.",
+        "saveSuccess": "Chat settings have been updated."
+      }
+    },
+    "coloredChat": {
       "tabs": {
-        "commonSettings": "Common Chat Settings",
-        "coloredSettings": "Colored Chat Settings",
-        "coloredProfiles": "Colored Chat Profiles"
+        "settings": "Colored Chat Settings",
+        "profiles": "Colored Chat Profiles"
       },
-      "commonSettings": {
-        "fields": {
-          "globalServerName": "Global Sender Name",
-          "whisperServerName": "Whisper Sender Name",
-          "chatCommandPrefixes": "Command Prefixes",
-          "allowNoPrefix": "Allow Prefixless Commands",
-          "chatCommandSeparators": "Command Separators"
-        },
-        "tooltips": {
-          "globalServerName": "Display name used when the server sends a global chat message.",
-          "whisperServerName": "Display name used when the server sends a whisper message.",
-          "chatCommandPrefixes": "Separate multiple prefixes with commas, for example /,!.",
-          "allowNoPrefix": "When enabled, plain global chat lines may be interpreted as commands.",
-          "chatCommandSeparators": "Separate multiple delimiters with commas. A single space is the usual default."
-        },
-        "actions": {
-          "save": "Save Common Chat Settings",
-          "reset": "Reset"
-        },
-        "messages": {
-          "saveSuccess": "Common chat settings have been updated."
-        }
-      },
-      "coloredSettings": {
+      "settings": {
         "fields": {
           "isEnabled": "Enable Colored Chat",
           "globalDefault": "Global Default Color",
@@ -930,13 +1031,14 @@
         },
         "actions": {
           "save": "Save Colored Chat Settings",
-          "reset": "Reset"
+          "reset": "Restore Default Settings"
         },
         "messages": {
+          "resetSuccess": "Backend default settings have been restored.",
           "saveSuccess": "Colored chat settings have been updated."
         }
       },
-      "coloredProfiles": {
+      "profiles": {
         "addProfile": "Add Chat Profile",
         "editProfile": "Edit Chat Profile",
         "fields": {

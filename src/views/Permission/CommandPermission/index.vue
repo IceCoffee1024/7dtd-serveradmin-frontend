@@ -36,30 +36,12 @@ const selectedRows = ref<CommandPermissionRow[]>([]);
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<CommandPermissionRow>> {
   const response = await api.getCommandPermissions(params);
   const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
-  const transform = (list: CommandPermissionRow[]) => orderByField(
-    searchByKeyword(list, keyword, ['command', 'description']),
+  const filteredList = searchByKeyword(response, keyword, ['command', 'description']);
+  const data = orderByField(
+    filteredList,
     params.sortField ?? '',
     params.sortOrder === 'descending',
   );
-
-  if (response?.items && Array.isArray(response.items)) {
-    const items = transform(response.items);
-    return {
-      list: items,
-      total: response.total ?? items.length,
-    };
-  }
-
-  if (response?.data && Array.isArray(response.data)) {
-    const items = transform(response.data);
-    return {
-      list: items,
-      total: response.total ?? items.length,
-    };
-  }
-
-  const list = Array.isArray(response) ? response : [];
-  const data = transform(list);
   return {
     list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
     total: data.length,

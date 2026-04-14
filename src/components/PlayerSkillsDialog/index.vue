@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n';
 import { getPlayerSkills } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import { useLatestAsync } from '~/composables/useLatestAsync';
-import { useLocaleStore } from '~/stores/locale';
 import Table from './Table.vue';
 
 defineOptions({ name: 'PlayerSkillsDialog' });
@@ -15,7 +14,6 @@ const title = ref('');
 const activeTab = ref('0');
 
 const { t } = useI18n();
-const localeStore = useLocaleStore();
 const layout = ref<LayoutMode>('expand');
 
 const {
@@ -46,7 +44,7 @@ async function open(playerId: string, playerName: string) {
   layout.value = 'expand';
   dialogRef.value?.open();
 
-  await executeLatest(() => getPlayerSkills(playerId, localeStore.languageEnglishName));
+  await executeLatest(() => getPlayerSkills(playerId));
 }
 
 defineExpose({

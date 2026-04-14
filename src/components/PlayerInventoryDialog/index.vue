@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n';
 import { getPlayerInventory } from '~/api/gameServer';
 import { useLatestAsync } from '~/composables/useLatestAsync';
-import { useLocaleStore } from '~/stores/locale';
 import Grid from './Grid/index.vue';
 import List from './List/index.vue';
 
@@ -18,7 +17,6 @@ const options = computed(() => [
 const dialogRef = useTemplateRef('dialogRef');
 const title = ref('');
 const layout = ref<LayoutMode>('grid');
-const localeStore = useLocaleStore();
 
 const {
   data,
@@ -36,7 +34,7 @@ async function open(playerId: string, playerName: string): Promise<void> {
   reset();
   dialogRef.value?.open();
 
-  await executeLatest(() => getPlayerInventory(playerId, localeStore.languageEnglishName));
+  await executeLatest(() => getPlayerInventory(playerId));
 }
 
 defineExpose({

@@ -80,20 +80,45 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'GameChat',
         path: 'game-chat',
-        component: () => import('../views/GameChat/index.vue'),
+        redirect: { name: 'LiveChat' },
         meta: {
           title: () => t('menus.gameChat'),
           icon: markIcon(() => import('~icons/mdi/chat')),
         },
-      },
-      {
-        name: 'ChatManagement',
-        path: 'chat-management',
-        component: () => import('../views/ChatManagement/index.vue'),
-        meta: {
-          title: () => t('menus.chatManagement'),
-          icon: markIcon(() => import('~icons/mdi/chat-outline')),
-        },
+        children: [
+          {
+            name: 'LiveChat',
+            path: 'live-chat',
+            component: () => import('../views/GameChat/LiveChat/index.vue'),
+            meta: {
+              title: () => t('menus.liveChat'),
+            },
+          },
+          {
+            name: 'ChatHistory',
+            path: 'chat-history',
+            component: () => import('../views/GameChat/ChatHistory/index.vue'),
+            meta: {
+              title: () => t('menus.chatHistory'),
+            },
+          },
+          {
+            name: 'ChatSettings',
+            path: 'chat-settings',
+            component: () => import('../views/GameChat/ChatSettings/index.vue'),
+            meta: {
+              title: () => t('menus.chatSettings'),
+            },
+          },
+          {
+            name: 'ColoredChat',
+            path: 'colored-chat',
+            component: () => import('../views/GameChat/ColoredChat/index.vue'),
+            meta: {
+              title: () => t('menus.coloredChat'),
+            },
+          },
+        ],
       },
       {
         name: 'ServerConfig',
@@ -138,6 +163,15 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.console'),
           icon: markIcon(() => import('~icons/mdi/console')),
+        },
+      },
+      {
+        name: 'AuditLogs',
+        path: 'audit-logs',
+        component: () => import('../views/AuditLogs/index.vue'),
+        meta: {
+          title: () => t('menus.auditLogs'),
+          icon: markIcon(() => import('~icons/mdi/file-document-outline')),
         },
       },
       {

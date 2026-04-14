@@ -1,39 +1,47 @@
 declare namespace API {
   namespace Devices {
+    interface CpuTimes {
+      idleTime: number;
+      kernelTime: number;
+      userTime: number;
+    }
+
+    interface MemoryInfo {
+      totalPhysicalMemory: number;
+      availablePhysicalMemory: number;
+      usedPercentage: number;
+      totalVirtualMemory: number;
+      availableVirtualMemory: number;
+    }
+
+    interface DiskInfo {
+      name: string;
+      driveType: 'Unknown' | 'NoRootDirectory' | 'Removable' | 'Fixed' | 'Network' | 'CDRom' | 'Ram';
+      driveFormat: string;
+      freeSpace: number;
+      totalSize: number;
+      usedSize: number;
+      rootPath: string | null;
+    }
+
+    interface NetworkInfo {
+      id: string;
+      mac: string;
+      name: string;
+      trademark: string;
+      networkType: string;
+      speed: number;
+      ipAddresses: string[];
+      bytesReceived: number;
+      bytesSent: number;
+    }
+
     interface SystemMetricsSnapshot {
       timestamp: string;
-      cpuTimes: {
-        idleTime: number;
-        kernelTime: number;
-        userTime: number;
-      } | null;
-      memoryInfo: {
-        totalPhysicalMemory: number;
-        availablePhysicalMemory: number;
-        usedPercentage: number;
-        totalVirtualMemory: number;
-        availableVirtualMemory: number;
-      } | null;
-      diskInfos: {
-        name: string;
-        driveType: 'Unknown' | 'NoRootDirectory' | 'Removable' | 'Fixed' | 'Network' | 'CDRom' | 'Ram';
-        driveFormat: string;
-        freeSpace: number;
-        totalSize: number;
-        usedSize: number;
-        rootPath: string | null;
-      }[];
-      networkInfos: {
-        id: string;
-        mac: string;
-        name: string;
-        trademark: string;
-        networkType: string;
-        speed: number;
-        ipAddresses: string[];
-        bytesReceived: number;
-        bytesSent: number;
-      }[];
+      cpuTimes: CpuTimes | null;
+      memoryInfo: MemoryInfo | null;
+      diskInfos: DiskInfo[];
+      networkInfos: NetworkInfo[];
     }
 
     interface SystemPlatformInfo {
