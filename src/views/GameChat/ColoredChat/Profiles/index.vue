@@ -41,7 +41,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
   const response = await api.getProfiles({
     pageNumber: params.pageNumber,
     pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || params.searchQuery?.trim() || undefined,
+    keyword: params.search?.keyword?.trim() || undefined,
     order: params.sortField === 'createdAt'
       ? 'CreatedAt'
       : params.sortField === 'playerId'

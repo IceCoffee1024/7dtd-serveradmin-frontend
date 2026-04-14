@@ -35,7 +35,7 @@ const selectedRows = ref<AdminUserRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<AdminUserRow>> {
   let data = await api.getAdminUsers(params);
-  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'displayName']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {

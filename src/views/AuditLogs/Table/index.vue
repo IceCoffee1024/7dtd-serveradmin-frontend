@@ -58,6 +58,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
       el: 'input',
       props: { clearable: true },
       order: 0,
+      span: 12,
     },
   },
   {
@@ -88,7 +89,6 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     slot: 'source',
     sortable: true,
     enum: sourceOptions,
-    width: 130,
     search: {
       el: 'select',
       props: {
@@ -103,7 +103,6 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     label: t('views.auditLogs.columns.operatorId'),
     slot: 'operatorId',
     sortable: true,
-    minWidth: 180,
     search: {
       el: 'input',
       props: { clearable: true },
@@ -116,7 +115,6 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     slot: 'actionType',
     sortable: true,
     enum: actionTypeOptions,
-    width: 130,
     search: {
       el: 'select',
       props: {
@@ -130,7 +128,6 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     prop: 'resourceType',
     label: t('views.auditLogs.columns.resourceType'),
     sortable: true,
-    minWidth: 150,
     search: {
       el: 'input',
       props: { clearable: true },
@@ -142,11 +139,11 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     label: t('views.auditLogs.columns.resourceId'),
     slot: 'resourceId',
     sortable: true,
-    minWidth: 180,
     search: {
       el: 'input',
       props: { clearable: true },
       order: 6,
+      span: 12,
     },
   },
   {
@@ -155,7 +152,6 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     slot: 'succeeded',
     sortable: true,
     enum: succeededOptions,
-    width: 110,
     search: {
       el: 'select',
       props: {
@@ -163,6 +159,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
         placeholder: t('views.auditLogs.placeholders.allResults'),
       },
       order: 7,
+      span: 12,
     },
   },
   {
@@ -170,25 +167,21 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     label: t('views.auditLogs.columns.createdAt'),
     slot: 'createdAt',
     sortable: true,
-    width: 180,
   },
   {
     prop: 'operatorName',
     label: t('views.auditLogs.columns.operatorName'),
     sortable: true,
-    minWidth: 160,
   },
   {
     prop: 'summary',
     label: t('views.auditLogs.columns.summary'),
     slot: 'summary',
-    minWidth: 260,
   },
   {
     prop: 'errorMessage',
     label: t('views.auditLogs.columns.errorMessage'),
     slot: 'errorMessage',
-    minWidth: 260,
   },
 ]);
 
@@ -425,6 +418,7 @@ function onView(row: AuditLogRow) {
       :is-show-delete-btn="false"
       :show-operation-column="false"
       :auto-column-width="true"
+      :search-collapsible="true"
     >
       <template #createdAt="{ row }">
         <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>

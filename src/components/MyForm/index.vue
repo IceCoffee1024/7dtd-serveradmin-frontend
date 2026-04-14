@@ -68,6 +68,26 @@ function getTooltipPlacement(field: MyFormField<T>): string {
     return 'top';
   return field.tooltip.placement ?? 'top';
 }
+
+/**
+ * Maps a numeric column span to responsive el-col breakpoint props.
+ * Allows forms to gracefully collapse from multi-column to fewer columns
+ * on narrower viewports without any per-field configuration.
+ * Object spans are passed through as-is, giving callers full control.
+ */
+function getColProps(span: MyFormField<T>['span']): Record<string, number> {
+  if (typeof span === 'object' && span !== null)
+    return span as Record<string, number>;
+  if (span === undefined || span === 24)
+    return { span: 24 };
+  switch (span) {
+    case 6: return { xl: 6, lg: 6, md: 8, sm: 12, xs: 24 };
+    case 8: return { xl: 8, lg: 8, md: 12, sm: 24, xs: 24 };
+    case 12: return { xl: 12, lg: 12, md: 12, sm: 24, xs: 24 };
+    case 16: return { xl: 16, lg: 16, md: 24, sm: 24, xs: 24 };
+    default: return { span };
+  }
+}
 </script>
 
 <template>
@@ -82,8 +102,7 @@ function getTooltipPlacement(field: MyFormField<T>): string {
       <el-col
         v-for="field in fields"
         :key="field.prop"
-        :span="typeof field.span === 'number' ? field.span : (field.span === undefined ? 24 : undefined)"
-        v-bind="typeof field.span === 'object' ? field.span : {}"
+        v-bind="getColProps(field.span)"
       >
         <el-form-item
           :prop="field.prop"
@@ -110,10 +129,10 @@ function getTooltipPlacement(field: MyFormField<T>): string {
             :el="field.el"
             :prop-name="field.prop"
             :options="field.options"
+            :component-props="field.props"
             :disabled="getDisabled(field)"
             :placeholder="getPlaceholder(field)"
             :is-view-mode="disabled"
-            v-bind="field.props"
             @change="(val: any) => field.onChange?.(val, formData ?? {})"
           >
             <template #[field.prop]="scope">

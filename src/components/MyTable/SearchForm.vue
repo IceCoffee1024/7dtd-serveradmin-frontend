@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
-import type { MyFormField, OptionItem } from '~/composables/useMyForm';
 import type { MyTableColumn } from '~/composables/table';
+import type { MyFormField, OptionItem } from '~/composables/useMyForm';
 import { computed, toValue } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MyForm from '~/components/MyForm/index.vue';
@@ -9,14 +9,12 @@ import { applySearchTransform } from '~/composables/table';
 interface Props {
   columns: MyTableColumn<T>[];
   defaultSpan?: number;
-  labelWidth?: string | number;
   loading?: boolean;
   size?: App.ThemeSettings['general']['tableSize'];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   defaultSpan: 6,
-  labelWidth: '100px',
   loading: false,
   size: 'default',
 });
@@ -71,7 +69,7 @@ const isCompactKeywordSearch = computed(() =>
   searchFields.value.length === 1 && searchFields.value[0]?.el === 'input',
 );
 
-const compactSearchField = computed(() => searchFields.value[0] ?? null);
+const compactSearchField = computed(() => searchFields.value[0]);
 
 // ── transform 在适配器层执行，MyForm / MyFieldRenderer 对此无感知 ─────────────
 
@@ -88,7 +86,7 @@ function onReset() {
 <template>
   <!--
     MySearchForm 的模板只有这些：
-    调用 MyForm，在 row-append 插槽里注入搜索/重置按钮。
+    根据搜索字段数量切换为 compact 工具栏或多字段表单面板。
     完全没有 <component :is>、<el-option>、placeholder 生成等渲染逻辑。
   -->
   <template v-if="searchFields.length > 0">
@@ -96,57 +94,43 @@ function onReset() {
       v-if="isCompactKeywordSearch"
       class="search-toolbar"
     >
-      <div class="search-toolbar__field">
-        <span class="search-toolbar__label">
-          {{ compactSearchField?.label }}
-        </span>
-        <el-input
-          v-model="searchParam[compactSearchField!.prop]"
-          :size="size"
-          class="search-toolbar__input"
-          clearable
-          :placeholder="compactSearchField?.placeholder || t('components.myForm.pleaseInput', { label: compactSearchField?.label })"
-        />
-        <div class="search-toolbar__actions">
-          <el-button :size="size" type="primary" :loading="loading" @click="onSearch">
-            <icon-mdi:magnify class="mr-1" />
-            {{ t('components.myTable.search') }}
-          </el-button>
-          <el-button :size="size" @click="onReset">
-            <icon-mdi:restore class="mr-1" />
-            {{ t('components.myTable.reset') }}
-          </el-button>
-        </div>
-      </div>
+      <el-input
+        v-model="searchParam[compactSearchField!.prop]"
+        :size="size"
+        class="search-toolbar__input"
+        clearable
+        :placeholder="compactSearchField?.placeholder || t('components.myForm.pleaseInput', { label: compactSearchField?.label })"
+        @keyup.enter="onSearch"
+        @clear="onSearch"
+      />
+      <el-button :size="size" type="primary" :loading="loading" @click="onSearch">
+        <icon-mdi:magnify class="mr-1" />
+        {{ t('components.myTable.search') }}
+      </el-button>
+      <el-button :size="size" @click="onReset">
+        <icon-mdi:restore />
+      </el-button>
     </div>
 
-    <MyForm
-      v-else
-      v-model="searchParam"
-      :fields="searchFields"
-      :label-width="labelWidth"
-      :gutter="20"
-    >
-      <template #row-append>
-        <el-col
-          :span="6"
-          :xs="24"
-          :sm="12"
-          :md="8"
-          :lg="6"
-          class="search-actions"
-        >
-          <el-button :size="size" type="primary" :loading="loading" @click="onSearch">
-            <icon-mdi:magnify class="mr-1" />
-            {{ t('components.myTable.search') }}
-          </el-button>
-          <el-button :size="size" @click="onReset">
-            <icon-mdi:restore class="mr-1" />
-            {{ t('components.myTable.reset') }}
-          </el-button>
-        </el-col>
-      </template>
-    </MyForm>
+    <template v-else>
+      <MyForm
+        v-model="searchParam"
+        :fields="searchFields"
+        label-position="top"
+        label-width="auto"
+        :gutter="12"
+      />
+      <div class="search-panel__footer">
+        <el-button :size="size" type="primary" :loading="loading" @click="onSearch">
+          <icon-mdi:magnify class="mr-1" />
+          {{ t('components.myTable.search') }}
+        </el-button>
+        <el-button :size="size" @click="onReset">
+          <icon-mdi:restore class="mr-1" />
+          {{ t('components.myTable.reset') }}
+        </el-button>
+      </div>
+    </template>
   </template>
 </template>
 
@@ -154,44 +138,19 @@ function onReset() {
 .search-toolbar {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.search-toolbar__field {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  flex: 1 1 420px;
-}
-
-.search-toolbar__label {
-  flex: 0 0 auto;
-  color: var(--el-text-color-regular);
-  font-size: 14px;
-  white-space: nowrap;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .search-toolbar__input {
-  max-width: 340px;
-  min-width: 240px;
-  flex: 1 1 340px;
+  width: 260px;
 }
 
-.search-toolbar__actions {
+.search-panel__footer {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-
-.search-actions {
-  display: flex;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
   gap: 8px;
+  padding-top: 4px;
 }
 </style>

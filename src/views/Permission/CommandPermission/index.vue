@@ -35,7 +35,7 @@ const selectedRows = ref<CommandPermissionRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<CommandPermissionRow>> {
   const response = await api.getCommandPermissions(params);
-  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  const keyword = params.search?.keyword?.trim() || '';
   const filteredList = searchByKeyword(response, keyword, ['command', 'description']);
   const data = orderByField(
     filteredList,

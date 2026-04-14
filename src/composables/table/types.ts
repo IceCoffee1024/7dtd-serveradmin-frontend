@@ -78,7 +78,6 @@ export interface MyTableFetchParams {
   sortField?: string;
   sortOrder?: 'ascending' | 'descending' | null;
   search?: Record<string, any>;
-  searchQuery?: string;
 }
 
 /**

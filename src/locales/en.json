@@ -65,7 +65,10 @@
       "pleaseInput": "Please Input",
       "operation": "Operation",
       "batchActions": "Batch Actions",
-      "moreActions": "More Actions"
+      "moreActions": "More Actions",
+      "filters": "Filters",
+      "filterCollapse": "Collapse",
+      "filterExpand": "Expand"
     },
     "myForm": {
       "pleaseInput": "Please Input",

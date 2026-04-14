@@ -34,7 +34,7 @@ const selectedRows = ref<WhitelistEntryRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<WhitelistEntryRow>> {
   let data = await api.getWhitelistedPlayers(params);
-  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'displayName']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {

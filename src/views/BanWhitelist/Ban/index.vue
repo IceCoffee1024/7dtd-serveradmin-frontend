@@ -37,7 +37,7 @@ const selectedRows = ref<BanEntryRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<BanEntryRow>> {
   let data = await api.getBannedPlayers(params);
-  const keyword = params.search?.keyword?.trim() || params.searchQuery?.trim() || '';
+  const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'displayName', 'reason']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {

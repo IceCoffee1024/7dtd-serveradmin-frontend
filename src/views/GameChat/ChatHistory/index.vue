@@ -28,6 +28,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
       el: 'input',
       props: { clearable: true },
       order: 0,
+      span: 8,
     },
   },
   {
@@ -45,7 +46,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
         endPlaceholder: t('views.gameChat.history.placeholders.timeRange'),
       },
       order: 4,
-      span: 12,
+      span: 16,
       transform: (value: string[] | undefined) => ({
         startTime: value?.[0],
         endTime: value?.[1],
@@ -57,13 +58,11 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     label: t('views.gameChat.history.columns.createdAt'),
     slot: 'createdAt',
     sortable: true,
-    width: 180,
   },
   {
     prop: 'chatType',
     label: t('views.gameChat.history.columns.chatType'),
     sortable: true,
-    width: 120,
     enum: chatTypeOptions,
     search: {
       el: 'select',
@@ -72,17 +71,18 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
         placeholder: t('views.gameChat.history.placeholders.allChatTypes'),
       },
       order: 3,
+      span: 8,
     },
   },
   {
     prop: 'senderName',
     label: t('views.gameChat.history.columns.senderName'),
     sortable: true,
-    minWidth: 160,
     search: {
       el: 'input',
       props: { clearable: true },
       order: 1,
+      span: 8,
     },
   },
   {
@@ -90,24 +90,22 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     label: t('views.gameChat.history.columns.playerId'),
     slot: 'playerId',
     sortable: true,
-    minWidth: 180,
     search: {
       el: 'input',
       props: { clearable: true },
       order: 2,
+      span: 8,
     },
   },
   {
     prop: 'entityId',
     label: t('views.gameChat.history.columns.entityId'),
     sortable: true,
-    width: 110,
   },
   {
     prop: 'message',
     label: t('views.gameChat.history.columns.message'),
     slot: 'message',
-    minWidth: 320,
   },
 ]);
 
@@ -195,6 +193,7 @@ function formatTimestamp(value: string): string {
       :is-show-delete-btn="false"
       :show-operation-column="false"
       :auto-column-width="true"
+      :search-collapsible="true"
     >
       <template #createdAt="{ row }">
         <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>

@@ -130,6 +130,12 @@ interface Props extends /* @vue-ignore */ ElTableProps {
    * 默认 false。
    */
   autoColumnWidth?: boolean;
+  /**
+   * 是否将搜索区域包裹为可折叠筛选面板。
+   * 开启后，面板顶部显示标题栏与折叠切换按钮；关闭时仅保留面板视觉容器。
+   * 默认 false。
+   */
+  searchCollapsible?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -146,6 +152,7 @@ const props = withDefaults(defineProps<Props>(), {
   showOperationColumn: true,
   operationColumnWidth: 160,
   autoColumnWidth: false, // 默认关闭，保持向后兼容
+  searchCollapsible: false,
 });
 
 const emits = defineEmits<{
@@ -341,6 +348,12 @@ const hasSearchColumns = computed(() =>
   props.columns.some(col => col.search?.el && col.prop != null),
 );
 
+/** True when there is exactly one search field with el='input' — renders inline in the toolbar instead of a separate filter panel. */
+const isCompactSearch = computed(() => {
+  const searchCols = props.columns.filter(col => col.search?.el && col.prop != null);
+  return searchCols.length === 1 && searchCols[0]?.search?.el === 'input';
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 自动列宽
 // ─────────────────────────────────────────────────────────────────────────────
@@ -436,6 +449,10 @@ watch(selectedColumns, () => {
 // 暴露给父组件的 API
 // ─────────────────────────────────────────────────────────────────────────────
 
+// 筛选面板折叠状态；searchCollapsible=false 时此状态无实际效果。
+// 多字段筛选默认收起，保留首屏空间给数据表本身。
+const searchCollapsed = ref(true);
+
 defineExpose({
   currentRow,
   reload: loadLazyData,
@@ -457,22 +474,51 @@ defineExpose({
       }"
     >
       <!--
-        FIX: onSearch 现在接收 SearchForm emit 出的已转换参数（transformed），
-        直接传给 useMyTable 的 onSearch(transformed)，不再在此处执行 transform。
-        onReset 仍由 useMyTable 负责（清空 searchParam + 恢复 defaultValue + 重新加载）。
+        筛选面板：通过背景色 + 边框与下方表格拉开视觉层次。
+        searchCollapsible=true 时顶部出现可点击的标题行，支持展开/收起动画。
       -->
       <div
-        v-if="showSearch && hasSearchColumns"
-        class="search-area"
+        v-if="showSearch && hasSearchColumns && !isCompactSearch"
+        class="mb-3 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50"
       >
-        <SearchForm
-          v-model="searchParam"
-          :columns="props.columns"
-          :loading="loading"
-          :size="resolvedTableSize"
-          @search="onSearch"
-          @reset="onReset"
-        />
+        <!-- 可折叠标题行（仅 searchCollapsible=true 时显示） -->
+        <div
+          v-if="searchCollapsible"
+          class="flex cursor-pointer select-none items-center justify-between px-4 py-2.5 transition-colors hover:bg-gray-100/80 dark:hover:bg-gray-700/30"
+          :class="{ 'border-b border-gray-200 dark:border-gray-700': !searchCollapsed }"
+          @click="searchCollapsed = !searchCollapsed"
+        >
+          <span class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400">
+            <el-icon :size="14"><icon-mdi:filter-outline /></el-icon>
+            {{ $t('components.myTable.filters') }}
+          </span>
+          <span class="inline-flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+            {{ searchCollapsed ? $t('components.myTable.filterExpand') : $t('components.myTable.filterCollapse') }}
+            <el-icon
+              class="transition-transform duration-200"
+              :class="{ 'rotate-180': searchCollapsed }"
+            >
+              <icon-mdi:chevron-up />
+            </el-icon>
+          </span>
+        </div>
+
+        <!-- 搜索表单内容；collapsed 时通过 collapse-transition 平滑隐藏 -->
+        <el-collapse-transition>
+          <div
+            v-show="!searchCollapsible || !searchCollapsed"
+            class="px-4 pb-3 pt-3"
+          >
+            <SearchForm
+              v-model="searchParam"
+              :columns="props.columns"
+              :loading="loading"
+              :size="resolvedTableSize"
+              @search="onSearch"
+              @reset="onReset"
+            />
+          </div>
+        </el-collapse-transition>
       </div>
 
       <!-- 工具栏 -->
@@ -524,6 +570,17 @@ defineExpose({
           >
             <icon-mdi:refresh />
           </IconButton>
+
+          <!-- Compact single-keyword search: rendered inline in the toolbar (no separate panel) -->
+          <SearchForm
+            v-if="isCompactSearch && showSearch && hasSearchColumns"
+            v-model="searchParam"
+            :columns="props.columns"
+            :loading="loading"
+            :size="resolvedTableSize"
+            @search="onSearch"
+            @reset="onReset"
+          />
         </div>
 
         <div class="flex gap-2">
