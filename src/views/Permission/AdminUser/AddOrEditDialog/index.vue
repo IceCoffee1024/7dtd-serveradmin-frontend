@@ -59,7 +59,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'playerId',
     label: t('views.banWhitelist.playerId'),
     el: 'input',
-    rules: rules.playerId,
     tooltip: t('views.permission.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
@@ -72,14 +71,12 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       max: 2000,
       class: 'w-full',
     },
-    rules: rules.permissionLevel,
     tooltip: t('views.permission.tooltips.permissionLevel'),
   },
   {
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
     el: 'input',
-    rules: rules.displayName,
     tooltip: t('views.permission.tooltips.displayName'),
   },
 ]);
@@ -155,6 +152,7 @@ defineExpose({
       ref="formRef"
       v-model="form"
       :fields="fields"
+      :rules="rules"
       label-width="130px"
     />
   </MyDialog>

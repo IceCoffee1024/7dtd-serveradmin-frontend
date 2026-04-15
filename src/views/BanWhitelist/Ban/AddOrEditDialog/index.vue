@@ -53,7 +53,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'playerId',
     label: t('views.banWhitelist.playerId'),
     el: 'input',
-    rules: rules.playerId,
     tooltip: t('views.banWhitelist.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
@@ -61,7 +60,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
     el: 'input',
-    rules: rules.displayName,
   },
   {
     prop: 'bannedUntil',
@@ -72,7 +70,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       format: 'YYYY-MM-DD HH:mm:ss',
       class: 'w-full',
     },
-    rules: rules.bannedUntil,
     tooltip: t('views.banWhitelist.tooltips.bannedUntil'),
   },
   {
@@ -83,7 +80,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       type: 'textarea',
       rows: 3,
     },
-    rules: rules.reason,
     tooltip: t('views.banWhitelist.tooltips.reason'),
   },
 ]);
@@ -176,6 +172,7 @@ defineExpose({
       ref="formRef"
       v-model="form"
       :fields="fields"
+      :rules="rules"
       label-width="130px"
     />
   </MyDialog>

@@ -67,7 +67,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.chatSettings.fields.isEnabled'),
     el: 'select',
     options: booleanOptions.value,
-    rules: rules.isEnabled,
     tooltip: t('views.chatSettings.tooltips.isEnabled'),
     disabled: () => true,
     span: { xs: 24, md: 12 },
@@ -76,7 +75,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'globalServerName',
     label: t('views.chatSettings.fields.globalServerName'),
     el: 'input',
-    rules: rules.globalServerName,
     tooltip: t('views.chatSettings.tooltips.globalServerName'),
     span: { xs: 24, md: 12 },
   },
@@ -84,7 +82,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'whisperServerName',
     label: t('views.chatSettings.fields.whisperServerName'),
     el: 'input',
-    rules: rules.whisperServerName,
     tooltip: t('views.chatSettings.tooltips.whisperServerName'),
     span: { xs: 24, md: 12 },
   },
@@ -92,7 +89,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'chatCommandPrefixes',
     label: t('views.chatSettings.fields.chatCommandPrefixes'),
     el: 'input',
-    rules: rules.chatCommandPrefixes,
     tooltip: t('views.chatSettings.tooltips.chatCommandPrefixes'),
     span: { xs: 24, md: 12 },
   },
@@ -101,7 +97,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.chatSettings.fields.allowNoPrefix'),
     el: 'select',
     options: booleanOptions.value,
-    rules: rules.allowNoPrefix,
     tooltip: t('views.chatSettings.tooltips.allowNoPrefix'),
     span: { xs: 24, md: 12 },
   },
@@ -109,7 +104,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'chatCommandSeparators',
     label: t('views.chatSettings.fields.chatCommandSeparators'),
     el: 'input',
-    rules: rules.chatCommandSeparators,
     tooltip: t('views.chatSettings.tooltips.chatCommandSeparators'),
     span: { xs: 24, md: 12 },
   },
@@ -247,6 +241,7 @@ onMounted(() => {
         ref="formRef"
         v-model="form"
         :fields="fields"
+        :rules="rules"
         label-position="top"
         label-width="auto"
         :gutter="16"

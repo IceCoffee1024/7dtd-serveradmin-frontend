@@ -58,6 +58,8 @@ const HEX_COLOR_INPUT_SCHEMA = v.union([
   ),
 ]);
 
+const HEX_COLOR_PREFIX_REGEX = /^#/;
+
 const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 const customNameInputRef = useTemplateRef<{ input: HTMLInputElement }>('customNameInputRef');
@@ -91,7 +93,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'playerId',
     label: t('views.coloredChat.profiles.fields.playerId'),
     el: 'input',
-    rules: rules.playerId,
     tooltip: t('views.coloredChat.profiles.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
@@ -99,21 +100,18 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'customName',
     label: t('views.coloredChat.profiles.fields.customName'),
     el: 'custom',
-    rules: rules.customName,
     tooltip: t('views.coloredChat.profiles.tooltips.customName'),
   },
   {
     prop: 'nameColor',
     label: t('views.coloredChat.profiles.fields.nameColor'),
     el: 'input',
-    rules: rules.nameColor,
     tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
     prop: 'textColor',
     label: t('views.coloredChat.profiles.fields.textColor'),
     el: 'input',
-    rules: rules.textColor,
     tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
@@ -124,7 +122,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       type: 'textarea',
       rows: 3,
     },
-    rules: rules.description,
     tooltip: t('views.coloredChat.profiles.tooltips.description'),
   },
 ]);
@@ -151,7 +148,7 @@ function normalizePlayerId(value: string): string {
 }
 
 function normalizeHexColor(value: string): string | null {
-  const normalizedValue = value.trim().replace(/^#/, '').toUpperCase();
+  const normalizedValue = value.trim().replace(HEX_COLOR_PREFIX_REGEX, '').toUpperCase();
   return normalizedValue.length === 0 ? null : normalizedValue;
 }
 
@@ -255,6 +252,7 @@ defineExpose({
       ref="formRef"
       v-model="form"
       :fields="fields"
+      :rules="rules"
       label-width="130px"
     >
       <template #customName>

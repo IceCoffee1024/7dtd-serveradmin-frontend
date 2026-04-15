@@ -10,6 +10,8 @@ defineOptions({ name: 'ColoredProfilesPage' });
 
 type ColoredProfileRow = API.ColoredChat.Profile;
 
+const HEX_COLOR_PREFIX_REGEX = /^#/;
+
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
@@ -150,7 +152,7 @@ function toOptionalString(value: unknown): string | undefined {
  * @returns Uppercase hex string without a leading #, or undefined when empty.
  */
 function toOptionalColor(value: unknown): string | undefined {
-  const normalizedValue = toOptionalString(value)?.replace(/^#/, '').toUpperCase();
+  const normalizedValue = toOptionalString(value)?.replace(HEX_COLOR_PREFIX_REGEX, '').toUpperCase();
   return normalizedValue || undefined;
 }
 

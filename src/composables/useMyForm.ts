@@ -2,7 +2,6 @@ import type {
   CheckboxGroupProps,
   DatePickerProps,
   FormInstance,
-  FormItemRule,
   InputNumberProps,
   InputProps,
   RadioGroupProps,
@@ -100,7 +99,6 @@ export interface MyFormField<
   el: El;
   props?: FormElPropsMap[El];
   options?: MaybeRef<OptionItem[]>;
-  rules?: FormItemRule | FormItemRule[];
   span?: ResponsiveSpan;
   isShow?: boolean | ((model: Partial<T>) => boolean);
   disabled?: boolean | ((model: Partial<T>) => boolean);

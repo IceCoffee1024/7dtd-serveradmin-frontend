@@ -59,7 +59,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'command',
     label: t('views.permission.command'),
     el: 'input',
-    rules: rules.command,
     tooltip: t('views.permission.tooltips.command'),
     disabled: () => isEdit.value,
   },
@@ -72,7 +71,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       max: 2000,
       class: 'w-full',
     },
-    rules: rules.permissionLevel,
     tooltip: t('views.permission.tooltips.permissionLevel'),
   },
   {
@@ -83,7 +81,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       type: 'textarea',
       rows: 3,
     },
-    rules: rules.description,
     tooltip: t('views.permission.tooltips.description'),
   },
 ]);
@@ -162,6 +159,7 @@ defineExpose({
       ref="formRef"
       v-model="form"
       :fields="fields"
+      :rules="rules"
       label-width="130px"
     />
   </MyDialog>

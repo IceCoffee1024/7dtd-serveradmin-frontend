@@ -3,22 +3,22 @@
  * MyForm —— 配置化表单组件
  * 职责：处理校验规则、动态显隐联动、表单级别禁用、栅格布局。
  */
-import type { FormInstance } from 'element-plus';
+import type { ElForm, FormInstance, FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FieldRenderer from './FieldRenderer.vue';
 
-interface Props {
+type ElFormProps = InstanceType<typeof ElForm>['$props'];
+interface Props extends /* @vue-ignore */ ElFormProps {
   fields: MyFormField<T>[];
-  disabled?: boolean;
   labelWidth?: string | number;
   labelPosition?: 'left' | 'right' | 'top';
+  rules?: FormRules | undefined;
   gutter?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  disabled: false,
   labelWidth: '100px',
   labelPosition: 'right',
   gutter: 16,
@@ -49,12 +49,6 @@ function getDisabled(field: MyFormField<T>): boolean {
   if (typeof field.disabled === 'function')
     return field.disabled(formData.value ?? {});
   return field.disabled ?? false;
-}
-
-function getRules(field: MyFormField<T>) {
-  if (props.disabled || !field.rules)
-    return [];
-  return Array.isArray(field.rules) ? field.rules : [field.rules];
 }
 
 function getTooltipContent(field: MyFormField<T>): string {
@@ -94,9 +88,9 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
   <el-form
     ref="formRef"
     :model="formData"
-    :disabled="disabled"
     :label-width="labelWidth"
     :label-position="labelPosition"
+    :rules="rules"
   >
     <el-row :gutter="gutter">
       <el-col
@@ -106,7 +100,6 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
       >
         <el-form-item
           :prop="field.prop"
-          :rules="getRules(field)"
         >
           <template #label>
             <span class="inline-flex" style="align-items: center; gap: 4px;">

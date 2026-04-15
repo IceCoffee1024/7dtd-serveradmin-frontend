@@ -73,7 +73,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.coloredChat.settings.fields.isEnabled'),
     el: 'select',
     options: booleanOptions.value,
-    rules: rules.isEnabled,
     tooltip: t('views.coloredChat.settings.tooltips.isEnabled'),
     span: { xs: 24, md: 12 },
   },
@@ -82,7 +81,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.coloredChat.settings.fields.allowPlayerColorTags'),
     el: 'select',
     options: booleanOptions.value,
-    rules: rules.allowPlayerColorTags,
     tooltip: t('views.coloredChat.settings.tooltips.allowPlayerColorTags'),
     span: { xs: 24, md: 12 },
   },
@@ -90,7 +88,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'globalDefault',
     label: t('views.coloredChat.settings.fields.globalDefault'),
     el: 'input',
-    rules: rules.globalDefault,
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -98,7 +95,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'whisperDefault',
     label: t('views.coloredChat.settings.fields.whisperDefault'),
     el: 'input',
-    rules: rules.whisperDefault,
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -106,7 +102,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'friendsDefault',
     label: t('views.coloredChat.settings.fields.friendsDefault'),
     el: 'input',
-    rules: rules.friendsDefault,
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -114,7 +109,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'partyDefault',
     label: t('views.coloredChat.settings.fields.partyDefault'),
     el: 'input',
-    rules: rules.partyDefault,
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -122,7 +116,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'adminDefault',
     label: t('views.coloredChat.settings.fields.adminDefault'),
     el: 'input',
-    rules: rules.adminDefault,
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -130,7 +123,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'systemDefault',
     label: t('views.coloredChat.settings.fields.systemDefault'),
     el: 'input',
-    rules: rules.systemDefault,
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -271,6 +263,7 @@ onMounted(() => {
         ref="formRef"
         v-model="form"
         :fields="fields"
+        :rules="rules"
         label-position="top"
         label-width="auto"
         :gutter="16"

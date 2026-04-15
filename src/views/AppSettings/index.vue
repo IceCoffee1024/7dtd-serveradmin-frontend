@@ -61,7 +61,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'webUrl',
     label: t('views.appSettings.fields.webUrl'),
     el: 'input',
-    rules: rules.webUrl,
     tooltip: t('views.appSettings.tooltips.webUrl'),
     span: { xs: 24, md: 12 },
   },
@@ -69,7 +68,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'userName',
     label: t('views.appSettings.fields.userName'),
     el: 'input',
-    rules: rules.userName,
     span: { xs: 24, md: 12 },
   },
   {
@@ -77,7 +75,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.appSettings.fields.password'),
     el: 'input',
     props: { showPassword: true, autocomplete: 'new-password' },
-    rules: rules.password,
     tooltip: t('views.appSettings.tooltips.password'),
     span: { xs: 24, md: 12 },
   },
@@ -85,7 +82,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'serverConfigFile',
     label: t('views.appSettings.fields.serverConfigFile'),
     el: 'input',
-    rules: rules.serverConfigFile,
     tooltip: t('views.appSettings.tooltips.serverConfigFile'),
     span: { xs: 24, md: 12 },
   },
@@ -94,7 +90,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.appSettings.fields.accessTokenExpireTime'),
     el: 'input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    rules: rules.accessTokenExpireTime,
     tooltip: t('views.appSettings.tooltips.accessTokenExpireTime'),
     span: { xs: 24, md: 12 },
   },
@@ -103,7 +98,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.appSettings.fields.refreshTokenExpireTime'),
     el: 'input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    rules: rules.refreshTokenExpireTime,
     tooltip: t('views.appSettings.tooltips.refreshTokenExpireTime'),
     span: { xs: 24, md: 12 },
   },
@@ -220,6 +214,7 @@ onMounted(() => {
         ref="formRef"
         v-model="form"
         :fields="fields"
+        :rules="rules"
         label-position="top"
         label-width="auto"
         :gutter="16"
