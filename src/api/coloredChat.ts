@@ -11,7 +11,7 @@ export function getSettings() {
  * Persists ColoredChat feature settings.
  */
 export function updateSettings(settings: API.ColoredChat.Settings) {
-  return http.put<unknown>('ColoredChat/Settings', { json: settings }).json();
+  return http.put('ColoredChat/Settings', { json: settings }).then(() => undefined);
 }
 
 /**
@@ -46,5 +46,5 @@ export function updateProfile(profile: API.ColoredChat.ProfileUpsert) {
  * Deletes player-specific ColoredChat profiles by player id.
  */
 export function deleteProfiles(playerIds: string[]) {
-  return http.delete<unknown>('ColoredChat/Profiles', { json: playerIds }).json();
+  return http.delete('ColoredChat/Profiles', { json: playerIds }).then(() => undefined);
 }

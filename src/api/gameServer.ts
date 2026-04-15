@@ -100,7 +100,7 @@ export function getServerConfig() {
  * @returns Confirmation of the update operation.
  */
 export function updateServerConfig(config: API.GameServer.ServerConfig) {
-  return http.put<unknown>('GameServer/Config', { json: config }).json();
+  return http.put('GameServer/Config', { json: config }).then(() => undefined);
 }
 
 // #region Players
@@ -326,7 +326,7 @@ export function getServerSettings() {
  * @returns Update confirmation.
  */
 export function updateServerSettings(settings: API.GameServer.ServerSettings) {
-  return http.put<unknown>('GameServer/ServerSettings', { json: settings }).json();
+  return http.put('GameServer/ServerSettings', { json: settings }).then(() => undefined);
 }
 // #endregion
 
@@ -458,7 +458,7 @@ export function getAppSettings() {
  * @returns Update response.
  */
 export function updateAppSettings(settings: API.GameServer.AppSettings) {
-  return http.put<unknown>('AppSettings', { json: settings }).json();
+  return http.put('AppSettings', { json: settings }).then(() => undefined);
 }
 // #endregion
 
@@ -483,6 +483,6 @@ export function getMods() {
  * @returns Toggle result.
  */
 export function toggleModStatus(folderName: string) {
-  return http.put<unknown>(`GameServer/Mods?folderName=${folderName}`).json();
+  return http.put(`GameServer/Mods?folderName=${folderName}`).then(() => undefined);
 }
 // #endregion

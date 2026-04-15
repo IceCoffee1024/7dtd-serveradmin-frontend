@@ -1,4 +1,4 @@
-﻿import ky from 'ky';
+﻿import ky, { isHTTPError } from 'ky';
 import { AUTH_PATH } from '~/api/auth';
 import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';
@@ -12,13 +12,18 @@ interface ErrorResponse {
   error?: string;
 }
 
+interface HttpErrorWithData extends Error {
+  response: Response;
+  data?: ErrorResponse;
+}
+
 const http = ky.create({
-  prefixUrl: import.meta.env.VITE_API_BASE_URL,
+  prefix: import.meta.env.VITE_API_BASE_URL,
   timeout: import.meta.env.VITE_API_TIMEOUT,
   retry: 0,
   hooks: {
     beforeRequest: [
-      async (request) => {
+      async ({ request }) => {
         nProgress.start();
 
         if (!request.url.endsWith(AUTH_PATH)) {
@@ -37,16 +42,13 @@ const http = ky.create({
       },
     ],
     beforeError: [
-      async (error) => {
+      ({ error }) => {
         nProgress.done();
 
-        let data: ErrorResponse | null = null;
+        const { toast } = usePopup();
+        const { t } = i18n.global;
 
-        const { response } = error;
-        if (!response) {
-          const { toast } = usePopup();
-          const { t } = i18n.global;
-
+        if (isHTTPError(error) === false) {
           toast({
             text: t('errors.http.serverError'),
             type: 'error',
@@ -55,17 +57,18 @@ const http = ky.create({
           return error;
         }
 
-        if (response) {
-          try {
-            data = await response.json<ErrorResponse>();
-          }
-          catch {
-            // Ignore JSON parsing errors
-          }
-        }
+        const httpError = error as HttpErrorWithData;
+        const data = httpError.data;
+        const { response } = httpError;
 
-        const { toast } = usePopup();
-        const { t } = i18n.global;
+        if (!response) {
+          toast({
+            text: t('errors.http.serverError'),
+            type: 'error',
+          });
+
+          return error;
+        }
 
         switch (response.status) {
           case 401:
@@ -101,6 +104,12 @@ const http = ky.create({
           case 500:
             toast({
               text: `${t('errors.http.serverError')}: ${data?.message || data?.error}`,
+              type: 'error',
+            });
+            break;
+          default:
+            toast({
+              text: `${t('errors.http.serverError')}: ${data?.message || data?.error || response.status}`,
               type: 'error',
             });
             break;

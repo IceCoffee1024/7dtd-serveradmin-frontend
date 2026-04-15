@@ -11,7 +11,7 @@ export function getChatSettings() {
  * Persists shared chat settings.
  */
 export function updateChatSettings(settings: API.Chat.ChatSettings) {
-  return http.put<unknown>('Chat/Settings', { json: settings }).json();
+  return http.put('Chat/Settings', { json: settings }).then(() => undefined);
 }
 
 /**
