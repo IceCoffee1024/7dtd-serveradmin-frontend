@@ -1,40 +1,10 @@
-import type {
-  CheckboxGroupProps,
-  DatePickerProps,
-  FormInstance,
-  InputNumberProps,
-  InputProps,
-  RadioGroupProps,
-  SelectProps,
-  SwitchProps,
-  UploadProps,
-} from 'element-plus';
+import type { FormInstance } from 'element-plus';
 import type { MaybeRef } from 'vue';
+import type { FormElPropsMap, FormElType } from '~/components/FieldRenderer/controlRegistry';
 import { cloneDeep } from 'es-toolkit';
 import { computed, nextTick, ref } from 'vue';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 表单组件类型 → Props 映射
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface FormElPropsMap {
-  'el-input': Partial<InputProps>;
-  'el-input-number': Partial<InputNumberProps>;
-  /**
-   * `options` is reserved for MyForm's normalized option source.
-   * Element Plus' select props also expose an `options` field, so we omit it
-   * here to avoid a template-level prop collision when binding to FieldRenderer.
-   */
-  'el-select': Partial<Omit<SelectProps, 'options'>>;
-  'el-date-picker': Partial<DatePickerProps>;
-  'el-switch': Partial<SwitchProps>;
-  'el-radio-group': Partial<Omit<RadioGroupProps, 'options'>>;
-  'el-checkbox-group': Partial<Omit<CheckboxGroupProps, 'options'>>;
-  'upload': Partial<UploadProps>;
-  'custom': Record<string, any>;
-}
-
-export type FormElType = keyof FormElPropsMap;
+export type { FormElPropsMap, FormElType } from '~/components/FieldRenderer/controlRegistry';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 通用选项类型
@@ -104,6 +74,12 @@ export interface UseMyFormOptions<T extends Record<string, any>> {
 // useMyForm
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Builds the reactive form state and visibility model for a configuration-driven form.
+ * The composable keeps schema-driven defaults, validation hooks, and view mode in one place.
+ * @param options - Field definitions and optional default value factory.
+ * @returns Reactive state and lifecycle helpers for MyForm.
+ */
 export function useMyForm<T extends Record<string, any>>(
   options: UseMyFormOptions<T>,
 ) {

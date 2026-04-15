@@ -8,7 +8,7 @@ import type { ElForm, FormInstance, FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import FieldRenderer from './FieldRenderer/index.vue';
+import FieldRenderer from '~/components/FieldRenderer/index.vue';
 
 type ElFormProps = InstanceType<typeof ElForm>['$props'];
 

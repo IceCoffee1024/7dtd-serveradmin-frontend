@@ -57,6 +57,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ExceptionPage: typeof import('./components/ExceptionPage/index.vue')['default']
+    FieldRenderer: typeof import('./components/FieldRenderer/index.vue')['default']
     GameIcon: typeof import('./components/GameIcon/index.vue')['default']
     IconButton: typeof import('./components/IconButton/index.vue')['default']
     IconCustomNoPermission: typeof import('~icons/custom/no-permission')['default']

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { Component, MaybeRef } from 'vue';
-import type { FormControlType } from './controls/types.ts';
+import type { FormControlType } from './controlRegistry.ts';
 import type { FormElType, OptionItem } from '~/composables/useMyForm';
 /**
  * MyFieldRenderer renders the correct form control for a field schema.
  * It keeps the field contract, option handling, and slot escape hatch in one place.
  */
 import { toValue } from 'vue';
-import { resolveFormControl } from './controls/resolveControl.ts';
+import { resolveFormControl } from './controlRegistry.ts';
 
 defineOptions({ inheritAttrs: false });
 
