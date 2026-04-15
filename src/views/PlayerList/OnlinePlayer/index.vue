@@ -24,7 +24,7 @@ const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
     },
   },

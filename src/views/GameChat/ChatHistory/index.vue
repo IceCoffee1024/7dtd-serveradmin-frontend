@@ -25,7 +25,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 0,
       span: 8,
@@ -37,7 +37,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'date-picker',
+      el: 'el-date-picker',
       props: {
         clearable: true,
         type: 'datetimerange',
@@ -65,7 +65,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     sortable: true,
     enum: chatTypeOptions,
     search: {
-      el: 'select',
+      el: 'el-select',
       props: {
         clearable: true,
         placeholder: t('views.gameChat.history.placeholders.allChatTypes'),
@@ -79,7 +79,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     label: t('views.gameChat.history.columns.senderName'),
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 1,
       span: 8,
@@ -91,7 +91,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     slot: 'playerId',
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 2,
       span: 8,

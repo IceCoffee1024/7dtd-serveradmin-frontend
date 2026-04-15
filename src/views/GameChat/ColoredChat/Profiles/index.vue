@@ -17,6 +17,7 @@ const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<ColoredProfileRow | null>(null);
+const selectedRows = ref<ColoredProfileRow[]>([]);
 
 const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
   {
@@ -25,7 +26,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
     },
   },
@@ -34,7 +35,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
     label: t('views.coloredChat.profiles.fields.playerId'),
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 1,
       span: 8,
@@ -45,7 +46,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
     label: t('views.coloredChat.profiles.fields.customName'),
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 2,
       span: 8,
@@ -55,7 +56,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
     prop: 'nameColor',
     label: t('views.coloredChat.profiles.fields.nameColor'),
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 3,
       span: 8,
@@ -65,7 +66,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
     prop: 'textColor',
     label: t('views.coloredChat.profiles.fields.textColor'),
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 4,
       span: 8,
@@ -77,7 +78,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
     label: t('views.coloredChat.profiles.fields.createdAt'),
     sortable: true,
     search: {
-      el: 'date-picker',
+      el: 'el-date-picker',
       props: {
         clearable: true,
         type: 'datetimerange',
@@ -95,8 +96,6 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
   },
 ]);
 
-const selectedRows = ref<ColoredProfileRow[]>([]);
-
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<ColoredProfileRow>> {
   const response = await api.getProfiles({
     pageNumber: params.pageNumber,
@@ -105,7 +104,6 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     playerId: toOptionalString(params.search?.playerId),
     customName: toOptionalString(params.search?.customName),
     nameColor: toOptionalColor(params.search?.nameColor),
-    textColor: toOptionalColor(params.search?.textColor),
     startTime: toOptionalString(params.search?.startTime),
     endTime: toOptionalString(params.search?.endTime),
     order: toOrder(params.sortField),

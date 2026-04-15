@@ -58,14 +58,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.banWhitelist.playerId'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.permission.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
     prop: 'permissionLevel',
     label: t('views.permission.permissionLevel'),
-    el: 'input-number',
+    el: 'el-input-number',
     props: {
       min: 0,
       max: 2000,
@@ -76,7 +76,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.permission.tooltips.displayName'),
   },
 ]);

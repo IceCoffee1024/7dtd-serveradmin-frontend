@@ -55,10 +55,9 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 0,
-      span: 12,
     },
   },
   {
@@ -67,7 +66,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'date-picker',
+      el: 'el-date-picker',
       props: {
         clearable: true,
         type: 'datetimerange',
@@ -90,7 +89,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     sortable: true,
     enum: sourceOptions,
     search: {
-      el: 'select',
+      el: 'el-select',
       props: {
         clearable: true,
         placeholder: t('views.auditLogs.placeholders.allSources'),
@@ -104,7 +103,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     slot: 'operatorId',
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 3,
     },
@@ -116,7 +115,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     sortable: true,
     enum: actionTypeOptions,
     search: {
-      el: 'select',
+      el: 'el-select',
       props: {
         clearable: true,
         placeholder: t('views.auditLogs.placeholders.allActionTypes'),
@@ -129,7 +128,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     label: t('views.auditLogs.columns.resourceType'),
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 5,
     },
@@ -140,7 +139,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     slot: 'resourceId',
     sortable: true,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
       order: 6,
       span: 12,
@@ -153,7 +152,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     sortable: true,
     enum: succeededOptions,
     search: {
-      el: 'select',
+      el: 'el-select',
       props: {
         clearable: true,
         placeholder: t('views.auditLogs.placeholders.allResults'),

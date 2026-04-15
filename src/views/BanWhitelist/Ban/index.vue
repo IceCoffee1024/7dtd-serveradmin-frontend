@@ -23,7 +23,7 @@ const columns = computed<MyTableColumn<BanEntryRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
     },
   },

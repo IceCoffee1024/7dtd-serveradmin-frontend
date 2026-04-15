@@ -1,15 +1,17 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 /**
- * MyForm —— 配置化表单组件
- * 职责：处理校验规则、动态显隐联动、表单级别禁用、栅格布局。
+ * MyForm is a configuration-driven form wrapper.
+ * It owns validation rules, visibility and dependency links, form-wide disable
+ * state, and responsive grid layout.
  */
 import type { ElForm, FormInstance, FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import FieldRenderer from './FieldRenderer.vue';
+import FieldRenderer from './FieldRenderer/index.vue';
 
 type ElFormProps = InstanceType<typeof ElForm>['$props'];
+
 interface Props extends /* @vue-ignore */ ElFormProps {
   fields: MyFormField<T>[];
   labelWidth?: string | number;
@@ -38,7 +40,7 @@ defineExpose({
 function getPlaceholder(field: MyFormField<T>): string {
   if (field.placeholder)
     return field.placeholder;
-  return ['input', 'input-number'].includes(field.el)
+  return ['el-input', 'el-input-number'].includes(field.el)
     ? t('components.myForm.pleaseInput', { label: field.label })
     : t('components.myForm.pleaseSelect', { label: field.label });
 }

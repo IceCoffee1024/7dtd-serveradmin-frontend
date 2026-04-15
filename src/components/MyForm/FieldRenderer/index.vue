@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { Component, MaybeRef } from 'vue';
+import type { FormControlType } from './controls/types.ts';
 import type { FormElType, OptionItem } from '~/composables/useMyForm';
 /**
- * MyFieldRenderer —— 表单控件渲染引擎
- * 职责：接收组件类型 + props + options，输出一个完整的 Element Plus 控件。
+ * MyFieldRenderer renders the correct form control for a field schema.
+ * It keeps the field contract, option handling, and slot escape hatch in one place.
  */
 import { toValue } from 'vue';
-import { FORM_COMPONENT_MAP } from '~/composables/useMyForm';
+import { resolveFormControl } from './controls/resolveControl.ts';
 
 defineOptions({ inheritAttrs: false });
 
@@ -19,7 +20,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 const emits = defineEmits<{
-  /** 值变更事件，供上层（MyForm）执行 onChange 联动 */
+  /** Emits value changes so MyForm can run field-level change handlers. */
   change: [val: any];
 }>();
 
@@ -27,48 +28,63 @@ const emits = defineEmits<{
 // Props & Model
 // ─────────────────────────────────────────────────────────────────────────────
 interface Props {
-  /** 组件类型，对应 FORM_COMPONENT_MAP 的键 */
+  /** Control key declared in the schema. */
   el: FormElType;
-  /** 字段的 prop 名称，极其关键！用于保证 custom 插槽名称的唯一性 */
+  /** Field property name used to keep custom slot names unique. */
   propName: string;
-  /** 透传给具体组件的原生 props，由上层 Schema 提供 */
+  /** Native props forwarded to the resolved control component. */
   componentProps?: Record<string, any>;
-  /** 下拉/单选/多选的选项数据 */
+  /** Normalized options for select, radio, and checkbox style controls. */
   options?: MaybeRef<OptionItem[]>;
-  /** 占位提示文字 */
+  /** Placeholder text shown by input-style controls. */
   placeholder?: string;
-  /** 是否禁用 */
+  /** Disables the rendered control when true. */
   disabled?: boolean;
-  /** 是否处于纯只读模式（透传给插槽） */
+  /** Read-only view mode forwarded to slot content. */
   isViewMode?: boolean;
 }
 
-// 采用 Vue 3.4+ 最佳实践：极其干净的双向绑定
+// Vue 3.4+ model binding keeps the renderer lean and declarative.
 const modelValue = defineModel<any>();
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 类型守卫与辅助函数
+// Type guards and helpers
 // ─────────────────────────────────────────────────────────────────────────────
-const OPTIONS_EL_TYPES = ['select', 'radio-group', 'checkbox-group'] as const;
+const OPTIONS_EL_TYPES = ['el-select', 'el-radio-group', 'el-checkbox-group'] as const;
 type OptionsElType = typeof OPTIONS_EL_TYPES[number];
 
+function isSlotControl(el: FormElType): boolean {
+  return el === 'custom';
+}
+
+function isResolvableControl(el: FormElType): el is FormControlType {
+  return el !== 'custom';
+}
+
 function isOptionsType(el: FormElType): el is OptionsElType {
-  return (OPTIONS_EL_TYPES as readonly string[]).includes(el);
+  return (OPTIONS_EL_TYPES as readonly string[]).includes(el)
+    || (isResolvableControl(el) && resolveFormControl(el)?.supportsOptions === true);
 }
 
-function isCustomType(el: FormElType): boolean {
-  return el === 'custom' || el === 'upload';
-}
-
-/** 消除模板内联 as any 报错的优雅转换器 */
+/** Throws early when the schema references an unsupported control key. */
 function getStandardComponent(el: FormElType): Component {
-  return FORM_COMPONENT_MAP[el as keyof typeof FORM_COMPONENT_MAP] as Component;
+  if (!isResolvableControl(el)) {
+    throw new Error(`[MyFieldRenderer] Unsupported control type: ${el}`);
+  }
+
+  const control = resolveFormControl(el);
+
+  if (!control?.component) {
+    throw new Error(`[MyFieldRenderer] Unsupported control type: ${el}`);
+  }
+
+  return control.component;
 }
 </script>
 
 <template>
   <slot
-    v-if="isCustomType(el)"
+    v-if="isSlotControl(el)"
     :name="propName"
     :model-value="modelValue"
     :disabled="disabled"
@@ -85,7 +101,7 @@ function getStandardComponent(el: FormElType): Component {
     class="w-full"
     @change="(val: any) => emits('change', val)"
   >
-    <template v-if="el === 'select'">
+    <template v-if="el === 'el-select'">
       <el-option
         v-for="opt in toValue(options ?? [])"
         :key="opt.value"
@@ -94,7 +110,7 @@ function getStandardComponent(el: FormElType): Component {
         :disabled="opt.disabled"
       />
     </template>
-    <template v-else-if="el === 'radio-group'">
+    <template v-else-if="el === 'el-radio-group'">
       <el-radio-button
         v-for="opt in toValue(options ?? [])"
         :key="opt.value"
@@ -104,7 +120,7 @@ function getStandardComponent(el: FormElType): Component {
         {{ opt.label }}
       </el-radio-button>
     </template>
-    <template v-else-if="el === 'checkbox-group'">
+    <template v-else-if="el === 'el-checkbox-group'">
       <el-checkbox
         v-for="opt in toValue(options ?? [])"
         :key="opt.value"

@@ -22,7 +22,7 @@ const columns = computed<MyTableColumn<AdminUserRow>[]>(() => [
     show: false,
     exportable: false,
     search: {
-      el: 'input',
+      el: 'el-input',
       props: { clearable: true },
     },
   },

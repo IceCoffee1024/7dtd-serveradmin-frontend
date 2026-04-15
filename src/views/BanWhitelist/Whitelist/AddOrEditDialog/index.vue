@@ -45,14 +45,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.banWhitelist.playerId'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.banWhitelist.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.banWhitelist.tooltips.displayName'),
   },
 ]);

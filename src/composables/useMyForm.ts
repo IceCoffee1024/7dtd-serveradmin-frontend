@@ -18,38 +18,23 @@ import { computed, nextTick, ref } from 'vue';
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface FormElPropsMap {
-  'input': Partial<InputProps>;
-  'input-number': Partial<InputNumberProps>;
+  'el-input': Partial<InputProps>;
+  'el-input-number': Partial<InputNumberProps>;
   /**
    * `options` is reserved for MyForm's normalized option source.
    * Element Plus' select props also expose an `options` field, so we omit it
    * here to avoid a template-level prop collision when binding to FieldRenderer.
    */
-  'select': Partial<Omit<SelectProps, 'options'>>;
-  'date-picker': Partial<DatePickerProps>;
-  'switch': Partial<SwitchProps>;
-  'radio-group': Partial<Omit<RadioGroupProps, 'options'>>;
-  'checkbox-group': Partial<Omit<CheckboxGroupProps, 'options'>>;
+  'el-select': Partial<Omit<SelectProps, 'options'>>;
+  'el-date-picker': Partial<DatePickerProps>;
+  'el-switch': Partial<SwitchProps>;
+  'el-radio-group': Partial<Omit<RadioGroupProps, 'options'>>;
+  'el-checkbox-group': Partial<Omit<CheckboxGroupProps, 'options'>>;
   'upload': Partial<UploadProps>;
   'custom': Record<string, any>;
 }
 
 export type FormElType = keyof FormElPropsMap;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 组件映射表（显式导入，支持 Treeshaking）
-// ─────────────────────────────────────────────────────────────────────────────
-
-export const FORM_COMPONENT_MAP = {
-  'input': ElInput,
-  'input-number': ElInputNumber,
-  'select': ElSelect,
-  'date-picker': ElDatePicker,
-  'switch': ElSwitch,
-  'radio-group': ElRadioGroup,
-  'checkbox-group': ElCheckboxGroup,
-  'upload': ElUpload,
-} as const satisfies Partial<Record<FormElType, unknown>>;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 通用选项类型

@@ -8,16 +8,16 @@ import type { FormElType, MyFormFieldTooltip, OptionItem } from '~/composables/u
  * Element Plus implementation details into table callers.
  */
 interface SearchElPropsMap {
-  'input': Partial<InputProps>;
-  'select': Partial<SelectProps> & { options?: OptionItem[] };
-  'date-picker': Partial<DatePickerProps>;
-  'switch': Partial<SwitchProps>;
+  'el-input': Partial<InputProps>;
+  'el-select': Partial<SelectProps> & { options?: OptionItem[] };
+  'el-date-picker': Partial<DatePickerProps>;
+  'el-switch': Partial<SwitchProps>;
 }
 
 /**
  * Search widget types supported by the table search adapter.
  */
-export type SearchElType = Extract<FormElType, 'input' | 'select' | 'date-picker' | 'switch'>;
+export type SearchElType = Extract<FormElType, 'el-input' | 'el-select' | 'el-date-picker' | 'el-switch'>;
 
 /**
  * Search item configuration used by MyTable columns.

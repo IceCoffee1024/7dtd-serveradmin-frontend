@@ -30,14 +30,14 @@ const searchParam = defineModel<Record<string, any>>('modelValue', {
   default: () => ({}),
 });
 
-// ── 核心：columns → MyFormField[] 转换 ───────────────────────────────────────
+// Core mapping from table columns to MyForm fields.
 
 const searchFields = computed<MyFormField<any>[]>(() =>
   props.columns
     .filter(col => col.search?.el && col.prop != null)
     .sort((a, b) => (a.search!.order ?? 0) - (b.search!.order ?? 0))
     .map((col): MyFormField<any> => {
-      // options 优先级：search.props.options > col.enum > undefined
+      // Option priority: search.props.options > col.enum > undefined.
       const searchPropsOptions = (col.search?.props as any)?.options;
       const enumOptions = col.enum
         ? toValue(col.enum).map(({ label, value }): OptionItem => ({
@@ -46,7 +46,7 @@ const searchFields = computed<MyFormField<any>[]>(() =>
           }))
         : undefined;
 
-      // 过滤掉 search.props 中的 options，避免与顶层 options 重复传入 MyFieldRenderer
+      // Remove options from search.props to avoid passing them twice to MyForm.
       const { options: _removed, ...restProps } = (col.search?.props ?? {}) as any;
 
       return {
@@ -65,12 +65,12 @@ const searchFields = computed<MyFormField<any>[]>(() =>
 );
 
 const isCompactKeywordSearch = computed(() =>
-  searchFields.value.length === 1 && searchFields.value[0]?.el === 'input',
+  searchFields.value.length === 1 && searchFields.value[0]?.el === 'el-input',
 );
 
 const compactSearchField = computed(() => searchFields.value[0]);
 
-// ── transform 在适配器层执行，MyForm / MyFieldRenderer 对此无感知 ─────────────
+// Transforming search values here keeps MyForm and the renderer agnostic.
 
 function onSearch() {
   const transformed = applySearchTransform(props.columns, searchParam.value);
@@ -84,9 +84,9 @@ function onReset() {
 
 <template>
   <!--
-    MySearchForm 的模板只有这些：
-    根据搜索字段数量切换为 compact 工具栏或多字段表单面板。
-    完全没有 <component :is>、<el-option>、placeholder 生成等渲染逻辑。
+    This template stays intentionally small.
+    It switches between a compact toolbar and a full search form based on
+    how many searchable columns are present.
   -->
   <template v-if="searchFields.length > 0">
     <div

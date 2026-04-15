@@ -1,32 +1,34 @@
 ﻿<script setup lang="ts" generic="T extends Record<string, any>">
 /**
- * MyTable —— 通用泛型表格组件
+ * MyTable is a generic table wrapper built on top of Element Plus.
  *
- * 基于 Element Plus el-table 封装，提供以下开箱即用能力：
+ * It is designed for server-side pagination, remote sorting, searchable
+ * columns, batch actions, and row context menus.
  *
- * 功能列表：
- * - 泛型 T：行数据类型从父组件透传至每一个插槽，享受完整类型提示
- * - 搜索区域：根据列配置中的 search 字段自动生成表单，支持 transform 钩子
- * - 数据字典：配置 enum 后单元格自动渲染为 ElTag，无需手动写插槽
- * - 列显示控制：右上角 Select 允许用户动态勾选/取消列
- * - 分页 / 排序：内置分页器，支持远程排序
- * - 右键菜单：配置 contextMenuItems 后右键行触发自定义菜单
- * - 批量操作：有选中行时工具栏出现批量操作下拉
- * - 自动刷新：配置 autoRefreshInterval（秒）启用定时轮询
- * - CSV 导出：通过 onExportCSV 导出当前页数据
+ * Highlights:
+ * - Generic row type T is forwarded to slots for full type safety.
+ * - Search fields are generated from column metadata and can be transformed
+ *   before request submission.
+ * - Enum columns render as ElTag automatically.
+ * - Column visibility can be toggled from the toolbar.
+ * - Built-in pagination supports remote sorting.
+ * - Row context menus and batch menus are both supported.
+ * - Auto refresh can be enabled with a polling interval.
+ * - CSV export uses the current page data.
  *
- * 插槽：
- * - `toolbar-left`：工具栏左侧区域，默认渲染新增按钮，插槽参数包含 `tableSize`
- * - `toolbar-right`：工具栏右侧区域，位于列选择器左侧，插槽参数包含 `tableSize`
- * - `footer-left`：底部左侧区域，位于分页器左侧，适合放轻量状态或辅助控制，插槽参数包含 `tableSize`
- * - `[col.slot]`：数据列自定义渲染，slot scope 包含完整的 el-table scope 对象
- * - `operation`：操作列自定义内容，slot scope 为 `{ row: T }`
+ * Slots:
+ * - `toolbar-left`: left side of the toolbar; renders the add button by default.
+ * - `toolbar-right`: right side of the toolbar, placed before the column selector.
+ * - `footer-left`: left side of the footer, before pagination.
+ * - `[col.slot]`: custom cell rendering for a column.
+ * - `operation`: custom content for the operation column.
  *
- * 暴露 API（defineExpose）：
- * - `currentRow`：当前高亮/右键的行数据
- * - `reload()`：手动触发刷新，复用上次搜索参数
- * - `searchParam`：原始搜索参数对象，可外部读写
- * - `clearSelection()`：清空选中行
+ * Exposed API:
+ * - `currentRow`: the currently active row, usually used by row actions or
+ *   context menus.
+ * - `reload()`: reload the table with the last search state.
+ * - `searchParam`: raw search parameters, readable and writable from the parent.
+ * - `clearSelection()`: clears the current selection.
  *
  * @example
  * ```vue
@@ -35,7 +37,7 @@
  *     <el-link>{{ row.name }}</el-link>
  *   </template>
  *   <template #operation="{ row }">
- *     <el-button size="small" @click="handleEdit(row)">编辑</el-button>
+ *     <el-button size="small" @click="handleEdit(row)">Edit</el-button>
  *   </template>
  * </MyTable>
  * ```
@@ -52,11 +54,11 @@ import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { computed, ref, toRef, toValue, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { usePopup, useTheme } from '~/composables';
-// FIX: 移除 SEARCH_COMPONENT_MAP，渲染已委托给 MyFieldRenderer（通过 SearchForm）
-// FIX: 移除 applySearchTransform，transform 在 SearchForm 内部执行，MyTable 不再直接调用
+// Search rendering is delegated to SearchForm instead of a local component map.
+// SearchForm also applies the transform step, so MyTable no longer calls it directly.
 import { useMyTable } from '~/composables/table';
 import { showCustomContextMenu } from '~/plugins/contextMenu';
-// FIX: 新增 SearchForm 导入，替代原来内联的搜索区域模板
+// SearchForm replaces the old inline search-area template.
 import SearchForm from './SearchForm.vue';
 
 type FetchDataResult = MyTableFetchResult<T> | T[];
@@ -66,74 +68,58 @@ type FetchDataResult = MyTableFetchResult<T> | T[];
 // ─────────────────────────────────────────────────────────────────────────────
 type ElTableProps = InstanceType<typeof ElTable>['$props'];
 interface Props extends /* @vue-ignore */ ElTableProps {
-  /** 列配置数组，泛型 T 保证 prop 字段受行数据类型约束 */
+  /** Column definitions. The generic row type keeps prop values aligned with the table data. */
   columns?: MyTableColumn<T>[];
-  /** 表格尺寸；不传时回退到全局主题的 general.tableSize */
+  /** Table density. Falls back to the global theme's general.tableSize when omitted. */
   size?: App.ThemeSettings['general']['tableSize'];
-  /**
-   * 数据获取函数，由父组件实现并传入。
-   * 接收标准化的 MyTableFetchParams（含分页、排序、已转换的搜索参数），
-   * 返回分页结果对象或完整数组（前端分页场景）。
+  /** Data loader supplied by the parent component.
+   * Receives normalized MyTableFetchParams, including pagination, sorting,
+   * and already-transformed search parameters.
    */
   fetchData: (params: MyTableFetchParams) => Promise<FetchDataResult> | FetchDataResult;
-  /** 是否显示多选列，默认 true */
+  /** Shows the selection column when true. */
   selectable?: boolean;
-  /** 是否显示序号列，序号跨页连续，默认 false */
+  /** Shows a continuous row index column across pages when true. */
   showIndex?: boolean;
-  /** 是否在工具栏左侧显示默认新增按钮，默认 true */
+  /** Shows the default add button on the left side of the toolbar. */
   showAddBtn?: boolean;
-  /**
-   * 是否在操作列默认插槽中显示编辑按钮，默认 true。
-   * @deprecated 请使用 slot="operation" 自定义操作列，下一大版本将移除此 prop。
+  /** Shows the default edit button inside the fallback operation column.
+   * @deprecated Use the `operation` slot instead.
    */
   showEditBtn?: boolean;
-  /**
-   * 是否在操作列默认插槽中显示删除按钮，默认 true。
-   * @deprecated 请使用 slot="operation" 自定义操作列，下一大版本将移除此 prop。
+  /** Shows the default delete button inside the fallback operation column.
+   * @deprecated Use the `operation` slot instead.
    */
   showDeleteBtn?: boolean;
-  /**
-   * 批量操作菜单项。
-   * 当表格有选中行时，工具栏左侧出现"更多"按钮，展开此菜单。
+  /** Batch action menu items.
+   * When rows are selected, the toolbar shows a More menu that opens this list.
    */
   batchMenuItems?: BatchActionItem[];
-  /**
-   * 右键菜单项。
-   * 配置后右键行数据或点击行末的 ··· 按钮均可触发自定义菜单。
+  /** Row context menu items.
+   * Once configured, users can open the custom menu by right-clicking a row
+   * or by clicking the trailing More button.
    */
   contextMenuItems?: ContextMenuOption<T>[];
-  /**
-   * 自动刷新间隔（秒）。大于 0 时启用定时轮询，0 表示禁用，默认 0。
-   */
+  /** Auto refresh interval in seconds. A value greater than 0 enables polling. */
   autoRefreshInterval?: number;
-  /**
-   * 是否显示顶部搜索区域。
-   * 即使为 true，若所有列均未配置 search 字段，SearchForm 内部不会渲染任何内容。
-   * 默认 true。
+  /** Shows the top search area.
+   * If no columns declare a search field, SearchForm renders nothing.
    */
   showSearch?: boolean;
-  /**
-   * 是否渲染操作列（最右侧固定列）。
-   * 设为 false 可完全隐藏操作列，适用于只读表格场景。
-   * 默认 true。
+  /** Renders the operation column on the far right.
+   * Set to false to hide the operation column entirely.
    */
   showOperationColumn?: boolean;
-  /**
-   * 操作列宽度（px 或 CSS 字符串）。
-   * 当通过 slot="operation" 放置较多按钮时可适当增大。
-   * 默认 160。
+  /** Operation column width in pixels or any CSS width string.
+   * Increase it when the `operation` slot contains many buttons.
    */
   operationColumnWidth?: number | string;
-  /**
-   * 是否开启全局自动列宽。
-   * 开启后，所有未明确指定 width 的列都会根据内容动态计算 min-width。
-   * 默认 false。
+  /** Enables global auto column width calculation.
+   * When enabled, columns without an explicit width get a dynamic min-width.
    */
   autoColumnWidth?: boolean;
-  /**
-   * 是否将搜索区域包裹为可折叠筛选面板。
-   * 开启后，面板顶部显示标题栏与折叠切换按钮；关闭时仅保留面板视觉容器。
-   * 默认 false。
+  /** Wraps the search area in a collapsible filter panel.
+   * When enabled, the panel shows a title bar and a collapse toggle.
    */
   searchCollapsible?: boolean;
 }
@@ -151,16 +137,16 @@ const props = withDefaults(defineProps<Props>(), {
   showSearch: true,
   showOperationColumn: true,
   operationColumnWidth: 160,
-  autoColumnWidth: false, // 默认关闭，保持向后兼容
+  autoColumnWidth: false, // Disabled by default to preserve backward compatibility.
   searchCollapsible: false,
 });
 
 const emits = defineEmits<{
-  /** 点击默认新增按钮时触发 */
+  /** Fired when the default add button is clicked. */
   add: [];
-  /** 点击默认编辑按钮时触发，payload 为当前行数据 */
+  /** Fired when the default edit button is clicked. */
   edit: [row: T];
-  /** 用户确认删除后触发，payload 为当前行数据 */
+  /** Fired after the delete confirmation succeeds. */
   delete: [row: T];
 }>();
 
@@ -176,13 +162,13 @@ const resolvedTableSize = computed<App.ThemeSettings['general']['tableSize']>(()
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
-// v-model:selection —— 选中行双向绑定
+// v-model:selection - selected-row binding
 // ─────────────────────────────────────────────────────────────────────────────
 
 const selectionModel = defineModel<T[]>('selection', { default: () => [] });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// useMyTable —— 核心逻辑
+// useMyTable - core table state and actions
 // ─────────────────────────────────────────────────────────────────────────────
 
 const {
@@ -199,8 +185,7 @@ const {
   onCurrentPageChange,
   onPageSizeChange,
   onSort,
-  // FIX: onSearch 签名已更新为接收 transformed 参数，
-  // 由 SearchForm 的 @search 事件传入已执行过 applySearchTransform 的纯净参数。
+  // onSearch now receives the transformed payload emitted by SearchForm.
   onSearch,
   onReset,
   getRowIndex,
@@ -221,11 +206,10 @@ const renderableSelectedColumns = computed<RenderableColumn[]>(() =>
   selectedColumns.value as RenderableColumn[],
 );
 
-// FIX: 移除 searchColumns computed —— 已移入 SearchForm 内部
-// FIX: 移除 getSearchValue / setSearchValue —— 已移入 SearchForm 内部
+// Search columns and value accessors now live inside SearchForm.
 
 // ─────────────────────────────────────────────────────────────────────────────
-// enum 工具函数
+// Enum helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
 function getTagType(
@@ -246,7 +230,7 @@ function getEnumLabel(col: RenderableColumn, value: any): string {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 行交互 —— 选中、点击、右键
+// Row interactions: selection, click, and context menu
 // ─────────────────────────────────────────────────────────────────────────────
 
 function onSelectionChange(val: T[]) {
@@ -291,7 +275,7 @@ function getCellValue(row: T, col: RenderableColumn): unknown {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// attrs 透传处理
+// attrs passthrough handling
 // ─────────────────────────────────────────────────────────────────────────────
 
 const tableAttrs = computed(() => {
@@ -311,10 +295,10 @@ function toColumnProps(col: RenderableColumn) {
     search: _search,
     enum: _enum,
     exportable: _exportable,
-    // FIX: 过滤自定义字段，防止透传到 el-table-column 触发 Vue 警告
+    // Strip custom fields to avoid Vue warnings on el-table-column.
     autoWidth: _autoWidth,
     autoWidthMax: _autoWidthMax,
-    // FIX: width 由模板动态决定，从 v-bind 透传中移除，避免与显式 :width 冲突
+    // Width is controlled in the template, so remove it from v-bind passthrough.
     width: _width,
     ...rest
   } = col;
@@ -323,33 +307,32 @@ function toColumnProps(col: RenderableColumn) {
     prop: col.prop != null ? String(col.prop) : undefined,
   };
 }
-// 🌟 新增：判断是否真正存在有效的搜索列
+// Detect whether the table actually has searchable columns.
 const hasSearchColumns = computed(() =>
   props.columns.some(col => col.search?.el && col.prop != null),
 );
 
-/** True when there is exactly one search field with el='input' — renders inline in the toolbar instead of a separate filter panel. */
+/** Returns true when the table can use the compact single-input search toolbar. */
 const isCompactSearch = computed(() => {
   const searchCols = props.columns.filter(col => col.search?.el && col.prop != null);
-  return searchCols.length === 1 && searchCols[0]?.search?.el === 'input';
+  return searchCols.length === 1 && searchCols[0]?.search?.el === 'el-input';
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 自动列宽
+// Auto column width
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** 动态列宽缓存，key 为 col.prop，value 为带单位的宽度字符串（如 "240px"） */
+/** Cache for dynamic column widths, keyed by col.prop and stored as CSS lengths. */
 const dynamicColumnWidths = ref<Record<string, string>>({});
 
 /**
- * 字符宽度估算函数。
- * 中文/全角字符计为 2 个单位，其他字符计为 1 个单位。
- * 每单位约 8px，与主流 14px 字体 + letter-spacing 的实际渲染接近。
+ * Estimates the visual width of a string.
+ * Chinese and full-width characters count as two units; other characters count as one.
  */
 function estimateCharWidth(str: string): number {
-  // \u4e00-\u9fa5：基本汉字；\uff00-\uffef：全角字符
+  // \u4e00-\u9fa5 covers basic CJK characters; \uff00-\uffef covers full-width forms.
 
-  let scale: number; // 小号字体略微紧凑
+  let scale: number; // Smaller table sizes use slightly tighter spacing.
   switch (resolvedTableSize.value) {
     case 'small':
       scale = 7;
@@ -365,9 +348,8 @@ function estimateCharWidth(str: string): number {
 }
 
 /**
- * 监听 tableData 变化，对配置了 autoWidth 的列重新估算列宽。
- * 不使用 deep watch，tableData 整体替换时浅监听即可触发，
- * 避免深度遍历大数组带来的性能开销。
+ * Recomputes auto-width columns whenever the current page data changes.
+ * A shallow watch is enough because tableData is replaced as a whole.
  */
 watch([tableData, resolvedTableSize], ([newData, newSize]) => {
   const autoCols = renderableSelectedColumns.value.filter(c =>
@@ -375,7 +357,7 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
     && (props.autoColumnWidth || c.autoWidth)
     && !c.width);
 
-  // 数据清空时重置缓存，防止旧宽度影响下次渲染
+  // Clear cached widths when the current page becomes empty.
   if (!autoCols.length || !newData.length) {
     autoCols.forEach((c) => {
       if (c.prop)
@@ -395,17 +377,17 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
     const maxPx = col.autoWidthMax ?? 400;
     const minPx = 80;
 
-    // 表头宽度：文字估算 + 排序图标 + 左右 padding
+    // Header width: text estimate + sort icon + horizontal padding.
     let maxWidth = estimateCharWidth(col.label) + (col.sortable ? 24 : 0) + paddingMap[newSize];
 
-    // 遍历当前页数据，取该列最长内容的估算宽度
+    // Inspect the current page and measure the widest cell value.
     for (const row of newData) {
-      // enum 列取翻译后的 label，否则取字符串化的原始值
+      // Enum columns use the displayed label; other columns use the raw value.
       const cellText = col.enum
         ? getEnumLabel(col, (row as any)[prop])
         : String((row as any)[prop] ?? '');
 
-      // 单元格左右 padding 约 32px
+      // Cell padding contributes roughly 32px.
       const cellWidth = estimateCharWidth(cellText) + paddingMap[resolvedTableSize.value];
       if (cellWidth > maxWidth)
         maxWidth = cellWidth;
@@ -415,22 +397,20 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
   });
 }, { immediate: true });
 
-// 用户切换展示列时，对新增的 autoWidth 列补充计算宽度
+// Recalculate widths when the visible column set changes.
 watch(selectedColumns, () => {
-  // 复用同一计算逻辑，触发一次 tableData 的 watch handler
-  // 直接调用已有的估算逻辑，避免代码重复
+  // Reuse the same calculation path by nudging the tableData watcher.
   if (tableData.value.length) {
-    // 手动触发：通过浅赋值让 watch(tableData) 重新执行
+    // Shallow clone to retrigger the tableData watcher.
     tableData.value = [...tableData.value];
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 暴露给父组件的 API
+// API exposed to the parent component
 // ─────────────────────────────────────────────────────────────────────────────
 
-// 筛选面板折叠状态；searchCollapsible=false 时此状态无实际效果。
-// 多字段筛选默认收起，保留首屏空间给数据表本身。
+// Collapsible filter panel state; unused when searchCollapsible is false.
 const searchCollapsed = ref(true);
 
 defineExpose({
@@ -453,15 +433,12 @@ defineExpose({
         flexDirection: 'column',
       }"
     >
-      <!--
-        筛选面板：通过背景色 + 边框与下方表格拉开视觉层次。
-        searchCollapsible=true 时顶部出现可点击的标题行，支持展开/收起动画。
-      -->
+      <!-- Search panel wrapper adds visual separation from the table below. -->
       <div
         v-if="showSearch && hasSearchColumns && !isCompactSearch"
         class="mb-3 border border-gray-200 rounded-xl bg-gray-50 overflow-hidden dark:border-gray-700 dark:bg-gray-800/50"
       >
-        <!-- 可折叠标题行（仅 searchCollapsible=true 时显示） -->
+        <!-- Collapsible header row, shown only when searchCollapsible is enabled. -->
         <div
           v-if="searchCollapsible"
           class="px-4 py-2.5 flex cursor-pointer select-none transition-colors items-center justify-between hover:bg-gray-100/80 dark:hover:bg-gray-700/30"
@@ -483,7 +460,7 @@ defineExpose({
           </span>
         </div>
 
-        <!-- 搜索表单内容；collapsed 时通过 collapse-transition 平滑隐藏 -->
+        <!-- Search form content. collapse-transition keeps hide/show animation smooth. -->
         <el-collapse-transition>
           <div
             v-show="!searchCollapsible || !searchCollapsed"
@@ -501,7 +478,7 @@ defineExpose({
         </el-collapse-transition>
       </div>
 
-      <!-- 工具栏 -->
+      <!-- Toolbar -->
       <div class="mb-3 flex items-center justify-between">
         <div class="flex gap-2">
           <slot name="toolbar-left" :table-size="resolvedTableSize">

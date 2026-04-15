@@ -52,19 +52,19 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.banWhitelist.playerId'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.banWhitelist.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
   {
     prop: 'displayName',
     label: t('views.banWhitelist.displayName'),
-    el: 'input',
+    el: 'el-input',
   },
   {
     prop: 'bannedUntil',
     label: t('views.banWhitelist.bannedUntil'),
-    el: 'date-picker',
+    el: 'el-date-picker',
     props: {
       type: 'datetime',
       format: 'YYYY-MM-DD HH:mm:ss',
@@ -75,7 +75,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'reason',
     label: t('views.banWhitelist.reason'),
-    el: 'input',
+    el: 'el-input',
     props: {
       type: 'textarea',
       rows: 3,

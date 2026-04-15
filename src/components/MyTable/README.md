@@ -1,26 +1,26 @@
 # MyTable
 
-MyTable 是基于 Element Plus 的通用泛型表格组件，适合服务端分页、远程排序、条件搜索、批量操作和右键菜单场景。
+MyTable is a generic table wrapper built on top of Element Plus. It is designed for server-side pagination, remote sorting, searchable columns, batch actions, and row context menus.
 
-当前实现由两部分组成：
+The implementation is split into two parts:
 
-- [src/components/MyTable/index.vue](src/components/MyTable/index.vue) 负责表格渲染、插槽、事件和暴露方法。
-- [src/composables/useMyTable.ts](src/composables/useMyTable.ts) 负责分页、排序、搜索参数转换、自动刷新和导出逻辑。
+- [src/components/MyTable/index.vue](src/components/MyTable/index.vue) handles table rendering, slots, events, and exposed methods.
+- [src/composables/useMyTable.ts](src/composables/useMyTable.ts) handles pagination, sorting, search parameter transformation, auto refresh, and CSV export.
 
-## 能力
+## Capabilities
 
-- 泛型列配置，`prop` 会尽量受行数据类型约束。
-- 根据列上的 `search` 自动生成顶部搜索区域。
-- 支持 `search.transform`，在发请求前把展示字段转换成后端字段。
-- 支持 `enum` 自动渲染 `ElTag`。
-- 支持列显示控制。
-- 支持服务端分页和远程排序。
-- 支持批量菜单和行右键菜单。
-- 支持自动刷新。
-- 支持 CSV 导出，按当前数据页生成文件。
-- 默认跟随全局主题的 `tableSize`，也支持通过组件 `size` 局部覆盖。
+- Generic row typing, so `prop` stays aligned with the row type as much as possible.
+- Automatic search form generation from column metadata.
+- `search.transform` support for mapping display fields to backend query fields before requests are sent.
+- Automatic `ElTag` rendering for enum columns.
+- Column visibility toggling.
+- Server-side pagination and remote sorting.
+- Batch menus and row context menus.
+- Auto refresh.
+- CSV export for the current page.
+- The table size follows the global theme by default, but can be overridden per instance with `size`.
 
-## 基础用法
+## Basic Usage
 
 ```vue
 <script setup lang="ts">
@@ -41,41 +41,41 @@ interface UserRow {
 }
 
 const statusEnum = [
-  { label: '正常', value: 1, tagType: 'success' as const },
-  { label: '冻结', value: 0, tagType: 'danger' as const },
+  { label: 'Active', value: 1, tagType: 'success' as const },
+  { label: 'Frozen', value: 0, tagType: 'danger' as const },
 ];
 
 const columns = computed<MyTableColumn<UserRow>[]>(() => [
   {
     prop: 'username',
-    label: '用户名',
+    label: 'Username',
     search: {
-      el: 'input',
-      props: { placeholder: '请输入用户名' },
+      el: 'el-input',
+      props: { placeholder: 'Please enter a username' },
       order: 1,
     },
   },
   {
     prop: 'status',
-    label: '状态',
+    label: 'Status',
     enum: statusEnum,
     search: {
-      el: 'select',
+      el: 'el-select',
       props: { options: statusEnum },
       order: 2,
     },
   },
   {
     prop: 'lastLoginTime',
-    label: '最后登录时间',
+    label: 'Last Login Time',
     slot: 'lastLoginTime',
   },
   {
     prop: 'loginTimeRange',
-    label: '登录时间范围',
+    label: 'Login Time Range',
     show: false,
     search: {
-      el: 'date-picker',
+      el: 'el-date-picker',
       props: {
         type: 'daterange',
         valueFormat: 'YYYY-MM-DD HH:mm:ss',
@@ -101,7 +101,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 
 const batchMenuItems = computed<BatchActionItem[]>(() => [
   {
-    label: '批量删除',
+    label: 'Batch Delete',
     divided: true,
     disabled: () => selectedRows.value.length === 0,
     action: () => {
@@ -112,7 +112,7 @@ const batchMenuItems = computed<BatchActionItem[]>(() => [
 
 const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
   {
-    label: '查看详情',
+    label: 'View Details',
     command: row => console.log(row?.id),
   },
 ]);
@@ -127,7 +127,7 @@ const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
     :fetch-data="fetchData"
     :batch-menu-items="batchMenuItems"
     :context-menu-items="contextMenuItems"
-    :is-show-index="true"
+    :show-index="true"
     :auto-refresh-interval="10"
     @add="() => {}"
   >
@@ -137,7 +137,7 @@ const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
 
     <template #operation="{ row }">
       <el-button link type="primary" @click="console.log(row.id)">
-        查看
+        View
       </el-button>
     </template>
   </my-table>
@@ -146,93 +146,93 @@ const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
 
 ## Props
 
-| Prop | 类型 | 默认值 | 说明 |
+| Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| columns | `MyTableColumn<T>[]` | `[]` | 列配置 |
-| size | `'small' \| 'default' \| 'large'` | 全局主题中的 `general.tableSize` | 表格尺寸，作用于表格本体、分页、工具栏和搜索区域；传入后可局部覆盖全局配置 |
-| fetchData | `(params) => Promise<MyTableFetchResult<T> \| T[]> \| MyTableFetchResult<T> \| T[]` | 必填 | 数据获取函数 |
-| selectable | `boolean` | `true` | 是否显示多选列 |
-| showIndex | `boolean` | `false` | 是否显示序号列，序号按当前页连续计算 |
-| showAddBtn | `boolean` | `true` | 是否显示默认新增按钮 |
-| showEditBtn | `boolean` | `true` | 是否显示默认编辑按钮，已废弃，建议使用 `operation` 插槽 |
-| showDeleteBtn | `boolean` | `true` | 是否显示默认删除按钮，已废弃，建议使用 `operation` 插槽 |
-| batchMenuItems | `BatchActionItem[]` | `[]` | 批量操作菜单 |
-| contextMenuItems | `ContextMenuOption<T>[]` | `undefined` | 行右键菜单 |
-| autoRefreshInterval | `number` | `0` | 自动刷新间隔，单位秒 |
-| showSearch | `boolean` | `true` | 是否显示搜索区域 |
-| showOperationColumn | `boolean` | `true` | 是否显示操作列 |
-| operationColumnWidth | `number \| string` | `160` | 操作列宽度 |
+| columns | `MyTableColumn<T>[]` | `[]` | Column definitions |
+| size | `'small' \| 'default' \| 'large'` | Global theme `general.tableSize` | Table density. Affects the table, pagination, toolbar, and search area. |
+| fetchData | `(params) => Promise<MyTableFetchResult<T> \| T[]> \| MyTableFetchResult<T> \| T[]` | required | Data loader |
+| selectable | `boolean` | `true` | Shows the selection column |
+| showIndex | `boolean` | `false` | Shows a continuous row index column |
+| showAddBtn | `boolean` | `true` | Shows the default add button |
+| showEditBtn | `boolean` | `true` | Shows the default edit button. Deprecated; use the `operation` slot instead. |
+| showDeleteBtn | `boolean` | `true` | Shows the default delete button. Deprecated; use the `operation` slot instead. |
+| batchMenuItems | `BatchActionItem[]` | `[]` | Batch action menu |
+| contextMenuItems | `ContextMenuOption<T>[]` | `undefined` | Row context menu |
+| autoRefreshInterval | `number` | `0` | Auto refresh interval in seconds |
+| showSearch | `boolean` | `true` | Shows the search area |
+| showOperationColumn | `boolean` | `true` | Shows the operation column |
+| operationColumnWidth | `number \| string` | `160` | Operation column width |
 
-补充说明：
+Notes:
 
-- 组件会把未消费的 attrs 透传给内部 `el-table`。
-- 未传 `size` 时，组件会读取全局主题中的 `tableSize`；适合在主题配置里统一控制全站表格密度。
-- 传入 `size` 后，只覆盖当前 MyTable 实例，不会改动全局主题配置。
-- 行唯一键请通过 `row-key` 或 `rowKey` 传入，默认值为 `id`。
-- 组件当前会忽略旧的 `dataKey`、`selectedRows` 等属性。
+- Unconsumed attrs are forwarded to the internal `el-table`.
+- When `size` is omitted, the component uses the global theme's `tableSize`.
+- Passing `size` only affects the current MyTable instance and does not change the global theme.
+- Use `row-key` or `rowKey` to specify the unique row identifier. The default is `id`.
+- The component ignores old `dataKey` and `selectedRows` props.
 
-## 列配置
+## Column Definitions
 
-列配置类型为 `MyTableColumn<T>`。
+Column definitions use `MyTableColumn<T>`.
 
-| 字段 | 类型 | 说明 |
+| Field | Type | Description |
 | --- | --- | --- |
-| prop | `keyof T \| string` | 数据字段名 |
-| label | `string` | 列标题 |
-| slot | `string` | 自定义渲染插槽名 |
-| show | `boolean` | 是否在表格中显示该列；设为 `false` 时不渲染，但搜索仍然生效 |
-| search | `SearchProps` | 搜索项配置 |
-| enum | `MaybeRef<EnumProps[]>` | 自动渲染 `ElTag` 的枚举配置 |
-| exportable | `boolean` | 是否允许导出 CSV，默认 `true` |
-| exportFormatter | `(value, row) => string` | 导出 CSV 前的最终格式化函数，适合对象字段或和展示文案保持一致的列 |
+| prop | `keyof T \| string` | Data field name |
+| label | `string` | Column label |
+| slot | `string` | Custom cell slot name |
+| show | `boolean` | Whether the column is visible in the table. Hidden columns can still participate in search. |
+| search | `SearchProps` | Search configuration |
+| enum | `MaybeRef<EnumProps[]>` | Enum configuration used for automatic `ElTag` rendering |
+| exportable | `boolean` | Whether the column is included in CSV export. Defaults to `true`. |
+| exportFormatter | `(value, row) => string` | Final formatter used before CSV export |
 
-示例：
+Example:
 
 ```ts
 const columns: MyTableColumn<UserRow>[] = [
-  { prop: 'username', label: '用户名', search: { el: 'input' } },
-  { prop: 'status', label: '状态', enum: statusEnum },
-  { prop: 'lastLoginTime', label: '最后登录时间', slot: 'lastLoginTime' },
+  { prop: 'username', label: 'Username', search: { el: 'el-input' } },
+  { prop: 'status', label: 'Status', enum: statusEnum },
+  { prop: 'lastLoginTime', label: 'Last Login Time', slot: 'lastLoginTime' },
 ];
 ```
 
-说明：
+Notes:
 
-- `slot` 优先于 `enum`。
-- `enum` 只影响单元格展示，不会自动影响搜索项。
-- `exportable: false` 的列不会进入 CSV 导出。
+- `slot` takes priority over `enum`.
+- `enum` only affects cell rendering; it does not automatically affect search fields.
+- Columns with `exportable: false` are excluded from CSV export.
 
-## 搜索配置
+## Search Configuration
 
-在列上配置 `search` 后，MyTable 会自动渲染顶部搜索表单。
+When a column declares `search`, MyTable renders a search form automatically.
 
-当前支持的搜索组件类型：
+Supported search control types:
 
-- `input`
-- `select`
-- `date-picker`
-- `switch`
+- `el-input`
+- `el-select`
+- `el-date-picker`
+- `el-switch`
 
-`SearchProps` 关键字段如下：
+Key `SearchProps` fields:
 
-| 字段 | 类型 | 说明 |
+| Field | Type | Description |
 | --- | --- | --- |
-| el | `SearchElType` | 搜索组件类型 |
-| props | 对应组件 props | 透传给 Element Plus 组件 |
-| defaultValue | `any` | 默认值，初始化和重置时生效 |
-| order | `number` | 排序，越小越靠前 |
-| span | `number` | 栅格宽度，基于 24 栅格 |
-| transform | `(val) => Record<string, any>` | 提交前转换字段 |
+| el | `SearchElType` | Search control type |
+| props | component props | Forwarded to the underlying Element Plus component |
+| defaultValue | `any` | Initial value used on mount and reset |
+| order | `number` | Sort order; smaller values appear first |
+| span | `number` | Grid width on a 24-column layout |
+| transform | `(val) => Record<string, any>` | Converts the search value before submission |
 
-日期范围拆分示例：
+Date range example:
 
 ```ts
 {
   prop: 'createdTimeRange',
-  label: '创建时间',
+  label: 'Created Time',
   show: false,
   search: {
-    el: 'date-picker',
+    el: 'el-date-picker',
     props: {
       type: 'daterange',
       valueFormat: 'YYYY-MM-DD HH:mm:ss',
@@ -245,15 +245,15 @@ const columns: MyTableColumn<UserRow>[] = [
 }
 ```
 
-说明：
+Notes:
 
-- `transform` 返回的对象会合并到最终请求参数中。
-- 原始字段会从最终 `search` 中移除。
-- `onReset` 会恢复 `defaultValue`，并再次执行 `transform`。
+- `transform` results are merged into the final request payload.
+- The original field is removed from the final `search` object.
+- `onReset` restores `defaultValue` and runs `transform` again.
 
-## 数据契约
+## Request Contract
 
-MyTable 会把下面的参数传给 `fetchData`：
+MyTable passes the following parameters to `fetchData`:
 
 ```ts
 interface MyTableFetchParams {
@@ -266,14 +266,14 @@ interface MyTableFetchParams {
 }
 ```
 
-说明：
+Notes:
 
-- `search` 是已经过 `transform` 处理后的最终对象。
-- `sortField` 对应当前列的 `prop`。
-- `sortOrder` 与 Element Plus 远程排序语义一致。
-- `searchQuery` 目前保留为兼容字段，组件内部主要使用 `search`。
+- `search` is the final object after `transform` has run.
+- `sortField` matches the current column `prop`.
+- `sortOrder` follows Element Plus remote sorting semantics.
+- `searchQuery` is kept for compatibility; the component primarily uses `search`.
 
-`fetchData` 的返回值支持两种形式：
+`fetchData` can return either:
 
 ```ts
 interface MyTableFetchResult<T> {
@@ -282,26 +282,26 @@ interface MyTableFetchResult<T> {
 }
 ```
 
-或直接返回数组：
+or a raw array:
 
 ```ts
 T[]
 ```
 
-说明：
+Notes:
 
-- 服务端分页推荐返回 `{ list, total }`。
-- 直接返回数组时，组件会把 `total` 设为数组长度。
+- For server-side pagination, returning `{ list, total }` is recommended.
+- When an array is returned, the component uses the array length as `total`.
 
-## 菜单项
+## Menu Items
 
-### 右键菜单 `contextMenuItems`
+### Row context menu `contextMenuItems`
 
-右键菜单使用 [src/plugins/contextMenu.ts](src/plugins/contextMenu.ts) 中的 `ContextMenuOption<T>`，`command` 会收到当前行数据。
+Row context menus use `ContextMenuOption<T>` from [src/plugins/contextMenu.ts](src/plugins/contextMenu.ts). The `command` callback receives the current row.
 
-### 批量菜单 `batchMenuItems`
+### Batch menu `batchMenuItems`
 
-批量菜单使用 `BatchActionItem`，点击后不会接收当前行数据。
+Batch menus use `BatchActionItem`. The click handler does not receive row data.
 
 ```ts
 interface BatchActionItem {
@@ -313,56 +313,56 @@ interface BatchActionItem {
 }
 ```
 
-说明：
+Notes:
 
-- 批量菜单只在存在选中行时显示。
-- `action` 执行成功后会自动清空当前选中态。
+- Batch menus only appear when rows are selected.
+- Successful batch actions automatically clear the current selection.
 
 ## v-model
 
-当前只支持一个双向绑定：
+Only one two-way binding is supported:
 
 ```vue
 <my-table v-model:selection="selectedRows" />
 ```
 
-说明：
+Notes:
 
-- `selection` 的类型是当前选中行数组 `T[]`。
-- `v-model:selectedRows` 不是正式 API。
+- `selection` is the currently selected row array, typed as `T[]`.
+- `v-model:selectedRows` is not a supported public API.
 
-## 事件
+## Events
 
-| 事件 | 载荷 | 说明 |
+| Event | Payload | Description |
 | --- | --- | --- |
-| add | void | 点击默认新增按钮时触发 |
-| edit | `row: T` | 点击默认编辑按钮时触发 |
-| delete | `row: T` | 删除确认后触发 |
+| add | void | Fired when the default add button is clicked |
+| edit | `row: T` | Fired when the default edit button is clicked |
+| delete | `row: T` | Fired after the delete confirmation succeeds |
 
-说明：
+Notes:
 
-- `delete` 事件触发前会先走 `usePopup().confirm()`。
-- 如果自定义了 `operation` 插槽，通常不会再依赖默认的编辑/删除按钮。
+- `delete` is always guarded by `usePopup().confirm()` first.
+- When you provide the `operation` slot, you typically no longer need the default edit/delete buttons.
 
-## 插槽
+## Slots
 
 ### `toolbar-left`
 
-工具栏左侧区域，默认渲染新增按钮、批量菜单和刷新按钮。
+Left side of the toolbar. The default content includes the add button, batch menu, and refresh button.
 
 ### `toolbar-right`
 
-工具栏右侧区域，位于列选择器左边。
+Right side of the toolbar, placed before the column selector.
 
-### 列插槽
+### Column slots
 
-如果某列配置了 `slot`：
+If a column declares `slot`:
 
 ```ts
-{ prop: 'lastLoginTime', label: '最后登录时间', slot: 'lastLoginTime' }
+{ prop: 'lastLoginTime', label: 'Last Login Time', slot: 'lastLoginTime' }
 ```
 
-则对应写法为：
+The corresponding usage is:
 
 ```vue
 <template #lastLoginTime="{ row, $index, column }">
@@ -370,28 +370,28 @@ interface BatchActionItem {
 </template>
 ```
 
-说明：
+Notes:
 
-- 插槽名直接来自 `col.slot`。
-- 传入的是 Element Plus 表格默认 scope。
+- The slot name comes directly from `col.slot`.
+- The slot receives the default Element Plus table scope.
 
 ### `operation`
 
 ```vue
 <template #operation="{ row }">
-  <el-button link type="primary">查看</el-button>
+  <el-button link type="primary">View</el-button>
 </template>
 ```
 
-说明：
+Notes:
 
-- `operation` 插槽只接收 `{ row }`。
-- 如果提供了 `operation` 插槽，默认编辑/删除按钮不会再渲染。
-- 如果配置了 `contextMenuItems`，操作列末尾还会显示更多按钮。
+- `operation` only receives `{ row }`.
+- When the `operation` slot is provided, the default edit/delete buttons are not rendered.
+- If `contextMenuItems` is configured, a More button also appears at the end of the operation column.
 
-## 暴露方法
+## Exposed Methods
 
-通过 ref 可以访问以下成员：
+The component exposes the following members through `ref`:
 
 ```ts
 interface MyTableExpose<T> {
@@ -402,7 +402,7 @@ interface MyTableExpose<T> {
 }
 ```
 
-示例：
+Example:
 
 ```ts
 tableRef.value?.searchParam.username = 'admin';
@@ -410,15 +410,15 @@ tableRef.value?.reload();
 tableRef.value?.clearSelection();
 ```
 
-说明：
+Notes:
 
-- 组件没有暴露 `search()`。
-- 组件没有暴露 `onExportCSV()`。
-- 直接修改 `searchParam` 后调用 `reload()`，不会额外重新执行搜索生命周期。
+- The component does not expose `search()`.
+- The component does not expose `onExportCSV()`.
+- Mutating `searchParam` directly and calling `reload()` does not trigger an extra search lifecycle.
 
 ## useMyTable
 
-如果你直接复用 `useMyTable`，它当前返回这些状态和方法：
+When you use `useMyTable` directly, it currently returns these states and methods:
 
 - `loading`
 - `tableData`
@@ -439,34 +439,34 @@ tableRef.value?.clearSelection();
 - `onBatchMenuCommand`
 - `onExportCSV`
 
-行为说明：
+Behavior notes:
 
-- 初次加载时会自动调用一次 `loadLazyData`。
-- 搜索时会先对 `searchParam` 执行 `applySearchTransform`。
-- 翻页和排序会复用上一次转换后的 `search` 参数。
-- `rowsPerPage` 默认值是 `20`。
-- 页大小固定为 `10、20、50、100、1000`。
-- `autoRefreshInterval > 0` 时会建立轮询，并在依赖变化或组件卸载时自动清理。
-- 批量菜单执行成功后会调用 `resetSelection`。
-- `onExportCSV` 只导出当前页数据，并会忽略 `exportable: false` 的列。
+- The first load automatically calls `loadLazyData`.
+- Search always runs `applySearchTransform` on `searchParam` first.
+- Pagination and sorting reuse the last transformed `search` payload.
+- `rowsPerPage` defaults to `20`.
+- Page sizes are fixed to `10`, `20`, `50`, `100`, and `1000`.
+- When `autoRefreshInterval > 0`, polling is enabled and automatically cleaned up on dependency changes or unmount.
+- Batch menu actions call `resetSelection` after success.
+- `onExportCSV` exports the current page only and skips columns with `exportable: false`.
 
-## 常见写法
+## Common Patterns
 
-- 展示列和搜索列的数据形态不一致时，不要复用同一个 `prop`。典型场景是展示列用 `lastLoginTime`，搜索列单独用 `loginTimeRange`。
-- 仅用于搜索表单的字段，建议设置 `show: false`。
-- 复杂单元格优先用 `slot`；纯状态标签优先用 `enum`。
-- 静态列配置优先用 `const`，只有在权限、语言或业务状态变化时才用 `computed`。
+- When display columns and search columns have different data shapes, do not reuse the same `prop`. A typical example is using `lastLoginTime` for display and `loginTimeRange` for search.
+- For fields that only exist in the search form, set `show: false`.
+- Prefer `slot` for complex cells and `enum` for simple status tags.
+- Use `const` for static column definitions. Switch to `computed` only when the columns depend on permissions, language, or other dynamic business state.
 
-## 迁移提示
+## Migration Tips
 
-| 旧写法 | 新写法 |
+| Old pattern | New pattern |
 | --- | --- |
 | field | prop |
 | header | label |
 | items | list |
 | dataKey | row-key / rowKey |
-| #name-body | 配置 `slot: 'name'` 后使用 `#name` |
+| #name-body | set `slot: 'name'` and use `#name` |
 | separator | divided |
 | v-model:selectedRows | v-model:selection |
 
-如果是从旧页面迁移，优先先改这些项。
+If you are migrating an old page, start with these replacements.

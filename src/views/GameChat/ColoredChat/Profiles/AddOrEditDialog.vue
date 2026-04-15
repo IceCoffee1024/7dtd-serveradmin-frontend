@@ -92,7 +92,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.coloredChat.profiles.fields.playerId'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.coloredChat.profiles.tooltips.playerId'),
     disabled: () => isEdit.value,
   },
@@ -105,19 +105,19 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'nameColor',
     label: t('views.coloredChat.profiles.fields.nameColor'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
     prop: 'textColor',
     label: t('views.coloredChat.profiles.fields.textColor'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
     prop: 'description',
     label: t('views.coloredChat.profiles.fields.description'),
-    el: 'input',
+    el: 'el-input',
     props: {
       type: 'textarea',
       rows: 3,

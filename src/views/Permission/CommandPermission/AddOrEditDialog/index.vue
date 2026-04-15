@@ -58,14 +58,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'command',
     label: t('views.permission.command'),
-    el: 'input',
+    el: 'el-input',
     tooltip: t('views.permission.tooltips.command'),
     disabled: () => isEdit.value,
   },
   {
     prop: 'permissionLevel',
     label: t('views.permission.permissionLevel'),
-    el: 'input-number',
+    el: 'el-input-number',
     props: {
       min: 0,
       max: 2000,
@@ -76,7 +76,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'description',
     label: t('views.permission.description'),
-    el: 'input',
+    el: 'el-input',
     props: {
       type: 'textarea',
       rows: 3,
