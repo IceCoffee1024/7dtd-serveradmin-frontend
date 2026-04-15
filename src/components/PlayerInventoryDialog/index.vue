@@ -45,7 +45,7 @@ defineExpose({
 <template>
   <MyDialog
     ref="dialogRef"
-    v-slot="{ isFullscreen }"
+    v-slot="{ fullscreen }"
     class="min-w-650px"
     width="64%"
     :title="$t('components.playerInventoryDialog.header')"
@@ -53,7 +53,7 @@ defineExpose({
     :loading="loading"
     @closed="onDialogClosed"
   >
-    <div :style="{ height: isFullscreen ? 'calc(100vh - 80px)' : '618px' }">
+    <div :style="{ height: fullscreen ? 'calc(100vh - 80px)' : '618px' }">
       <div class="text-lg mb-3 flex gap-4 items-center justify-between">
         <span>{{ title }}</span>
         <el-radio-group v-model="layout" size="small">

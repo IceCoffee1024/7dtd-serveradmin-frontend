@@ -73,7 +73,7 @@ const columns = computed<MyTableColumn<UserRow>[]>(() => [
   {
     prop: 'loginTimeRange',
     label: '登录时间范围',
-    isShow: false,
+    show: false,
     search: {
       el: 'date-picker',
       props: {
@@ -151,11 +151,11 @@ const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
 | columns | `MyTableColumn<T>[]` | `[]` | 列配置 |
 | size | `'small' \| 'default' \| 'large'` | 全局主题中的 `general.tableSize` | 表格尺寸，作用于表格本体、分页、工具栏和搜索区域；传入后可局部覆盖全局配置 |
 | fetchData | `(params) => Promise<MyTableFetchResult<T> \| T[]> \| MyTableFetchResult<T> \| T[]` | 必填 | 数据获取函数 |
-| isSelectable | `boolean` | `true` | 是否显示多选列 |
-| isShowIndex | `boolean` | `false` | 是否显示序号列，序号按当前页连续计算 |
-| isShowAddBtn | `boolean` | `true` | 是否显示默认新增按钮 |
-| isShowEditBtn | `boolean` | `true` | 是否显示默认编辑按钮，已废弃，建议使用 `operation` 插槽 |
-| isShowDeleteBtn | `boolean` | `true` | 是否显示默认删除按钮，已废弃，建议使用 `operation` 插槽 |
+| selectable | `boolean` | `true` | 是否显示多选列 |
+| showIndex | `boolean` | `false` | 是否显示序号列，序号按当前页连续计算 |
+| showAddBtn | `boolean` | `true` | 是否显示默认新增按钮 |
+| showEditBtn | `boolean` | `true` | 是否显示默认编辑按钮，已废弃，建议使用 `operation` 插槽 |
+| showDeleteBtn | `boolean` | `true` | 是否显示默认删除按钮，已废弃，建议使用 `operation` 插槽 |
 | batchMenuItems | `BatchActionItem[]` | `[]` | 批量操作菜单 |
 | contextMenuItems | `ContextMenuOption<T>[]` | `undefined` | 行右键菜单 |
 | autoRefreshInterval | `number` | `0` | 自动刷新间隔，单位秒 |
@@ -180,7 +180,7 @@ const contextMenuItems = computed<ContextMenuOption<UserRow>[]>(() => [
 | prop | `keyof T \| string` | 数据字段名 |
 | label | `string` | 列标题 |
 | slot | `string` | 自定义渲染插槽名 |
-| isShow | `boolean` | 是否在表格中显示该列；设为 `false` 时不渲染，但搜索仍然生效 |
+| show | `boolean` | 是否在表格中显示该列；设为 `false` 时不渲染，但搜索仍然生效 |
 | search | `SearchProps` | 搜索项配置 |
 | enum | `MaybeRef<EnumProps[]>` | 自动渲染 `ElTag` 的枚举配置 |
 | exportable | `boolean` | 是否允许导出 CSV，默认 `true` |
@@ -230,7 +230,7 @@ const columns: MyTableColumn<UserRow>[] = [
 {
   prop: 'createdTimeRange',
   label: '创建时间',
-  isShow: false,
+  show: false,
   search: {
     el: 'date-picker',
     props: {
@@ -453,7 +453,7 @@ tableRef.value?.clearSelection();
 ## 常见写法
 
 - 展示列和搜索列的数据形态不一致时，不要复用同一个 `prop`。典型场景是展示列用 `lastLoginTime`，搜索列单独用 `loginTimeRange`。
-- 仅用于搜索表单的字段，建议设置 `isShow: false`。
+- 仅用于搜索表单的字段，建议设置 `show: false`。
 - 复杂单元格优先用 `slot`；纯状态标签优先用 `enum`。
 - 静态列配置优先用 `const`，只有在权限、语言或业务状态变化时才用 `computed`。
 

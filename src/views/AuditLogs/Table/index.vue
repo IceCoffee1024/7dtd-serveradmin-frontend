@@ -52,7 +52,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
-    isShow: false,
+    show: false,
     exportable: false,
     search: {
       el: 'input',
@@ -64,7 +64,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   {
     prop: 'timeRange',
     label: t('views.auditLogs.filters.timeRange'),
-    isShow: false,
+    show: false,
     exportable: false,
     search: {
       el: 'date-picker',
@@ -413,9 +413,9 @@ function onView(row: AuditLogRow) {
       :columns="columns"
       :fetch-data="fetchData"
       :is-selectable="false"
-      :is-show-add-btn="false"
-      :is-show-edit-btn="false"
-      :is-show-delete-btn="false"
+      :show-add-btn="false"
+      :show-edit-btn="false"
+      :show-delete-btn="false"
       :show-operation-column="false"
       :auto-column-width="true"
       :search-collapsible="true"

@@ -48,7 +48,7 @@ export function useTableQuery<T extends Record<string, any>>(options: UseTableQu
   const sortOrder = ref<'ascending' | 'descending' | null>(null);
 
   const allColumns = computed<MyTableColumn<T>[]>(() =>
-    (toValue(columns) ?? []).filter(col => col.isShow !== false),
+    (toValue(columns) ?? []).filter(col => col.show !== false),
   );
 
   const selectedColumns = ref<MyTableColumn<T>[]>([]);

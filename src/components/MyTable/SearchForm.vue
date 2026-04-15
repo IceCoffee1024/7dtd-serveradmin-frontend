@@ -60,7 +60,6 @@ const searchFields = computed<MyFormField<any>[]>(() =>
         },
         options: searchPropsOptions ?? enumOptions,
         span: col.search!.span ?? props.defaultSpan,
-        rules: [],
       };
     }),
 );

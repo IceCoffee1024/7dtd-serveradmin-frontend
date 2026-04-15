@@ -100,7 +100,7 @@ export interface MyFormField<
   props?: FormElPropsMap[El];
   options?: MaybeRef<OptionItem[]>;
   span?: ResponsiveSpan;
-  isShow?: boolean | ((model: Partial<T>) => boolean);
+  show?: boolean | ((model: Partial<T>) => boolean);
   disabled?: boolean | ((model: Partial<T>) => boolean);
   onChange?: (val: any, model: Partial<T>) => void;
   placeholder?: string;
@@ -138,9 +138,9 @@ export function useMyForm<T extends Record<string, any>>(
 
   const visibleFields = computed(() =>
     fields.filter((field) => {
-      if (typeof field.isShow === 'function')
-        return field.isShow(formData.value);
-      return field.isShow !== false;
+      if (typeof field.show === 'function')
+        return field.show(formData.value);
+      return field.show !== false;
     }),
   );
 

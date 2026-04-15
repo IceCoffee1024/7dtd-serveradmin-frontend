@@ -1,11 +1,11 @@
 ﻿<script setup lang="ts">
 interface Props {
   tableData: API.GameServer.PlayerSkill[];
-  isExpandAll?: boolean;
+  expandAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  isExpandAll: true,
+  expandAll: true,
 });
 
 const tableRenderKey = ref(0);
@@ -22,7 +22,7 @@ function getFieldValue(row: API.GameServer.PlayerSkill, field: 'level' | 'maxLev
 }
 
 watch(
-  () => props.isExpandAll,
+  () => props.expandAll,
   () => {
     tableRenderKey.value += 1;
   },
@@ -35,7 +35,7 @@ watch(
     :data="tableData"
     row-key="name"
     :tree-props="{ children: 'children' }"
-    :default-expand-all="isExpandAll"
+    :default-expand-all="expandAll"
     stripe
     border
     class="w-full"
@@ -50,7 +50,7 @@ watch(
 
     <el-table-column :label="$t('components.playerSkillsDialog.icon')" width="100">
       <template #default="{ row }">
-        <GameIcon v-if="row.iconName" is-ui-icon :icon-name="row.iconName || ''" :size="36" :preview="false" />
+        <GameIcon v-if="row.iconName" ui-icon :icon-name="row.iconName || ''" :size="36" :preview="false" />
       </template>
     </el-table-column>
 

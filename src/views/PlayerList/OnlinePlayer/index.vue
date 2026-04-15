@@ -21,7 +21,7 @@ const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
-    isShow: false,
+    show: false,
     exportable: false,
     search: {
       el: 'input',
@@ -106,11 +106,11 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       :fetch-data="fetchData"
       :context-menu-items="contextMenuItems"
       :auto-refresh-interval="resolvedAutoRefreshInterval"
-      :is-show-add-btn="false"
+      :show-add-btn="false"
       :is-selectable="false"
       :operation-column-width="110"
-      :is-show-edit-btn="false"
-      :is-show-delete-btn="false"
+      :show-edit-btn="false"
+      :show-delete-btn="false"
       :auto-column-width="true"
     >
       <template #footer-left="{ tableSize }">

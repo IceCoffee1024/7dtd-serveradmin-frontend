@@ -19,7 +19,7 @@ const columns = computed<MyTableColumn<WhitelistEntryRow>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
-    isShow: false,
+    show: false,
     exportable: false,
     search: {
       el: 'input',
@@ -87,7 +87,7 @@ function onSaved() {
       :columns="columns"
       :fetch-data="fetchData"
       :batch-menu-items="batchMenuItems"
-      :is-show-index="true"
+      :show-index="true"
       :auto-column-width="true"
       @add="onAdd"
       @edit="onEdit"

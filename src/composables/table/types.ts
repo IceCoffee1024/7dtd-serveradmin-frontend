@@ -60,7 +60,7 @@ export interface MyTableColumn<T extends Record<string, any> = Record<string, an
   prop?: keyof T | string;
   label: string;
   slot?: string;
-  isShow?: boolean;
+  show?: boolean;
   search?: SearchProps;
   enum?: MaybeRef<EnumProps[]>;
   exportable?: boolean;

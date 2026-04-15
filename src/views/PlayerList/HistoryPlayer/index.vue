@@ -15,7 +15,7 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
-    isShow: false,
+    show: false,
     exportable: false,
     search: {
       el: 'input',
@@ -99,11 +99,11 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       :columns="columns"
       :fetch-data="fetchData"
       :context-menu-items="contextMenuItems"
-      :is-show-add-btn="false"
+      :show-add-btn="false"
       :is-selectable="false"
       :operation-column-width="110"
-      :is-show-edit-btn="false"
-      :is-show-delete-btn="false"
+      :show-edit-btn="false"
+      :show-delete-btn="false"
       :auto-column-width="true"
     >
       <template #playerName="{ row }">

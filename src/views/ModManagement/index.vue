@@ -16,7 +16,7 @@ const columns = computed<MyTableColumn<ModItem>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
-    isShow: false,
+    show: false,
     exportable: false,
     search: {
       el: 'input',
@@ -99,9 +99,9 @@ defineExpose({ reload: () => tableRef.value?.reload() });
       :columns="columns"
       :fetch-data="fetchData"
       :is-selectable="false"
-      :is-show-add-btn="false"
-      :is-show-edit-btn="false"
-      :is-show-delete-btn="false"
+      :show-add-btn="false"
+      :show-edit-btn="false"
+      :show-delete-btn="false"
       :show-operation-column="false"
       :auto-column-width="true"
     >

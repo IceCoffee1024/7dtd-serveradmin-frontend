@@ -5,7 +5,7 @@ interface Props {
   size?: number;
   iconName?: string;
   iconColor?: string;
-  isUiIcon?: boolean;
+  uiIcon?: boolean;
   preview?: boolean;
 }
 
@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 160,
   iconName: '',
   iconColor: undefined,
-  isUiIcon: false,
+  uiIcon: false,
   preview: true,
 });
 
@@ -28,7 +28,7 @@ function getIconUrl(category: 'UiIcons' | 'ItemIcons', iconName: string, iconCol
 }
 
 const src = computed<string | null>(() => {
-  return getIconUrl(props.isUiIcon ? 'UiIcons' : 'ItemIcons', props.iconName, props.iconColor);
+  return getIconUrl(props.uiIcon ? 'UiIcons' : 'ItemIcons', props.iconName, props.iconColor);
 });
 
 const previewSrcList = computed<string[]>(() => {

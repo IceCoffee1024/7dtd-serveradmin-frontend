@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 // State
 // ─────────────────────────────────────────────────────────────────────────────
 const visible = ref(false);
-const isFullscreen = ref(false);
+const fullscreen = ref(false);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Core logic
@@ -53,7 +53,7 @@ const isFullscreen = ref(false);
 /** Opens the dialog. */
 function open() {
   // Reset dialog state each time it opens.
-  isFullscreen.value = false;
+  fullscreen.value = false;
   visible.value = true;
 }
 
@@ -64,7 +64,7 @@ function close() {
 
 /** Toggles fullscreen mode. */
 function toggleFullscreen() {
-  isFullscreen.value = !isFullscreen.value;
+  fullscreen.value = !fullscreen.value;
 }
 
 /** Handles confirm button clicks. */
@@ -102,7 +102,7 @@ defineExpose({
   <el-dialog
     v-model="visible"
     :title="title"
-    :fullscreen="isFullscreen"
+    :fullscreen="fullscreen"
     :close-on-click-modal="false"
     :append-to-body="true"
     :draggable="true"
@@ -114,10 +114,10 @@ defineExpose({
         <span :id="titleId" :class="titleClass" class="font-bold">{{ title }}</span>
         <span>
           <IconButton
-            icon-size="24" class="fullscreen-btn" :tooltip-content="isFullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
+            icon-size="24" class="fullscreen-btn" :tooltip-content="fullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
             @click="toggleFullscreen"
           >
-            <icon-mdi:fullscreen v-if="!isFullscreen" />
+            <icon-mdi:fullscreen v-if="!fullscreen" />
             <icon-mdi:fullscreen-exit v-else />
           </IconButton>
           <IconButton icon-size="24" class="close-btn" :tooltip-content="$t('common.close')" @click="close">
@@ -127,7 +127,7 @@ defineExpose({
       </div>
     </template>
     <div v-loading="loading">
-      <slot :is-fullscreen="isFullscreen" />
+      <slot :fullscreen="fullscreen" />
     </div>
     <template v-if="showFooter" #footer>
       <div v-loading="loading">

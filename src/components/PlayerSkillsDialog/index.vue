@@ -55,7 +55,7 @@ defineExpose({
 <template>
   <MyDialog
     ref="dialogRef"
-    v-slot="{ isFullscreen }"
+    v-slot="{ fullscreen }"
     class="min-w-650px"
     width="64%"
     :title="$t('components.playerSkillsDialog.header')"
@@ -63,7 +63,7 @@ defineExpose({
     :loading="loading"
     @closed="onDialogClosed"
   >
-    <div :style="{ height: isFullscreen ? 'calc(100vh - 80px)' : '618px' }">
+    <div :style="{ height: fullscreen ? 'calc(100vh - 80px)' : '618px' }">
       <div class="mb-3 flex gap-4 items-center justify-between">
         <span>{{ title }}</span>
         <el-radio-group v-model="layout" size="small">
@@ -83,11 +83,11 @@ defineExpose({
           <el-tab-pane v-for="(item, index) in data" :key="item.name || String(index)" :name="String(index)" lazy>
             <template #label>
               <div class="flex gap-1 items-center">
-                <GameIcon v-if="item.iconName" is-ui-icon :icon-name="item.iconName" :size="24" :preview="false" />
+                <GameIcon v-if="item.iconName" ui-icon :icon-name="item.iconName" :size="24" :preview="false" />
                 <span>{{ `${item.localizationName || item.name} (${$t('components.playerSkillsDialog.level')} ${item.level})` }}</span>
               </div>
             </template>
-            <Table :table-data="item.children ?? []" :is-expand-all="layout === 'expand'" />
+            <Table :table-data="item.children ?? []" :expand-all="layout === 'expand'" />
           </el-tab-pane>
         </el-tabs>
       </template>

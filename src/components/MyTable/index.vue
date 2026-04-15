@@ -49,7 +49,7 @@ import type {
   MyTableFetchResult,
 } from '~/composables/table';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
-import { computed, onMounted, ref, toRef, toValue, useAttrs } from 'vue';
+import { computed, ref, toRef, toValue, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { usePopup, useTheme } from '~/composables';
 // FIX: 移除 SEARCH_COMPONENT_MAP，渲染已委托给 MyFieldRenderer（通过 SearchForm）
@@ -77,21 +77,21 @@ interface Props extends /* @vue-ignore */ ElTableProps {
    */
   fetchData: (params: MyTableFetchParams) => Promise<FetchDataResult> | FetchDataResult;
   /** 是否显示多选列，默认 true */
-  isSelectable?: boolean;
+  selectable?: boolean;
   /** 是否显示序号列，序号跨页连续，默认 false */
-  isShowIndex?: boolean;
+  showIndex?: boolean;
   /** 是否在工具栏左侧显示默认新增按钮，默认 true */
-  isShowAddBtn?: boolean;
+  showAddBtn?: boolean;
   /**
    * 是否在操作列默认插槽中显示编辑按钮，默认 true。
    * @deprecated 请使用 slot="operation" 自定义操作列，下一大版本将移除此 prop。
    */
-  isShowEditBtn?: boolean;
+  showEditBtn?: boolean;
   /**
    * 是否在操作列默认插槽中显示删除按钮，默认 true。
    * @deprecated 请使用 slot="operation" 自定义操作列，下一大版本将移除此 prop。
    */
-  isShowDeleteBtn?: boolean;
+  showDeleteBtn?: boolean;
   /**
    * 批量操作菜单项。
    * 当表格有选中行时，工具栏左侧出现"更多"按钮，展开此菜单。
@@ -141,11 +141,11 @@ interface Props extends /* @vue-ignore */ ElTableProps {
 const props = withDefaults(defineProps<Props>(), {
   columns: () => [],
   size: undefined,
-  isSelectable: true,
-  isShowIndex: false,
-  isShowAddBtn: true,
-  isShowEditBtn: true,
-  isShowDeleteBtn: true,
+  selectable: true,
+  showIndex: false,
+  showAddBtn: true,
+  showEditBtn: true,
+  showDeleteBtn: true,
   batchMenuItems: () => [],
   autoRefreshInterval: 0,
   showSearch: true,
@@ -174,26 +174,6 @@ const attrs = useAttrs();
 const resolvedTableSize = computed<App.ThemeSettings['general']['tableSize']>(() =>
   props.size ?? currentTheme.value.general.tableSize,
 );
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 废弃 Props 运行时警告
-// FIX: 改为检测 attrs 而非 props，withDefaults 会使 props 永远有值，
-// 只有 attrs 才能反映父组件是否实际传入了该属性。
-// ─────────────────────────────────────────────────────────────────────────────
-
-onMounted(() => {
-  const rawAttrs = attrs as Record<string, any>;
-  if (
-    'isShowEditBtn' in rawAttrs || 'is-show-edit-btn' in rawAttrs
-    || 'isShowDeleteBtn' in rawAttrs || 'is-show-delete-btn' in rawAttrs
-  ) {
-    console.warn(
-      '[MyTable] isShowEditBtn / isShowDeleteBtn 已废弃，'
-      + '请使用 slot="operation" 自定义操作列内容。'
-      + '详见组件文档迁移指南。',
-    );
-  }
-});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // v-model:selection —— 选中行双向绑定
@@ -279,7 +259,7 @@ function onRowClick(rowData: T) {
   currentRow.value = rowData;
 }
 
-const isShowContextMenu = computed(() => !!(props.contextMenuItems?.length));
+const showContextMenu = computed(() => !!(props.contextMenuItems?.length));
 
 function onRowContextMenu(rowData: T, _column: unknown, event: MouseEvent) {
   currentRow.value = rowData;
@@ -327,7 +307,7 @@ const rowKey = computed(() => {
 function toColumnProps(col: RenderableColumn) {
   const {
     slot: _slot,
-    isShow: _isShow,
+    show: _show,
     search: _search,
     enum: _enum,
     exportable: _exportable,
@@ -479,20 +459,20 @@ defineExpose({
       -->
       <div
         v-if="showSearch && hasSearchColumns && !isCompactSearch"
-        class="mb-3 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50"
+        class="mb-3 border border-gray-200 rounded-xl bg-gray-50 overflow-hidden dark:border-gray-700 dark:bg-gray-800/50"
       >
         <!-- 可折叠标题行（仅 searchCollapsible=true 时显示） -->
         <div
           v-if="searchCollapsible"
-          class="flex cursor-pointer select-none items-center justify-between px-4 py-2.5 transition-colors hover:bg-gray-100/80 dark:hover:bg-gray-700/30"
+          class="px-4 py-2.5 flex cursor-pointer select-none transition-colors items-center justify-between hover:bg-gray-100/80 dark:hover:bg-gray-700/30"
           :class="{ 'border-b border-gray-200 dark:border-gray-700': !searchCollapsed }"
           @click="searchCollapsed = !searchCollapsed"
         >
-          <span class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400">
+          <span class="text-sm text-gray-600 font-medium inline-flex gap-1.5 items-center dark:text-gray-400">
             <el-icon :size="14"><icon-mdi:filter-outline /></el-icon>
             {{ $t('components.myTable.filters') }}
           </span>
-          <span class="inline-flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+          <span class="text-xs text-gray-400 inline-flex gap-1 items-center dark:text-gray-500">
             {{ searchCollapsed ? $t('components.myTable.expand') : $t('components.myTable.collapse') }}
             <el-icon
               class="transition-transform duration-200"
@@ -526,7 +506,7 @@ defineExpose({
         <div class="flex gap-2">
           <slot name="toolbar-left" :table-size="resolvedTableSize">
             <IconButton
-              v-if="isShowAddBtn"
+              v-if="showAddBtn"
               :button-size="resolvedTableSize"
               circle
               border
@@ -639,7 +619,7 @@ defineExpose({
           </template>
 
           <el-table-column
-            v-if="isSelectable"
+            v-if="selectable"
             type="selection"
             width="48"
             fixed="left"
@@ -647,7 +627,7 @@ defineExpose({
           />
 
           <el-table-column
-            v-if="isShowIndex"
+            v-if="showIndex"
             label="#"
             width="60"
             fixed="left"
@@ -692,7 +672,7 @@ defineExpose({
               <div class="flex gap-1 items-center justify-center">
                 <slot name="operation" :row="scope.row" :table-size="resolvedTableSize">
                   <IconButton
-                    v-if="isShowEditBtn"
+                    v-if="showEditBtn"
                     circle
                     :button-size="resolvedTableSize"
                     :tooltip-content="$t('common.edit')"
@@ -701,7 +681,7 @@ defineExpose({
                     <icon-mdi:pencil />
                   </IconButton>
                   <IconButton
-                    v-if="isShowDeleteBtn"
+                    v-if="showDeleteBtn"
                     circle
                     :button-size="resolvedTableSize"
                     type="danger"
@@ -713,7 +693,7 @@ defineExpose({
                 </slot>
 
                 <IconButton
-                  v-if="isShowContextMenu"
+                  v-if="showContextMenu"
                   circle
                   :button-size="resolvedTableSize"
                   :tooltip-content="$t('components.myTable.moreActions')"

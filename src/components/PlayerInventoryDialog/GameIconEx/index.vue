@@ -13,8 +13,8 @@ interface Props {
   qualityColor?: string;
   useTimes?: number;
   maxUseTimes?: number;
-  isMod?: boolean;
-  isBlock?: boolean;
+  mod?: boolean;
+  block?: boolean;
   backgroundColor?: string;
   fontSize?: number;
 }
@@ -31,8 +31,8 @@ const props = withDefaults(defineProps<Props>(), {
   qualityColor: undefined,
   useTimes: 0,
   maxUseTimes: 0,
-  isMod: false,
-  isBlock: false,
+  mod: false,
+  block: false,
   backgroundColor: undefined,
   fontSize: 24,
 });
@@ -70,8 +70,8 @@ ${t('components.playerInventoryDialog.maxStackAllowed')}: ${props.maxStackAllowe
 ${t('components.playerInventoryDialog.quality')}: ${props.quality ?? 0} <br />
 ${t('components.playerInventoryDialog.useTimes')}: ${props.useTimes} <br />
 ${t('components.playerInventoryDialog.maxUseTimes')}: ${props.maxUseTimes} <br />
-${t('components.playerInventoryDialog.mod')}: ${props.isMod ? t('common.yes') : t('common.no')} <br />
-${t('components.playerInventoryDialog.block')}: ${props.isBlock ? t('common.yes') : t('common.no')}`;
+${t('components.playerInventoryDialog.mod')}: ${props.mod ? t('common.yes') : t('common.no')} <br />
+${t('components.playerInventoryDialog.block')}: ${props.block ? t('common.yes') : t('common.no')}`;
 });
 </script>
 
