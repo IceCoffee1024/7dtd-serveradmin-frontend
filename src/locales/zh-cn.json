@@ -574,6 +574,9 @@
           "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。",
           "description": "用于记录此条目的用途和来源。"
         },
+        "placeholders": {
+          "createdAtRange": "选择创建时间范围"
+        },
         "availableVariables": "可用变量",
         "variables": {
           "playerName": "玩家游戏昵称",

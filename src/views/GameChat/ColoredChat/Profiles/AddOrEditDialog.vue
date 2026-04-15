@@ -8,6 +8,12 @@ import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
+const props = withDefaults(defineProps<Props>(), {
+  editData: null,
+});
+
+const emit = defineEmits(['saved']);
+
 /** Variables supported by the CustomName template engine on the backend. */
 const COLORED_CHAT_NAME_VARIABLES = [
   { key: '{playerName}', descriptionKey: 'views.coloredChat.profiles.variables.playerName' },
@@ -37,12 +43,6 @@ interface FormExpose {
 interface Props {
   editData?: Record<string, unknown> | null;
 }
-
-const props = withDefaults(defineProps<Props>(), {
-  editData: null,
-});
-
-const emit = defineEmits(['saved']);
 
 const PLAYER_ID_SCHEMA = v.pipe(
   v.string(),
@@ -258,13 +258,13 @@ defineExpose({
       label-width="130px"
     >
       <template #customName>
-        <div class="w-full flex flex-col gap-2">
+        <div class="flex flex-col gap-2 w-full">
           <el-input
             ref="customNameInputRef"
             v-model="form.customName"
             :placeholder="t('components.myForm.pleaseInput', { label: t('views.coloredChat.profiles.fields.customName') })"
           />
-          <div class="flex flex-wrap items-center gap-1.5">
+          <div class="flex flex-wrap gap-1.5 items-center">
             <span class="text-xs text-gray-500 dark:text-gray-400">
               {{ t('views.coloredChat.profiles.availableVariables') }}:
             </span>

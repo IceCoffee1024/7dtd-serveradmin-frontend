@@ -26,12 +26,18 @@ declare namespace API {
       description: string | null;
     }
 
-    type ProfileQueryOrder = 'CreatedAt' | 'PlayerId' | 'CustomName';
+    type ProfileQueryOrder = 'CreatedAt' | 'PlayerId' | 'CustomName' | 'NameColor' | 'TextColor' | 'Description';
 
     interface ProfileQuery {
       pageNumber?: number;
       pageSize?: number;
       keyword?: string;
+      playerId?: string;
+      customName?: string;
+      nameColor?: string;
+      textColor?: string;
+      startTime?: string;
+      endTime?: string;
       order?: ProfileQueryOrder;
       desc?: boolean;
     }

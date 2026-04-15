@@ -1061,6 +1061,9 @@
           "hexColor": "Enter a 6-digit hexadecimal color value such as FFCC00.",
           "description": "Used to explain why this profile exists."
         },
+        "placeholders": {
+          "createdAtRange": "Select a created-at time range"
+        },
         "availableVariables": "Available variables",
         "variables": {
           "playerName": "Player's live display name",

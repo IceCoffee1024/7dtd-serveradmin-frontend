@@ -27,12 +27,70 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
       props: { clearable: true },
     },
   },
-  { prop: 'playerId', label: t('views.coloredChat.profiles.fields.playerId'), sortable: true },
-  { prop: 'customName', label: t('views.coloredChat.profiles.fields.customName'), sortable: true },
-  { prop: 'nameColor', label: t('views.coloredChat.profiles.fields.nameColor') },
-  { prop: 'textColor', label: t('views.coloredChat.profiles.fields.textColor') },
+  {
+    prop: 'playerId',
+    label: t('views.coloredChat.profiles.fields.playerId'),
+    sortable: true,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+      order: 1,
+      span: 8,
+    },
+  },
+  {
+    prop: 'customName',
+    label: t('views.coloredChat.profiles.fields.customName'),
+    sortable: true,
+    search: {
+      el: 'input',
+      props: { clearable: true },
+      order: 2,
+      span: 8,
+    },
+  },
+  {
+    prop: 'nameColor',
+    label: t('views.coloredChat.profiles.fields.nameColor'),
+    search: {
+      el: 'input',
+      props: { clearable: true },
+      order: 3,
+      span: 8,
+    },
+  },
+  {
+    prop: 'textColor',
+    label: t('views.coloredChat.profiles.fields.textColor'),
+    search: {
+      el: 'input',
+      props: { clearable: true },
+      order: 4,
+      span: 8,
+    },
+  },
   { prop: 'description', label: t('views.coloredChat.profiles.fields.description') },
-  { prop: 'createdAt', label: t('views.coloredChat.profiles.fields.createdAt'), sortable: true },
+  {
+    prop: 'createdAt',
+    label: t('views.coloredChat.profiles.fields.createdAt'),
+    sortable: true,
+    search: {
+      el: 'date-picker',
+      props: {
+        clearable: true,
+        type: 'datetimerange',
+        valueFormat: 'YYYY-MM-DDTHH:mm:ss[Z]',
+        startPlaceholder: t('views.coloredChat.profiles.placeholders.createdAtRange'),
+        endPlaceholder: t('views.coloredChat.profiles.placeholders.createdAtRange'),
+      },
+      order: 5,
+      span: 16,
+      transform: (value: string[] | undefined) => ({
+        startTime: value?.[0],
+        endTime: value?.[1],
+      }),
+    },
+  },
 ]);
 
 const selectedRows = ref<ColoredProfileRow[]>([]);
@@ -42,13 +100,13 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     pageNumber: params.pageNumber,
     pageSize: params.pageSize,
     keyword: params.search?.keyword?.trim() || undefined,
-    order: params.sortField === 'createdAt'
-      ? 'CreatedAt'
-      : params.sortField === 'playerId'
-        ? 'PlayerId'
-        : params.sortField === 'customName'
-          ? 'CustomName'
-          : undefined,
+    playerId: toOptionalString(params.search?.playerId),
+    customName: toOptionalString(params.search?.customName),
+    nameColor: toOptionalColor(params.search?.nameColor),
+    textColor: toOptionalColor(params.search?.textColor),
+    startTime: toOptionalString(params.search?.startTime),
+    endTime: toOptionalString(params.search?.endTime),
+    order: toOrder(params.sortField),
     desc: params.sortOrder === 'descending',
   });
 
@@ -71,6 +129,54 @@ const batchMenuItems = computed(() => [
     },
   },
 ]);
+
+/**
+ * Normalizes a free-text table search value into an optional trimmed string.
+ * @param value - Raw search value from the table state.
+ * @returns Trimmed string or undefined when the field is empty.
+ */
+function toOptionalString(value: unknown): string | undefined {
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+
+  const trimmedValue = value.trim();
+  return trimmedValue || undefined;
+}
+
+/**
+ * Normalizes a color filter into the uppercase backend storage format.
+ * @param value - Raw color search value from the table state.
+ * @returns Uppercase hex string without a leading #, or undefined when empty.
+ */
+function toOptionalColor(value: unknown): string | undefined {
+  const normalizedValue = toOptionalString(value)?.replace(/^#/, '').toUpperCase();
+  return normalizedValue || undefined;
+}
+
+/**
+ * Maps the table sort key to the backend enum value used by the profile query DTO.
+ * @param sortField - Column key emitted by the table.
+ * @returns Backend order enum value or undefined when the column is not remotely sortable.
+ */
+function toOrder(sortField: string | undefined): API.ColoredChat.ProfileQueryOrder | undefined {
+  switch (sortField) {
+    case 'createdAt':
+      return 'CreatedAt';
+    case 'playerId':
+      return 'PlayerId';
+    case 'customName':
+      return 'CustomName';
+    case 'nameColor':
+      return 'NameColor';
+    case 'textColor':
+      return 'TextColor';
+    case 'description':
+      return 'Description';
+    default:
+      return undefined;
+  }
+}
 
 function onAdd() {
   editData.value = null;
@@ -104,6 +210,7 @@ function onSaved() {
       :batch-menu-items="batchMenuItems"
       :is-show-index="true"
       :auto-column-width="true"
+      :search-collapsible="true"
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"
