@@ -5,6 +5,7 @@ import { createProfile, updateProfile } from '~/api/coloredChat';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import { COLORED_CHAT_COLOR_PRESETS } from '~/constants/coloredChat';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
@@ -69,6 +70,7 @@ const { toast } = usePopup();
 const isEdit = computed(() => !!props.editData);
 const dialogTitle = computed(() => (isEdit.value ? t('views.coloredChat.profiles.editProfile') : t('views.coloredChat.profiles.addProfile')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+const colorPresets = computed(() => [...COLORED_CHAT_COLOR_PRESETS]);
 
 const form = reactive<FormModel>({
   playerId: '',
@@ -105,13 +107,19 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'nameColor',
     label: t('views.coloredChat.profiles.fields.nameColor'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {
     prop: 'textColor',
     label: t('views.coloredChat.profiles.fields.textColor'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.profiles.tooltips.hexColor'),
   },
   {

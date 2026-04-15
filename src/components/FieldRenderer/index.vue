@@ -138,6 +138,7 @@ function getStandardComponent(el: FormElType): Component {
     v-model="modelValue"
     :disabled="disabled"
     :placeholder="placeholder"
+    :is-view-mode="isViewMode"
     v-bind="componentProps"
     clearable
     class="w-full"

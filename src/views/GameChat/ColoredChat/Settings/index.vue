@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { getSettings, resetSettings, updateSettings } from '~/api/coloredChat';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import { COLORED_CHAT_COLOR_PRESETS } from '~/constants/coloredChat';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
@@ -67,6 +68,8 @@ const booleanOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
+const colorPresets = computed(() => [...COLORED_CHAT_COLOR_PRESETS]);
+
 const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
@@ -87,42 +90,60 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'globalDefault',
     label: t('views.coloredChat.settings.fields.globalDefault'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'whisperDefault',
     label: t('views.coloredChat.settings.fields.whisperDefault'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'friendsDefault',
     label: t('views.coloredChat.settings.fields.friendsDefault'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'partyDefault',
     label: t('views.coloredChat.settings.fields.partyDefault'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'adminDefault',
     label: t('views.coloredChat.settings.fields.adminDefault'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'systemDefault',
     label: t('views.coloredChat.settings.fields.systemDefault'),
-    el: 'el-input',
+    el: 'color-picker',
+    props: {
+      presets: colorPresets.value,
+    },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },

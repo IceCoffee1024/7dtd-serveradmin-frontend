@@ -74,6 +74,12 @@
       "pleaseInput": "Please Input",
       "pleaseSelect": "Please Select"
     },
+    "colorPicker": {
+      "placeholder": "Enter a 6-digit color value",
+      "clear": "Clear color",
+      "presets": "Preset colors",
+      "hint": "Values are saved as 6-digit hexadecimal colors."
+    },
     "playerInventoryDialog": {
       "header": "Player Inventory",
       "grid": "Grid",
@@ -321,7 +327,7 @@
         "serverVersion": "Server Version",
         "gameWorld": "Game World",
         "gameDifficulty": "Game Difficulty",
-        "gameDifficulties": {
+        "gameDifficultys": {
           "0": "Scavenger",
           "1": "Adventurer",
           "2": "Nomad",

@@ -74,6 +74,12 @@
       "pleaseInput": "请输入",
       "pleaseSelect": "请选择"
     },
+    "colorPicker": {
+      "placeholder": "请输入 6 位颜色值",
+      "clear": "清空颜色",
+      "presets": "预设颜色",
+      "hint": "保存时会自动使用 6 位十六进制颜色值。"
+    },
     "playerInventoryDialog": {
       "header": "玩家背包",
       "grid": "网格",
@@ -321,7 +327,7 @@
         "serverVersion": "服务端版本",
         "gameWorld": "游戏世界",
         "gameDifficulty": "游戏难度",
-        "gameDifficulties": {
+        "gameDifficultys": {
           "0": "拾荒者",
           "1": "冒险家",
           "2": "流浪者",

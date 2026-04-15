@@ -3,6 +3,14 @@ import type { Component } from 'vue';
 
 import { defineAsyncComponent } from 'vue';
 
+interface ColorPickerFieldProps {
+  disabled?: boolean;
+  placeholder?: string;
+  clearable?: boolean;
+  presets?: string[];
+  isViewMode?: boolean;
+}
+
 /**
  * Runtime metadata shared by all form controls.
  * MyForm only needs a component reference and an optional options hint.
@@ -40,7 +48,10 @@ const builtinControls = {
 } as const satisfies Record<string, FormControlDefinition>;
 
 const customControls = {
-  upload: {
+  'color-picker': {
+    component: defineAsyncComponent(() => import('../MyForm/ColorPickerField/index.vue')),
+  },
+  'upload': {
     component: defineAsyncComponent(() => import('../MyForm/UploadField/index.vue')),
   },
 } as const satisfies Record<string, FormControlDefinition>;
@@ -77,8 +88,9 @@ type BuiltinControlPropsMap = {
  * schema stays aligned when a control is added or changed.
  */
 export type FormElPropsMap = BuiltinControlPropsMap & {
-  upload: Partial<UploadProps>;
-  custom: Record<string, unknown>;
+  'color-picker': ColorPickerFieldProps;
+  'upload': Partial<UploadProps>;
+  'custom': Record<string, unknown>;
 };
 
 export const controlRegistry = {

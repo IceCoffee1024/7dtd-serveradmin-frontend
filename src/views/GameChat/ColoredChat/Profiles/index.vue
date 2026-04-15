@@ -55,6 +55,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
   {
     prop: 'nameColor',
     label: t('views.coloredChat.profiles.fields.nameColor'),
+    slot: 'nameColor',
     search: {
       el: 'el-input',
       props: { clearable: true },
@@ -65,6 +66,7 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
   {
     prop: 'textColor',
     label: t('views.coloredChat.profiles.fields.textColor'),
+    slot: 'textColor',
     search: {
       el: 'el-input',
       props: { clearable: true },
@@ -197,6 +199,26 @@ function onSaved() {
   tableRef.value?.reload();
   editData.value = null;
 }
+
+/**
+ * Formats a stored hex color into a UI-friendly label with leading '#'.
+ * @param value - Backend color value without leading '#'.
+ * @returns Display text for the table cell.
+ */
+function formatColorLabel(value: string | null | undefined): string {
+  const normalizedValue = value?.trim().replace(HEX_COLOR_PREFIX_REGEX, '').toUpperCase();
+  return normalizedValue ? `#${normalizedValue}` : t('common.unknown');
+}
+
+/**
+ * Maps a stored hex color to an inline swatch background.
+ * @param value - Backend color value without leading '#'.
+ * @returns CSS color string or undefined when the value is empty.
+ */
+function getColorSwatch(value: string | null | undefined): string | undefined {
+  const normalizedValue = value?.trim().replace(HEX_COLOR_PREFIX_REGEX, '').toUpperCase();
+  return normalizedValue ? `#${normalizedValue}` : undefined;
+}
 </script>
 
 <template>
@@ -214,7 +236,27 @@ function onSaved() {
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"
-    />
+    >
+      <template #nameColor="{ row }">
+        <div class="flex gap-2 min-w-0 items-center">
+          <span
+            class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
+            :style="{ backgroundColor: getColorSwatch(row.nameColor) ?? 'transparent' }"
+          />
+          <span class="truncate">{{ formatColorLabel(row.nameColor) }}</span>
+        </div>
+      </template>
+
+      <template #textColor="{ row }">
+        <div class="flex gap-2 min-w-0 items-center">
+          <span
+            class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
+            :style="{ backgroundColor: getColorSwatch(row.textColor) ?? 'transparent' }"
+          />
+          <span class="truncate">{{ formatColorLabel(row.textColor) }}</span>
+        </div>
+      </template>
+    </MyTable>
     <AddOrEditDialog ref="addOrEditDialogRef" :edit-data="editData" @saved="onSaved" />
   </div>
 </template>
