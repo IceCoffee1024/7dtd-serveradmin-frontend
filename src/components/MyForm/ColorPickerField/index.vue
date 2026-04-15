@@ -57,6 +57,7 @@ const swatchStyle = computed(() => ({
 }));
 
 const displayText = computed(() => colorPickerValue.value ?? t('common.unknown'));
+const hasValue = computed(() => normalizedValue.value.length > 0);
 
 const presetColors = computed(() => {
   const colors = props.presets.length > 0 ? props.presets : FALLBACK_PRESETS;
@@ -89,7 +90,7 @@ function onClear(): void {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 w-full">
+  <div class="flex flex-col gap-1.5 w-full">
     <template v-if="isViewMode">
       <div class="flex gap-3 min-h-10 w-full items-center">
         <div
@@ -107,7 +108,7 @@ function onClear(): void {
     </template>
 
     <template v-else>
-      <div class="flex flex-wrap gap-2 w-full items-center">
+      <div class="flex flex-wrap gap-1.5 w-full items-center">
         <div
           class="border border-gray-300 rounded-lg bg-[length:12px_12px] bg-[linear-gradient(45deg,#f3f4f6_25%,transparent_25%,transparent_75%,#f3f4f6_75%,#f3f4f6),linear-gradient(45deg,#f3f4f6_25%,transparent_25%,transparent_75%,#f3f4f6_75%,#f3f4f6)] bg-[position:0_0,6px_6px] shrink-0 h-10 w-10 dark:border-gray-600 dark:bg-[linear-gradient(45deg,#374151_25%,transparent_25%,transparent_75%,#374151_75%,#374151),linear-gradient(45deg,#374151_25%,transparent_25%,transparent_75%,#374151_75%,#374151)]"
         >
@@ -130,26 +131,27 @@ function onClear(): void {
           :disabled="disabled || isViewMode"
           :placeholder="placeholder || t('components.colorPicker.placeholder')"
           maxlength="6"
-          class="flex-1 min-w-44"
+          class="flex-1 min-w-40"
         >
           <template #prefix>
             <span class="text-gray-500 dark:text-gray-400">#</span>
           </template>
+          <template v-if="clearable" #suffix>
+            <button
+              v-show="hasValue"
+              type="button"
+              class="text-gray-400 flex transition-colors items-center dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+              :disabled="disabled"
+              :aria-label="t('components.colorPicker.clear')"
+              @click="onClear"
+            >
+              <icon-mdi-close-circle-outline class="text-base" />
+            </button>
+          </template>
         </el-input>
-
-        <IconButton
-          v-if="clearable && !isViewMode"
-          :disabled="disabled || !normalizedValue"
-          plain
-          border
-          :tooltip-content="t('components.colorPicker.clear')"
-          @click="onClear"
-        >
-          <icon-mdi-close />
-        </IconButton>
       </div>
 
-      <div class="flex flex-wrap gap-2 items-center">
+      <div class="pl-12 flex flex-wrap gap-1.5 items-center">
         <span class="text-xs text-gray-500 dark:text-gray-400">
           {{ t('components.colorPicker.presets') }}
         </span>
@@ -158,17 +160,13 @@ function onClear(): void {
           :key="color"
           type="button"
           class="border border-gray-300 rounded-full h-6 w-6 transition-transform dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110"
-          :class="{ 'ring-2 ring-primary ring-offset-2 ring-offset-white dark:ring-offset-gray-900': color === colorPickerValue }"
+          :class="{ 'ring-2 ring-primary ring-offset-2 ring-offset-white scale-110 shadow-sm dark:ring-offset-gray-900': color === colorPickerValue }"
           :disabled="disabled"
           :aria-label="color"
           :style="{ backgroundColor: color }"
           @click="onPresetSelect(color)"
         />
       </div>
-
-      <p class="text-xs text-gray-500 dark:text-gray-400">
-        {{ t('components.colorPicker.hint') }}
-      </p>
     </template>
   </div>
 </template>

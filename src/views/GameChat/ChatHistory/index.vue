@@ -182,7 +182,7 @@ function formatTimestamp(value: string): string {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-138px)]">
+  <el-card class="h-full" shadow="never">
     <MyTable
       row-key="id"
       :columns="columns"
@@ -211,5 +211,5 @@ function formatTimestamp(value: string): string {
         </div>
       </template>
     </MyTable>
-  </div>
+  </el-card>
 </template>

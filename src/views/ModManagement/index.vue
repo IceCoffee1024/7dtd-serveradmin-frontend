@@ -92,7 +92,7 @@ defineExpose({ reload: () => tableRef.value?.reload() });
 </script>
 
 <template>
-  <div class="h-[calc(100vh-138px)]">
+  <el-card class="h-full" shadow="never">
     <MyTable
       ref="tableRef"
       row-key="folderName"
@@ -145,5 +145,5 @@ defineExpose({ reload: () => tableRef.value?.reload() });
         </div>
       </template>
     </MyTable>
-  </div>
+  </el-card>
 </template>

@@ -228,7 +228,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <el-card shadow="never">
     <div v-if="isLoading" class="flex flex-col gap-4">
       <el-skeleton v-for="index in 4" :key="index" animated>
         <template #template>
@@ -238,6 +238,7 @@ onMounted(() => {
     </div>
     <template v-else>
       <MyForm
+        id="chatSettingsForm"
         ref="formRef"
         v-model="form"
         :fields="fields"
@@ -245,6 +246,8 @@ onMounted(() => {
         label-position="top"
         label-width="auto"
         :gutter="16"
+        class="chat-settings-form"
+        @submit.prevent="onSubmit"
       />
 
       <div class="mt-4 flex gap-2 justify-end">
@@ -258,5 +261,5 @@ onMounted(() => {
         </el-button>
       </div>
     </template>
-  </div>
+  </el-card>
 </template>

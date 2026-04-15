@@ -70,7 +70,7 @@ const booleanOptions = computed(() => [
 
 const colorPresets = computed(() => [...COLORED_CHAT_COLOR_PRESETS]);
 
-const fields = computed<MyFormField<FormModel>[]>(() => [
+const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.coloredChat.settings.fields.isEnabled'),
@@ -87,6 +87,9 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     tooltip: t('views.coloredChat.settings.tooltips.allowPlayerColorTags'),
     span: { xs: 24, md: 12 },
   },
+]);
+
+const colorFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'globalDefault',
     label: t('views.coloredChat.settings.fields.globalDefault'),
@@ -271,26 +274,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="pb-2 flex flex-col gap-4">
     <div v-if="isLoading" class="flex flex-col gap-4">
-      <el-skeleton v-for="index in 4" :key="index" animated>
+      <el-skeleton v-for="index in 6" :key="index" animated>
         <template #template>
           <el-skeleton-item variant="text" class="h-8" />
         </template>
       </el-skeleton>
     </div>
-    <template v-else>
-      <MyForm
-        ref="formRef"
-        v-model="form"
-        :fields="fields"
-        :rules="rules"
-        label-position="top"
-        label-width="auto"
-        :gutter="16"
-      />
 
-      <div class="mt-4 flex gap-2 justify-end">
+    <template v-else>
+      <section class="p-4 border border-gray-200 rounded-4 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900/70">
+        <MyForm
+          ref="formRef"
+          v-model="form"
+          :fields="policyFields"
+          :rules="rules"
+          label-position="top"
+          label-width="auto"
+          :gutter="16"
+        />
+
+        <div class="mb-4 mt-2 pt-3 border-t border-gray-100 flex flex-col gap-2 dark:border-gray-800">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+              {{ t('views.coloredChat.settings.sections.colorsTitle') }}
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              {{ t('views.coloredChat.settings.sections.colorsDescription') }}
+            </p>
+          </div>
+          <div class="text-xs text-gray-500 leading-5 px-3 py-2 rounded-3 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+            {{ t('views.coloredChat.settings.sections.colorsHint') }}
+          </div>
+        </div>
+
+        <MyForm
+          v-model="form"
+          :fields="colorFields"
+          :rules="rules"
+          label-position="top"
+          label-width="auto"
+          :gutter="16"
+        />
+      </section>
+
+      <div class="px-1 pt-2 border-t border-gray-200 flex gap-2 justify-end dark:border-gray-700">
         <el-button :disabled="isSubmitting" @click="onReset">
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.coloredChat.settings.actions.reset') }}

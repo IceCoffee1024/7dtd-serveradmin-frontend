@@ -1041,6 +1041,13 @@
           "allowPlayerColorTags": "When enabled, players may use the controlled color tag syntax.",
           "hexColor": "Enter a 6-digit hexadecimal color value such as FFCC00."
         },
+        "sections": {
+          "policyTitle": "Policy",
+          "policyDescription": "Control whether ColoredChat is enabled and whether players may input their own color tags.",
+          "colorsTitle": "Default Channel Colors",
+          "colorsDescription": "Assign a default color to each chat channel so players can distinguish message sources at a glance.",
+          "colorsHint": "The values below are saved as 6-digit hexadecimal colors."
+        },
         "actions": {
           "save": "Save Colored Chat Settings",
           "reset": "Restore Default Settings"
