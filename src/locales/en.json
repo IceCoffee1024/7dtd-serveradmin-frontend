@@ -44,6 +44,7 @@
     "banWhitelist": "Ban & Whitelist",
     "permission": "Permissions",
     "modManagement": "Mod Management",
+    "economy": "Economy",
     "console": "Console",
     "apiDocumentation": "API Documentation"
   },
@@ -1086,6 +1087,114 @@
         },
         "messages": {
           "saveSuccess": "Chat profile saved successfully."
+        }
+      }
+    },
+    "economy": {
+      "tabs": {
+        "accounts": "Accounts",
+        "transactions": "Transactions",
+        "settings": "Settings"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Economy",
+          "currencyName": "Currency Name",
+          "currencySymbol": "Currency Symbol",
+          "defaultBalance": "Default Balance",
+          "allowTransfer": "Allow Transfers",
+          "minTransferAmount": "Minimum Transfer Amount",
+          "transferTaxRate": "Transfer Tax Rate",
+          "dailyRewardAmount": "Daily Reward Amount",
+          "leaderboardSize": "Leaderboard Size"
+        },
+        "actions": {
+          "save": "Save Economy Settings",
+          "reset": "Reset Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Economy settings saved successfully.",
+          "resetSuccess": "Economy settings were reset to defaults."
+        }
+      },
+      "accounts": {
+        "columns": {
+          "playerId": "Player ID",
+          "playerName": "Player Name",
+          "balance": "Balance",
+          "isFrozen": "Frozen",
+          "lastTransactionAt": "Last Transaction"
+        },
+        "actions": {
+          "view": "View Details",
+          "adjust": "Adjust Balance",
+          "freeze": "Freeze",
+          "unfreeze": "Unfreeze"
+        },
+        "leaderboard": {
+          "title": "Leaderboard",
+          "empty": "No leaderboard data yet."
+        },
+        "detailDialog": {
+          "title": "Account Details",
+          "sections": {
+            "overview": "Overview",
+            "activity": "Activity",
+            "recentTransactions": "Recent Transactions"
+          },
+          "fields": {
+            "createdAt": "Created At",
+            "updatedAt": "Updated At",
+            "lastDailyClaimAt": "Last Daily Claim"
+          },
+          "hints": {
+            "recentTransactions": "Showing the latest 5 records only"
+          },
+          "empty": {
+            "recentTransactions": "No recent transactions for this account yet.",
+            "reason": "No reason provided"
+          },
+          "messages": {
+            "loadFailed": "Failed to load account details.",
+            "freezeSuccess": "Account freeze state updated successfully."
+          }
+        },
+        "adjustDialog": {
+          "title": "Adjust balance for {playerName}",
+          "fields": {
+            "amount": "Amount",
+            "reason": "Reason"
+          },
+          "messages": {
+            "saveSuccess": "Balance adjusted successfully."
+          }
+        }
+      },
+      "transactions": {
+        "columns": {
+          "playerId": "Player ID",
+          "playerName": "Player Name",
+          "type": "Type",
+          "direction": "Direction",
+          "amount": "Amount",
+          "source": "Source",
+          "occurredAt": "Occurred At",
+          "referenceId": "Reference ID",
+          "operatorName": "Operator Name",
+          "operatorId": "Operator ID",
+          "balanceBefore": "Balance Before",
+          "balanceAfter": "Balance After",
+          "reason": "Reason"
+        },
+        "placeholders": {
+          "occurredAtRange": "Select a time range"
+        },
+        "detailDialog": {
+          "title": "Transaction Details",
+          "sections": {
+            "primary": "Primary",
+            "metadata": "Metadata"
+          }
         }
       }
     },

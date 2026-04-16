@@ -127,7 +127,7 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
             :component-props="field.props"
             :disabled="getDisabled(field)"
             :placeholder="getPlaceholder(field)"
-            :is-view-mode="disabled"
+            :is-view-mode="Boolean(props.disabled)"
             @change="(val: any) => field.onChange?.(val, formData ?? {})"
           >
             <template #[field.prop]="scope">

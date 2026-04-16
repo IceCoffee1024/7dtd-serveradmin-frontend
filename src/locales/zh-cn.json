@@ -43,6 +43,7 @@
     "banWhitelist": "黑白名单",
     "permission": "权限管理",
     "modManagement": "模组管理",
+    "economy": "经济系统",
     "console": "控制台",
     "appSettings": "应用设置",
     "apiDocumentation": "API文档"
@@ -599,6 +600,114 @@
         },
         "messages": {
           "saveSuccess": "聊天条目已保存。"
+        }
+      }
+    },
+    "economy": {
+      "tabs": {
+        "accounts": "账户管理",
+        "transactions": "流水记录",
+        "settings": "经济设置"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用经济系统",
+          "currencyName": "货币名称",
+          "currencySymbol": "货币符号",
+          "defaultBalance": "默认开户余额",
+          "allowTransfer": "允许玩家转账",
+          "minTransferAmount": "最小转账金额",
+          "transferTaxRate": "转账税率",
+          "dailyRewardAmount": "每日签到奖励",
+          "leaderboardSize": "排行榜人数"
+        },
+        "actions": {
+          "save": "保存经济设置",
+          "reset": "恢复默认配置"
+        },
+        "messages": {
+          "saveSuccess": "经济设置保存成功。",
+          "resetSuccess": "经济设置已恢复默认值。"
+        }
+      },
+      "accounts": {
+        "columns": {
+          "playerId": "玩家ID",
+          "playerName": "玩家名称",
+          "balance": "余额",
+          "isFrozen": "已冻结",
+          "lastTransactionAt": "最近交易时间"
+        },
+        "actions": {
+          "view": "查看详情",
+          "adjust": "调整余额",
+          "freeze": "冻结",
+          "unfreeze": "解冻"
+        },
+        "leaderboard": {
+          "title": "余额排行榜",
+          "empty": "暂无排行榜数据。"
+        },
+        "detailDialog": {
+          "title": "账户详情",
+          "sections": {
+            "overview": "账户概览",
+            "activity": "账户活跃信息",
+            "recentTransactions": "最近流水"
+          },
+          "fields": {
+            "createdAt": "开户时间",
+            "updatedAt": "最后更新时间",
+            "lastDailyClaimAt": "最近签到时间"
+          },
+          "hints": {
+            "recentTransactions": "仅展示最近 5 条记录"
+          },
+          "empty": {
+            "recentTransactions": "该账户暂无最近流水。",
+            "reason": "无原因说明"
+          },
+          "messages": {
+            "loadFailed": "账户详情加载失败。",
+            "freezeSuccess": "账户冻结状态已更新。"
+          }
+        },
+        "adjustDialog": {
+          "title": "调整 {playerName} 的余额",
+          "fields": {
+            "amount": "调整金额",
+            "reason": "原因说明"
+          },
+          "messages": {
+            "saveSuccess": "余额调整成功。"
+          }
+        }
+      },
+      "transactions": {
+        "columns": {
+          "playerId": "玩家ID",
+          "playerName": "玩家名称",
+          "type": "类型",
+          "direction": "方向",
+          "amount": "金额",
+          "source": "来源",
+          "occurredAt": "发生时间",
+          "referenceId": "关联ID",
+          "operatorName": "操作人名称",
+          "operatorId": "操作人ID",
+          "balanceBefore": "变更前余额",
+          "balanceAfter": "变更后余额",
+          "reason": "原因说明"
+        },
+        "placeholders": {
+          "occurredAtRange": "请选择时间范围"
+        },
+        "detailDialog": {
+          "title": "流水详情",
+          "sections": {
+            "primary": "主信息",
+            "metadata": "附加信息"
+          }
         }
       }
     },

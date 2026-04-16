@@ -157,6 +157,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Economy',
+        path: 'economy',
+        component: () => import('../views/Economy/index.vue'),
+        meta: {
+          title: () => t('menus.economy'),
+          icon: markIcon(() => import('~icons/mdi/cash-multiple')),
+        },
+      },
+      {
         name: 'Console',
         path: 'console',
         component: () => import('../views/Console/index.vue'),

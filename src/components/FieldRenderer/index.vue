@@ -11,7 +11,7 @@ import { resolveFormControl } from './controlRegistry.ts';
 
 defineOptions({ inheritAttrs: false });
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   isViewMode: false,
   placeholder: '',
@@ -84,35 +84,35 @@ function getStandardComponent(el: FormElType): Component {
 
 <template>
   <slot
-    v-if="isSlotControl(el)"
-    :name="propName"
+    v-if="isSlotControl(props.el)"
+    :name="props.propName"
     :model-value="modelValue"
-    :disabled="disabled"
-    :is-view-mode="isViewMode"
+    :disabled="props.disabled"
+    :is-view-mode="props.isViewMode"
   />
 
   <component
-    :is="getStandardComponent(el)"
-    v-else-if="isOptionsType(el)"
+    :is="getStandardComponent(props.el)"
+    v-else-if="isOptionsType(props.el)"
     v-model="modelValue"
-    :disabled="disabled"
-    :placeholder="placeholder"
-    v-bind="componentProps"
+    :disabled="props.disabled"
+    :placeholder="props.placeholder"
+    v-bind="props.componentProps"
     class="w-full"
     @change="(val: any) => emits('change', val)"
   >
-    <template v-if="el === 'el-select'">
+    <template v-if="props.el === 'el-select'">
       <el-option
-        v-for="opt in toValue(options ?? [])"
+        v-for="opt in toValue(props.options ?? [])"
         :key="opt.value"
         :label="opt.label"
         :value="opt.value"
         :disabled="opt.disabled"
       />
     </template>
-    <template v-else-if="el === 'el-radio-group'">
+    <template v-else-if="props.el === 'el-radio-group'">
       <el-radio-button
-        v-for="opt in toValue(options ?? [])"
+        v-for="opt in toValue(props.options ?? [])"
         :key="opt.value"
         :value="opt.value"
         :disabled="opt.disabled"
@@ -120,9 +120,9 @@ function getStandardComponent(el: FormElType): Component {
         {{ opt.label }}
       </el-radio-button>
     </template>
-    <template v-else-if="el === 'el-checkbox-group'">
+    <template v-else-if="props.el === 'el-checkbox-group'">
       <el-checkbox
-        v-for="opt in toValue(options ?? [])"
+        v-for="opt in toValue(props.options ?? [])"
         :key="opt.value"
         :value="opt.value"
         :disabled="opt.disabled"
@@ -133,13 +133,13 @@ function getStandardComponent(el: FormElType): Component {
   </component>
 
   <component
-    :is="getStandardComponent(el)"
+    :is="getStandardComponent(props.el)"
     v-else
     v-model="modelValue"
-    :disabled="disabled"
-    :placeholder="placeholder"
-    :is-view-mode="isViewMode"
-    v-bind="componentProps"
+    :disabled="props.disabled"
+    :placeholder="props.placeholder"
+    :is-view-mode="props.isViewMode"
+    v-bind="props.componentProps"
     clearable
     class="w-full"
     @update:model-value="(val: any) => emits('change', val)"
