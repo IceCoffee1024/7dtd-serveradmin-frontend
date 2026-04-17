@@ -38,8 +38,8 @@ declare namespace API {
       playerName: string;
       relatedPlayerId: string | null;
       relatedPlayerName: string | null;
-      type: string;
-      direction: string;
+      type: TransactionType;
+      direction: TransactionDirection;
       amount: number;
       balanceBefore: number;
       balanceAfter: number;
@@ -51,6 +51,9 @@ declare namespace API {
       operatorName: string | null;
       occurredAt: string;
     }
+
+    type TransactionType = 'AdminGrant' | 'AdminDeduct' | 'TransferOut' | 'TransferIn' | 'DailyReward';
+    type TransactionDirection = 'Income' | 'Expense';
 
     type AccountQueryOrder = 'CreatedAt' | 'PlayerId' | 'PlayerName' | 'Balance' | 'LastTransactionAt';
 
@@ -73,7 +76,7 @@ declare namespace API {
       keyword?: string;
       playerId?: string;
       playerName?: string;
-      type?: string;
+      type?: TransactionType;
       source?: string;
       startTime?: string;
       endTime?: string;
