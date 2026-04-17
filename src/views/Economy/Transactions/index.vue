@@ -32,7 +32,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
       el: 'el-input',
       props: { clearable: true },
       order: 1,
-      span: 8,
+      span: 6,
     },
   },
   {
@@ -43,7 +43,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
       el: 'el-input',
       props: { clearable: true },
       order: 2,
-      span: 8,
+      span: 6,
     },
   },
   {
@@ -54,7 +54,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
       el: 'el-input',
       props: { clearable: true },
       order: 3,
-      span: 8,
+      span: 6,
     },
   },
   {
@@ -70,7 +70,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
       el: 'el-input',
       props: { clearable: true },
       order: 4,
-      span: 8,
+      span: 6,
     },
   },
   {
@@ -88,7 +88,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
         endPlaceholder: t('views.economy.transactions.placeholders.occurredAtRange'),
       },
       order: 5,
-      span: 16,
+      span: 12,
       transform: (value: string[] | undefined) => ({
         startTime: value?.[0],
         endTime: value?.[1],
@@ -158,7 +158,7 @@ async function onView(row: TransactionRow) {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-250px)]">
+  <div class="flex h-full min-h-0 flex-col gap-4">
     <MyTable
       row-key="id"
       :columns="columns"
@@ -170,6 +170,7 @@ async function onView(row: TransactionRow) {
       :show-operation-column="false"
       :auto-column-width="true"
       :search-collapsible="true"
+      class="flex-1 min-h-0"
     >
       <template #amount="{ row }">
         <span
