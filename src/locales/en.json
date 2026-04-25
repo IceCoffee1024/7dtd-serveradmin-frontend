@@ -45,6 +45,7 @@
     "permission": "Permissions",
     "modManagement": "Mod Management",
     "economy": "Economy",
+    "scheduler": "Scheduler",
     "console": "Console",
     "apiDocumentation": "API Documentation"
   },
@@ -1195,6 +1196,148 @@
             "primary": "Primary",
             "metadata": "Metadata"
           }
+        }
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "Settings",
+        "tasks": "Tasks",
+        "history": "Run History"
+      },
+      "triggerSources": {
+        "cron": "Cron",
+        "manual": "Manual",
+        "system": "System"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Scheduler",
+          "defaultTimeZoneId": "Default Time Zone",
+          "defaultAllowConcurrentExecution": "Allow Concurrent Execution by Default",
+          "maxParallelJobs": "Maximum Parallel Jobs",
+          "historyRetentionDays": "History Retention Days",
+          "notifyOnFailure": "Notify on Failure"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "Use a platform time zone ID such as UTC, Asia/Shanghai, or Pacific Standard Time."
+        },
+        "actions": {
+          "save": "Save Scheduler Settings",
+          "reset": "Reset Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Scheduler settings saved successfully.",
+          "resetSuccess": "Scheduler settings were reset to defaults."
+        }
+      },
+      "tasks": {
+        "columns": {
+          "name": "Name",
+          "taskType": "Task Type",
+          "isEnabled": "Enabled",
+          "cronExpression": "Cron Expression",
+          "timeZoneId": "Time Zone",
+          "allowConcurrentExecution": "Concurrent",
+          "lastRunAt": "Last Run",
+          "nextRunAt": "Next Run",
+          "lastStatus": "Last Status",
+          "updatedAt": "Updated At"
+        },
+        "filters": {
+          "taskType": "Task Type",
+          "isEnabled": "Enabled"
+        },
+        "placeholders": {
+          "taskType": "All Types",
+          "configJson": "Task-specific JSON payload",
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
+        },
+        "actions": {
+          "add": "Add Task",
+          "edit": "Edit Task",
+          "run": "Run Now",
+          "delete": "Delete"
+        },
+        "status": {
+          "success": "Success",
+          "failed": "Failed",
+          "skipped": "Skipped",
+          "running": "Running"
+        },
+        "hints": {
+          "defaultSettings": "Default time zone: {timeZone}. Max parallel jobs: {parallel}."
+        },
+        "messages": {
+          "runConfirm": "Run task {name} immediately?",
+          "deleteSuccess": "Scheduler task deleted successfully."
+        },
+        "dialog": {
+          "createTitle": "Create Scheduler Task",
+          "editTitle": "Edit Scheduler Task",
+          "fields": {
+            "name": "Name",
+            "taskType": "Task Type",
+            "isEnabled": "Enabled",
+            "cronExpression": "Cron Expression",
+            "timeZoneId": "Time Zone",
+            "allowConcurrentExecution": "Concurrent Execution",
+            "description": "Description",
+            "configJson": "Task Config JSON"
+          },
+          "tooltips": {
+            "cronExpression": "Use a cron expression with second precision so the backend can schedule the task accurately.",
+            "timeZoneId": "Leave this as UTC unless the schedule must follow a specific server or regional time zone."
+          },
+          "placeholders": {
+            "taskType": "Select a task type",
+            "configJson": "Paste the task-specific JSON payload here"
+          },
+          "actions": {
+            "useDefaultConfig": "Use Default Config",
+            "resetConfig": "Reset JSON"
+          },
+          "hints": {
+            "configJson": "The JSON payload is stored verbatim and passed to the selected handler at runtime."
+          },
+          "messages": {
+            "invalidConfigTitle": "Invalid JSON",
+            "invalidConfigJson": "The task configuration must be valid JSON.",
+            "saveSuccess": "Scheduler task saved successfully."
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "Task Name",
+          "taskType": "Task Type",
+          "triggerSource": "Trigger",
+          "startedAt": "Started At",
+          "endedAt": "Ended At",
+          "succeeded": "Succeeded",
+          "durationMs": "Duration",
+          "summary": "Summary",
+          "errorMessage": "Error",
+          "operatorName": "Operator",
+          "sourceIp": "Source IP"
+        },
+        "filters": {
+          "taskType": "Task Type",
+          "triggerSource": "Trigger Source",
+          "succeeded": "Result",
+          "timeRange": "Time Range"
+        },
+        "placeholders": {
+          "timeRange": "Select a time range"
+        },
+        "actions": {
+          "viewDetails": "View Details"
+        },
+        "detailDialog": {
+          "title": "Run Details",
+          "titleWithName": "Run Details - {name}",
+          "details": "Details"
         }
       }
     },

@@ -10,11 +10,75 @@ import { useUserInfoStore } from '~/stores/userInfo';
 interface ErrorResponse {
   message?: string;
   error?: string;
+  title?: string;
+  detail?: string;
+  status?: number;
+  traceId?: string;
+  /** Field-level validation errors from the backend ProblemDetails `errors` extension. */
+  errors?: Record<string, string[]>;
 }
 
 interface HttpErrorWithData extends Error {
   response: Response;
   data?: ErrorResponse;
+}
+
+async function parseErrorResponse(response: Response): Promise<ErrorResponse | undefined> {
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json') === false && contentType.includes('application/problem+json') === false) {
+    const text = await response.clone().text();
+    if (!text) {
+      return undefined;
+    }
+
+    return {
+      detail: text,
+      message: text,
+      status: response.status,
+      traceId: response.headers.get('X-Request-ID') || undefined,
+    };
+  }
+
+  try {
+    const data = await response.clone().json();
+    return {
+      ...data,
+      status: data.status ?? response.status,
+      traceId: data.traceId ?? response.headers.get('X-Request-ID') ?? undefined,
+    };
+  }
+  catch {
+    return {
+      status: response.status,
+      traceId: response.headers.get('X-Request-ID') || undefined,
+    };
+  }
+}
+
+function getErrorMessage(data?: ErrorResponse): string | undefined {
+  const detail = data?.detail?.trim();
+  const title = data?.title?.trim();
+  const message = data?.message?.trim();
+  const error = data?.error?.trim();
+
+  // When field-level errors exist, append them so the user can see which fields failed.
+  const fieldErrors = data?.errors;
+  const fieldErrorSuffix = fieldErrors && Object.keys(fieldErrors).length > 0
+    ? ` (${Object.entries(fieldErrors).map(([k, v]) => `${k}: ${v.join(', ')}`).join('; ')})`
+    : '';
+
+  if (detail) {
+    const base = title && title !== detail ? `${title}: ${detail}` : detail;
+    return `${base}${fieldErrorSuffix}`;
+  }
+
+  const base = title || message || error;
+  return base ? `${base}${fieldErrorSuffix}` : undefined;
+}
+
+function appendTraceId(message: string, data?: ErrorResponse): string {
+  return data?.traceId ? `${message} (traceId: ${data.traceId})` : message;
 }
 
 const http = ky.create({
@@ -42,7 +106,7 @@ const http = ky.create({
       },
     ],
     beforeError: [
-      ({ error }) => {
+      async ({ error }) => {
         nProgress.done();
 
         const { toast } = usePopup();
@@ -58,7 +122,6 @@ const http = ky.create({
         }
 
         const httpError = error as HttpErrorWithData;
-        const data = httpError.data;
         const { response } = httpError;
 
         if (!response) {
@@ -70,11 +133,15 @@ const http = ky.create({
           return error;
         }
 
+        const data = httpError.data ?? await parseErrorResponse(response);
+        httpError.data = data;
+        const serverMessage = getErrorMessage(data);
+
         switch (response.status) {
           case 401:
           {
             toast({
-              text: t('errors.http.unauthorized'),
+              text: appendTraceId(serverMessage || t('errors.http.unauthorized'), data),
               type: 'warning',
             });
             emitter.emit(EVENT_TYPES.AUTH.UNAUTHORIZED, { source: 'http' });
@@ -83,7 +150,7 @@ const http = ky.create({
           case 403:
           {
             toast({
-              text: t('errors.http.forbidden'),
+              text: appendTraceId(serverMessage || t('errors.http.forbidden'), data),
               type: 'warning',
             });
             emitter.emit(EVENT_TYPES.AUTH.FORBIDDEN, { source: 'http' });
@@ -91,25 +158,25 @@ const http = ky.create({
           }
           case 404:
             toast({
-              text: t('errors.http.notFound'),
+              text: appendTraceId(serverMessage || t('errors.http.notFound'), data),
               type: 'warning',
             });
             break;
           case 400:
             toast({
-              text: `${t('errors.http.badRequest')}: ${data?.message || data?.error}`,
+              text: appendTraceId(serverMessage || t('errors.http.badRequest'), data),
               type: 'error',
             });
             break;
           case 500:
             toast({
-              text: `${t('errors.http.serverError')}: ${data?.message || data?.error}`,
+              text: appendTraceId(serverMessage || t('errors.http.serverError'), data),
               type: 'error',
             });
             break;
           default:
             toast({
-              text: `${t('errors.http.serverError')}: ${data?.message || data?.error || response.status}`,
+              text: appendTraceId(serverMessage || `${t('errors.http.serverError')}: ${data?.status || response.status}`, data),
               type: 'error',
             });
             break;

@@ -166,6 +166,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Scheduler',
+        path: 'scheduler',
+        component: () => import('../views/Scheduler/index.vue'),
+        meta: {
+          title: () => t('menus.scheduler'),
+          icon: markIcon(() => import('~icons/mdi/calendar-clock')),
+        },
+      },
+      {
         name: 'Console',
         path: 'console',
         component: () => import('../views/Console/index.vue'),

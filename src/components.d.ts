@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     DoughnutChart: typeof import('./components/DoughnutChart/index.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
@@ -25,6 +26,8 @@ declare module 'vue' {
     ElCollapseTransition: typeof import('element-plus/es')['ElCollapseTransition']
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
+    ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
+    ElDescriptionsItem: typeof import('element-plus/es')['ElDescriptionsItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElDrawer: typeof import('element-plus/es')['ElDrawer']
@@ -102,6 +105,10 @@ declare module 'vue' {
     IconMdiCheck: typeof import('~icons/mdi/check')['default']
     IconMdiClose: typeof import('~icons/mdi/close')['default']
     IconMdiCloseCircleOutline: typeof import('~icons/mdi/close-circle-outline')['default']
+    IconMdiDeleteOutline: typeof import('~icons/mdi/delete-outline')['default']
+    IconMdiEyeOutline: typeof import('~icons/mdi/eye-outline')['default']
+    IconMdiPencil: typeof import('~icons/mdi/pencil')['default']
+    IconMdiPlayCircleOutline: typeof import('~icons/mdi/play-circle-outline')['default']
     IconMdiPower: typeof import('~icons/mdi/power')['default']
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']
     IconMdiSend: typeof import('~icons/mdi/send')['default']

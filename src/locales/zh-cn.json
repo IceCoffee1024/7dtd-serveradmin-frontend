@@ -44,6 +44,7 @@
     "permission": "权限管理",
     "modManagement": "模组管理",
     "economy": "经济系统",
+    "scheduler": "调度任务",
     "console": "控制台",
     "appSettings": "应用设置",
     "apiDocumentation": "API文档"
@@ -708,6 +709,148 @@
             "primary": "主信息",
             "metadata": "附加信息"
           }
+        }
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "设置",
+        "tasks": "任务",
+        "history": "执行历史"
+      },
+      "triggerSources": {
+        "cron": "Cron",
+        "manual": "手动",
+        "system": "系统"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用调度器",
+          "defaultTimeZoneId": "默认时区",
+          "defaultAllowConcurrentExecution": "默认允许并发执行",
+          "maxParallelJobs": "最大并行任务数",
+          "historyRetentionDays": "历史保留天数",
+          "notifyOnFailure": "失败时通知"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "可以填写 UTC、Asia/Shanghai、Pacific Standard Time 这类平台时区 ID。"
+        },
+        "actions": {
+          "save": "保存调度器设置",
+          "reset": "重置默认值"
+        },
+        "messages": {
+          "saveSuccess": "调度器设置已保存。",
+          "resetSuccess": "调度器设置已恢复为默认值。"
+        }
+      },
+      "tasks": {
+        "columns": {
+          "name": "名称",
+          "taskType": "任务类型",
+          "isEnabled": "启用",
+          "cronExpression": "Cron 表达式",
+          "timeZoneId": "时区",
+          "allowConcurrentExecution": "并发",
+          "lastRunAt": "上次执行",
+          "nextRunAt": "下次执行",
+          "lastStatus": "上次状态",
+          "updatedAt": "更新时间"
+        },
+        "filters": {
+          "taskType": "任务类型",
+          "isEnabled": "启用状态"
+        },
+        "placeholders": {
+          "taskType": "全部类型",
+          "configJson": "任务专用 JSON 配置",
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
+        },
+        "actions": {
+          "add": "新增任务",
+          "edit": "编辑任务",
+          "run": "立即执行",
+          "delete": "删除"
+        },
+        "status": {
+          "success": "成功",
+          "failed": "失败",
+          "skipped": "跳过",
+          "running": "运行中"
+        },
+        "hints": {
+          "defaultSettings": "默认时区：{timeZone}。最大并行任务数：{parallel}。"
+        },
+        "messages": {
+          "runConfirm": "要立即执行任务 {name} 吗？",
+          "deleteSuccess": "调度任务已删除。"
+        },
+        "dialog": {
+          "createTitle": "新增调度任务",
+          "editTitle": "编辑调度任务",
+          "fields": {
+            "name": "名称",
+            "taskType": "任务类型",
+            "isEnabled": "启用",
+            "cronExpression": "Cron 表达式",
+            "timeZoneId": "时区",
+            "allowConcurrentExecution": "允许并发执行",
+            "description": "描述",
+            "configJson": "任务配置 JSON"
+          },
+          "tooltips": {
+            "cronExpression": "请使用带秒字段的 cron 表达式，以便后端精确调度。",
+            "timeZoneId": "默认保持 UTC，只有在计划必须跟随特定服务器或地区时间时才修改。"
+          },
+          "placeholders": {
+            "taskType": "请选择任务类型",
+            "configJson": "在这里粘贴任务专用的 JSON 配置"
+          },
+          "actions": {
+            "useDefaultConfig": "使用默认配置",
+            "resetConfig": "重置 JSON"
+          },
+          "hints": {
+            "configJson": "该 JSON 会被原样保存，并在运行时传给对应的任务处理器。"
+          },
+          "messages": {
+            "invalidConfigTitle": "JSON 无效",
+            "invalidConfigJson": "任务配置必须是有效的 JSON。",
+            "saveSuccess": "调度任务已保存。"
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "任务名称",
+          "taskType": "任务类型",
+          "triggerSource": "触发方式",
+          "startedAt": "开始时间",
+          "endedAt": "结束时间",
+          "succeeded": "是否成功",
+          "durationMs": "耗时",
+          "summary": "摘要",
+          "errorMessage": "错误信息",
+          "operatorName": "操作者",
+          "sourceIp": "来源 IP"
+        },
+        "filters": {
+          "taskType": "任务类型",
+          "triggerSource": "触发方式",
+          "succeeded": "执行结果",
+          "timeRange": "时间范围"
+        },
+        "placeholders": {
+          "timeRange": "请选择时间范围"
+        },
+        "actions": {
+          "viewDetails": "查看详情"
+        },
+        "detailDialog": {
+          "title": "执行详情",
+          "titleWithName": "执行详情 - {name}",
+          "details": "详细数据"
         }
       }
     },
