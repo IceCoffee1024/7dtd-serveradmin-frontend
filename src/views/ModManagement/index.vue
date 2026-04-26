@@ -29,7 +29,6 @@ const columns = computed<MyTableColumn<ModItem>[]>(() => [
   { prop: 'website', label: t('views.modManagement.columns.website'), slot: 'website' },
   { prop: 'isLoaded', label: t('views.modManagement.columns.loaded'), slot: 'isLoaded', className: 'text-center' },
   { prop: 'isUninstalled', label: t('views.modManagement.columns.uninstalled'), slot: 'isUninstalled', className: 'text-center' },
-  { prop: 'actions', label: t('views.modManagement.columns.actions'), slot: 'actions', exportable: false, className: 'text-center' },
 ]);
 
 const pendingIds = ref(new Set<string>());
@@ -100,9 +99,6 @@ defineExpose({ reload: () => tableRef.value?.reload() });
       :fetch-data="fetchData"
       :is-selectable="false"
       :show-add-btn="false"
-      :show-edit-btn="false"
-      :show-delete-btn="false"
-      :show-operation-column="false"
       :auto-column-width="true"
     >
       <template #displayName="{ row }">
@@ -128,7 +124,7 @@ defineExpose({ reload: () => tableRef.value?.reload() });
           {{ row.isUninstalled ? t('views.modManagement.status.uninstalled') : t('views.modManagement.status.installed') }}
         </el-tag>
       </template>
-      <template #actions="{ row }">
+      <template #operation="{ row }">
         <div class="flex justify-center">
           <el-button
             size="small"

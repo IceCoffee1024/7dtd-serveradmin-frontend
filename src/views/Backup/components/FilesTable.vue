@@ -23,9 +23,8 @@ const isDeleting = ref(false);
 
 const columns = computed<MyTableColumn<API.Backup.BackupFile>[]>(() => [
   { prop: 'fileName', label: t('views.backup.files.columns.fileName'), slot: 'fileName' },
-  { prop: 'sizeBytes', label: t('views.backup.files.columns.size'), slot: 'size', className: 'text-right', width: 140 },
-  { prop: 'createdAt', label: t('views.backup.files.columns.createdAt'), slot: 'createdAt', width: 200 },
-  { prop: 'actions', label: t('components.myTable.operation'), slot: 'actions', className: 'text-center', exportable: false, width: 140 },
+  { prop: 'sizeBytes', label: t('views.backup.files.columns.size'), slot: 'size', className: 'text-right' },
+  { prop: 'createdAt', label: t('views.backup.files.columns.createdAt'), slot: 'createdAt' },
 ]);
 
 async function fetchData(_: MyTableFetchParams): Promise<MyTableFetchResult<API.Backup.BackupFile>> {
@@ -107,8 +106,7 @@ defineExpose({ reload });
     :fetch-data="fetchData"
     :show-index="true"
     :show-add-btn="false"
-    :show-edit-btn="false"
-    :show-delete-btn="false"
+    :operation-column-width="140"
   >
     <template #fileName="{ row }">
       <span class="text-sm font-mono inline-flex gap-1 items-center">
@@ -123,7 +121,7 @@ defineExpose({ reload });
     <template #createdAt="{ row }">
       <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTime(row.createdAt) }}</span>
     </template>
-    <template #actions="{ row }">
+    <template #operation="{ row }">
       <IconButton
         button-size="small"
         icon-size="18"

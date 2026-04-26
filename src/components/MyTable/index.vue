@@ -137,7 +137,7 @@ const props = withDefaults(defineProps<Props>(), {
   showSearch: true,
   showOperationColumn: true,
   operationColumnWidth: 160,
-  autoColumnWidth: false, // Disabled by default to preserve backward compatibility.
+  autoColumnWidth: true,
   searchCollapsible: false,
 });
 

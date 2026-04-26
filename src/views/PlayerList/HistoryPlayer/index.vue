@@ -102,8 +102,6 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       :show-add-btn="false"
       :is-selectable="false"
       :operation-column-width="110"
-      :show-edit-btn="false"
-      :show-delete-btn="false"
       :auto-column-width="true"
     >
       <template #playerName="{ row }">

@@ -68,7 +68,6 @@ const columns = computed<MyTableColumn<TaskRow>[]>(() => [
   { prop: 'nextRunAt', label: t('views.scheduler.tasks.columns.nextRunAt'), slot: 'nextRunAt', sortable: true },
   { prop: 'lastStatus', label: t('views.scheduler.tasks.columns.lastStatus'), slot: 'lastStatus' },
   { prop: 'updatedAt', label: t('views.scheduler.tasks.columns.updatedAt'), slot: 'updatedAt', sortable: true },
-  { prop: 'actions', label: t('components.myTable.operation'), slot: 'actions', exportable: false, className: 'text-center' },
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<TaskRow>> {
@@ -243,8 +242,6 @@ onMounted(() => {
       :show-index="true"
       :auto-column-width="true"
       :search-collapsible="true"
-      :show-edit-btn="false"
-      :show-delete-btn="false"
       @add="onAdd"
     >
       <template #taskType="{ row }">
@@ -289,7 +286,7 @@ onMounted(() => {
         <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.updatedAt) }}</span>
       </template>
 
-      <template #actions="{ row }">
+      <template #operation="{ row }">
         <div class="flex gap-1.5 justify-center">
           <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.tasks.actions.run')" @click="onRun(row)">
             <icon-mdi-play-circle-outline />

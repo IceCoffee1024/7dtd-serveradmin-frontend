@@ -729,7 +729,7 @@
           "historyRetentionDays": "运行记录保留天数"
         },
         "tooltips": {
-          "timeZoneId": "IANA 时区 ID（如 UTC、Asia/Shanghai）。应用于所有备份 Cron 调度。"
+          "timeZoneId": "IANA 时区 ID（如 Asia/Shanghai、UTC）。留空则使用服务器本地时区。应用于所有备份 Cron 调度。"
         },
         "actions": {
           "save": "保存",

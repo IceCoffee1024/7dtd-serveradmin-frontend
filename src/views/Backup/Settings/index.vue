@@ -30,14 +30,14 @@ const isSubmitting = ref(false);
 const settings = ref<API.Backup.Settings | null>(null);
 
 function buildDefaults(): FormModel {
-  return { isEnabled: false, timeZoneId: 'UTC', historyRetentionDays: 30 };
+  return { isEnabled: false, timeZoneId: '', historyRetentionDays: 30 };
 }
 
 const form = reactive<FormModel>(buildDefaults());
 
 const schema = v.object({
   isEnabled: v.boolean(),
-  timeZoneId: v.pipe(v.string(), v.minLength(1)),
+  timeZoneId: v.string(),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
 });
 
@@ -75,7 +75,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
 function applyValues(source: API.Backup.Settings | null | undefined) {
   const data = source ?? null;
   form.isEnabled = data?.isEnabled ?? false;
-  form.timeZoneId = data?.timeZoneId || 'UTC';
+  form.timeZoneId = data?.timeZoneId ?? '';
   form.historyRetentionDays = data?.historyRetentionDays ?? 30;
 }
 
@@ -127,7 +127,7 @@ async function onSubmit() {
     const payload: API.Backup.Settings = {
       ...settings.value,
       isEnabled: form.isEnabled,
-      timeZoneId: form.timeZoneId.trim() || 'UTC',
+      timeZoneId: form.timeZoneId.trim() || null,
       historyRetentionDays: Number(form.historyRetentionDays ?? 0),
     };
     await updateSettings(payload);

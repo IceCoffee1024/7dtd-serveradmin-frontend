@@ -104,7 +104,6 @@ const columns = computed<MyTableColumn<RunRow>[]>(() => [
   { prop: 'errorMessage', label: t('views.scheduler.history.columns.errorMessage'), slot: 'errorMessage' },
   { prop: 'operatorName', label: t('views.scheduler.history.columns.operatorName'), sortable: true },
   { prop: 'sourceIp', label: t('views.scheduler.history.columns.sourceIp'), sortable: true },
-  { prop: 'actions', label: t('components.myTable.operation'), slot: 'actions', exportable: false, className: 'text-center' },
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<RunRow>> {
@@ -211,8 +210,6 @@ onMounted(() => {
       :fetch-data="fetchData"
       :show-index="true"
       :show-add-btn="false"
-      :show-edit-btn="false"
-      :show-delete-btn="false"
       :auto-column-width="true"
       :search-collapsible="true"
     >
@@ -252,7 +249,7 @@ onMounted(() => {
         <span class="text-sm text-red-600 line-clamp-2 dark:text-red-400">{{ row.errorMessage || '--' }}</span>
       </template>
 
-      <template #actions="{ row }">
+      <template #operation="{ row }">
         <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.history.actions.viewDetails')" @click="onView(row)">
           <icon-mdi-eye-outline />
         </IconButton>

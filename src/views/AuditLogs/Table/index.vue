@@ -413,8 +413,6 @@ function onView(row: AuditLogRow) {
       :fetch-data="fetchData"
       :is-selectable="false"
       :show-add-btn="false"
-      :show-edit-btn="false"
-      :show-delete-btn="false"
       :show-operation-column="false"
       :auto-column-width="true"
       :search-collapsible="true"

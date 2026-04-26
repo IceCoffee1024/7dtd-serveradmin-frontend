@@ -1217,7 +1217,7 @@
           "historyRetentionDays": "Run History Retention (Days)"
         },
         "tooltips": {
-          "timeZoneId": "IANA time zone id (e.g. UTC, Asia/Shanghai). Applies to all backup cron schedules."
+          "timeZoneId": "IANA time zone id (e.g. Asia/Shanghai, UTC). Leave empty to use the server's local time zone. Applies to all backup cron schedules."
         },
         "actions": {
           "save": "Save",

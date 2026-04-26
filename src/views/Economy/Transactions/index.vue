@@ -95,7 +95,6 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
       }),
     },
   },
-  { prop: 'actions', label: t('components.myTable.operation'), slot: 'actions', exportable: false, className: 'text-center' },
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<TransactionRow>> {
@@ -165,9 +164,6 @@ async function onView(row: TransactionRow) {
       :fetch-data="fetchData"
       :is-selectable="false"
       :show-add-btn="false"
-      :show-edit-btn="false"
-      :show-delete-btn="false"
-      :show-operation-column="false"
       :auto-column-width="true"
       :search-collapsible="true"
       class="flex-1 min-h-0"
@@ -185,7 +181,7 @@ async function onView(row: TransactionRow) {
         <span class="text-xs font-mono text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.occurredAt) }}</span>
       </template>
 
-      <template #actions="{ row }">
+      <template #operation="{ row }">
         <div class="flex justify-center">
           <el-button size="small" plain @click="onView(row)">
             {{ t('components.myTable.view') }}
