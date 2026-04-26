@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
   runData?: API.Scheduler.Run | null;

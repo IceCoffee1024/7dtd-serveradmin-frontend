@@ -175,6 +175,53 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Backup',
+        path: 'backup',
+        redirect: { name: 'BackupSettings' },
+        meta: {
+          title: () => t('menus.backup'),
+          icon: markIcon(() => import('~icons/mdi/backup-restore')),
+        },
+        children: [
+          {
+            name: 'BackupSettings',
+            path: 'settings',
+            component: () => import('../views/Backup/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.backupSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+          {
+            name: 'WorldBackup',
+            path: 'world',
+            component: () => import('../views/Backup/WorldBackup/index.vue'),
+            meta: {
+              title: () => t('menus.worldBackup'),
+              icon: markIcon(() => import('~icons/mdi/earth')),
+            },
+          },
+          {
+            name: 'DatabaseBackup',
+            path: 'database',
+            component: () => import('../views/Backup/DatabaseBackup/index.vue'),
+            meta: {
+              title: () => t('menus.databaseBackup'),
+              icon: markIcon(() => import('~icons/mdi/database')),
+            },
+          },
+          {
+            name: 'ServerConfigBackup',
+            path: 'server-config',
+            component: () => import('../views/Backup/ServerConfigBackup/index.vue'),
+            meta: {
+              title: () => t('menus.serverConfigBackup'),
+              icon: markIcon(() => import('~icons/mdi/file-cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'Console',
         path: 'console',
         component: () => import('../views/Console/index.vue'),

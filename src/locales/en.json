@@ -46,6 +46,11 @@
     "modManagement": "Mod Management",
     "economy": "Economy",
     "scheduler": "Scheduler",
+    "backup": "Backup",
+    "backupSettings": "Backup Settings",
+    "worldBackup": "World Backup",
+    "databaseBackup": "Database Backup",
+    "serverConfigBackup": "Server Config Backup",
     "console": "Console",
     "apiDocumentation": "API Documentation"
   },
@@ -483,7 +488,8 @@
     },
     "auditLogs": {
       "tabs": {
-        "auditLogs": "Audit Logs"
+        "auditLogs": "Audit Logs",
+        "backupRuns": "Backup Runs"
       },
       "sources": {
         "api": "API",
@@ -1197,6 +1203,92 @@
             "metadata": "Metadata"
           }
         }
+      }
+    },
+    "backup": {
+      "tabs": {
+        "config": "Config",
+        "files": "Files"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Backup Feature",
+          "timeZoneId": "Cron Time Zone",
+          "historyRetentionDays": "Run History Retention (Days)"
+        },
+        "tooltips": {
+          "timeZoneId": "IANA time zone id (e.g. UTC, Asia/Shanghai). Applies to all backup cron schedules."
+        },
+        "actions": {
+          "save": "Save",
+          "reset": "Reset"
+        },
+        "messages": {
+          "saveSuccess": "Backup settings saved.",
+          "resetSuccess": "Backup settings restored to defaults."
+        }
+      },
+      "tooltips": {
+        "cronExpression": "Standard 5-field cron expression evaluated in the configured time zone.",
+        "destinationRoot": "Absolute or relative folder where backup outputs are written.",
+        "retentionCount": "Maximum kept backups. Use 0 to keep none, -1 to disable pruning."
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "Enable World Backup",
+          "cronExpression": "Cron Expression",
+          "destinationRoot": "Destination Root",
+          "compressToZip": "Compress to Zip",
+          "retentionCount": "Retention Count",
+          "saveWorldBeforeBackup": "Save World Before Backup"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "Run a `saveworld` console command and wait for completion before snapshotting."
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "Enable Database Backup",
+          "cronExpression": "Cron Expression",
+          "destinationRoot": "Destination Root",
+          "compressToZip": "Compress to Zip",
+          "retentionCount": "Retention Count"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "Enable Server Config Backup",
+          "cronExpression": "Cron Expression",
+          "destinationRoot": "Destination Root",
+          "compressToZip": "Compress to Zip",
+          "retentionCount": "Retention Count"
+        }
+      },
+      "actions": {
+        "runNow": "Run Now",
+        "runNowConfirm": "Trigger this backup immediately?",
+        "runNowReason": "Reason (optional)",
+        "runNowSuccess": "Backup finished successfully.",
+        "runNowFailed": "Backup failed.",
+        "download": "Download",
+        "delete": "Delete"
+      },
+      "files": {
+        "columns": {
+          "fileName": "File Name",
+          "size": "Size",
+          "createdAt": "Created At"
+        },
+        "messages": {
+          "confirmDelete": "Delete backup file '{name}'? This cannot be undone.",
+          "deleteSuccess": "Backup file deleted.",
+          "directoryDownloadUnsupported": "Folder downloads are not supported. Enable zip compression to download as a single archive."
+        }
+      },
+      "taskTypes": {
+        "world": "World Backup",
+        "database": "Database Backup",
+        "serverConfig": "Server Config Backup"
       }
     },
     "scheduler": {
