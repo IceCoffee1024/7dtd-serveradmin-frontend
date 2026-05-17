@@ -175,7 +175,7 @@ async function onSubmit() {
   }
 
   const valid = await formRef.value.validate().catch(() => false);
-  if (valid == false) {
+  if (valid === false) {
     return;
   }
 
