@@ -44,6 +44,7 @@
     "permission": "权限管理",
     "modManagement": "模组管理",
     "economy": "经济系统",
+    "restart": "重启管理",
     "scheduler": "调度任务",
     "backup": "备份管理",
     "backupSettings": "备份设置",
@@ -933,6 +934,75 @@
           "title": "执行详情",
           "titleWithName": "执行详情 - {name}",
           "details": "详细数据"
+        }
+      }
+    },
+    "restart": {
+      "tabs": {
+        "settings": "设置",
+        "run": "手动重启"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用计划重启",
+          "cronExpression": "Cron 表达式",
+          "timeZoneId": "时区",
+          "warningLeadSeconds": "预警提前秒数",
+          "warningMessage": "预警消息",
+          "saveWorldBeforeRestart": "重启前保存世界",
+          "restartMode": "重启模式",
+          "restartCommand": "自定义重启命令",
+          "historyRetentionDays": "历史保留天数"
+        },
+        "tooltips": {
+          "timeZoneId": "可以填写 UTC、Asia/Shanghai 等平台时区 ID。",
+          "warningMessage": "支持 {minutes} 占位符，将被替换为剩余等待时间（分钟）。",
+          "restartCommand": "可选的控制台命令，用于发起重启。设置后将跳过内置重启流程。",
+          "restartMode": "Graceful：等待服务器优雅关闭；Force：立即强制关机。"
+        },
+        "restartModes": {
+          "graceful": "优雅",
+          "force": "强制"
+        },
+        "actions": {
+          "save": "保存重启设置"
+        },
+        "messages": {
+          "saveSuccess": "重启设置已保存。"
+        }
+      },
+      "run": {
+        "description": "立即触发服务器重启。所有覆盖项均为可选，留空则使用已配置的默认值。",
+        "fields": {
+          "reason": "原因",
+          "warningLeadSecondsOverride": "预警提前秒数覆盖",
+          "restartModeOverride": "重启模式覆盖"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "留空则使用配置中的默认值。",
+          "restartModeOverride": "留空则使用配置中的默认值。"
+        },
+        "restartModeOptions": {
+          "graceful": "优雅",
+          "force": "强制"
+        },
+        "actions": {
+          "run": "立即重启"
+        },
+        "messages": {
+          "runConfirm": "确定要立即重启服务器吗？已连接的玩家可能会断线。",
+          "runSuccess": "服务器重启请求已发送。",
+          "runFailed": "重启请求失败。"
+        },
+        "result": {
+          "title": "上次执行结果",
+          "succeeded": "成功",
+          "failed": "失败",
+          "summary": "摘要",
+          "durationMs": "耗时",
+          "errorMessage": "错误信息",
+          "startedAt": "开始时间",
+          "endedAt": "结束时间"
         }
       }
     },

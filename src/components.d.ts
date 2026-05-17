@@ -117,6 +117,7 @@ declare module 'vue' {
     IconMdiPlus: typeof import('~icons/mdi/plus')['default']
     IconMdiPower: typeof import('~icons/mdi/power')['default']
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']
+    IconMdiRestart: typeof import('~icons/mdi/restart')['default']
     IconMdiSend: typeof import('~icons/mdi/send')['default']
     IconMdiUnfoldLessHorizontal: typeof import('~icons/mdi/unfold-less-horizontal')['default']
     IconMdiUnfoldMoreHorizontal: typeof import('~icons/mdi/unfold-more-horizontal')['default']

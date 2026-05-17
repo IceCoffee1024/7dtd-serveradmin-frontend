@@ -166,6 +166,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Restart',
+        path: 'restart',
+        component: () => import('../views/Restart/index.vue'),
+        meta: {
+          title: () => t('menus.restart'),
+          icon: markIcon(() => import('~icons/mdi/restart')),
+        },
+      },
+      {
         name: 'Scheduler',
         path: 'scheduler',
         component: () => import('../views/ScheduledCommand/index.vue'),

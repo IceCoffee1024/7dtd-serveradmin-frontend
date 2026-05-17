@@ -45,6 +45,7 @@
     "permission": "Permissions",
     "modManagement": "Mod Management",
     "economy": "Economy",
+    "restart": "Restart",
     "scheduler": "Scheduler",
     "backup": "Backup",
     "backupSettings": "Backup Settings",
@@ -1421,6 +1422,75 @@
           "title": "Run Details",
           "titleWithName": "Run Details - {name}",
           "details": "Details"
+        }
+      }
+    },
+    "restart": {
+      "tabs": {
+        "settings": "Settings",
+        "run": "Manual Run"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Scheduled Restart",
+          "cronExpression": "Cron Expression",
+          "timeZoneId": "Time Zone",
+          "warningLeadSeconds": "Warning Lead Time (Seconds)",
+          "warningMessage": "Warning Message",
+          "saveWorldBeforeRestart": "Save World Before Restart",
+          "restartMode": "Restart Mode",
+          "restartCommand": "Custom Restart Command",
+          "historyRetentionDays": "History Retention Days"
+        },
+        "tooltips": {
+          "timeZoneId": "Use a platform time zone ID such as UTC or Asia/Shanghai.",
+          "warningMessage": "Supports the {minutes} placeholder, replaced with the remaining wait time in minutes.",
+          "restartCommand": "Optional console command to initiate the restart. Overrides the built-in restart pipeline when set.",
+          "restartMode": "Graceful: flush pending operations before shutting down. Force: immediate shutdown."
+        },
+        "restartModes": {
+          "graceful": "Graceful",
+          "force": "Force"
+        },
+        "actions": {
+          "save": "Save Restart Settings"
+        },
+        "messages": {
+          "saveSuccess": "Restart settings saved."
+        }
+      },
+      "run": {
+        "description": "Trigger an immediate server restart. Override fields are optional and fall back to configured defaults if left blank.",
+        "fields": {
+          "reason": "Reason",
+          "warningLeadSecondsOverride": "Warning Lead Time Override (Seconds)",
+          "restartModeOverride": "Restart Mode Override"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "Leave empty to use the configured default.",
+          "restartModeOverride": "Leave empty to use the configured default."
+        },
+        "restartModeOptions": {
+          "graceful": "Graceful",
+          "force": "Force"
+        },
+        "actions": {
+          "run": "Run Now"
+        },
+        "messages": {
+          "runConfirm": "Trigger an immediate server restart? Connected players may be disconnected.",
+          "runSuccess": "Server restart has been requested.",
+          "runFailed": "Restart request failed."
+        },
+        "result": {
+          "title": "Last Run Result",
+          "succeeded": "Succeeded",
+          "failed": "Failed",
+          "summary": "Summary",
+          "durationMs": "Duration",
+          "errorMessage": "Error Message",
+          "startedAt": "Started At",
+          "endedAt": "Ended At"
         }
       }
     },
