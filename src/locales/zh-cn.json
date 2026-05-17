@@ -813,6 +813,8 @@
         "messages": {
           "confirmDelete": "确定删除备份文件 '{name}' 吗？此操作不可撤销。",
           "deleteSuccess": "备份文件已删除。",
+          "deleteError": "删除备份文件失败，请稍后重试。",
+          "downloadError": "下载备份文件失败，请稍后重试。",
           "directoryDownloadUnsupported": "不支持下载文件夹。请启用 Zip 压缩后下载为单个压缩包。"
         }
       },

@@ -1301,6 +1301,8 @@
         "messages": {
           "confirmDelete": "Delete backup file '{name}'? This cannot be undone.",
           "deleteSuccess": "Backup file deleted.",
+          "deleteError": "Failed to delete backup file. Please try again.",
+          "downloadError": "Failed to download backup file. Please try again.",
           "directoryDownloadUnsupported": "Folder downloads are not supported. Enable zip compression to download as a single archive."
         }
       },

@@ -62,6 +62,7 @@ async function onDownload(row: API.Backup.BackupFile) {
   }
   catch (error) {
     console.error(error);
+    toast({ type: 'error', text: t('views.backup.files.messages.downloadError') });
   }
   finally {
     isDownloading.value = false;
@@ -85,6 +86,7 @@ async function onDelete(row: API.Backup.BackupFile) {
   }
   catch (error) {
     console.error(error);
+    toast({ type: 'error', text: t('views.backup.files.messages.deleteError') });
   }
   finally {
     isDeleting.value = false;

@@ -8,9 +8,9 @@ declare namespace API {
     interface ChatSettings {
       globalServerName: string | null;
       whisperServerName: string | null;
-      chatCommandPrefixes: string[];
+      chatCommandPrefixes: string[] | null;
       allowNoPrefix: boolean;
-      chatCommandSeparators: string[];
+      chatCommandSeparators: string[] | null;
     }
 
     interface ChatMessage {

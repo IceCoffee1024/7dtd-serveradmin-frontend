@@ -23,6 +23,9 @@ declare namespace API {
     /** One restart run result row returned by the manual run endpoint. */
     interface Run {
       id: number;
+      createdAt: string;
+      featureKey: string;
+      taskId: number | null;
       taskName: string;
       taskType: string;
       triggerSource: string;
@@ -34,6 +37,7 @@ declare namespace API {
       succeeded: boolean;
       summary: string;
       errorMessage: string | null;
+      detailsJson: string | null;
       durationMs: number | null;
     }
   }

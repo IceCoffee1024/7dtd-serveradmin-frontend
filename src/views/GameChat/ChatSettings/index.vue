@@ -121,9 +121,9 @@ function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel 
     isEnabled: true,
     globalServerName: source.globalServerName ?? '',
     whisperServerName: source.whisperServerName ?? '',
-    chatCommandPrefixes: source.chatCommandPrefixes.join(','),
+    chatCommandPrefixes: (source.chatCommandPrefixes ?? ['/']).join(','),
     allowNoPrefix: source.allowNoPrefix,
-    chatCommandSeparators: source.chatCommandSeparators.join(','),
+    chatCommandSeparators: (source.chatCommandSeparators ?? [' ']).join(','),
   };
 }
 
