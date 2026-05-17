@@ -64,7 +64,14 @@
       "serverManagement": "Server Management",
       "operations": "Operations",
       "system": "System"
-    }
+    },
+    "restartSettings": "Settings",
+    "restartRun": "Manual Restart",
+    "economyAccounts": "Accounts",
+    "economyTransactions": "Transactions",
+    "economySettings": "Settings",
+    "backupTasks": "Backup Tasks",
+    "backupHistory": "Run History"
   },
   "components": {
     "myTable": {
@@ -1042,8 +1049,8 @@
     },
     "coloredChat": {
       "tabs": {
-        "settings": "Colored Chat Settings",
-        "profiles": "Colored Chat Profiles"
+        "settings": "Settings",
+        "profiles": "Profiles"
       },
       "settings": {
         "fields": {

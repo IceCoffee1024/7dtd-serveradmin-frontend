@@ -69,7 +69,7 @@ function formatDuration(ms: number | null | undefined): string {
 </script>
 
 <template>
-  <el-card shadow="never">
+  <div>
     <p class="text-sm text-gray-500 mb-4 dark:text-gray-400">
       {{ t('views.restart.run.description') }}
     </p>
@@ -150,5 +150,5 @@ function formatDuration(ms: number | null | undefined): string {
         </el-descriptions-item>
       </el-descriptions>
     </template>
-  </el-card>
+  </div>
 </template>

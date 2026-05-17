@@ -64,7 +64,14 @@
       "serverManagement": "服务器管理",
       "operations": "运维操作",
       "system": "系统"
-    }
+    },
+    "restartSettings": "重启设置",
+    "restartRun": "手动重启",
+    "economyAccounts": "账户管理",
+    "economyTransactions": "流水记录",
+    "economySettings": "经济设置",
+    "backupTasks": "备份任务",
+    "backupHistory": "运行历史"
   },
   "components": {
     "myTable": {
@@ -554,8 +561,8 @@
     },
     "coloredChat": {
       "tabs": {
-        "settings": "彩色聊天配置",
-        "profiles": "彩色聊天条目"
+        "settings": "配置",
+        "profiles": "条目"
       },
       "settings": {
         "fields": {

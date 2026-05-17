@@ -126,10 +126,40 @@ const routes: RouteRecordRaw[] = [
         name: 'Economy',
         path: 'economy',
         component: () => import('../views/Economy/index.vue'),
+        redirect: { name: 'EconomyAccounts' },
         meta: {
           title: () => t('menus.economy'),
           icon: markIcon(() => import('~icons/mdi/cash-multiple')),
         },
+        children: [
+          {
+            name: 'EconomyAccounts',
+            path: 'accounts',
+            component: () => import('../views/Economy/Accounts/index.vue'),
+            meta: {
+              title: () => t('menus.economyAccounts'),
+              icon: markIcon(() => import('~icons/mdi/account-cash')),
+            },
+          },
+          {
+            name: 'EconomyTransactions',
+            path: 'transactions',
+            component: () => import('../views/Economy/Transactions/index.vue'),
+            meta: {
+              title: () => t('menus.economyTransactions'),
+              icon: markIcon(() => import('~icons/mdi/swap-horizontal')),
+            },
+          },
+          {
+            name: 'EconomySettings',
+            path: 'settings',
+            component: () => import('../views/Economy/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.economySettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
       },
       {
         name: 'ServerConfig',
@@ -182,10 +212,31 @@ const routes: RouteRecordRaw[] = [
         name: 'Restart',
         path: 'restart',
         component: () => import('../views/Restart/index.vue'),
+        redirect: { name: 'RestartSettings' },
         meta: {
           title: () => t('menus.restart'),
           icon: markIcon(() => import('~icons/mdi/restart')),
         },
+        children: [
+          {
+            name: 'RestartSettings',
+            path: 'settings',
+            component: () => import('../views/Restart/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.restartSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+          {
+            name: 'RestartRun',
+            path: 'run',
+            component: () => import('../views/Restart/Run/index.vue'),
+            meta: {
+              title: () => t('menus.restartRun'),
+              icon: markIcon(() => import('~icons/mdi/play-circle-outline')),
+            },
+          },
+        ],
       },
       {
         name: 'Scheduler',
@@ -245,30 +296,21 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
-            name: 'WorldBackup',
-            path: 'world',
-            component: () => import('../views/Backup/WorldBackup/index.vue'),
+            name: 'BackupTasks',
+            path: 'tasks',
+            component: () => import('../views/Backup/Tasks/index.vue'),
             meta: {
-              title: () => t('menus.worldBackup'),
-              icon: markIcon(() => import('~icons/mdi/earth')),
+              title: () => t('menus.backupTasks'),
+              icon: markIcon(() => import('~icons/mdi/backup-restore')),
             },
           },
           {
-            name: 'DatabaseBackup',
-            path: 'database',
-            component: () => import('../views/Backup/DatabaseBackup/index.vue'),
+            name: 'BackupHistory',
+            path: 'history',
+            component: () => import('../views/Backup/History/index.vue'),
             meta: {
-              title: () => t('menus.databaseBackup'),
-              icon: markIcon(() => import('~icons/mdi/database')),
-            },
-          },
-          {
-            name: 'ServerConfigBackup',
-            path: 'server-config',
-            component: () => import('../views/Backup/ServerConfigBackup/index.vue'),
-            meta: {
-              title: () => t('menus.serverConfigBackup'),
-              icon: markIcon(() => import('~icons/mdi/file-cog-outline')),
+              title: () => t('menus.backupHistory'),
+              icon: markIcon(() => import('~icons/mdi/history')),
             },
           },
         ],
