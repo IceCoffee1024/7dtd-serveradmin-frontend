@@ -38,7 +38,7 @@
     "liveChat": "实时聊天",
     "chatHistory": "历史聊天",
     "chatSettings": "聊天设置",
-    "coloredChat": "聊天颜色",
+    "coloredChat": "彩色聊天",
     "auditLogs": "审计日志",
     "serverConfig": "服务器配置",
     "banWhitelist": "黑白名单",
@@ -46,7 +46,7 @@
     "modManagement": "模组管理",
     "economy": "经济系统",
     "restart": "服务器重启",
-    "scheduler": "定时任务",
+    "scheduler": "任务调度",
     "backup": "备份管理",
     "backupSettings": "备份设置",
     "worldBackup": "世界备份",
@@ -71,7 +71,7 @@
     "economyTransactions": "流水记录",
     "economySettings": "经济设置",
     "backupTasks": "备份任务",
-    "backupHistory": "运行历史"
+    "backupHistory": "执行历史"
   },
   "components": {
     "myTable": {

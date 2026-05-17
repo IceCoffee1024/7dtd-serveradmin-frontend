@@ -38,7 +38,7 @@
     "liveChat": "Live Chat",
     "chatHistory": "Chat History",
     "chatSettings": "Chat Settings",
-    "coloredChat": "Chat Colors",
+    "coloredChat": "Colored Chat",
     "auditLogs": "Audit Logs",
     "serverConfig": "Server Config",
     "appSettings": "App Settings",
@@ -71,7 +71,7 @@
     "economyTransactions": "Transactions",
     "economySettings": "Settings",
     "backupTasks": "Backup Tasks",
-    "backupHistory": "Run History"
+    "backupHistory": "History"
   },
   "components": {
     "myTable": {
