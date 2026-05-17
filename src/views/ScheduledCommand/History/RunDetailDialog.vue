@@ -1,9 +1,9 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
-  runData?: API.Scheduler.Run | null;
+  runData?: API.ScheduledCommand.Run | null;
 }
 
 interface DialogExpose {
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
   runData: null,
 });
 
-const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
+const dialogRef = useTemplateRef<{ open: () => void; close: () => void }>('dialogRef');
 const { t } = useI18n();
 
 const dialogTitle = computed(() => (
@@ -94,30 +94,30 @@ defineExpose({
         </el-descriptions-item>
       </el-descriptions>
 
-      <div class="grid gap-4 lg:grid-cols-2">
-        <div class="rounded-4 border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/60">
-          <div class="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
+      <div class="gap-4 grid lg:grid-cols-2">
+        <div class="p-4 border border-gray-200 rounded-4 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60">
+          <div class="text-sm text-gray-900 font-semibold mb-2 dark:text-gray-100">
             {{ $t('views.scheduler.history.columns.summary') }}
           </div>
-          <div class="text-sm leading-6 text-gray-700 whitespace-pre-wrap dark:text-gray-200">
+          <div class="text-sm text-gray-700 leading-6 whitespace-pre-wrap dark:text-gray-200">
             {{ runData.summary }}
           </div>
         </div>
-        <div class="rounded-4 border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/60">
-          <div class="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <div class="p-4 border border-gray-200 rounded-4 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60">
+          <div class="text-sm text-gray-900 font-semibold mb-2 dark:text-gray-100">
             {{ $t('views.scheduler.history.columns.errorMessage') }}
           </div>
-          <div class="text-sm leading-6 text-gray-700 whitespace-pre-wrap dark:text-gray-200">
+          <div class="text-sm text-gray-700 leading-6 whitespace-pre-wrap dark:text-gray-200">
             {{ runData.errorMessage || $t('common.unknown') }}
           </div>
         </div>
       </div>
 
-      <div class="rounded-4 border border-gray-200 bg-gray-900 p-4 text-gray-100 dark:border-gray-700">
-        <div class="mb-2 text-sm font-semibold">
+      <div class="text-gray-100 p-4 border border-gray-200 rounded-4 bg-gray-900 dark:border-gray-700">
+        <div class="text-sm font-semibold mb-2">
           {{ $t('views.scheduler.history.detailDialog.details') }}
         </div>
-        <pre class="overflow-auto whitespace-pre-wrap break-words text-xs leading-6">{{ prettyJson(runData.detailsJson) }}</pre>
+        <pre class="text-xs leading-6 whitespace-pre-wrap break-words overflow-auto">{{ prettyJson(runData.detailsJson) }}</pre>
       </div>
     </div>
   </MyDialog>

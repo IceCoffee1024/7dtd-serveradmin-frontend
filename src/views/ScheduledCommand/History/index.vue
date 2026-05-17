@@ -1,20 +1,20 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getRuns, getTaskTypes } from '~/api/scheduler';
+import { getRuns, getTaskTypes } from '~/api/scheduledCommand';
 import RunDetailDialog from './RunDetailDialog.vue';
 
-defineOptions({ name: 'SchedulerHistoryPage' });
+defineOptions({ name: 'ScheduledCommandHistoryPage' });
 
-type RunRow = API.Scheduler.Run;
+type RunRow = API.ScheduledCommand.Run;
 
 const { t } = useI18n();
 
 const tableRef = useTemplateRef('tableRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const currentRun = ref<RunRow | null>(null);
-const taskTypes = ref<API.Scheduler.TaskTypeInfo[]>([]);
+const taskTypes = ref<API.ScheduledCommand.TaskTypeInfo[]>([]);
 
 const taskTypeOptions = computed(() => taskTypes.value.map(item => ({ label: item.title, value: item.taskType })));
 const triggerSourceOptions = computed(() => [
@@ -145,7 +145,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.Scheduler.RunQueryOrder | undefined {
+function toOrder(sortField: string | undefined): API.ScheduledCommand.RunQueryOrder | undefined {
   switch (sortField) {
     case 'taskName':
       return 'TaskName';
@@ -159,8 +159,6 @@ function toOrder(sortField: string | undefined): API.Scheduler.RunQueryOrder | u
       return 'EndedAt';
     case 'succeeded':
       return 'Succeeded';
-    case 'taskId':
-      return 'TaskId';
     default:
       return undefined;
   }

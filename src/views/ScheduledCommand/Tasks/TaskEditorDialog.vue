@@ -1,8 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
-import { createTask, updateTask } from '~/api/scheduler';
+import { createTask, updateTask } from '~/api/scheduledCommand';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -10,8 +10,7 @@ import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
 interface Props {
-  editData?: API.Scheduler.Task | null;
-  taskTypes: API.Scheduler.TaskTypeInfo[];
+  editData?: API.ScheduledCommand.Task | null;
   defaultTimeZoneId?: string | null;
   defaultAllowConcurrentExecution?: boolean;
 }
@@ -28,13 +27,14 @@ interface FormExpose {
 
 interface FormModel {
   name: string;
-  taskType: string;
   isEnabled: boolean;
   cronExpression: string;
   timeZoneId: string;
   allowConcurrentExecution: boolean;
   description: string;
-  configJson: string;
+  executeOnMainThread: boolean;
+  requireGameStartDone: boolean;
+  captureOutput: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -45,42 +45,44 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{ saved: [] }>();
 
-const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
+const dialogRef = useTemplateRef<{ open: () => void; close: () => void }>('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 const { t } = useI18n();
 const { toast } = usePopup();
 
 const isEdit = computed(() => props.editData !== null);
+const dialogTitle = computed(() => (isEdit.value ? t('views.scheduler.tasks.dialog.editTitle') : t('views.scheduler.tasks.dialog.createTitle')));
+const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+
+/** The ordered list of console commands managed separately from the base form model. */
+const commands = ref<string[]>(['']);
 
 function buildDefaults(): FormModel {
-  const firstTaskType = props.taskTypes[0];
   return {
     name: '',
-    taskType: firstTaskType?.taskType ?? '',
     isEnabled: true,
     cronExpression: '',
     timeZoneId: props.defaultTimeZoneId || 'UTC',
     allowConcurrentExecution: props.defaultAllowConcurrentExecution,
     description: '',
-    configJson: firstTaskType?.defaultConfigJson || '{}',
+    executeOnMainThread: true,
+    requireGameStartDone: true,
+    captureOutput: true,
   };
 }
 
 const form = reactive<FormModel>(buildDefaults());
 
-const selectedTaskType = computed(() => props.taskTypes.find(item => item.taskType === form.taskType) ?? null);
-const dialogTitle = computed(() => (isEdit.value ? t('views.scheduler.tasks.dialog.editTitle') : t('views.scheduler.tasks.dialog.createTitle')));
-const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
-
 const schema = v.object({
   name: v.pipe(v.string(), v.minLength(1)),
-  taskType: v.pipe(v.string(), v.minLength(1)),
   isEnabled: v.boolean(),
   cronExpression: v.pipe(v.string(), v.minLength(1)),
   timeZoneId: v.string(),
   allowConcurrentExecution: v.boolean(),
   description: v.string(),
-  configJson: v.pipe(v.string(), v.minLength(2)),
+  executeOnMainThread: v.boolean(),
+  requireGameStartDone: v.boolean(),
+  captureOutput: v.boolean(),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -90,8 +92,6 @@ const booleanOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
-const taskTypeOptions = computed(() => props.taskTypes.map(item => ({ label: item.title, value: item.taskType })));
-
 const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'name',
@@ -100,26 +100,8 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24, md: 12 },
   },
   {
-    prop: 'taskType',
-    label: t('views.scheduler.tasks.dialog.fields.taskType'),
-    el: 'custom',
-    span: { xs: 24, md: 12 },
-    onChange: () => {
-      if (isEdit.value === false) {
-        applyDefaultConfig();
-      }
-    },
-  },
-  {
     prop: 'isEnabled',
     label: t('views.scheduler.tasks.dialog.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
-  },
-  {
-    prop: 'allowConcurrentExecution',
-    label: t('views.scheduler.tasks.dialog.fields.allowConcurrentExecution'),
     el: 'el-select',
     options: booleanOptions.value,
     span: { xs: 24, md: 12 },
@@ -139,60 +121,79 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24, md: 12 },
   },
   {
+    prop: 'allowConcurrentExecution',
+    label: t('views.scheduler.tasks.dialog.fields.allowConcurrentExecution'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'executeOnMainThread',
+    label: t('views.scheduler.tasks.dialog.fields.executeOnMainThread'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'requireGameStartDone',
+    label: t('views.scheduler.tasks.dialog.fields.requireGameStartDone'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'captureOutput',
+    label: t('views.scheduler.tasks.dialog.fields.captureOutput'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
     prop: 'description',
     label: t('views.scheduler.tasks.dialog.fields.description'),
     el: 'el-input',
-    props: { type: 'textarea', rows: 3 },
-    span: { xs: 24 },
-  },
-  {
-    prop: 'configJson',
-    label: t('views.scheduler.tasks.dialog.fields.configJson'),
-    el: 'custom',
+    props: { type: 'textarea', rows: 2 },
     span: { xs: 24 },
   },
 ]);
+
+function addCommand() {
+  commands.value.push('');
+}
+
+function removeCommand(index: number) {
+  if (commands.value.length > 1) {
+    commands.value.splice(index, 1);
+  }
+}
 
 function syncFormData() {
   const source = props.editData;
   if (source) {
     form.name = source.name;
-    form.taskType = source.taskType;
     form.isEnabled = source.isEnabled;
     form.cronExpression = source.cronExpression;
     form.timeZoneId = source.timeZoneId || props.defaultTimeZoneId || 'UTC';
     form.allowConcurrentExecution = source.allowConcurrentExecution;
     form.description = source.description || '';
-    form.configJson = formatJson(source.configJson);
+    form.executeOnMainThread = source.executeOnMainThread;
+    form.requireGameStartDone = source.requireGameStartDone;
+    form.captureOutput = source.captureOutput;
+    commands.value = source.commands.length > 0 ? [...source.commands] : [''];
     return;
   }
 
   const defaults = buildDefaults();
   form.name = defaults.name;
-  form.taskType = defaults.taskType;
   form.isEnabled = defaults.isEnabled;
   form.cronExpression = defaults.cronExpression;
   form.timeZoneId = defaults.timeZoneId;
   form.allowConcurrentExecution = defaults.allowConcurrentExecution;
   form.description = defaults.description;
-  form.configJson = defaults.configJson;
-}
-
-function formatJson(value: string | null | undefined): string {
-  if (!value || value.trim().length === 0) {
-    return '{}';
-  }
-
-  try {
-    return JSON.stringify(JSON.parse(value), null, 2);
-  }
-  catch {
-    return value;
-  }
-}
-
-function applyDefaultConfig() {
-  form.configJson = selectedTaskType.value?.defaultConfigJson || '{}';
+  form.executeOnMainThread = defaults.executeOnMainThread;
+  form.requireGameStartDone = defaults.requireGameStartDone;
+  form.captureOutput = defaults.captureOutput;
+  commands.value = [''];
 }
 
 watch(
@@ -201,22 +202,6 @@ watch(
     syncFormData();
   },
   { immediate: true },
-);
-
-watch(
-  () => props.taskTypes,
-  () => {
-    if (isEdit.value === false && props.taskTypes.length > 0) {
-      if (props.taskTypes.some(item => item.taskType === form.taskType) === false) {
-        form.taskType = props.taskTypes[0].taskType;
-      }
-
-      if (form.configJson.trim().length === 0 || form.configJson === '{}') {
-        applyDefaultConfig();
-      }
-    }
-  },
-  { immediate: true, deep: true },
 );
 
 async function onSubmit() {
@@ -229,28 +214,27 @@ async function onSubmit() {
     return false;
   }
 
-  let parsedConfig: unknown;
-  try {
-    parsedConfig = JSON.parse(form.configJson);
-  }
-  catch (error) {
+  const filteredCommands = commands.value.map(c => c.trim()).filter(c => c.length > 0);
+  if (filteredCommands.length === 0) {
     toast({
-      type: 'error',
-      title: t('views.scheduler.tasks.dialog.messages.invalidConfigTitle'),
-      text: t('views.scheduler.tasks.dialog.messages.invalidConfigJson'),
+      type: 'warning',
+      title: t('views.scheduler.tasks.dialog.fields.commands'),
+      text: t('views.scheduler.tasks.dialog.messages.noCommands'),
     });
     return false;
   }
 
-  const payload: API.Scheduler.TaskUpsert = {
+  const payload: API.ScheduledCommand.TaskUpsert = {
     name: form.name.trim(),
-    taskType: form.taskType,
     isEnabled: form.isEnabled,
     cronExpression: form.cronExpression.trim(),
     timeZoneId: form.timeZoneId.trim() || null,
+    commands: filteredCommands,
+    executeOnMainThread: form.executeOnMainThread,
+    requireGameStartDone: form.requireGameStartDone,
+    captureOutput: form.captureOutput,
     allowConcurrentExecution: form.allowConcurrentExecution,
     description: form.description.trim() || null,
-    configJson: JSON.stringify(parsedConfig, null, 2),
   };
 
   try {
@@ -309,48 +293,41 @@ defineExpose({
       v-model="form"
       :fields="fields"
       :rules="rules"
-      label-width="140px"
-    >
-      <template #taskType>
-        <div class="flex flex-col gap-3 w-full">
-          <el-select v-model="form.taskType" :disabled="isEdit" :placeholder="t('views.scheduler.tasks.dialog.placeholders.taskType')">
-            <el-option v-for="item in taskTypeOptions" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-          <el-alert
-            v-if="selectedTaskType"
-            :title="selectedTaskType.title"
-            type="info"
-            show-icon
-            :closable="false"
-            :description="selectedTaskType.description"
-          />
-        </div>
-      </template>
+      label-width="160px"
+    />
 
-      <template #configJson>
-        <div class="flex flex-col gap-3 w-full">
-          <div class="flex flex-wrap gap-2 items-center justify-between">
-            <div class="text-sm text-gray-500 dark:text-gray-400">
-              {{ t('views.scheduler.tasks.dialog.hints.configJson') }}
-            </div>
-            <div class="flex gap-2">
-              <el-button size="small" plain @click="applyDefaultConfig">
-                {{ t('views.scheduler.tasks.dialog.actions.useDefaultConfig') }}
-              </el-button>
-              <el-button size="small" plain @click="form.configJson = '{}'">
-                {{ t('views.scheduler.tasks.dialog.actions.resetConfig') }}
-              </el-button>
-            </div>
-          </div>
+    <!-- Commands list managed outside MyForm because it is a dynamic array -->
+    <div class="mt-4 px-1">
+      <div class="mb-2 flex items-center justify-between">
+        <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
+          {{ t('views.scheduler.tasks.dialog.fields.commands') }}
+        </span>
+        <el-button size="small" plain @click="addCommand">
+          <el-icon><icon-mdi-plus /></el-icon>
+          {{ t('views.scheduler.tasks.dialog.actions.addCommand') }}
+        </el-button>
+      </div>
+      <div v-auto-animate class="flex flex-col gap-2">
+        <div v-for="(_, index) in commands" :key="index" class="flex gap-2 items-center">
+          <span class="text-xs text-gray-400 text-right shrink-0 w-6 dark:text-gray-500">{{ index + 1 }}</span>
           <el-input
-            v-model="form.configJson"
-            type="textarea"
-            :rows="16"
-            :placeholder="t('views.scheduler.tasks.dialog.placeholders.configJson')"
-            class="font-mono"
+            v-model="commands[index]"
+            :placeholder="t('views.scheduler.tasks.dialog.placeholders.command')"
+            class="font-mono flex-1"
+            clearable
           />
+          <IconButton
+            button-size="small"
+            icon-size="16"
+            plain
+            :disabled="commands.length <= 1"
+            :tooltip-content="t('views.scheduler.tasks.dialog.actions.removeCommand')"
+            @click="removeCommand(index)"
+          >
+            <icon-mdi-minus />
+          </IconButton>
         </div>
-      </template>
-    </MyForm>
+      </div>
+    </div>
   </MyDialog>
 </template>

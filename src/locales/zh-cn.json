@@ -819,9 +819,7 @@
           "isEnabled": "启用调度器",
           "defaultTimeZoneId": "默认时区",
           "defaultAllowConcurrentExecution": "默认允许并发执行",
-          "maxParallelJobs": "最大并行任务数",
-          "historyRetentionDays": "历史保留天数",
-          "notifyOnFailure": "失败时通知"
+          "historyRetentionDays": "历史保留天数"
         },
         "tooltips": {
           "defaultTimeZoneId": "可以填写 UTC、Asia/Shanghai、Pacific Standard Time 这类平台时区 ID。"
@@ -838,7 +836,6 @@
       "tasks": {
         "columns": {
           "name": "名称",
-          "taskType": "任务类型",
           "isEnabled": "启用",
           "cronExpression": "Cron 表达式",
           "timeZoneId": "时区",
@@ -849,12 +846,9 @@
           "updatedAt": "更新时间"
         },
         "filters": {
-          "taskType": "任务类型",
           "isEnabled": "启用状态"
         },
         "placeholders": {
-          "taskType": "全部类型",
-          "configJson": "任务专用 JSON 配置",
           "timeZoneId": "UTC",
           "cronExpression": "0 */5 * * * *"
         },
@@ -871,7 +865,7 @@
           "running": "运行中"
         },
         "hints": {
-          "defaultSettings": "默认时区：{timeZone}。最大并行任务数：{parallel}。"
+          "defaultSettings": "默认时区：{timeZone}。"
         },
         "messages": {
           "runConfirm": "要立即执行任务 {name} 吗？",
@@ -882,32 +876,29 @@
           "editTitle": "编辑调度任务",
           "fields": {
             "name": "名称",
-            "taskType": "任务类型",
             "isEnabled": "启用",
             "cronExpression": "Cron 表达式",
             "timeZoneId": "时区",
             "allowConcurrentExecution": "允许并发执行",
-            "description": "描述",
-            "configJson": "任务配置 JSON"
+            "executeOnMainThread": "在主线程执行",
+            "requireGameStartDone": "需要游戏已启动",
+            "captureOutput": "捕获输出",
+            "commands": "控制台命令",
+            "description": "描述"
           },
           "tooltips": {
             "cronExpression": "请使用带秒字段的 cron 表达式，以便后端精确调度。",
             "timeZoneId": "默认保持 UTC，只有在计划必须跟随特定服务器或地区时间时才修改。"
           },
           "placeholders": {
-            "taskType": "请选择任务类型",
-            "configJson": "在这里粘贴任务专用的 JSON 配置"
+            "command": "输入控制台命令，例如：say 你好"
           },
           "actions": {
-            "useDefaultConfig": "使用默认配置",
-            "resetConfig": "重置 JSON"
-          },
-          "hints": {
-            "configJson": "该 JSON 会被原样保存，并在运行时传给对应的任务处理器。"
+            "addCommand": "添加命令",
+            "removeCommand": "移除命令"
           },
           "messages": {
-            "invalidConfigTitle": "JSON 无效",
-            "invalidConfigJson": "任务配置必须是有效的 JSON。",
+            "noCommands": "请至少添加一条控制台命令。",
             "saveSuccess": "调度任务已保存。"
           }
         }

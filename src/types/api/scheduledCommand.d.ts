@@ -1,56 +1,54 @@
 declare namespace API {
-  namespace Scheduler {
-    /** Paged response wrapper used by scheduler list endpoints. */
+  namespace ScheduledCommand {
+    /** Paged response wrapper used by scheduled command list endpoints. */
     interface Paged<T> {
       total: number;
       items: T[];
     }
 
-    /** Global scheduler settings loaded from the feature configuration store. */
+    /** Global scheduled command settings loaded from the feature configuration store. */
     interface Settings {
       isEnabled: boolean;
       defaultTimeZoneId: string | null;
       defaultAllowConcurrentExecution: boolean;
-      maxParallelJobs: number;
       historyRetentionDays: number;
-      notifyOnFailure: boolean;
     }
 
-    /** Built-in scheduler task metadata returned to the task editor. */
+    /** Built-in task type metadata returned to the task editor. */
     interface TaskTypeInfo {
       taskType: string;
       title: string;
       description: string;
-      defaultConfigJson: string;
     }
 
-    /** Sortable columns exposed by the scheduler task query endpoint. */
-    type TaskQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Name' | 'TaskType' | 'IsEnabled' | 'CronExpression' | 'LastRunAt' | 'NextRunAt';
+    /** Sortable columns exposed by the scheduled command query endpoint. */
+    type TaskQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Name' | 'IsEnabled' | 'CronExpression' | 'LastRunAt';
 
-    /** Search and pagination payload for scheduler tasks. */
+    /** Search and pagination payload for scheduled commands. */
     interface TaskQuery {
       pageNumber?: number;
       pageSize?: number;
       keyword?: string;
-      taskType?: string;
       isEnabled?: boolean;
       order?: TaskQueryOrder;
       desc?: boolean;
     }
 
-    /** One persisted scheduler task row. */
+    /** One persisted scheduled command row. */
     interface Task {
       id: number;
       createdAt: string;
       updatedAt: string;
       name: string;
-      taskType: string;
       isEnabled: boolean;
       cronExpression: string;
       timeZoneId: string | null;
+      commands: string[];
+      executeOnMainThread: boolean;
+      requireGameStartDone: boolean;
+      captureOutput: boolean;
       allowConcurrentExecution: boolean;
       description: string | null;
-      configJson: string;
       lastRunAt: string | null;
       nextRunAt: string | null;
       lastStatus: string | null;
@@ -58,22 +56,24 @@ declare namespace API {
       lastDurationMs: number | null;
     }
 
-    /** Create/update payload for scheduler tasks. */
+    /** Create/update payload for scheduled commands. */
     interface TaskUpsert {
       name: string;
-      taskType: string;
       isEnabled: boolean;
       cronExpression: string;
       timeZoneId?: string | null;
+      commands: string[];
+      executeOnMainThread: boolean;
+      requireGameStartDone: boolean;
+      captureOutput: boolean;
       allowConcurrentExecution: boolean;
       description?: string | null;
-      configJson: string;
     }
 
-    /** Sortable columns exposed by the scheduler run history endpoint. */
-    type RunQueryOrder = 'CreatedAt' | 'TaskId' | 'TaskName' | 'TaskType' | 'TriggerSource' | 'StartedAt' | 'EndedAt' | 'Succeeded';
+    /** Sortable columns exposed by the run history endpoint. */
+    type RunQueryOrder = 'CreatedAt' | 'FeatureKey' | 'TaskName' | 'TaskType' | 'TriggerSource' | 'StartedAt' | 'EndedAt' | 'Succeeded';
 
-    /** Search and pagination payload for scheduler run history. */
+    /** Search and pagination payload for run history. */
     interface RunQuery {
       pageNumber?: number;
       pageSize?: number;
@@ -88,10 +88,10 @@ declare namespace API {
       desc?: boolean;
     }
 
-    /** One persisted scheduler execution history row. */
+    /** One persisted execution history row. */
     interface Run {
       id: number;
-      taskId: number;
+      taskId: number | null;
       taskName: string;
       taskType: string;
       triggerSource: string;
@@ -117,11 +117,5 @@ declare namespace API {
 
     /** Logical trigger source recorded with each run. */
     type TriggerSource = 'Cron' | 'Manual' | 'System';
-
-    /** Restart mode used by restart task configurations. */
-    type RestartMode = 'Graceful' | 'Force';
-
-    /** Reward action type used by reward task configurations. */
-    type RewardActionType = 'ConsoleCommand' | 'BroadcastMessage';
   }
 }

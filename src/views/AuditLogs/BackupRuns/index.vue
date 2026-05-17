@@ -3,11 +3,11 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { getBackupRuns } from '~/api/backup';
-import RunDetailDialog from '~/views/Scheduler/History/RunDetailDialog.vue';
+import RunDetailDialog from '~/views/ScheduledCommand/History/RunDetailDialog.vue';
 
 defineOptions({ name: 'BackupRunsTable' });
 
-type RunRow = API.Scheduler.Run;
+type RunRow = API.ScheduledCommand.Run;
 
 const { t } = useI18n();
 
@@ -87,7 +87,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmed || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.Scheduler.RunQueryOrder | undefined {
+function toOrder(sortField: string | undefined): API.ScheduledCommand.RunQueryOrder | undefined {
   switch (sortField) {
     case 'startedAt': return 'StartedAt';
     case 'endedAt': return 'EndedAt';

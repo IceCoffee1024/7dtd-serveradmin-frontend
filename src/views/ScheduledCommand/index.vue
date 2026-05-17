@@ -1,9 +1,9 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import History from './History/index.vue';
 import Settings from './Settings/index.vue';
 import Tasks from './Tasks/index.vue';
 
-defineOptions({ name: 'SchedulerPage' });
+defineOptions({ name: 'ScheduledCommandPage' });
 
 const activeTab = ref('tasks');
 </script>

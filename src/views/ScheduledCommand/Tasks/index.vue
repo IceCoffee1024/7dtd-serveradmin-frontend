@@ -1,14 +1,14 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { deleteTask, getSettings, getTasks, getTaskTypes, runTask } from '~/api/scheduler';
+import { deleteTask, getSettings, getTasks, runTask } from '~/api/scheduledCommand';
 import { usePopup } from '~/composables';
 import TaskEditorDialog from './TaskEditorDialog.vue';
 
-defineOptions({ name: 'SchedulerTasksPage' });
+defineOptions({ name: 'ScheduledCommandTasksPage' });
 
-type TaskRow = API.Scheduler.Task;
+type TaskRow = API.ScheduledCommand.Task;
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
@@ -16,10 +16,8 @@ const { confirm, toast } = usePopup();
 const tableRef = useTemplateRef('tableRef');
 const taskDialogRef = useTemplateRef('taskDialogRef');
 const currentTask = ref<TaskRow | null>(null);
-const taskTypes = ref<API.Scheduler.TaskTypeInfo[]>([]);
-const schedulerSettings = ref<API.Scheduler.Settings | null>(null);
+const schedulerSettings = ref<API.ScheduledCommand.Settings | null>(null);
 
-const taskTypeOptions = computed(() => taskTypes.value.map(item => ({ label: item.title, value: item.taskType })));
 const enabledOptions = computed(() => [
   { label: t('common.yes'), value: true },
   { label: t('common.no'), value: false },
@@ -34,18 +32,6 @@ const columns = computed<MyTableColumn<TaskRow>[]>(() => [
     search: {
       el: 'el-input',
       props: { clearable: true },
-    },
-  },
-  {
-    prop: 'taskType',
-    label: t('views.scheduler.tasks.filters.taskType'),
-    slot: 'taskType',
-    search: {
-      el: 'el-select',
-      props: { clearable: true },
-      options: taskTypeOptions,
-      order: 1,
-      span: 8,
     },
   },
   {
@@ -65,7 +51,7 @@ const columns = computed<MyTableColumn<TaskRow>[]>(() => [
   { prop: 'timeZoneId', label: t('views.scheduler.tasks.columns.timeZoneId'), slot: 'timeZoneId' },
   { prop: 'allowConcurrentExecution', label: t('views.scheduler.tasks.columns.allowConcurrentExecution'), slot: 'allowConcurrentExecution', className: 'text-center' },
   { prop: 'lastRunAt', label: t('views.scheduler.tasks.columns.lastRunAt'), slot: 'lastRunAt', sortable: true },
-  { prop: 'nextRunAt', label: t('views.scheduler.tasks.columns.nextRunAt'), slot: 'nextRunAt', sortable: true },
+  { prop: 'nextRunAt', label: t('views.scheduler.tasks.columns.nextRunAt'), slot: 'nextRunAt' },
   { prop: 'lastStatus', label: t('views.scheduler.tasks.columns.lastStatus'), slot: 'lastStatus' },
   { prop: 'updatedAt', label: t('views.scheduler.tasks.columns.updatedAt'), slot: 'updatedAt', sortable: true },
 ]);
@@ -75,7 +61,6 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     pageNumber: params.pageNumber,
     pageSize: params.pageSize,
     keyword: toOptionalString(params.search?.keyword),
-    taskType: toOptionalString(params.search?.taskType),
     isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
     order: toOrder(params.sortField),
     desc: params.sortOrder === 'descending',
@@ -89,13 +74,10 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 
 async function loadMeta() {
   try {
-    const [types, settings] = await Promise.all([getTaskTypes(), getSettings()]);
-    taskTypes.value = types;
-    schedulerSettings.value = settings;
+    schedulerSettings.value = await getSettings();
   }
   catch (error) {
     console.error(error);
-    taskTypes.value = [];
     schedulerSettings.value = null;
   }
 }
@@ -109,20 +91,16 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.Scheduler.TaskQueryOrder | undefined {
+function toOrder(sortField: string | undefined): API.ScheduledCommand.TaskQueryOrder | undefined {
   switch (sortField) {
     case 'name':
       return 'Name';
-    case 'taskType':
-      return 'TaskType';
     case 'isEnabled':
       return 'IsEnabled';
     case 'cronExpression':
       return 'CronExpression';
     case 'lastRunAt':
       return 'LastRunAt';
-    case 'nextRunAt':
-      return 'NextRunAt';
     case 'updatedAt':
       return 'UpdatedAt';
     default:
@@ -136,10 +114,6 @@ function formatTimestamp(value: string | null | undefined): string {
 
 function formatDuration(value: number | null | undefined): string {
   return value == null ? '--' : `${value} ms`;
-}
-
-function resolveTaskTypeLabel(taskType: string): string {
-  return taskTypes.value.find(item => item.taskType === taskType)?.title || taskType;
 }
 
 function resolveStatusType(status: string | null | undefined): 'success' | 'warning' | 'danger' | 'info' {
@@ -228,7 +202,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4">
     <el-alert
-      :title="t('views.scheduler.tasks.hints.defaultSettings', { timeZone: schedulerSettings?.defaultTimeZoneId || 'UTC', parallel: schedulerSettings?.maxParallelJobs ?? 1 })"
+      :title="t('views.scheduler.tasks.hints.defaultSettings', { timeZone: schedulerSettings?.defaultTimeZoneId || 'UTC' })"
       type="info"
       show-icon
       :closable="false"
@@ -244,10 +218,6 @@ onMounted(() => {
       :search-collapsible="true"
       @add="onAdd"
     >
-      <template #taskType="{ row }">
-        <span class="text-gray-900 font-medium dark:text-gray-100">{{ resolveTaskTypeLabel(row.taskType) }}</span>
-      </template>
-
       <template #isEnabled="{ row }">
         <el-tag :type="row.isEnabled ? 'success' : 'info'">
           {{ row.isEnabled ? t('common.yes') : t('common.no') }}
@@ -304,7 +274,6 @@ onMounted(() => {
     <TaskEditorDialog
       ref="taskDialogRef"
       :edit-data="currentTask"
-      :task-types="taskTypes"
       :default-time-zone-id="schedulerSettings?.defaultTimeZoneId"
       :default-allow-concurrent-execution="schedulerSettings?.defaultAllowConcurrentExecution ?? false"
       @saved="onSaved"

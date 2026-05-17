@@ -1307,9 +1307,7 @@
           "isEnabled": "Enable Scheduler",
           "defaultTimeZoneId": "Default Time Zone",
           "defaultAllowConcurrentExecution": "Allow Concurrent Execution by Default",
-          "maxParallelJobs": "Maximum Parallel Jobs",
-          "historyRetentionDays": "History Retention Days",
-          "notifyOnFailure": "Notify on Failure"
+          "historyRetentionDays": "History Retention Days"
         },
         "tooltips": {
           "defaultTimeZoneId": "Use a platform time zone ID such as UTC, Asia/Shanghai, or Pacific Standard Time."
@@ -1326,7 +1324,6 @@
       "tasks": {
         "columns": {
           "name": "Name",
-          "taskType": "Task Type",
           "isEnabled": "Enabled",
           "cronExpression": "Cron Expression",
           "timeZoneId": "Time Zone",
@@ -1337,12 +1334,9 @@
           "updatedAt": "Updated At"
         },
         "filters": {
-          "taskType": "Task Type",
           "isEnabled": "Enabled"
         },
         "placeholders": {
-          "taskType": "All Types",
-          "configJson": "Task-specific JSON payload",
           "timeZoneId": "UTC",
           "cronExpression": "0 */5 * * * *"
         },
@@ -1359,7 +1353,7 @@
           "running": "Running"
         },
         "hints": {
-          "defaultSettings": "Default time zone: {timeZone}. Max parallel jobs: {parallel}."
+          "defaultSettings": "Default time zone: {timeZone}."
         },
         "messages": {
           "runConfirm": "Run task {name} immediately?",
@@ -1370,32 +1364,29 @@
           "editTitle": "Edit Scheduler Task",
           "fields": {
             "name": "Name",
-            "taskType": "Task Type",
             "isEnabled": "Enabled",
             "cronExpression": "Cron Expression",
             "timeZoneId": "Time Zone",
             "allowConcurrentExecution": "Concurrent Execution",
-            "description": "Description",
-            "configJson": "Task Config JSON"
+            "executeOnMainThread": "Execute on Main Thread",
+            "requireGameStartDone": "Require Game Started",
+            "captureOutput": "Capture Output",
+            "commands": "Console Commands",
+            "description": "Description"
           },
           "tooltips": {
             "cronExpression": "Use a cron expression with second precision so the backend can schedule the task accurately.",
             "timeZoneId": "Leave this as UTC unless the schedule must follow a specific server or regional time zone."
           },
           "placeholders": {
-            "taskType": "Select a task type",
-            "configJson": "Paste the task-specific JSON payload here"
+            "command": "Enter a console command, e.g. say Hello"
           },
           "actions": {
-            "useDefaultConfig": "Use Default Config",
-            "resetConfig": "Reset JSON"
-          },
-          "hints": {
-            "configJson": "The JSON payload is stored verbatim and passed to the selected handler at runtime."
+            "addCommand": "Add Command",
+            "removeCommand": "Remove Command"
           },
           "messages": {
-            "invalidConfigTitle": "Invalid JSON",
-            "invalidConfigJson": "The task configuration must be valid JSON.",
+            "noCommands": "Please add at least one console command.",
             "saveSuccess": "Scheduler task saved successfully."
           }
         }

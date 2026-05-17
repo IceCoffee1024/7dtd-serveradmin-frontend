@@ -1,22 +1,20 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
-import { getSettings, resetSettings, updateSettings } from '~/api/scheduler';
+import { getSettings, resetSettings, updateSettings } from '~/api/scheduledCommand';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
-defineOptions({ name: 'SchedulerSettingsPage' });
+defineOptions({ name: 'ScheduledCommandSettingsPage' });
 
 interface FormModel {
   isEnabled: boolean;
   defaultTimeZoneId: string;
   defaultAllowConcurrentExecution: boolean;
-  maxParallelJobs: number;
   historyRetentionDays: number;
-  notifyOnFailure: boolean;
 }
 
 interface FormExpose {
@@ -36,9 +34,7 @@ function buildDefaults(): FormModel {
     isEnabled: false,
     defaultTimeZoneId: 'UTC',
     defaultAllowConcurrentExecution: false,
-    maxParallelJobs: 1,
     historyRetentionDays: 30,
-    notifyOnFailure: true,
   };
 }
 
@@ -49,9 +45,7 @@ const schema = v.object({
   isEnabled: v.boolean(),
   defaultTimeZoneId: v.pipe(v.string(), v.minLength(1)),
   defaultAllowConcurrentExecution: v.boolean(),
-  maxParallelJobs: v.pipe(v.number(), v.minValue(1)),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
-  notifyOnFailure: v.boolean(),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -84,37 +78,21 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24, md: 12 },
   },
   {
-    prop: 'maxParallelJobs',
-    label: t('views.scheduler.settings.fields.maxParallelJobs'),
-    el: 'el-input-number',
-    props: { min: 1, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
-  },
-  {
     prop: 'historyRetentionDays',
     label: t('views.scheduler.settings.fields.historyRetentionDays'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
     span: { xs: 24, md: 12 },
   },
-  {
-    prop: 'notifyOnFailure',
-    label: t('views.scheduler.settings.fields.notifyOnFailure'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
-  },
 ]);
 
-function mapSettings(data: API.Scheduler.Settings | null | undefined): FormModel {
+function mapSettings(data: API.ScheduledCommand.Settings | null | undefined): FormModel {
   const source = data ?? buildDefaults();
   return {
     isEnabled: source.isEnabled,
     defaultTimeZoneId: source.defaultTimeZoneId || 'UTC',
     defaultAllowConcurrentExecution: source.defaultAllowConcurrentExecution,
-    maxParallelJobs: source.maxParallelJobs,
     historyRetentionDays: source.historyRetentionDays,
-    notifyOnFailure: source.notifyOnFailure,
   };
 }
 
@@ -122,9 +100,7 @@ function applyFormValues(values: FormModel): void {
   form.isEnabled = values.isEnabled;
   form.defaultTimeZoneId = values.defaultTimeZoneId;
   form.defaultAllowConcurrentExecution = values.defaultAllowConcurrentExecution;
-  form.maxParallelJobs = values.maxParallelJobs;
   form.historyRetentionDays = values.historyRetentionDays;
-  form.notifyOnFailure = values.notifyOnFailure;
 }
 
 async function loadSettings() {
@@ -168,14 +144,12 @@ async function onReset() {
   }
 }
 
-function toPayload(values: FormModel): API.Scheduler.Settings {
+function toPayload(values: FormModel): API.ScheduledCommand.Settings {
   return {
     isEnabled: values.isEnabled,
     defaultTimeZoneId: values.defaultTimeZoneId.trim() || 'UTC',
     defaultAllowConcurrentExecution: values.defaultAllowConcurrentExecution,
-    maxParallelJobs: Number(values.maxParallelJobs ?? 1),
     historyRetentionDays: Number(values.historyRetentionDays ?? 0),
-    notifyOnFailure: values.notifyOnFailure,
   };
 }
 

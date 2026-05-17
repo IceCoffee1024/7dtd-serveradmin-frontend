@@ -31,21 +31,21 @@ export function resetSettings() {
  * @returns The persisted backup run record.
  */
 export function runWorldBackup(request: API.Backup.RunRequest = {}) {
-  return http.post<API.Scheduler.Run>('Backup/World/Run', { json: request }).json();
+  return http.post<API.ScheduledCommand.Run>('Backup/World/Run', { json: request }).json();
 }
 
 /**
  * Triggers an immediate database backup outside the cron schedule.
  */
 export function runDatabaseBackup(request: API.Backup.RunRequest = {}) {
-  return http.post<API.Scheduler.Run>('Backup/Database/Run', { json: request }).json();
+  return http.post<API.ScheduledCommand.Run>('Backup/Database/Run', { json: request }).json();
 }
 
 /**
  * Triggers an immediate server config backup outside the cron schedule.
  */
 export function runServerConfigBackup(request: API.Backup.RunRequest = {}) {
-  return http.post<API.Scheduler.Run>('Backup/ServerConfig/Run', { json: request }).json();
+  return http.post<API.ScheduledCommand.Run>('Backup/ServerConfig/Run', { json: request }).json();
 }
 
 const KIND_TO_SEGMENT: Record<API.Backup.SubFeatureKind, string> = {
@@ -93,6 +93,6 @@ export async function downloadBackupFile(kind: API.Backup.SubFeatureKind, fileNa
  * Loads paged backup run history, scoped to the backup feature via ScheduledTaskRunLogs.
  * @param params - Filtering and paging payload.
  */
-export function getBackupRuns(params: API.Scheduler.RunQuery = {}) {
-  return http.get<API.Scheduler.Paged<API.Scheduler.Run>>('ScheduledTaskRunLogs', { searchParams: { ...params, featureKey: 'backup' } }).json();
+export function getBackupRuns(params: API.ScheduledCommand.RunQuery = {}) {
+  return http.get<API.ScheduledCommand.Paged<API.ScheduledCommand.Run>>('ScheduledTaskRunLogs', { searchParams: { ...params, featureKey: 'backup' } }).json();
 }
