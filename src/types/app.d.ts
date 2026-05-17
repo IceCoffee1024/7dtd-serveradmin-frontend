@@ -7,6 +7,7 @@ declare namespace App {
     children?: Menu[];
     index: string;
     keepAlive: boolean;
+    groupLabel?: string;
   }
 
   interface UserInfo {

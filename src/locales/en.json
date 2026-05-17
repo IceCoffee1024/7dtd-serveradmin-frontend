@@ -38,7 +38,7 @@
     "liveChat": "Live Chat",
     "chatHistory": "Chat History",
     "chatSettings": "Chat Settings",
-    "coloredChat": "Colored Chat",
+    "coloredChat": "Chat Colors",
     "auditLogs": "Audit Logs",
     "serverConfig": "Server Config",
     "appSettings": "App Settings",
@@ -46,15 +46,25 @@
     "permission": "Permissions",
     "modManagement": "Mod Management",
     "economy": "Economy",
-    "restart": "Restart",
-    "scheduler": "Scheduler",
+    "restart": "Server Restart",
+    "scheduler": "Task Scheduler",
     "backup": "Backup",
     "backupSettings": "Backup Settings",
     "worldBackup": "World Backup",
     "databaseBackup": "Database Backup",
     "serverConfigBackup": "Server Config Backup",
     "console": "Console",
-    "apiDocumentation": "API Documentation"
+    "apiDocumentation": "API Documentation",
+    "schedulerTasks": "Tasks",
+    "schedulerHistory": "History",
+    "schedulerSettings": "Settings",
+    "groups": {
+      "monitoring": "Monitoring",
+      "gameFeatures": "Game Features",
+      "serverManagement": "Server Management",
+      "operations": "Operations",
+      "system": "System"
+    }
   },
   "components": {
     "myTable": {

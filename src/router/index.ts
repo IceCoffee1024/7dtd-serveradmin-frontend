@@ -57,6 +57,7 @@ const routes: RouteRecordRaw[] = [
           title: () => t('menus.dashboard'),
           icon: markIcon(() => import('~icons/mdi/home')),
           keepAlive: true,
+          groupLabel: () => t('menus.groups.monitoring'),
         },
       },
       {
@@ -84,6 +85,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.gameChat'),
           icon: markIcon(() => import('~icons/mdi/chat')),
+          groupLabel: () => t('menus.groups.gameFeatures'),
         },
         children: [
           {
@@ -121,12 +123,22 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'Economy',
+        path: 'economy',
+        component: () => import('../views/Economy/index.vue'),
+        meta: {
+          title: () => t('menus.economy'),
+          icon: markIcon(() => import('~icons/mdi/cash-multiple')),
+        },
+      },
+      {
         name: 'ServerConfig',
         path: 'server-config',
         component: () => import('../views/ServerConfig/index.vue'),
         meta: {
           title: () => t('menus.serverConfig'),
           icon: markIcon(() => import('~icons/ic/baseline-settings')),
+          groupLabel: () => t('menus.groups.serverManagement'),
         },
       },
       {
@@ -157,12 +169,13 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'Economy',
-        path: 'economy',
-        component: () => import('../views/Economy/index.vue'),
+        name: 'Console',
+        path: 'console',
+        component: () => import('../views/Console/index.vue'),
         meta: {
-          title: () => t('menus.economy'),
-          icon: markIcon(() => import('~icons/mdi/cash-multiple')),
+          title: () => t('menus.console'),
+          icon: markIcon(() => import('~icons/mdi/console')),
+          groupLabel: () => t('menus.groups.operations'),
         },
       },
       {
@@ -178,10 +191,40 @@ const routes: RouteRecordRaw[] = [
         name: 'Scheduler',
         path: 'scheduler',
         component: () => import('../views/ScheduledCommand/index.vue'),
+        redirect: { name: 'SchedulerTasks' },
         meta: {
           title: () => t('menus.scheduler'),
           icon: markIcon(() => import('~icons/mdi/calendar-clock')),
         },
+        children: [
+          {
+            name: 'SchedulerTasks',
+            path: 'tasks',
+            component: () => import('../views/ScheduledCommand/Tasks/index.vue'),
+            meta: {
+              title: () => t('menus.schedulerTasks'),
+              icon: markIcon(() => import('~icons/mdi/format-list-checks')),
+            },
+          },
+          {
+            name: 'SchedulerHistory',
+            path: 'history',
+            component: () => import('../views/ScheduledCommand/History/index.vue'),
+            meta: {
+              title: () => t('menus.schedulerHistory'),
+              icon: markIcon(() => import('~icons/mdi/history')),
+            },
+          },
+          {
+            name: 'SchedulerSettings',
+            path: 'settings',
+            component: () => import('../views/ScheduledCommand/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.schedulerSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
       },
       {
         name: 'Backup',
@@ -231,21 +274,13 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
-        name: 'Console',
-        path: 'console',
-        component: () => import('../views/Console/index.vue'),
-        meta: {
-          title: () => t('menus.console'),
-          icon: markIcon(() => import('~icons/mdi/console')),
-        },
-      },
-      {
         name: 'AuditLogs',
         path: 'audit-logs',
         component: () => import('../views/AuditLogs/index.vue'),
         meta: {
           title: () => t('menus.auditLogs'),
           icon: markIcon(() => import('~icons/mdi/file-document-outline')),
+          groupLabel: () => t('menus.groups.system'),
         },
       },
       {

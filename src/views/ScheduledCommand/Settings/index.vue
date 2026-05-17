@@ -187,7 +187,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-card shadow="never">
+  <div>
     <div v-if="isLoading" class="flex flex-col gap-4">
       <el-skeleton v-for="index in 4" :key="index" animated>
         <template #template>
@@ -219,5 +219,5 @@ onMounted(() => {
         </el-button>
       </div>
     </template>
-  </el-card>
+  </div>
 </template>

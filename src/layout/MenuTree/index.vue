@@ -2,14 +2,40 @@
 import { useRoute, useRouter } from 'vue-router';
 import MenuItem from './MenuItem.vue';
 
-defineProps<Props>();
-
 interface Props {
   menus: App.Menu[];
+  collapse?: boolean;
 }
+
+const props = defineProps<Props>();
 
 const route = useRoute();
 const router = useRouter();
+
+interface MenuGroup {
+  label?: string;
+  items: App.Menu[];
+}
+
+const groupedMenus = computed((): MenuGroup[] => {
+  const groups: MenuGroup[] = [];
+  let current: MenuGroup | null = null;
+  for (const menu of props.menus) {
+    if (menu.groupLabel !== undefined) {
+      current = { label: menu.groupLabel, items: [menu] };
+      groups.push(current);
+    }
+    else if (current) {
+      current.items.push(menu);
+    }
+    else {
+      current = { items: [menu] };
+      groups.push(current);
+    }
+  }
+  return groups;
+});
+
 function handleSelectMenu(index: string) {
   const resolved = router.resolve({ name: index });
   if (!resolved.meta.link) {
@@ -24,9 +50,15 @@ const defaultActive = computed(() => route.name as string);
 </script>
 
 <template>
-  <el-menu :default-active="defaultActive" class="h-56px" @select="handleSelectMenu">
-    <template v-for="menu in menus" :key="menu.index">
-      <MenuItem :menu="menu" />
+  <el-menu :default-active="defaultActive" :collapse="collapse" class="h-56px" @select="handleSelectMenu">
+    <template v-for="(group, i) in groupedMenus" :key="i">
+      <div
+        v-if="group.label && !collapse"
+        class="px-3 pt-5 pb-1 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider select-none"
+      >
+        {{ group.label }}
+      </div>
+      <MenuItem v-for="item in group.items" :key="item.index" :menu="item" />
     </template>
   </el-menu>
 </template>

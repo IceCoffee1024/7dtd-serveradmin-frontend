@@ -103,7 +103,6 @@ declare module 'vue' {
     'IconMdi:weatherNight': typeof import('~icons/mdi/weather-night')['default']
     'IconMdi:weatherSunny': typeof import('~icons/mdi/weather-sunny')['default']
     IconMdiCheck: typeof import('~icons/mdi/check')['default']
-    IconMdiClose: typeof import('~icons/mdi/close')['default']
     IconMdiCloseCircleOutline: typeof import('~icons/mdi/close-circle-outline')['default']
     IconMdiDeleteOutline: typeof import('~icons/mdi/delete-outline')['default']
     IconMdiDownload: typeof import('~icons/mdi/download')['default']

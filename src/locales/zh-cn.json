@@ -38,15 +38,15 @@
     "liveChat": "实时聊天",
     "chatHistory": "历史聊天",
     "chatSettings": "聊天设置",
-    "coloredChat": "彩色聊天",
-    "auditLogs": "日志审计",
+    "coloredChat": "聊天颜色",
+    "auditLogs": "审计日志",
     "serverConfig": "服务器配置",
     "banWhitelist": "黑白名单",
     "permission": "权限管理",
     "modManagement": "模组管理",
     "economy": "经济系统",
-    "restart": "重启管理",
-    "scheduler": "调度任务",
+    "restart": "服务器重启",
+    "scheduler": "定时任务",
     "backup": "备份管理",
     "backupSettings": "备份设置",
     "worldBackup": "世界备份",
@@ -54,7 +54,17 @@
     "serverConfigBackup": "服务器配置备份",
     "console": "控制台",
     "appSettings": "应用设置",
-    "apiDocumentation": "API文档"
+    "apiDocumentation": "API文档",
+    "schedulerTasks": "任务列表",
+    "schedulerHistory": "执行历史",
+    "schedulerSettings": "调度设置",
+    "groups": {
+      "monitoring": "监控",
+      "gameFeatures": "游戏功能",
+      "serverManagement": "服务器管理",
+      "operations": "运维操作",
+      "system": "系统"
+    }
   },
   "components": {
     "myTable": {

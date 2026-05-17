@@ -18,6 +18,7 @@ export const useMenus = createSharedComposable(() => {
           icon: route.meta?.icon,
           index: (route.name as string) || route.path,
           keepAlive: route.meta?.keepAlive !== false,
+          ...(route.meta?.groupLabel !== undefined && { groupLabel: getMenuLabel(route.meta.groupLabel) }),
         };
 
         if (route.children?.length) {
