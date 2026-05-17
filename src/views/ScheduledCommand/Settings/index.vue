@@ -32,7 +32,7 @@ const isSubmitting = ref(false);
 function buildDefaults(): FormModel {
   return {
     isEnabled: false,
-    defaultTimeZoneId: 'UTC',
+    defaultTimeZoneId: '',
     defaultAllowConcurrentExecution: false,
     historyRetentionDays: 30,
   };
@@ -43,7 +43,7 @@ const form = reactive<FormModel>(buildDefaults());
 
 const schema = v.object({
   isEnabled: v.boolean(),
-  defaultTimeZoneId: v.pipe(v.string(), v.minLength(1)),
+  defaultTimeZoneId: v.string(),
   defaultAllowConcurrentExecution: v.boolean(),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
 });
@@ -90,7 +90,7 @@ function mapSettings(data: API.ScheduledCommand.Settings | null | undefined): Fo
   const source = data ?? buildDefaults();
   return {
     isEnabled: source.isEnabled,
-    defaultTimeZoneId: source.defaultTimeZoneId || 'UTC',
+    defaultTimeZoneId: source.defaultTimeZoneId ?? '',
     defaultAllowConcurrentExecution: source.defaultAllowConcurrentExecution,
     historyRetentionDays: source.historyRetentionDays,
   };
@@ -147,7 +147,7 @@ async function onReset() {
 function toPayload(values: FormModel): API.ScheduledCommand.Settings {
   return {
     isEnabled: values.isEnabled,
-    defaultTimeZoneId: values.defaultTimeZoneId.trim() || 'UTC',
+    defaultTimeZoneId: values.defaultTimeZoneId.trim() || null,
     defaultAllowConcurrentExecution: values.defaultAllowConcurrentExecution,
     historyRetentionDays: Number(values.historyRetentionDays ?? 0),
   };

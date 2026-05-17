@@ -26,7 +26,8 @@
     "reset": "Reset",
     "close": "Close",
     "edit": "Edit",
-    "player": "Player"
+    "player": "Player",
+    "serverLocalTime": "Server Local Time"
   },
   "menus": {
     "login": "Login",

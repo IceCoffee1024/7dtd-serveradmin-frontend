@@ -39,7 +39,7 @@ interface FormModel {
 
 const props = withDefaults(defineProps<Props>(), {
   editData: null,
-  defaultTimeZoneId: 'UTC',
+  defaultTimeZoneId: null,
   defaultAllowConcurrentExecution: false,
 });
 
@@ -62,7 +62,7 @@ function buildDefaults(): FormModel {
     name: '',
     isEnabled: true,
     cronExpression: '',
-    timeZoneId: props.defaultTimeZoneId || 'UTC',
+    timeZoneId: props.defaultTimeZoneId ?? '',
     allowConcurrentExecution: props.defaultAllowConcurrentExecution,
     description: '',
     executeOnMainThread: true,
@@ -173,7 +173,7 @@ function syncFormData() {
     form.name = source.name;
     form.isEnabled = source.isEnabled;
     form.cronExpression = source.cronExpression;
-    form.timeZoneId = source.timeZoneId || props.defaultTimeZoneId || 'UTC';
+    form.timeZoneId = source.timeZoneId ?? props.defaultTimeZoneId ?? '';
     form.allowConcurrentExecution = source.allowConcurrentExecution;
     form.description = source.description || '';
     form.executeOnMainThread = source.executeOnMainThread;

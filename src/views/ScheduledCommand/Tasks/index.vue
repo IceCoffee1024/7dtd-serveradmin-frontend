@@ -202,7 +202,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4">
     <el-alert
-      :title="t('views.scheduler.tasks.hints.defaultSettings', { timeZone: schedulerSettings?.defaultTimeZoneId || 'UTC' })"
+      :title="t('views.scheduler.tasks.hints.defaultSettings', { timeZone: schedulerSettings?.defaultTimeZoneId || t('common.serverLocalTime') })"
       type="info"
       show-icon
       :closable="false"
