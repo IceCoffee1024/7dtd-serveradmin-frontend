@@ -26,3 +26,15 @@ export function updateSettings(settings: API.Restart.Settings) {
 export function runRestart(request: API.Restart.RunRequest = {}) {
   return http.post<API.Restart.Run>('Restart/Run', { json: request }).json();
 }
+
+/**
+ * Queries paginated run history for restart tasks.
+ * Reuses the ScheduledCommand run log endpoint filtered to the restart feature.
+ * @param params - Optional pagination and filter parameters.
+ * @returns Paged run history.
+ */
+export function getRestartRuns(params: API.ScheduledCommand.RunQuery = {}) {
+  return http.get<API.ScheduledCommand.Paged<API.ScheduledCommand.Run>>('ScheduledTaskRunLogs', {
+    searchParams: { ...params, featureKey: 'restart' },
+  }).json();
+}

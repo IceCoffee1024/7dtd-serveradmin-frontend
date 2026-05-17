@@ -1,14 +1,17 @@
 ﻿<script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
+import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getOnlinePlayers } from '~/api/gameServer';
+import { banPlayer, getOnlinePlayers, kickPlayer } from '~/api/gameServer';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
+import { usePopup } from '~/composables/usePopup';
 import { formatPosition } from '~/utils';
 
 type OnlinePlayerRow = API.GameServer.OnlinePlayer;
 
 const { t } = useI18n();
+const { confirm: confirmPopup, prompt, toast } = usePopup();
 
 const isAutoRefreshEnabled = ref(true);
 const autoRefreshInterval = ref(10);
@@ -93,6 +96,51 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       if (!row)
         return;
       playerDetailsDialogRef.value?.open(row.playerId, row.playerName);
+    },
+  },
+  {
+    label: t('views.playerList.kick'),
+    divided: true,
+    command: async (row) => {
+      if (!row)
+        return;
+      const reason = await prompt({ text: t('views.playerList.kickReason') });
+      if (reason === undefined)
+        return;
+      try {
+        await kickPlayer(row.playerId, reason || null);
+        toast({ type: 'success', title: t('views.playerList.kick') });
+      }
+      catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  {
+    label: t('views.playerList.ban'),
+    command: async (row) => {
+      if (!row)
+        return;
+      const minutesStr = await prompt({
+        text: t('views.playerList.banDuration'),
+        inputValidator: v => (Number(v) > 0) || t('views.playerList.banDuration'),
+      });
+      if (minutesStr === undefined)
+        return;
+      const reason = await prompt({ text: t('views.playerList.banReason') });
+      if (reason === undefined)
+        return;
+      const confirmed = await confirmPopup({ text: t('views.playerList.ban'), type: 'warning' });
+      if (!confirmed)
+        return;
+      try {
+        const bannedUntil = dayjs().add(Number(minutesStr), 'minute').toISOString();
+        await banPlayer(row.playerId, bannedUntil, row.playerName, reason || null);
+        toast({ type: 'success', title: t('views.playerList.ban') });
+      }
+      catch (error) {
+        console.error(error);
+      }
     },
   },
 ]);

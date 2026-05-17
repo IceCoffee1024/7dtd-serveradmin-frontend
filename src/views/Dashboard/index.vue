@@ -2,6 +2,7 @@
 import { useIntervalFn } from '@vueuse/core';
 import * as devicesApi from '~/api/devices';
 import * as gameServerApi from '~/api/gameServer';
+import { getSettings as getRestartSettings } from '~/api/restart';
 import Monitor from './Monitor/index.vue';
 import Overview from './Overview/index.vue';
 import QuickActions from './QuickActions/index.vue';
@@ -14,10 +15,17 @@ defineOptions({ name: 'Dashboard' });
 const gameServerStats = ref<API.GameServer.Stats>();
 const systemMetricsSnapshot = ref<API.Devices.SystemMetricsSnapshot>();
 const systemPlatformInfo = ref<API.Devices.SystemPlatformInfo>();
+const nextRestartAt = ref<string | null>(null);
 
 devicesApi.getSystemPlatformInfo()
   .then((data) => {
     systemPlatformInfo.value = data;
+  })
+  .catch((_) => {});
+
+getRestartSettings()
+  .then((data) => {
+    nextRestartAt.value = data.nextRunAt ?? null;
   })
   .catch((_) => {});
 
@@ -64,7 +72,7 @@ onDeactivated(pause);
       </div>
       <div class="col-span-12 xl:col-span-4">
         <MyCard :header="$t('views.dashboard.headers.quickActions')">
-          <QuickActions />
+          <QuickActions :next-restart-at="nextRestartAt" />
         </MyCard>
         <MyCard :header="$t('views.dashboard.headers.recentActivity')" class="mt-4">
           <RecentActivity />

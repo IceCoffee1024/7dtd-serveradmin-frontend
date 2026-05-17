@@ -71,7 +71,10 @@
     "economyTransactions": "流水记录",
     "economySettings": "经济设置",
     "backupTasks": "备份任务",
-    "backupHistory": "执行历史"
+    "backupHistory": "执行历史",
+    "restartHistory": "执行历史",
+    "teleport": "玩家传送",
+    "gameEventLogs": "游戏事件日志"
   },
   "components": {
     "myTable": {
@@ -404,7 +407,8 @@
         "shutdownSuccess": "关闭命令已发送",
         "restartError": "重启命令发送失败",
         "shutdownError": "关闭命令发送失败",
-        "hint": "高危操作，建议确认当前无人正在进行关键操作后再执行。"
+        "hint": "高危操作，建议确认当前无人正在进行关键操作后再执行。",
+        "nextRestart": "下次自动重启"
       },
       "systemInfo": {
         "deviceName": "设备名称",
@@ -450,7 +454,12 @@
       "admin": "管理员",
       "viewInventory": "查看背包",
       "viewSkills": "查看技能",
-      "viewDetails": "查看详情"
+      "viewDetails": "查看详情",
+      "kick": "踢出玩家",
+      "kickReason": "踢出原因（可选）",
+      "ban": "封禁玩家",
+      "banDuration": "封禁时长（分钟）",
+      "banReason": "封禁原因（可选）"
     },
     "map": {
       "region": "区域文件",
@@ -1580,6 +1589,58 @@
         "permissionLevel": "服务器权限等级，数值越接近上限，权限通常越高。",
         "command": "这条规则对应的控制台命令名称。",
         "description": "可选说明，用于记录这条命令权限的用途或限制。"
+      }
+    },
+    "teleport": {
+      "tabs": {
+        "toPosition": "传送到坐标",
+        "toPlayer": "传送到玩家"
+      },
+      "fields": {
+        "sourcePlayer": "传送谁",
+        "targetPlayer": "目标玩家",
+        "x": "X 坐标",
+        "y": "Y 坐标",
+        "z": "Z 坐标"
+      },
+      "placeholders": {
+        "selectPlayer": "请选择在线玩家"
+      },
+      "actions": {
+        "teleport": "传送"
+      },
+      "messages": {
+        "success": "传送成功",
+        "confirmToPos": "确认将 {name} 传送到坐标 ({x}, {y}, {z})？",
+        "confirmToPlayer": "确认将 {source} 传送到 {target} 的位置？",
+        "noPlayers": "当前没有在线玩家"
+      },
+      "hints": {
+        "onlinePlayers": "仅显示当前在线玩家"
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "时间",
+        "eventType": "事件类型",
+        "playerName": "玩家",
+        "targetPlayerName": "目标玩家",
+        "entityType": "实体类型"
+      },
+      "eventTypes": {
+        "PlayerJoined": "玩家加入",
+        "PlayerLeft": "玩家离开",
+        "PlayerDied": "玩家死亡",
+        "PlayerKilledZombie": "击杀僵尸",
+        "PlayerKilledPlayer": "玩家击杀"
+      },
+      "filters": {
+        "eventType": "事件类型",
+        "timeRange": "时间范围"
+      },
+      "placeholders": {
+        "allEventTypes": "全部事件",
+        "timeRange": "选择时间范围"
       }
     }
   }

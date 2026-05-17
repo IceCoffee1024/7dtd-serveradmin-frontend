@@ -358,6 +358,15 @@ export function banPlayer(playerId: string, bannedUntil: string, displayName: st
 export function unbanPlayers(playerIds: string[]) {
   return http.delete<API.GameServer.CommandExecutionResult>(`GameServer/Bans`, { json: { playerIds } }).json();
 }
+/**
+ * Kicks a player from the server with an optional reason.
+ * @param {string} playerId Cross-platform player identifier (e.g. EOS_xxx or Steam_xxx).
+ * @param {string|null} [reason] Optional message shown to the kicked player.
+ * @returns Console command output lines.
+ */
+export function kickPlayer(playerId: string, reason: string | null = null) {
+  return http.post<string[]>('GameServer/KickPlayer', { json: { playerId, reason } }).json();
+}
 // #endregion
 
 // #region Whitelist
@@ -385,6 +394,30 @@ export function addPlayerToWhitelist(playerId: string, displayName: string) {
  */
 export function removePlayerFromWhitelist(playerIds: string[]) {
   return http.delete<API.GameServer.CommandExecutionResult>(`GameServer/Whitelist`, { json: playerIds }).json();
+}
+// #endregion
+
+// #region Teleport
+/**
+ * Teleports a player entity to specific world coordinates.
+ * @param {number} entityId Runtime entity identifier of the player to teleport.
+ * @param {number} x World X coordinate.
+ * @param {number} y World Y coordinate (height).
+ * @param {number} z World Z coordinate.
+ * @returns Console command output lines.
+ */
+export function teleportToPosition(entityId: number, x: number, y: number, z: number) {
+  return http.post<string[]>('GameServer/TeleportToPosition', { json: { entityId, x, y, z } }).json();
+}
+
+/**
+ * Teleports one player to the current location of another player.
+ * @param {number} sourceEntityId Entity ID of the player being moved.
+ * @param {number} targetEntityId Entity ID of the destination player.
+ * @returns Console command output lines.
+ */
+export function teleportToPlayer(sourceEntityId: number, targetEntityId: number) {
+  return http.post<string[]>('GameServer/TeleportToPlayer', { json: { sourceEntityId, targetEntityId } }).json();
 }
 // #endregion
 

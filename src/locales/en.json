@@ -71,7 +71,10 @@
     "economyTransactions": "Transactions",
     "economySettings": "Settings",
     "backupTasks": "Backup Tasks",
-    "backupHistory": "History"
+    "backupHistory": "History",
+    "restartHistory": "History",
+    "teleport": "Teleport",
+    "gameEventLogs": "Game Event Logs"
   },
   "components": {
     "myTable": {
@@ -404,7 +407,8 @@
         "shutdownSuccess": "Shutdown command sent",
         "restartError": "Failed to send restart command",
         "shutdownError": "Failed to send shutdown command",
-        "hint": "High-risk operation. Make sure no one is performing critical actions before continuing."
+        "hint": "High-risk operation. Make sure no one is performing critical actions before continuing.",
+        "nextRestart": "Next scheduled restart"
       },
       "systemInfo": {
         "deviceName": "Device Name",
@@ -450,7 +454,12 @@
       "admin": "Admin",
       "viewInventory": "View Inventory",
       "viewSkills": "View Skills",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "kick": "Kick Player",
+      "kickReason": "Kick Reason (Optional)",
+      "ban": "Ban Player",
+      "banDuration": "Ban Duration (Minutes)",
+      "banReason": "Ban Reason (Optional)"
     },
     "map": {
       "region": "Region File",
@@ -1580,6 +1589,58 @@
         "permissionLevel": "Server permission level. Higher values usually mean more privileges.",
         "command": "The console command name this rule applies to.",
         "description": "Optional note describing the purpose or constraint of this command rule."
+      }
+    },
+    "teleport": {
+      "tabs": {
+        "toPosition": "Teleport to Position",
+        "toPlayer": "Teleport to Player"
+      },
+      "fields": {
+        "sourcePlayer": "Player to Teleport",
+        "targetPlayer": "Destination Player",
+        "x": "X Coordinate",
+        "y": "Y Coordinate",
+        "z": "Z Coordinate"
+      },
+      "placeholders": {
+        "selectPlayer": "Select an online player"
+      },
+      "actions": {
+        "teleport": "Teleport"
+      },
+      "messages": {
+        "success": "Teleported successfully",
+        "confirmToPos": "Teleport {name} to ({x}, {y}, {z})?",
+        "confirmToPlayer": "Teleport {source} to {target}'s location?",
+        "noPlayers": "No online players available"
+      },
+      "hints": {
+        "onlinePlayers": "Only online players are listed"
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "Time",
+        "eventType": "Event Type",
+        "playerName": "Player",
+        "targetPlayerName": "Target Player",
+        "entityType": "Entity Type"
+      },
+      "eventTypes": {
+        "PlayerJoined": "Player Joined",
+        "PlayerLeft": "Player Left",
+        "PlayerDied": "Player Died",
+        "PlayerKilledZombie": "Killed Zombie",
+        "PlayerKilledPlayer": "Player Kill"
+      },
+      "filters": {
+        "eventType": "Event Type",
+        "timeRange": "Time Range"
+      },
+      "placeholders": {
+        "allEventTypes": "All Events",
+        "timeRange": "Select time range"
       }
     }
   }

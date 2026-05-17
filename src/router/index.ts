@@ -172,6 +172,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Teleport',
+        path: 'teleport',
+        component: () => import('../views/Teleport/index.vue'),
+        meta: {
+          title: () => t('menus.teleport'),
+          icon: markIcon(() => import('~icons/mdi/map-marker-right')),
+        },
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),
@@ -234,6 +243,15 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: () => t('menus.restartRun'),
               icon: markIcon(() => import('~icons/mdi/play-circle-outline')),
+            },
+          },
+          {
+            name: 'RestartHistory',
+            path: 'history',
+            component: () => import('../views/Restart/History/index.vue'),
+            meta: {
+              title: () => t('menus.restartHistory'),
+              icon: markIcon(() => import('~icons/mdi/history')),
             },
           },
         ],
@@ -323,6 +341,15 @@ const routes: RouteRecordRaw[] = [
           title: () => t('menus.auditLogs'),
           icon: markIcon(() => import('~icons/mdi/file-document-outline')),
           groupLabel: () => t('menus.groups.system'),
+        },
+      },
+      {
+        name: 'GameEventLogs',
+        path: 'game-event-logs',
+        component: () => import('../views/GameEventLogs/index.vue'),
+        meta: {
+          title: () => t('menus.gameEventLogs'),
+          icon: markIcon(() => import('~icons/mdi/book-open-variant')),
         },
       },
       {

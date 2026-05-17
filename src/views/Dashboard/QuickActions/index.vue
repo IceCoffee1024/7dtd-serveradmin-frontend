@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { restartServer, shutdownServer } from '~/api/gameServer';
 import { usePopup } from '~/composables';
+
+interface Props {
+  nextRestartAt?: string | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  nextRestartAt: null,
+});
 
 type QuickActionType = 'restart' | 'shutdown';
 
@@ -81,5 +90,11 @@ async function executeQuickAction(actionType: QuickActionType): Promise<void> {
     <p class="text-sm text-gray-500 leading-6 dark:text-gray-400">
       {{ $t('views.dashboard.quickActions.hint') }}
     </p>
+
+    <div v-if="props.nextRestartAt" class="text-sm text-gray-600 flex gap-2 items-center dark:text-gray-300">
+      <el-icon><icon-mdi-clock-outline /></el-icon>
+      <span>{{ $t('views.dashboard.quickActions.nextRestart') }}</span>
+      <span class="font-medium text-primary">{{ dayjs(props.nextRestartAt).format('MM-DD HH:mm') }}</span>
+    </div>
   </div>
 </template>
