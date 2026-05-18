@@ -51,7 +51,14 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
     label: t('views.economy.transactions.columns.type'),
     sortable: true,
     search: {
-      el: 'el-input',
+      el: 'el-select',
+      options: [
+        { label: t('views.economy.transactions.typeOptions.adminGrant'), value: 'AdminGrant' },
+        { label: t('views.economy.transactions.typeOptions.adminDeduct'), value: 'AdminDeduct' },
+        { label: t('views.economy.transactions.typeOptions.transferOut'), value: 'TransferOut' },
+        { label: t('views.economy.transactions.typeOptions.transferIn'), value: 'TransferIn' },
+        { label: t('views.economy.transactions.typeOptions.dailyReward'), value: 'DailyReward' },
+      ],
       props: { clearable: true },
       order: 3,
       span: 6,
@@ -151,7 +158,7 @@ function formatTimestamp(value: string | null | undefined): string {
 }
 
 async function onView(row: TransactionRow) {
-  detailRow.value = await api.getTransaction(row.id);
+  detailRow.value = row;
   detailDialogRef.value?.show();
 }
 </script>

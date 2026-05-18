@@ -46,7 +46,12 @@ defineExpose({ show });
           <span class="text-gray-800 dark:text-gray-100">{{ transaction?.direction || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.amount') }}</span>
-          <span class="font-semibold text-amber-600 dark:text-amber-400">{{ transaction?.amount ?? '--' }}</span>
+          <span
+            class="font-semibold"
+            :class="transaction?.direction === 'Income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
+          >
+            {{ transaction ? (transaction.direction === 'Income' ? '+' : '-') + transaction.amount : '--' }}
+          </span>
         </div>
       </div>
 

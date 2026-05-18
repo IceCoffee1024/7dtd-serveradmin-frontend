@@ -177,6 +177,12 @@ defineExpose({ show });
 
               <span class="text-gray-500 dark:text-gray-400">{{ t('views.economy.accounts.detailDialog.fields.lastDailyClaimAt') }}</span>
               <span class="text-gray-800 font-mono dark:text-gray-100">{{ formatTimestamp(detail.lastDailyClaimAt) }}</span>
+
+              <span class="text-gray-500 dark:text-gray-400">{{ t('views.economy.accounts.detailDialog.fields.dailyStreak') }}</span>
+              <span class="text-gray-800 dark:text-gray-100">{{ detail.dailyStreak }}</span>
+
+              <span class="text-gray-500 dark:text-gray-400">{{ t('views.economy.accounts.detailDialog.fields.longestStreak') }}</span>
+              <span class="text-gray-800 dark:text-gray-100">{{ detail.longestStreak }}</span>
             </div>
           </div>
         </div>

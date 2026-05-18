@@ -1190,7 +1190,9 @@
           "fields": {
             "createdAt": "Created At",
             "updatedAt": "Updated At",
-            "lastDailyClaimAt": "Last Daily Claim"
+            "lastDailyClaimAt": "Last Daily Claim",
+            "dailyStreak": "Current Streak",
+            "longestStreak": "Longest Streak"
           },
           "hints": {
             "recentTransactions": "Showing the latest 5 records only"
@@ -1250,6 +1252,13 @@
         },
         "placeholders": {
           "occurredAtRange": "Select a time range"
+        },
+        "typeOptions": {
+          "adminGrant": "Admin Grant",
+          "adminDeduct": "Admin Deduct",
+          "transferOut": "Transfer Out",
+          "transferIn": "Transfer In",
+          "dailyReward": "Daily Reward"
         },
         "detailDialog": {
           "title": "Transaction Details",

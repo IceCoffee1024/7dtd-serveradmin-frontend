@@ -194,9 +194,14 @@ function onView(row: AccountRow) {
 }
 
 async function onToggleFrozen(row: AccountRow) {
-  await api.setAccountFrozen(row.playerId, !row.isFrozen);
-  tableRef.value?.reload();
-  await loadLeaderboard();
+  try {
+    await api.setAccountFrozen(row.playerId, !row.isFrozen);
+    tableRef.value?.reload();
+    await loadLeaderboard();
+  }
+  catch (error) {
+    console.error(error);
+  }
 }
 
 async function onSaved() {
@@ -272,7 +277,7 @@ onMounted(() => {
           <div v-for="(item, index) in leaderboard" :key="item.playerId" class="px-3 py-2 rounded-3 bg-gray-50 flex gap-3 items-center justify-between dark:bg-gray-800/70">
             <div class="min-w-0">
               <div class="text-xs text-gray-400 tracking-[0.16em] uppercase">
-                #{{ index + 1 }}
+                #{{ item.rank }}
               </div>
               <div class="text-sm text-gray-900 font-semibold truncate dark:text-gray-100">
                 {{ item.playerName }}

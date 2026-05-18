@@ -78,12 +78,12 @@ function show() {
 
 async function onSubmit() {
   if (!formRef.value) {
-    return;
+    return false;
   }
 
   const valid = await formRef.value.validate().catch(() => false);
   if (!valid) {
-    return;
+    return false;
   }
 
   isSubmitting.value = true;
@@ -105,8 +105,8 @@ async function onSubmit() {
     dialogRef.value?.close();
     emit('saved');
   }
-  catch (error) {
-    console.error(error);
+  catch {
+    return false;
   }
   finally {
     isSubmitting.value = false;
@@ -120,8 +120,8 @@ defineExpose({ show });
   <MyDialog
     ref="dialogRef"
     :title="t('views.economy.accounts.batchAdjustDialog.title')"
-    :confirm-loading="isSubmitting"
-    @confirm="onSubmit"
+    :loading="isSubmitting"
+    :on-confirm="onSubmit"
   >
     <MyForm
       ref="formRef"

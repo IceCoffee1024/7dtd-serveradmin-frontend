@@ -702,7 +702,9 @@
           "fields": {
             "createdAt": "开户时间",
             "updatedAt": "最后更新时间",
-            "lastDailyClaimAt": "最近签到时间"
+            "lastDailyClaimAt": "最近签到时间",
+            "dailyStreak": "当前连签天数",
+            "longestStreak": "最长连签天数"
           },
           "hints": {
             "recentTransactions": "仅展示最近 5 条记录"
@@ -762,6 +764,13 @@
         },
         "placeholders": {
           "occurredAtRange": "请选择时间范围"
+        },
+        "typeOptions": {
+          "adminGrant": "管理员发放",
+          "adminDeduct": "管理员扣除",
+          "transferOut": "转出",
+          "transferIn": "转入",
+          "dailyReward": "每日签到奖励"
         },
         "detailDialog": {
           "title": "流水详情",
