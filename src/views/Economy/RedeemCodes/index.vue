@@ -1,0 +1,356 @@
+<script setup lang="ts">
+import type { FormRules } from 'element-plus';
+import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { MyFormField } from '~/composables/useMyForm';
+import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+import * as api from '~/api/economy';
+import MyDialog from '~/components/MyDialog/index.vue';
+import MyForm from '~/components/MyForm/index.vue';
+import { usePopup } from '~/composables';
+import v from '~/plugins/valibot';
+import { generateElementRules } from '~/utils';
+
+defineOptions({ name: 'EconomyRedeemCodesPage' });
+
+interface FormExpose {
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
+}
+
+interface FormModel {
+  code: string;
+  description: string;
+  amount: number;
+  maxUses: number;
+  expiresAt: string;
+}
+
+const { t } = useI18n();
+const { toast, confirm } = usePopup();
+
+const tableRef = useTemplateRef('tableRef');
+const createDialogRef = useTemplateRef('createDialogRef');
+const formRef = useTemplateRef<FormExpose>('formRef');
+const redemptionsDialogRef = useTemplateRef('redemptionsDialogRef');
+
+const isSubmitting = ref(false);
+const viewingCode = ref<API.Economy.RedeemCode | null>(null);
+const redemptions = ref<API.Economy.CodeRedemption[]>([]);
+const isLoadingRedemptions = ref(false);
+
+function buildDefaults(): FormModel {
+  return {
+    code: '',
+    description: '',
+    amount: 0,
+    maxUses: 0,
+    expiresAt: '',
+  };
+}
+
+const form = reactive<FormModel>(buildDefaults());
+
+const schema = v.object({
+  code: v.pipe(v.string(), v.minLength(1)),
+  description: v.optional(v.string()),
+  amount: v.pipe(v.number(), v.minValue(0)),
+  maxUses: v.pipe(v.number(), v.minValue(0)),
+  expiresAt: v.optional(v.string()),
+});
+
+const rules: FormRules = generateElementRules(schema);
+
+const fields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'code',
+    label: t('views.economy.redeemCodes.form.fields.code'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'amount',
+    label: t('views.economy.redeemCodes.form.fields.amount'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'maxUses',
+    label: t('views.economy.redeemCodes.form.fields.maxUses'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'expiresAt',
+    label: t('views.economy.redeemCodes.form.fields.expiresAt'),
+    el: 'el-date-picker',
+    props: { type: 'datetime', valueFormat: 'YYYY-MM-DDTHH:mm:ss', class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'description',
+    label: t('views.economy.redeemCodes.form.fields.description'),
+    el: 'el-input',
+    props: { type: 'textarea', rows: 2 },
+    span: { xs: 24 },
+  },
+]);
+
+type RedeemCodeQueryOrder = API.Economy.RedeemCodeQueryOrder;
+
+const columns = computed<MyTableColumn<API.Economy.RedeemCode>[]>(() => [
+  {
+    prop: 'keyword',
+    label: t('components.myTable.keywordSearch'),
+    show: false,
+    exportable: false,
+    search: {
+      el: 'el-input',
+      props: { clearable: true },
+    },
+  },
+  {
+    prop: 'code',
+    label: t('views.economy.redeemCodes.columns.code'),
+    sortable: true,
+  },
+  {
+    prop: 'description',
+    label: t('views.economy.redeemCodes.columns.description'),
+  },
+  {
+    prop: 'amount',
+    label: t('views.economy.redeemCodes.columns.amount'),
+    slot: 'amount',
+    sortable: true,
+  },
+  {
+    prop: 'maxUses',
+    label: t('views.economy.redeemCodes.columns.maxUses'),
+  },
+  {
+    prop: 'usedCount',
+    label: t('views.economy.redeemCodes.columns.usedCount'),
+    sortable: true,
+  },
+  {
+    prop: 'isEnabled',
+    label: t('views.economy.redeemCodes.columns.isEnabled'),
+    slot: 'isEnabled',
+    search: {
+      el: 'el-select',
+      options: [
+        { label: t('common.yes'), value: true },
+        { label: t('common.no'), value: false },
+      ],
+      props: { clearable: true },
+      order: 1,
+      span: 8,
+    },
+  },
+  {
+    prop: 'expiresAt',
+    label: t('views.economy.redeemCodes.columns.expiresAt'),
+    slot: 'expiresAt',
+    sortable: true,
+  },
+  {
+    prop: 'createdAt',
+    label: t('views.economy.redeemCodes.columns.createdAt'),
+    slot: 'createdAt',
+    sortable: true,
+  },
+]);
+
+function toOrder(sortField: string | undefined): RedeemCodeQueryOrder | undefined {
+  switch (sortField) {
+    case 'code': return 'Code';
+    case 'expiresAt': return 'ExpiresAt';
+    case 'createdAt': return 'CreatedAt';
+    default: return undefined;
+  }
+}
+
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<API.Economy.RedeemCode>> {
+  const response = await api.getRedeemCodes({
+    pageNumber: params.pageNumber,
+    pageSize: params.pageSize,
+    keyword: params.search?.keyword?.trim() || undefined,
+    isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
+    order: toOrder(params.sortField),
+    desc: params.sortOrder === 'descending',
+  });
+  return { list: response.items, total: response.total };
+}
+
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+}
+
+function openAdd() {
+  Object.assign(form, buildDefaults());
+  createDialogRef.value?.open();
+  nextTick(() => formRef.value?.clearValidate());
+}
+
+async function onConfirm(): Promise<boolean | void> {
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid) {
+    return false;
+  }
+
+  isSubmitting.value = true;
+  try {
+    await api.createRedeemCode({
+      code: form.code.trim(),
+      description: form.description.trim() || null,
+      amount: Number(form.amount),
+      maxUses: Number(form.maxUses),
+      expiresAt: form.expiresAt || null,
+    });
+    toast({ type: 'success', text: t('views.economy.redeemCodes.messages.createSuccess') });
+    tableRef.value?.reload();
+  }
+  catch (error) {
+    console.error(error);
+    return false;
+  }
+  finally {
+    isSubmitting.value = false;
+  }
+}
+
+async function onDelete(row: API.Economy.RedeemCode) {
+  const confirmed = await confirm({
+    text: t('views.economy.redeemCodes.actions.deleteConfirm'),
+    type: 'warning',
+  });
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await api.deleteRedeemCode(row.id);
+    toast({ type: 'success', text: t('views.economy.redeemCodes.messages.deleteSuccess') });
+    tableRef.value?.reload();
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+async function onViewRedemptions(row: API.Economy.RedeemCode) {
+  viewingCode.value = row;
+  redemptions.value = [];
+  redemptionsDialogRef.value?.open();
+  isLoadingRedemptions.value = true;
+  try {
+    redemptions.value = await api.getCodeRedemptions(row.id);
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isLoadingRedemptions.value = false;
+  }
+}
+</script>
+
+<template>
+  <div>
+    <MyTable
+      ref="tableRef"
+      row-key="id"
+      :columns="columns"
+      :fetch-data="fetchData"
+      :selectable="false"
+      :operation-column-width="200"
+      :auto-column-width="true"
+      :search-collapsible="true"
+      @add="openAdd"
+    >
+      <template #amount="{ row }">
+        <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.amount }}</span>
+      </template>
+
+      <template #isEnabled="{ row }">
+        <el-tag :type="row.isEnabled ? 'success' : 'info'">
+          {{ row.isEnabled ? t('common.yes') : t('common.no') }}
+        </el-tag>
+      </template>
+
+      <template #expiresAt="{ row }">
+        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.expiresAt) }}</span>
+      </template>
+
+      <template #createdAt="{ row }">
+        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
+      </template>
+
+      <template #operation="{ row }">
+        <div class="flex gap-2 justify-center">
+          <el-button size="small" plain @click="onViewRedemptions(row)">
+            {{ t('views.economy.redeemCodes.actions.viewRedemptions') }}
+          </el-button>
+          <el-button size="small" plain type="danger" @click="onDelete(row)">
+            {{ t('views.economy.redeemCodes.actions.delete') }}
+          </el-button>
+        </div>
+      </template>
+    </MyTable>
+
+    <!-- Create dialog -->
+    <MyDialog
+      ref="createDialogRef"
+      :title="t('views.economy.redeemCodes.form.title')"
+      :loading="isSubmitting"
+      :on-confirm="onConfirm"
+    >
+      <MyForm
+        ref="formRef"
+        v-model="form"
+        :fields="fields"
+        :rules="rules"
+        label-position="top"
+        label-width="auto"
+        :gutter="16"
+      />
+    </MyDialog>
+
+    <!-- Redemptions viewer dialog -->
+    <MyDialog
+      v-if="viewingCode"
+      ref="redemptionsDialogRef"
+      :title="t('views.economy.redeemCodes.redemptionsDialog.title', { code: viewingCode.code })"
+      :show-footer="false"
+    >
+      <div v-if="isLoadingRedemptions" class="py-8 flex justify-center">
+        <el-icon class="animate-spin text-2xl"><icon-mdi-loading /></el-icon>
+      </div>
+      <template v-else>
+        <div v-if="redemptions.length === 0" class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+          {{ t('views.economy.redeemCodes.redemptionsDialog.empty') }}
+        </div>
+        <el-table v-else :data="redemptions" size="small" stripe>
+          <el-table-column
+            prop="playerName"
+            :label="t('views.economy.redeemCodes.redemptionsDialog.columns.playerName')"
+          />
+          <el-table-column
+            prop="playerId"
+            :label="t('views.economy.redeemCodes.redemptionsDialog.columns.playerId')"
+          />
+          <el-table-column
+            :label="t('views.economy.redeemCodes.redemptionsDialog.columns.redeemedAt')"
+          >
+            <template #default="{ row }">
+              <span class="text-xs font-mono">{{ formatTimestamp(row.redeemedAt) }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </MyDialog>
+  </div>
+</template>

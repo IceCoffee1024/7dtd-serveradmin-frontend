@@ -20,6 +20,12 @@ interface FormModel {
   transferTaxRate: number;
   dailyRewardAmount: number;
   leaderboardSize: number;
+  zombieKillRewardEnabled: boolean;
+  zombieKillRewardAmount: number;
+  dailyStreakEnabled: boolean;
+  dailyStreakBonusPercent: number;
+  dailyStreakMaxDays: number;
+  shopEnabled: boolean;
 }
 
 interface FormExpose {
@@ -45,6 +51,12 @@ function buildDefaults(): FormModel {
     transferTaxRate: 0,
     dailyRewardAmount: 0,
     leaderboardSize: 10,
+    zombieKillRewardEnabled: false,
+    zombieKillRewardAmount: 0,
+    dailyStreakEnabled: false,
+    dailyStreakBonusPercent: 10,
+    dailyStreakMaxDays: 7,
+    shopEnabled: false,
   };
 }
 
@@ -61,6 +73,12 @@ const schema = v.object({
   transferTaxRate: v.pipe(v.number(), v.minValue(0)),
   dailyRewardAmount: v.pipe(v.number(), v.minValue(0)),
   leaderboardSize: v.pipe(v.number(), v.minValue(1)),
+  zombieKillRewardEnabled: v.boolean(),
+  zombieKillRewardAmount: v.pipe(v.number(), v.minValue(0)),
+  dailyStreakEnabled: v.boolean(),
+  dailyStreakBonusPercent: v.pipe(v.number(), v.minValue(0)),
+  dailyStreakMaxDays: v.pipe(v.number(), v.minValue(1)),
+  shopEnabled: v.boolean(),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -132,6 +150,48 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     props: { min: 1, precision: 0, class: 'w-full' },
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'zombieKillRewardEnabled',
+    label: t('views.economy.settings.fields.zombieKillRewardEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'zombieKillRewardAmount',
+    label: t('views.economy.settings.fields.zombieKillRewardAmount'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'dailyStreakEnabled',
+    label: t('views.economy.settings.fields.dailyStreakEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'dailyStreakBonusPercent',
+    label: t('views.economy.settings.fields.dailyStreakBonusPercent'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'dailyStreakMaxDays',
+    label: t('views.economy.settings.fields.dailyStreakMaxDays'),
+    el: 'el-input-number',
+    props: { min: 1, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'shopEnabled',
+    label: t('views.economy.settings.fields.shopEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
 ]);
 
 function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
@@ -146,6 +206,12 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     transferTaxRate: source.transferTaxRate,
     dailyRewardAmount: source.dailyRewardAmount,
     leaderboardSize: source.leaderboardSize,
+    zombieKillRewardEnabled: source.zombieKillRewardEnabled ?? false,
+    zombieKillRewardAmount: source.zombieKillRewardAmount ?? 0,
+    dailyStreakEnabled: source.dailyStreakEnabled ?? false,
+    dailyStreakBonusPercent: source.dailyStreakBonusPercent ?? 10,
+    dailyStreakMaxDays: source.dailyStreakMaxDays ?? 7,
+    shopEnabled: source.shopEnabled ?? false,
   };
 }
 
@@ -159,6 +225,12 @@ function applyFormValues(values: FormModel): void {
   form.transferTaxRate = values.transferTaxRate;
   form.dailyRewardAmount = values.dailyRewardAmount;
   form.leaderboardSize = values.leaderboardSize;
+  form.zombieKillRewardEnabled = values.zombieKillRewardEnabled;
+  form.zombieKillRewardAmount = values.zombieKillRewardAmount;
+  form.dailyStreakEnabled = values.dailyStreakEnabled;
+  form.dailyStreakBonusPercent = values.dailyStreakBonusPercent;
+  form.dailyStreakMaxDays = values.dailyStreakMaxDays;
+  form.shopEnabled = values.shopEnabled;
 }
 
 async function loadSettings() {
@@ -213,6 +285,12 @@ function toPayload(values: FormModel): API.Economy.Settings {
     transferTaxRate: Number(values.transferTaxRate ?? 0),
     dailyRewardAmount: Number(values.dailyRewardAmount ?? 0),
     leaderboardSize: Number(values.leaderboardSize ?? 10),
+    zombieKillRewardEnabled: values.zombieKillRewardEnabled,
+    zombieKillRewardAmount: Number(values.zombieKillRewardAmount ?? 0),
+    dailyStreakEnabled: values.dailyStreakEnabled,
+    dailyStreakBonusPercent: Number(values.dailyStreakBonusPercent ?? 10),
+    dailyStreakMaxDays: Number(values.dailyStreakMaxDays ?? 7),
+    shopEnabled: values.shopEnabled,
   };
 }
 

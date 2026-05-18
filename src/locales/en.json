@@ -70,6 +70,8 @@
     "economyAccounts": "Accounts",
     "economyTransactions": "Transactions",
     "economySettings": "Settings",
+    "economyShop": "Shop",
+    "economyRedeemCodes": "Redeem Codes",
     "backupTasks": "Backup Tasks",
     "backupHistory": "History",
     "restartHistory": "History",
@@ -1141,7 +1143,13 @@
           "minTransferAmount": "Minimum Transfer Amount",
           "transferTaxRate": "Transfer Tax Rate",
           "dailyRewardAmount": "Daily Reward Amount",
-          "leaderboardSize": "Leaderboard Size"
+          "leaderboardSize": "Leaderboard Size",
+          "zombieKillRewardEnabled": "Zombie Kill Reward",
+          "zombieKillRewardAmount": "Zombie Kill Reward Amount",
+          "dailyStreakEnabled": "Daily Streak Bonus",
+          "dailyStreakBonusPercent": "Streak Bonus Percent",
+          "dailyStreakMaxDays": "Streak Max Days",
+          "shopEnabled": "Enable Shop"
         },
         "actions": {
           "save": "Save Economy Settings",
@@ -1164,7 +1172,9 @@
           "view": "View Details",
           "adjust": "Adjust Balance",
           "freeze": "Freeze",
-          "unfreeze": "Unfreeze"
+          "unfreeze": "Unfreeze",
+          "batchAdjust": "Batch Grant",
+          "delete": "Delete"
         },
         "leaderboard": {
           "title": "Leaderboard",
@@ -1203,7 +1213,24 @@
           "messages": {
             "saveSuccess": "Balance adjusted successfully."
           }
-        }
+        },
+        "batchAdjustDialog": {
+          "title": "Batch Grant Currency",
+          "fields": {
+            "scope": "Scope",
+            "amount": "Amount",
+            "reason": "Reason"
+          },
+          "scopeOptions": {
+            "allOnline": "Online Players Only",
+            "allAccounts": "All Accounts"
+          },
+          "messages": {
+            "success": "Batch grant complete: {succeeded} succeeded",
+            "partialFail": ", {failed} failed"
+          }
+        },
+        "deleteConfirm": "Delete {playerName}'s account? This cannot be undone. Transaction history will be retained."
       },
       "transactions": {
         "columns": {
@@ -1231,9 +1258,89 @@
             "metadata": "Metadata"
           }
         }
+      },
+      "shop": {
+        "columns": {
+          "name": "Item Name",
+          "description": "Description",
+          "itemName": "Game Item",
+          "itemCount": "Qty",
+          "price": "Price",
+          "isEnabled": "Enabled",
+          "displayOrder": "Order",
+          "stockLimit": "Stock Limit",
+          "soldCount": "Sold"
+        },
+        "actions": {
+          "add": "Add Item",
+          "edit": "Edit",
+          "delete": "Delete",
+          "deleteConfirm": "Delete this shop item?"
+        },
+        "form": {
+          "addTitle": "Add Shop Item",
+          "editTitle": "Edit Shop Item",
+          "fields": {
+            "name": "Display Name",
+            "description": "Description",
+            "itemName": "Game Item ID",
+            "itemCount": "Qty per Purchase",
+            "price": "Price",
+            "isEnabled": "Enabled",
+            "displayOrder": "Display Order",
+            "stockLimit": "Stock Limit (0 = unlimited)"
+          }
+        },
+        "messages": {
+          "createSuccess": "Shop item created.",
+          "updateSuccess": "Shop item updated.",
+          "deleteSuccess": "Shop item deleted."
+        }
+      },
+      "redeemCodes": {
+        "columns": {
+          "code": "Code",
+          "description": "Description",
+          "amount": "Reward Amount",
+          "maxUses": "Max Uses",
+          "usedCount": "Used",
+          "expiresAt": "Expires At",
+          "isEnabled": "Enabled",
+          "createdAt": "Created At"
+        },
+        "actions": {
+          "add": "Add Code",
+          "delete": "Delete",
+          "deleteConfirm": "Delete this redeem code and all its redemption records?",
+          "viewRedemptions": "View Redemptions"
+        },
+        "form": {
+          "title": "Add Redeem Code",
+          "fields": {
+            "code": "Code",
+            "description": "Description",
+            "amount": "Reward Amount",
+            "maxUses": "Max Uses (0 = unlimited)",
+            "expiresAt": "Expires At (optional)"
+          }
+        },
+        "redemptionsDialog": {
+          "title": "Redemptions: {code}",
+          "columns": {
+            "playerName": "Player Name",
+            "playerId": "Player ID",
+            "redeemedAt": "Redeemed At"
+          },
+          "empty": "No redemptions yet."
+        },
+        "messages": {
+          "createSuccess": "Redeem code created.",
+          "deleteSuccess": "Redeem code deleted."
+        }
       }
-    },
-    "backup": {
+    }
+  },
+  "backup": {
       "tabs": {
         "config": "Config",
         "files": "Files"
@@ -1644,4 +1751,3 @@
       }
     }
   }
-}

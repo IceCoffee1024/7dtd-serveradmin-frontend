@@ -57,6 +57,21 @@ export function getLeaderboard(limit?: number) {
 }
 
 /**
+ * Hard-deletes an economy account. Transaction history is preserved on the backend.
+ */
+export function deleteAccount(playerId: string) {
+  return http.delete(`Economy/Accounts/${playerId}`).then(() => undefined);
+}
+
+/**
+ * Applies a signed balance adjustment to multiple accounts in one operation.
+ * scope: 'AllOnline' targets currently connected players; 'AllAccounts' targets all rows.
+ */
+export function batchAdjust(payload: API.Economy.BatchAdjustRequest) {
+  return http.post<API.Economy.BatchAdjustResult>('Economy/Accounts/BatchAdjust', { json: payload }).json();
+}
+
+/**
  * Retrieves economy transactions with optional search and pagination.
  */
 export function getTransactions(params: API.Economy.TransactionQuery = {}) {
@@ -68,4 +83,71 @@ export function getTransactions(params: API.Economy.TransactionQuery = {}) {
  */
 export function getTransaction(id: number) {
   return http.get<API.Economy.Transaction>(`EconomyTransactions/${id}`).json();
+}
+
+// ─── Shop ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Retrieves shop items with optional filtering and pagination.
+ */
+export function getShopItems(params: API.Economy.ShopItemQuery = {}) {
+  return http.get<API.Economy.Paged<API.Economy.ShopItem>>('EconomyShop/Items', { searchParams: { ...params } }).json();
+}
+
+/**
+ * Retrieves one shop item by ID.
+ */
+export function getShopItem(id: number) {
+  return http.get<API.Economy.ShopItem>(`EconomyShop/Items/${id}`).json();
+}
+
+/**
+ * Creates a new shop item.
+ */
+export function createShopItem(payload: API.Economy.UpsertShopItemRequest) {
+  return http.post<API.Economy.ShopItem>('EconomyShop/Items', { json: payload }).json();
+}
+
+/**
+ * Replaces an existing shop item.
+ */
+export function updateShopItem(id: number, payload: API.Economy.UpsertShopItemRequest) {
+  return http.put(`EconomyShop/Items/${id}`, { json: payload }).then(() => undefined);
+}
+
+/**
+ * Deletes a shop item by ID.
+ */
+export function deleteShopItem(id: number) {
+  return http.delete(`EconomyShop/Items/${id}`).then(() => undefined);
+}
+
+// ─── Redeem Codes ─────────────────────────────────────────────────────────────
+
+/**
+ * Retrieves redeem codes with optional filtering and pagination.
+ */
+export function getRedeemCodes(params: API.Economy.RedeemCodeQuery = {}) {
+  return http.get<API.Economy.Paged<API.Economy.RedeemCode>>('EconomyRedeemCodes', { searchParams: { ...params } }).json();
+}
+
+/**
+ * Creates a new redeem code.
+ */
+export function createRedeemCode(payload: API.Economy.CreateRedeemCodeRequest) {
+  return http.post<API.Economy.RedeemCode>('EconomyRedeemCodes', { json: payload }).json();
+}
+
+/**
+ * Deletes a redeem code and all its redemption records.
+ */
+export function deleteRedeemCode(id: number) {
+  return http.delete(`EconomyRedeemCodes/${id}`).then(() => undefined);
+}
+
+/**
+ * Retrieves all redemption records for a specific redeem code.
+ */
+export function getCodeRedemptions(id: number) {
+  return http.get<API.Economy.CodeRedemption[]>(`EconomyRedeemCodes/${id}/Redemptions`).json();
 }

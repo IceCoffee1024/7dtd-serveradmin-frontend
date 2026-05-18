@@ -15,6 +15,12 @@ declare namespace API {
       transferTaxRate: number;
       dailyRewardAmount: number;
       leaderboardSize: number;
+      zombieKillRewardEnabled: boolean;
+      zombieKillRewardAmount: number;
+      dailyStreakEnabled: boolean;
+      dailyStreakBonusPercent: number;
+      dailyStreakMaxDays: number;
+      shopEnabled: boolean;
     }
 
     interface Account {
@@ -27,6 +33,8 @@ declare namespace API {
       isFrozen: boolean;
       lastTransactionAt: string | null;
       lastDailyClaimAt: string | null;
+      dailyStreak: number;
+      longestStreak: number;
     }
 
     interface AccountDetail extends Account {}
@@ -98,6 +106,99 @@ declare namespace API {
       playerName: string;
       balance: number;
       rank: number;
+    }
+
+    // ─── Shop ──────────────────────────────────────────────────────────────────
+
+    interface ShopItem {
+      id: number;
+      name: string;
+      description: string | null;
+      itemName: string;
+      itemCount: number;
+      price: number;
+      isEnabled: boolean;
+      displayOrder: number;
+      stockLimit: number;
+      soldCount: number;
+      createdAt: string;
+      updatedAt: string;
+    }
+
+    type ShopItemQueryOrder = 'DisplayOrder' | 'Price' | 'Name' | 'CreatedAt';
+
+    interface ShopItemQuery {
+      pageNumber?: number;
+      pageSize?: number;
+      keyword?: string;
+      isEnabled?: boolean;
+      order?: ShopItemQueryOrder;
+      desc?: boolean;
+    }
+
+    interface UpsertShopItemRequest {
+      name: string;
+      description?: string | null;
+      itemName: string;
+      itemCount: number;
+      price: number;
+      isEnabled: boolean;
+      displayOrder: number;
+      stockLimit: number;
+    }
+
+    // ─── Redeem Codes ──────────────────────────────────────────────────────────
+
+    interface RedeemCode {
+      id: number;
+      code: string;
+      description: string | null;
+      amount: number;
+      maxUses: number;
+      usedCount: number;
+      expiresAt: string | null;
+      isEnabled: boolean;
+      createdAt: string;
+    }
+
+    type RedeemCodeQueryOrder = 'CreatedAt' | 'ExpiresAt' | 'Code';
+
+    interface RedeemCodeQuery {
+      pageNumber?: number;
+      pageSize?: number;
+      keyword?: string;
+      isEnabled?: boolean;
+      order?: RedeemCodeQueryOrder;
+      desc?: boolean;
+    }
+
+    interface CreateRedeemCodeRequest {
+      code: string;
+      description?: string | null;
+      amount: number;
+      maxUses: number;
+      expiresAt?: string | null;
+    }
+
+    interface CodeRedemption {
+      id: number;
+      redeemedAt: string;
+      codeId: number;
+      playerId: string;
+      playerName: string;
+    }
+
+    // ─── Batch Adjust ──────────────────────────────────────────────────────────
+
+    interface BatchAdjustRequest {
+      amount: number;
+      reason?: string | null;
+      scope: 'AllOnline' | 'AllAccounts';
+    }
+
+    interface BatchAdjustResult {
+      succeeded: number;
+      failed: string[];
     }
   }
 }

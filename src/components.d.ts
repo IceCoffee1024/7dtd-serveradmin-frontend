@@ -110,6 +110,7 @@ declare module 'vue' {
     IconMdiEyeOutline: typeof import('~icons/mdi/eye-outline')['default']
     IconMdiFileOutline: typeof import('~icons/mdi/file-outline')['default']
     IconMdiFolderOutline: typeof import('~icons/mdi/folder-outline')['default']
+    IconMdiLoading: typeof import('~icons/mdi/loading')['default']
     IconMdiMinus: typeof import('~icons/mdi/minus')['default']
     IconMdiPencil: typeof import('~icons/mdi/pencil')['default']
     IconMdiPlay: typeof import('~icons/mdi/play')['default']

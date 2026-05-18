@@ -3,8 +3,10 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import * as api from '~/api/economy';
+import { usePopup } from '~/composables';
 import AccountDetailDialog from './AccountDetailDialog.vue';
 import AdjustBalanceDialog from './AdjustBalanceDialog.vue';
+import BatchAdjustDialog from './BatchAdjustDialog.vue';
 
 defineOptions({ name: 'EconomyAccountsPage' });
 
@@ -29,9 +31,11 @@ interface LeaderboardItem {
 type AccountQueryOrder = API.Economy.AccountQueryOrder;
 
 const { t } = useI18n();
+const { confirm } = usePopup();
 const tableRef = useTemplateRef('tableRef');
 const adjustDialogRef = useTemplateRef('adjustDialogRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
+const batchAdjustDialogRef = useTemplateRef('batchAdjustDialogRef');
 const currentRow = ref<AccountRow | null>(null);
 const detailPlayerId = ref('');
 const leaderboard = ref<LeaderboardItem[]>([]);
@@ -156,6 +160,29 @@ function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
 
+function onBatchAdjust() {
+  batchAdjustDialogRef.value?.show();
+}
+
+async function onDelete(row: AccountRow) {
+  const ok = await confirm({
+    type: 'warning',
+    text: t('views.economy.accounts.deleteConfirm', { playerName: row.playerName }),
+  });
+  if (ok == false) {
+    return;
+  }
+
+  try {
+    await api.deleteAccount(row.playerId);
+    tableRef.value?.reload();
+    await loadLeaderboard();
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
 function onAdjust(row: AccountRow) {
   currentRow.value = row;
   adjustDialogRef.value?.show();
@@ -192,10 +219,16 @@ onMounted(() => {
         :fetch-data="fetchData"
         :is-selectable="false"
         :show-add-btn="false"
-        :operation-column-width="200"
+        :operation-column-width="270"
         :auto-column-width="true"
         :search-collapsible="true"
       >
+        <template #toolbar-left>
+          <el-button type="primary" plain @click="onBatchAdjust">
+            {{ t('views.economy.accounts.actions.batchAdjust') }}
+          </el-button>
+        </template>
+
         <template #balance="{ row }">
           <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.balance }}</span>
         </template>
@@ -220,6 +253,9 @@ onMounted(() => {
             </el-button>
             <el-button size="small" plain @click="onToggleFrozen(row)">
               {{ row.isFrozen ? t('views.economy.accounts.actions.unfreeze') : t('views.economy.accounts.actions.freeze') }}
+            </el-button>
+            <el-button size="small" type="danger" plain @click="onDelete(row)">
+              {{ t('views.economy.accounts.actions.delete') }}
             </el-button>
           </div>
         </template>
@@ -266,6 +302,11 @@ onMounted(() => {
       ref="detailDialogRef"
       :player-id="detailPlayerId"
       @updated="onSaved"
+    />
+
+    <BatchAdjustDialog
+      ref="batchAdjustDialogRef"
+      @saved="onSaved"
     />
   </div>
 </template>

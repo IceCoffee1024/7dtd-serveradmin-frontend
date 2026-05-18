@@ -159,6 +159,24 @@ const routes: RouteRecordRaw[] = [
               icon: markIcon(() => import('~icons/mdi/cog-outline')),
             },
           },
+          {
+            name: 'EconomyShop',
+            path: 'shop',
+            component: () => import('../views/Economy/Shop/index.vue'),
+            meta: {
+              title: () => t('menus.economyShop'),
+              icon: markIcon(() => import('~icons/mdi/store-outline')),
+            },
+          },
+          {
+            name: 'EconomyRedeemCodes',
+            path: 'redeem-codes',
+            component: () => import('../views/Economy/RedeemCodes/index.vue'),
+            meta: {
+              title: () => t('menus.economyRedeemCodes'),
+              icon: markIcon(() => import('~icons/mdi/ticket-percent-outline')),
+            },
+          },
         ],
       },
       {

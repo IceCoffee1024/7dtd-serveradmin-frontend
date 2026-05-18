@@ -70,6 +70,8 @@
     "economyAccounts": "账户管理",
     "economyTransactions": "流水记录",
     "economySettings": "经济设置",
+    "economyShop": "商店管理",
+    "economyRedeemCodes": "兑换码管理",
     "backupTasks": "备份任务",
     "backupHistory": "执行历史",
     "restartHistory": "执行历史",
@@ -653,7 +655,13 @@
           "minTransferAmount": "最小转账金额",
           "transferTaxRate": "转账税率",
           "dailyRewardAmount": "每日签到奖励",
-          "leaderboardSize": "排行榜人数"
+          "leaderboardSize": "排行榜人数",
+          "zombieKillRewardEnabled": "击杀僵尸奖励",
+          "zombieKillRewardAmount": "击杀僵尸奖励金额",
+          "dailyStreakEnabled": "连续签到奖励",
+          "dailyStreakBonusPercent": "连续签到加成百分比",
+          "dailyStreakMaxDays": "连续签到最大天数",
+          "shopEnabled": "启用商店"
         },
         "actions": {
           "save": "保存经济设置",
@@ -676,7 +684,9 @@
           "view": "查看详情",
           "adjust": "调整余额",
           "freeze": "冻结",
-          "unfreeze": "解冻"
+          "unfreeze": "解冻",
+          "batchAdjust": "批量发放",
+          "delete": "删除"
         },
         "leaderboard": {
           "title": "余额排行榜",
@@ -715,7 +725,24 @@
           "messages": {
             "saveSuccess": "余额调整成功。"
           }
-        }
+        },
+        "batchAdjustDialog": {
+          "title": "批量发放货币",
+          "fields": {
+            "scope": "发放范围",
+            "amount": "金额",
+            "reason": "备注"
+          },
+          "scopeOptions": {
+            "allOnline": "当前在线玩家",
+            "allAccounts": "全部账户"
+          },
+          "messages": {
+            "success": "批量发放完成：{succeeded} 人成功",
+            "partialFail": "，{failed} 人失败"
+          }
+        },
+        "deleteConfirm": "确定要删除 {playerName} 的账户吗？此操作不可撤销，流水记录将保留。"
       },
       "transactions": {
         "columns": {
@@ -743,9 +770,89 @@
             "metadata": "附加信息"
           }
         }
+      },
+      "shop": {
+        "columns": {
+          "name": "商品名称",
+          "description": "描述",
+          "itemName": "游戏物品",
+          "itemCount": "数量",
+          "price": "售价",
+          "isEnabled": "已启用",
+          "displayOrder": "排序",
+          "stockLimit": "库存上限",
+          "soldCount": "已售数量"
+        },
+        "actions": {
+          "add": "新增商品",
+          "edit": "编辑",
+          "delete": "删除",
+          "deleteConfirm": "确认删除该商品吗？"
+        },
+        "form": {
+          "addTitle": "新增商品",
+          "editTitle": "编辑商品",
+          "fields": {
+            "name": "商品名称",
+            "description": "描述",
+            "itemName": "游戏物品 ID",
+            "itemCount": "数量（每次购买）",
+            "price": "售价",
+            "isEnabled": "上架状态",
+            "displayOrder": "排列顺序",
+            "stockLimit": "库存上限（0 为无限制）"
+          }
+        },
+        "messages": {
+          "createSuccess": "商品已创建。",
+          "updateSuccess": "商品已更新。",
+          "deleteSuccess": "商品已删除。"
+        }
+      },
+      "redeemCodes": {
+        "columns": {
+          "code": "兑换码",
+          "description": "备注",
+          "amount": "奖励金额",
+          "maxUses": "最大使用次数",
+          "usedCount": "已使用次数",
+          "expiresAt": "过期时间",
+          "isEnabled": "已启用",
+          "createdAt": "创建时间"
+        },
+        "actions": {
+          "add": "新增兑换码",
+          "delete": "删除",
+          "deleteConfirm": "确认删除该兑换码及其全部兑换记录吗？",
+          "viewRedemptions": "查看兑换记录"
+        },
+        "form": {
+          "title": "新增兑换码",
+          "fields": {
+            "code": "兑换码",
+            "description": "备注",
+            "amount": "奖励金额",
+            "maxUses": "最大使用次数（0 为无限制）",
+            "expiresAt": "过期时间（可选）"
+          }
+        },
+        "redemptionsDialog": {
+          "title": "兑换记录：{code}",
+          "columns": {
+            "playerName": "玩家名称",
+            "playerId": "玩家ID",
+            "redeemedAt": "兑换时间"
+          },
+          "empty": "暂无兑换记录。"
+        },
+        "messages": {
+          "createSuccess": "兑换码已创建。",
+          "deleteSuccess": "兑换码已删除。"
+        }
       }
-    },
-    "backup": {
+    }
+  },
+  "backup": {
       "tabs": {
         "config": "配置",
         "files": "备份文件"
@@ -1644,4 +1751,3 @@
       }
     }
   }
-}
