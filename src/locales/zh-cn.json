@@ -685,6 +685,14 @@
         "messages": {
           "saveSuccess": "经济设置保存成功。",
           "resetSuccess": "经济设置已恢复默认值。"
+        },
+        "preview": {
+          "title": "效果预览",
+          "balance": "初始余额",
+          "dailyReward": "每日签到奖励",
+          "killReward": "击杀奖励（每只僵尸）",
+          "transferTax": "转账税率",
+          "streakBonus": "连续签到加成"
         }
       },
       "accounts": {

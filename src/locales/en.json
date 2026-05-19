@@ -1173,6 +1173,14 @@
         "messages": {
           "saveSuccess": "Economy settings saved successfully.",
           "resetSuccess": "Economy settings were reset to defaults."
+        },
+        "preview": {
+          "title": "Effect Preview",
+          "balance": "Starting Balance",
+          "dailyReward": "Daily Reward",
+          "killReward": "Kill Reward (per zombie)",
+          "transferTax": "Transfer Tax Rate",
+          "streakBonus": "Daily Streak Bonus"
         }
       },
       "accounts": {

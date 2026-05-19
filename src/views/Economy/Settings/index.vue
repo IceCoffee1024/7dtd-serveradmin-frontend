@@ -88,7 +88,7 @@ const booleanOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
-const fields = computed<MyFormField<FormModel>[]>(() => [
+const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.economy.settings.fields.isEnabled'),
@@ -96,6 +96,9 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     options: booleanOptions.value,
     span: { xs: 24, md: 12 },
   },
+]);
+
+const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'allowTransfer',
     label: t('views.economy.settings.fields.allowTransfer'),
@@ -193,6 +196,50 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24, md: 12 },
   },
 ]);
+
+const previewItems = computed(() => {
+  const name = form.currencyName || 'Coin';
+  const symbol = form.currencySymbol || 'C';
+  const items: Array<{ key: string; label: string; value: string; colorClass: string }> = [
+    {
+      key: 'balance',
+      label: t('views.economy.settings.preview.balance'),
+      value: `${Number(form.defaultBalance).toLocaleString()} ${name} (${symbol})`,
+      colorClass: 'text-gray-100',
+    },
+    {
+      key: 'daily',
+      label: t('views.economy.settings.preview.dailyReward'),
+      value: `+${form.dailyRewardAmount} ${symbol}`,
+      colorClass: 'text-green-400',
+    },
+  ];
+  if (form.zombieKillRewardEnabled) {
+    items.push({
+      key: 'kill',
+      label: t('views.economy.settings.preview.killReward'),
+      value: `+${form.zombieKillRewardAmount} ${symbol}`,
+      colorClass: 'text-green-400',
+    });
+  }
+  if (form.transferTaxRate > 0) {
+    items.push({
+      key: 'tax',
+      label: t('views.economy.settings.preview.transferTax'),
+      value: `${form.transferTaxRate}%`,
+      colorClass: 'text-red-400',
+    });
+  }
+  if (form.dailyStreakEnabled) {
+    items.push({
+      key: 'streak',
+      label: t('views.economy.settings.preview.streakBonus'),
+      value: `+${form.dailyStreakBonusPercent}%`,
+      colorClass: 'text-blue-400',
+    });
+  }
+  return items;
+});
 
 function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
   const source = data ?? buildDefaults();
@@ -338,16 +385,39 @@ onMounted(() => {
     </div>
     <template v-else>
       <MyForm
-        id="economySettingsForm"
-        ref="formRef"
         v-model="form"
-        :fields="fields"
+        :fields="policyFields"
         :rules="rules"
         label-position="top"
         label-width="auto"
         :gutter="16"
-        @submit.prevent="onSubmit"
       />
+
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+        <MyForm
+          id="economySettingsForm"
+          ref="formRef"
+          v-model="form"
+          :fields="settingsFields"
+          :rules="rules"
+          label-position="top"
+          label-width="auto"
+          :gutter="16"
+          @submit.prevent="onSubmit"
+        />
+      </div>
+
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }" class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
+        <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+          {{ t('views.economy.settings.preview.title') }}
+        </h3>
+        <div class="rounded-3 bg-gray-950 px-4 py-3 font-mono text-sm flex flex-col gap-1 leading-6">
+          <div v-for="item in previewItems" :key="item.key" class="flex items-center gap-6">
+            <span :class="item.colorClass" class="w-40 shrink-0">{{ item.value }}</span>
+            <span class="text-gray-500 text-xs">{{ item.label }}</span>
+          </div>
+        </div>
+      </div>
 
       <div class="mt-4 flex gap-2 justify-end">
         <el-button :disabled="isSubmitting" @click="onReset">

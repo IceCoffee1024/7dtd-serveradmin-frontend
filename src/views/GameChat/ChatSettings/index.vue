@@ -109,6 +109,19 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
+const previewChannels = computed(() => [
+  {
+    key: 'global',
+    label: t('views.chatSettings.preview.channels.global'),
+    sender: form.globalServerName || t('views.chatSettings.preview.defaultSender'),
+  },
+  {
+    key: 'whisper',
+    label: t('views.chatSettings.preview.channels.whisper'),
+    sender: form.whisperServerName || t('views.chatSettings.preview.defaultSender'),
+  },
+]);
+
 function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel {
   const source = data ?? {
     globalServerName: null,
@@ -249,6 +262,19 @@ onMounted(() => {
         class="chat-settings-form"
         @submit.prevent="onSubmit"
       />
+
+      <div class="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
+        <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+          {{ t('views.chatSettings.preview.title') }}
+        </h3>
+        <div class="rounded-3 bg-gray-950 px-4 py-3 font-mono text-sm flex flex-col gap-1 leading-6">
+          <span v-for="ch in previewChannels" :key="ch.key">
+            <span class="text-gray-500">[{{ ch.label }}]</span>
+            <span class="text-yellow-400"> {{ ch.sender }}</span>
+            <span class="text-gray-300">: {{ t('views.chatSettings.preview.sampleMessage') }}</span>
+          </span>
+        </div>
+      </div>
 
       <div class="mt-4 flex gap-2 justify-end">
         <el-button :disabled="isSubmitting" @click="onReset">

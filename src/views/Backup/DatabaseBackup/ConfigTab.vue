@@ -59,8 +59,11 @@ const booleanOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
-const fields = computed<MyFormField<FormModel>[]>(() => [
+const policyFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'isEnabled', label: t('views.backup.database.fields.isEnabled'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
+]);
+
+const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'cronExpression', label: t('views.backup.database.fields.cronExpression'), el: 'el-input', tooltip: t('views.backup.tooltips.cronExpression'), span: { xs: 24, md: 12 } },
   { prop: 'destinationRoot', label: t('views.backup.database.fields.destinationRoot'), el: 'el-input', tooltip: t('views.backup.tooltips.destinationRoot'), span: { xs: 24, md: 12 } },
   { prop: 'compressToZip', label: t('views.backup.database.fields.compressToZip'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
@@ -165,16 +168,27 @@ onMounted(() => {
   </div>
   <template v-else>
     <MyForm
-      id="databaseBackupConfigForm"
-      ref="formRef"
       v-model="form"
-      :fields="fields"
+      :fields="policyFields"
       :rules="rules"
       label-position="top"
       label-width="auto"
       :gutter="16"
-      @submit.prevent="onSubmit"
     />
+
+    <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+      <MyForm
+        id="databaseBackupConfigForm"
+        ref="formRef"
+        v-model="form"
+        :fields="settingsFields"
+        :rules="rules"
+        label-position="top"
+        label-width="auto"
+        :gutter="16"
+        @submit.prevent="onSubmit"
+      />
+    </div>
 
     <div class="mt-4 flex gap-2 justify-end">
       <el-button :loading="isRunning" @click="onRunNow">
