@@ -134,4 +134,25 @@ function setupI18n(app: App) {
   app.use(i18n);
 }
 
+if (import.meta.hot) {
+  const localeFiles = import.meta.glob<Record<string, any>>('../locales/*.json');
+  const localePaths = Object.keys(localeFiles);
+
+  import.meta.hot.accept(localePaths, (modules) => {
+    if (!modules) {
+      return;
+    }
+    localePaths.forEach((filePath, index) => {
+      const mod = modules[index];
+      if (!mod) {
+        return;
+      }
+      const locale = filePath.match(/\/([^/]+)\.json$/)?.[1];
+      if (locale && isSupportedLocale(locale) && i18n.global.availableLocales.includes(locale)) {
+        i18n.global.setLocaleMessage(locale, mod.default ?? mod);
+      }
+    });
+  });
+}
+
 export { i18n, isSupportedLocale, setI18nLanguage, setupI18n };

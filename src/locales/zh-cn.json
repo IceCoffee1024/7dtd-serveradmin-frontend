@@ -596,11 +596,26 @@
           "policyDescription": "控制彩色聊天功能是否启用，以及玩家是否可以主动输入颜色标签。",
           "colorsTitle": "默认频道颜色",
           "colorsDescription": "为不同聊天频道设置默认颜色，帮助玩家更快识别消息来源与频道类型。",
-          "colorsHint": "以下颜色会自动保存为 6 位十六进制值。"
+          "colorsHint": "以下颜色会自动保存为 6 位十六进制值。",
+          "playerChannels": "玩家频道",
+          "systemChannels": "系统频道"
+        },
+        "preview": {
+          "title": "效果预览",
+          "samplePlayerName": "玩家名称",
+          "sampleMessage": "这是一条示例消息。",
+          "channels": {
+            "global": "全局",
+            "whisper": "私聊",
+            "friends": "好友",
+            "party": "队伍",
+            "admin": "管理员",
+            "system": "系统"
+          }
         },
         "actions": {
-          "save": "保存彩色聊天配置",
-          "reset": "恢复默认配置"
+          "save": "保存配置",
+          "reset": "恢复默认"
         },
         "messages": {
           "resetSuccess": "已恢复后端默认配置。",

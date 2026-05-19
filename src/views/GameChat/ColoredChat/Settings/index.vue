@@ -89,14 +89,12 @@ const policyFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-const colorFields = computed<MyFormField<FormModel>[]>(() => [
+const playerColorFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'globalDefault',
     label: t('views.coloredChat.settings.fields.globalDefault'),
     el: 'color-picker',
-    props: {
-      presets: colorPresets.value,
-    },
+    props: { presets: colorPresets.value },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -104,9 +102,7 @@ const colorFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'whisperDefault',
     label: t('views.coloredChat.settings.fields.whisperDefault'),
     el: 'color-picker',
-    props: {
-      presets: colorPresets.value,
-    },
+    props: { presets: colorPresets.value },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -114,9 +110,7 @@ const colorFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'friendsDefault',
     label: t('views.coloredChat.settings.fields.friendsDefault'),
     el: 'color-picker',
-    props: {
-      presets: colorPresets.value,
-    },
+    props: { presets: colorPresets.value },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -124,19 +118,18 @@ const colorFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'partyDefault',
     label: t('views.coloredChat.settings.fields.partyDefault'),
     el: 'color-picker',
-    props: {
-      presets: colorPresets.value,
-    },
+    props: { presets: colorPresets.value },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
+]);
+
+const systemColorFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'adminDefault',
     label: t('views.coloredChat.settings.fields.adminDefault'),
     el: 'color-picker',
-    props: {
-      presets: colorPresets.value,
-    },
+    props: { presets: colorPresets.value },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
@@ -144,13 +137,24 @@ const colorFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'systemDefault',
     label: t('views.coloredChat.settings.fields.systemDefault'),
     el: 'color-picker',
-    props: {
-      presets: colorPresets.value,
-    },
+    props: { presets: colorPresets.value },
     tooltip: t('views.coloredChat.settings.tooltips.hexColor'),
     span: { xs: 24, md: 12 },
   },
 ]);
+
+const previewChannels = computed(() => [
+  { key: 'global', label: t('views.coloredChat.settings.preview.channels.global'), color: form.globalDefault },
+  { key: 'whisper', label: t('views.coloredChat.settings.preview.channels.whisper'), color: form.whisperDefault },
+  { key: 'friends', label: t('views.coloredChat.settings.preview.channels.friends'), color: form.friendsDefault },
+  { key: 'party', label: t('views.coloredChat.settings.preview.channels.party'), color: form.partyDefault },
+  { key: 'admin', label: t('views.coloredChat.settings.preview.channels.admin'), color: form.adminDefault },
+  { key: 'system', label: t('views.coloredChat.settings.preview.channels.system'), color: form.systemDefault },
+]);
+
+function previewColor(hex: string): string {
+  return hex ? `#${hex}` : 'inherit';
+}
 
 function mapSettings(data: API.ColoredChat.Settings | null | undefined): FormModel {
   const source = data ?? {
@@ -284,41 +288,78 @@ onMounted(() => {
     </div>
 
     <template v-else>
-      <section class="p-4 border border-gray-200 rounded-4 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900/70">
-        <MyForm
-          ref="formRef"
-          v-model="form"
-          :fields="policyFields"
-          :rules="rules"
-          label-position="top"
-          label-width="auto"
-          :gutter="16"
-        />
+      <!-- Policy fields -->
+      <MyForm
+        ref="formRef"
+        v-model="form"
+        :fields="policyFields"
+        :rules="rules"
+        label-position="top"
+        label-width="auto"
+        :gutter="16"
+      />
 
-        <div class="mb-4 mt-2 pt-3 border-t border-gray-100 flex flex-col gap-2 dark:border-gray-800">
-          <div class="flex flex-col gap-1">
-            <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
-              {{ t('views.coloredChat.settings.sections.colorsTitle') }}
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              {{ t('views.coloredChat.settings.sections.colorsDescription') }}
-            </p>
-          </div>
-          <div class="text-xs text-gray-500 leading-5 px-3 py-2 rounded-3 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-            {{ t('views.coloredChat.settings.sections.colorsHint') }}
-          </div>
+      <!-- Color section -->
+      <div class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
+        <div class="flex flex-col gap-1">
+          <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+            {{ t('views.coloredChat.settings.sections.colorsTitle') }}
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ t('views.coloredChat.settings.sections.colorsDescription') }}
+          </p>
         </div>
+        <div class="text-xs text-gray-500 leading-5 px-3 py-2 rounded-3 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+          {{ t('views.coloredChat.settings.sections.colorsHint') }}
+        </div>
+      </div>
 
+      <!-- Color fields: disabled overlay when feature is off (#1) -->
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+        <!-- Player channels group (#4) -->
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3 dark:text-gray-500">
+          {{ t('views.coloredChat.settings.sections.playerChannels') }}
+        </p>
         <MyForm
           v-model="form"
-          :fields="colorFields"
+          :fields="playerColorFields"
           :rules="rules"
           label-position="top"
           label-width="auto"
           :gutter="16"
         />
-      </section>
 
+        <!-- System channels group (#4) -->
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 mt-5 mb-3 dark:text-gray-500">
+          {{ t('views.coloredChat.settings.sections.systemChannels') }}
+        </p>
+        <MyForm
+          v-model="form"
+          :fields="systemColorFields"
+          :rules="rules"
+          label-position="top"
+          label-width="auto"
+          :gutter="16"
+        />
+      </div>
+
+      <!-- Effect preview (#2) -->
+      <div class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
+        <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+          {{ t('views.coloredChat.settings.preview.title') }}
+        </h3>
+        <div class="rounded-3 bg-gray-950 px-4 py-3 font-mono text-sm flex flex-col gap-1 leading-6">
+          <span
+            v-for="ch in previewChannels"
+            :key="ch.key"
+            :style="{ color: previewColor(ch.color) }"
+          >
+            [{{ ch.label }}] {{ t('views.coloredChat.settings.preview.samplePlayerName') }}: {{ t('views.coloredChat.settings.preview.sampleMessage') }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Buttons -->
       <div class="px-1 pt-2 border-t border-gray-200 flex gap-2 justify-end dark:border-gray-700">
         <el-button :disabled="isSubmitting" @click="onReset">
           <el-icon><icon-mdi-refresh /></el-icon>

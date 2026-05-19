@@ -1084,11 +1084,26 @@
           "policyDescription": "Control whether ColoredChat is enabled and whether players may input their own color tags.",
           "colorsTitle": "Default Channel Colors",
           "colorsDescription": "Assign a default color to each chat channel so players can distinguish message sources at a glance.",
-          "colorsHint": "The values below are saved as 6-digit hexadecimal colors."
+          "colorsHint": "The values below are saved as 6-digit hexadecimal colors.",
+          "playerChannels": "Player Channels",
+          "systemChannels": "System Channels"
+        },
+        "preview": {
+          "title": "Effect Preview",
+          "samplePlayerName": "PlayerName",
+          "sampleMessage": "This is a sample message.",
+          "channels": {
+            "global": "Global",
+            "whisper": "Whisper",
+            "friends": "Friends",
+            "party": "Party",
+            "admin": "Admin",
+            "system": "System"
+          }
         },
         "actions": {
-          "save": "Save Colored Chat Settings",
-          "reset": "Restore Default Settings"
+          "save": "Save Settings",
+          "reset": "Restore Defaults"
         },
         "messages": {
           "resetSuccess": "Backend default settings have been restored.",

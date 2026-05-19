@@ -243,7 +243,10 @@ function getColorSwatch(value: string | null | undefined): string | undefined {
             class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
             :style="{ backgroundColor: getColorSwatch(row.nameColor) ?? 'transparent' }"
           />
-          <span class="truncate">{{ formatColorLabel(row.nameColor) }}</span>
+          <span
+            class="truncate font-medium"
+            :style="{ color: getColorSwatch(row.nameColor) }"
+          >{{ row.customName || row.playerId }}</span>
         </div>
       </template>
 
@@ -253,7 +256,10 @@ function getColorSwatch(value: string | null | undefined): string | undefined {
             class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
             :style="{ backgroundColor: getColorSwatch(row.textColor) ?? 'transparent' }"
           />
-          <span class="truncate">{{ formatColorLabel(row.textColor) }}</span>
+          <span
+            class="truncate"
+            :style="{ color: getColorSwatch(row.textColor) }"
+          >{{ formatColorLabel(row.textColor) }}</span>
         </div>
       </template>
     </MyTable>
