@@ -99,7 +99,8 @@
       "moreActions": "更多操作",
       "filters": "筛选条件",
       "collapse": "收起",
-      "expand": "展开"
+      "expand": "展开",
+      "edit": "编辑"
     },
     "myForm": {
       "pleaseInput": "请输入",
@@ -543,6 +544,15 @@
       "messages": {
         "resetSuccess": "已恢复后端默认配置。",
         "saveSuccess": "聊天配置已更新。"
+      },
+      "preview": {
+        "title": "效果预览",
+        "sampleMessage": "这是一条示例消息。",
+        "defaultSender": "服务器",
+        "channels": {
+          "global": "全局",
+          "whisper": "私聊"
+        }
       }
     },
     "modManagement": {
@@ -910,876 +920,876 @@
       "hints": {
         "onlinePlayers": "仅显示当前在线玩家"
       }
-    }
-  },
-  "backup": {
-    "tabs": {
-      "config": "配置",
-      "files": "备份文件"
     },
-    "settings": {
-      "fields": {
-        "isEnabled": "启用备份功能",
-        "timeZoneId": "Cron 时区",
-        "historyRetentionDays": "运行记录保留天数"
+    "backup": {
+      "tabs": {
+        "config": "配置",
+        "files": "备份文件"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用备份功能",
+          "timeZoneId": "Cron 时区",
+          "historyRetentionDays": "运行记录保留天数"
+        },
+        "tooltips": {
+          "timeZoneId": "IANA 时区 ID（如 Asia/Shanghai、UTC）。留空则使用服务器本地时区。应用于所有备份 Cron 调度。"
+        },
+        "actions": {
+          "save": "保存",
+          "reset": "重置"
+        },
+        "messages": {
+          "saveSuccess": "备份设置已保存。",
+          "resetSuccess": "备份设置已恢复为默认值。"
+        }
       },
       "tooltips": {
-        "timeZoneId": "IANA 时区 ID（如 Asia/Shanghai、UTC）。留空则使用服务器本地时区。应用于所有备份 Cron 调度。"
+        "cronExpression": "标准 5 段 Cron 表达式，按配置的时区计算。",
+        "destinationRoot": "备份输出目录的绝对或相对路径。",
+        "retentionCount": "保留的备份份数。 0 表示不保留， -1 表示不清理。"
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "启用世界备份",
+          "cronExpression": "Cron 表达式",
+          "destinationRoot": "备份目录",
+          "compressToZip": "压缩为 Zip",
+          "retentionCount": "保留份数",
+          "saveWorldBeforeBackup": "备份前保存世界"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "在快照前执行 saveworld 控制台命令并等待完成。"
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "启用数据库备份",
+          "cronExpression": "Cron 表达式",
+          "destinationRoot": "备份目录",
+          "compressToZip": "压缩为 Zip",
+          "retentionCount": "保留份数"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "启用服务器配置备份",
+          "cronExpression": "Cron 表达式",
+          "destinationRoot": "备份目录",
+          "compressToZip": "压缩为 Zip",
+          "retentionCount": "保留份数"
+        }
       },
       "actions": {
-        "save": "保存",
-        "reset": "重置"
-      },
-      "messages": {
-        "saveSuccess": "备份设置已保存。",
-        "resetSuccess": "备份设置已恢复为默认值。"
-      }
-    },
-    "tooltips": {
-      "cronExpression": "标准 5 段 Cron 表达式，按配置的时区计算。",
-      "destinationRoot": "备份输出目录的绝对或相对路径。",
-      "retentionCount": "保留的备份份数。 0 表示不保留， -1 表示不清理。"
-    },
-    "world": {
-      "fields": {
-        "isEnabled": "启用世界备份",
-        "cronExpression": "Cron 表达式",
-        "destinationRoot": "备份目录",
-        "compressToZip": "压缩为 Zip",
-        "retentionCount": "保留份数",
-        "saveWorldBeforeBackup": "备份前保存世界"
-      },
-      "tooltips": {
-        "saveWorldBeforeBackup": "在快照前执行 saveworld 控制台命令并等待完成。"
-      }
-    },
-    "database": {
-      "fields": {
-        "isEnabled": "启用数据库备份",
-        "cronExpression": "Cron 表达式",
-        "destinationRoot": "备份目录",
-        "compressToZip": "压缩为 Zip",
-        "retentionCount": "保留份数"
-      }
-    },
-    "config": {
-      "fields": {
-        "isEnabled": "启用服务器配置备份",
-        "cronExpression": "Cron 表达式",
-        "destinationRoot": "备份目录",
-        "compressToZip": "压缩为 Zip",
-        "retentionCount": "保留份数"
-      }
-    },
-    "actions": {
-      "runNow": "立即备份",
-      "runNowConfirm": "是否立即执行一次备份？",
-      "runNowReason": "原因（可选）",
-      "runNowSuccess": "备份执行成功。",
-      "runNowFailed": "备份执行失败。",
-      "download": "下载",
-      "delete": "删除"
-    },
-    "files": {
-      "columns": {
-        "fileName": "文件名",
-        "size": "大小",
-        "createdAt": "创建时间"
-      },
-      "messages": {
-        "confirmDelete": "确定删除备份文件 '{name}' 吗？此操作不可撤销。",
-        "deleteSuccess": "备份文件已删除。",
-        "deleteError": "删除备份文件失败，请稍后重试。",
-        "downloadError": "下载备份文件失败，请稍后重试。",
-        "directoryDownloadUnsupported": "不支持下载文件夹。请启用 Zip 压缩后下载为单个压缩包。"
-      }
-    },
-    "taskTypes": {
-      "world": "世界备份",
-      "database": "数据库备份",
-      "serverConfig": "服务器配置备份"
-    }
-  },
-  "scheduler": {
-    "tabs": {
-      "settings": "设置",
-      "tasks": "任务",
-      "history": "执行历史"
-    },
-    "triggerSources": {
-      "cron": "Cron",
-      "manual": "手动",
-      "system": "系统"
-    },
-    "settings": {
-      "fields": {
-        "isEnabled": "启用调度器",
-        "defaultTimeZoneId": "默认时区",
-        "defaultAllowConcurrentExecution": "默认允许并发执行",
-        "historyRetentionDays": "历史保留天数"
-      },
-      "tooltips": {
-        "defaultTimeZoneId": "可以填写 UTC、Asia/Shanghai、Pacific Standard Time 这类平台时区 ID。"
-      },
-      "actions": {
-        "save": "保存调度器设置",
-        "reset": "重置默认值"
-      },
-      "messages": {
-        "saveSuccess": "调度器设置已保存。",
-        "resetSuccess": "调度器设置已恢复为默认值。"
-      }
-    },
-    "tasks": {
-      "columns": {
-        "name": "名称",
-        "isEnabled": "启用",
-        "cronExpression": "Cron 表达式",
-        "timeZoneId": "时区",
-        "allowConcurrentExecution": "并发",
-        "lastRunAt": "上次执行",
-        "nextRunAt": "下次执行",
-        "lastStatus": "上次状态",
-        "updatedAt": "更新时间"
-      },
-      "filters": {
-        "isEnabled": "启用状态"
-      },
-      "placeholders": {
-        "timeZoneId": "UTC",
-        "cronExpression": "0 */5 * * * *"
-      },
-      "actions": {
-        "add": "新增任务",
-        "edit": "编辑任务",
-        "run": "立即执行",
+        "runNow": "立即备份",
+        "runNowConfirm": "是否立即执行一次备份？",
+        "runNowReason": "原因（可选）",
+        "runNowSuccess": "备份执行成功。",
+        "runNowFailed": "备份执行失败。",
+        "download": "下载",
         "delete": "删除"
       },
-      "status": {
-        "success": "成功",
-        "failed": "失败",
-        "skipped": "跳过",
-        "running": "运行中"
+      "files": {
+        "columns": {
+          "fileName": "文件名",
+          "size": "大小",
+          "createdAt": "创建时间"
+        },
+        "messages": {
+          "confirmDelete": "确定删除备份文件 '{name}' 吗？此操作不可撤销。",
+          "deleteSuccess": "备份文件已删除。",
+          "deleteError": "删除备份文件失败，请稍后重试。",
+          "downloadError": "下载备份文件失败，请稍后重试。",
+          "directoryDownloadUnsupported": "不支持下载文件夹。请启用 Zip 压缩后下载为单个压缩包。"
+        }
       },
-      "hints": {
-        "defaultSettings": "默认时区：{timeZone}。"
+      "taskTypes": {
+        "world": "世界备份",
+        "database": "数据库备份",
+        "serverConfig": "服务器配置备份"
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "设置",
+        "tasks": "任务",
+        "history": "执行历史"
       },
-      "messages": {
-        "runConfirm": "要立即执行任务 {name} 吗？",
-        "deleteSuccess": "调度任务已删除。"
+      "triggerSources": {
+        "cron": "Cron",
+        "manual": "手动",
+        "system": "系统"
       },
-      "dialog": {
-        "createTitle": "新增调度任务",
-        "editTitle": "编辑调度任务",
+      "settings": {
         "fields": {
+          "isEnabled": "启用调度器",
+          "defaultTimeZoneId": "默认时区",
+          "defaultAllowConcurrentExecution": "默认允许并发执行",
+          "historyRetentionDays": "历史保留天数"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "可以填写 UTC、Asia/Shanghai、Pacific Standard Time 这类平台时区 ID。"
+        },
+        "actions": {
+          "save": "保存调度器设置",
+          "reset": "重置默认值"
+        },
+        "messages": {
+          "saveSuccess": "调度器设置已保存。",
+          "resetSuccess": "调度器设置已恢复为默认值。"
+        }
+      },
+      "tasks": {
+        "columns": {
           "name": "名称",
           "isEnabled": "启用",
           "cronExpression": "Cron 表达式",
           "timeZoneId": "时区",
-          "allowConcurrentExecution": "允许并发执行",
-          "executeOnMainThread": "在主线程执行",
-          "requireGameStartDone": "需要游戏已启动",
-          "captureOutput": "捕获输出",
-          "commands": "控制台命令",
-          "description": "描述"
+          "allowConcurrentExecution": "并发",
+          "lastRunAt": "上次执行",
+          "nextRunAt": "下次执行",
+          "lastStatus": "上次状态",
+          "updatedAt": "更新时间"
         },
-        "tooltips": {
-          "cronExpression": "请使用带秒字段的 cron 表达式，以便后端精确调度。",
-          "timeZoneId": "默认保持 UTC，只有在计划必须跟随特定服务器或地区时间时才修改。"
+        "filters": {
+          "isEnabled": "启用状态"
         },
         "placeholders": {
-          "command": "输入控制台命令，例如：say 你好"
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
         },
         "actions": {
-          "addCommand": "添加命令",
-          "removeCommand": "移除命令"
+          "add": "新增任务",
+          "edit": "编辑任务",
+          "run": "立即执行",
+          "delete": "删除"
+        },
+        "status": {
+          "success": "成功",
+          "failed": "失败",
+          "skipped": "跳过",
+          "running": "运行中"
+        },
+        "hints": {
+          "defaultSettings": "默认时区：{timeZone}。"
         },
         "messages": {
-          "noCommands": "请至少添加一条控制台命令。",
-          "saveSuccess": "调度任务已保存。"
+          "runConfirm": "要立即执行任务 {name} 吗？",
+          "deleteSuccess": "调度任务已删除。"
+        },
+        "dialog": {
+          "createTitle": "新增调度任务",
+          "editTitle": "编辑调度任务",
+          "fields": {
+            "name": "名称",
+            "isEnabled": "启用",
+            "cronExpression": "Cron 表达式",
+            "timeZoneId": "时区",
+            "allowConcurrentExecution": "允许并发执行",
+            "executeOnMainThread": "在主线程执行",
+            "requireGameStartDone": "需要游戏已启动",
+            "captureOutput": "捕获输出",
+            "commands": "控制台命令",
+            "description": "描述"
+          },
+          "tooltips": {
+            "cronExpression": "请使用带秒字段的 cron 表达式，以便后端精确调度。",
+            "timeZoneId": "默认保持 UTC，只有在计划必须跟随特定服务器或地区时间时才修改。"
+          },
+          "placeholders": {
+            "command": "输入控制台命令，例如：say 你好"
+          },
+          "actions": {
+            "addCommand": "添加命令",
+            "removeCommand": "移除命令"
+          },
+          "messages": {
+            "noCommands": "请至少添加一条控制台命令。",
+            "saveSuccess": "调度任务已保存。"
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "任务名称",
+          "taskType": "任务类型",
+          "triggerSource": "触发方式",
+          "startedAt": "开始时间",
+          "endedAt": "结束时间",
+          "succeeded": "是否成功",
+          "durationMs": "耗时",
+          "summary": "摘要",
+          "errorMessage": "错误信息",
+          "operatorName": "操作者",
+          "sourceIp": "来源 IP"
+        },
+        "filters": {
+          "taskType": "任务类型",
+          "triggerSource": "触发方式",
+          "succeeded": "执行结果",
+          "timeRange": "时间范围"
+        },
+        "placeholders": {
+          "timeRange": "请选择时间范围"
+        },
+        "actions": {
+          "viewDetails": "查看详情"
+        },
+        "detailDialog": {
+          "title": "执行详情",
+          "titleWithName": "执行详情 - {name}",
+          "details": "详细数据"
         }
       }
     },
-    "history": {
-      "columns": {
-        "taskName": "任务名称",
-        "taskType": "任务类型",
-        "triggerSource": "触发方式",
-        "startedAt": "开始时间",
-        "endedAt": "结束时间",
-        "succeeded": "是否成功",
-        "durationMs": "耗时",
-        "summary": "摘要",
-        "errorMessage": "错误信息",
-        "operatorName": "操作者",
-        "sourceIp": "来源 IP"
+    "restart": {
+      "tabs": {
+        "settings": "设置",
+        "run": "手动重启"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用计划重启",
+          "cronExpression": "Cron 表达式",
+          "timeZoneId": "时区",
+          "warningLeadSeconds": "预警提前秒数",
+          "warningMessage": "预警消息",
+          "saveWorldBeforeRestart": "重启前保存世界",
+          "restartMode": "重启模式",
+          "restartCommand": "自定义重启命令",
+          "historyRetentionDays": "历史保留天数"
+        },
+        "tooltips": {
+          "timeZoneId": "可以填写 UTC、Asia/Shanghai 等平台时区 ID。",
+          "warningMessage": "支持 {minutes} 占位符，将被替换为剩余等待时间（分钟）。",
+          "restartCommand": "可选的控制台命令，用于发起重启。设置后将跳过内置重启流程。",
+          "restartMode": "Graceful：等待服务器优雅关闭；Force：立即强制关机。"
+        },
+        "restartModes": {
+          "graceful": "优雅",
+          "force": "强制"
+        },
+        "actions": {
+          "save": "保存重启设置"
+        },
+        "messages": {
+          "saveSuccess": "重启设置已保存。"
+        }
+      },
+      "run": {
+        "description": "立即触发服务器重启。所有覆盖项均为可选，留空则使用已配置的默认值。",
+        "fields": {
+          "reason": "原因",
+          "warningLeadSecondsOverride": "预警提前秒数覆盖",
+          "restartModeOverride": "重启模式覆盖"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "留空则使用配置中的默认值。",
+          "restartModeOverride": "留空则使用配置中的默认值。"
+        },
+        "restartModeOptions": {
+          "graceful": "优雅",
+          "force": "强制"
+        },
+        "actions": {
+          "run": "立即重启"
+        },
+        "messages": {
+          "runConfirm": "确定要立即重启服务器吗？已连接的玩家可能会断线。",
+          "runSuccess": "服务器重启请求已发送。",
+          "runFailed": "重启请求失败。"
+        },
+        "result": {
+          "title": "上次执行结果",
+          "succeeded": "成功",
+          "failed": "失败",
+          "summary": "摘要",
+          "durationMs": "耗时",
+          "errorMessage": "错误信息",
+          "startedAt": "开始时间",
+          "endedAt": "结束时间"
+        }
+      }
+    },
+    "gameChat": {
+      "typeMessage": "输入消息",
+      "send": "发送",
+      "history": {
+        "columns": {
+          "createdAt": "时间",
+          "chatType": "频道",
+          "senderName": "发送者",
+          "playerId": "玩家 ID",
+          "entityId": "实体 ID",
+          "message": "消息内容"
+        },
+        "filters": {
+          "senderName": "发送者",
+          "playerId": "玩家 ID",
+          "chatType": "频道",
+          "timeRange": "时间范围"
+        },
+        "placeholders": {
+          "allChatTypes": "全部频道",
+          "timeRange": "选择时间范围"
+        },
+        "emptyPlayerId": "系统/未知"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "审计日志",
+        "backupRuns": "备份运行记录"
+      },
+      "sources": {
+        "api": "接口请求",
+        "chatCommand": "聊天命令",
+        "consoleCommand": "控制台命令",
+        "scheduler": "调度任务",
+        "system": "系统",
+        "gameEvent": "游戏事件"
+      },
+      "actionTypes": {
+        "create": "创建",
+        "update": "更新",
+        "delete": "删除",
+        "enable": "启用",
+        "disable": "禁用",
+        "execute": "执行",
+        "send": "发送",
+        "kick": "踢出",
+        "ban": "封禁",
+        "unban": "解封",
+        "restart": "重启",
+        "reload": "重载",
+        "grant": "授予",
+        "revoke": "撤销",
+        "import": "导入",
+        "export": "导出",
+        "reset": "重置",
+        "other": "其他"
       },
       "filters": {
-        "taskType": "任务类型",
-        "triggerSource": "触发方式",
-        "succeeded": "执行结果",
-        "timeRange": "时间范围"
+        "timeRange": "时间范围",
+        "source": "来源",
+        "operatorId": "操作人ID",
+        "actionType": "动作类型",
+        "resourceType": "资源类型",
+        "resourceId": "资源标识",
+        "succeeded": "执行结果"
       },
       "placeholders": {
-        "timeRange": "请选择时间范围"
+        "timeRange": "请选择时间范围",
+        "allSources": "全部来源",
+        "allActionTypes": "全部动作类型",
+        "allResults": "全部结果"
       },
-      "actions": {
-        "viewDetails": "查看详情"
+      "columns": {
+        "createdAt": "发生时间",
+        "source": "来源",
+        "operatorId": "操作人ID",
+        "operatorName": "操作人名称",
+        "actionType": "动作类型",
+        "resourceType": "资源类型",
+        "resourceId": "资源标识",
+        "summary": "摘要",
+        "succeeded": "成功",
+        "errorMessage": "错误信息"
+      },
+      "empty": {
+        "operatorId": "匿名或系统",
+        "operatorName": "未知操作人",
+        "source": "未知来源",
+        "actionType": "未知动作",
+        "resourceType": "未指定",
+        "resourceId": "无",
+        "summary": "无摘要",
+        "timestamp": "未知时间",
+        "details": "无详情数据",
+        "errorMessage": "无"
       },
       "detailDialog": {
-        "title": "执行详情",
-        "titleWithName": "执行详情 - {name}",
-        "details": "详细数据"
-      }
-    }
-  },
-  "restart": {
-    "tabs": {
-      "settings": "设置",
-      "run": "手动重启"
-    },
-    "settings": {
-      "fields": {
-        "isEnabled": "启用计划重启",
-        "cronExpression": "Cron 表达式",
-        "timeZoneId": "时区",
-        "warningLeadSeconds": "预警提前秒数",
-        "warningMessage": "预警消息",
-        "saveWorldBeforeRestart": "重启前保存世界",
-        "restartMode": "重启模式",
-        "restartCommand": "自定义重启命令",
-        "historyRetentionDays": "历史保留天数"
-      },
-      "tooltips": {
-        "timeZoneId": "可以填写 UTC、Asia/Shanghai 等平台时区 ID。",
-        "warningMessage": "支持 {minutes} 占位符，将被替换为剩余等待时间（分钟）。",
-        "restartCommand": "可选的控制台命令，用于发起重启。设置后将跳过内置重启流程。",
-        "restartMode": "Graceful：等待服务器优雅关闭；Force：立即强制关机。"
-      },
-      "restartModes": {
-        "graceful": "优雅",
-        "force": "强制"
-      },
-      "actions": {
-        "save": "保存重启设置"
-      },
-      "messages": {
-        "saveSuccess": "重启设置已保存。"
+        "title": "审计日志详情",
+        "actions": {
+          "copy": "复制详情"
+        },
+        "messages": {
+          "copySuccess": "详情已复制到剪贴板。",
+          "copyFailed": "复制失败，请稍后重试。"
+        },
+        "sections": {
+          "metadata": "元数据",
+          "summary": "执行结果",
+          "details": "详细上下文"
+        }
       }
     },
-    "run": {
-      "description": "立即触发服务器重启。所有覆盖项均为可选，留空则使用已配置的默认值。",
-      "fields": {
-        "reason": "原因",
-        "warningLeadSecondsOverride": "预警提前秒数覆盖",
-        "restartModeOverride": "重启模式覆盖"
-      },
-      "tooltips": {
-        "warningLeadSecondsOverride": "留空则使用配置中的默认值。",
-        "restartModeOverride": "留空则使用配置中的默认值。"
-      },
-      "restartModeOptions": {
-        "graceful": "优雅",
-        "force": "强制"
-      },
-      "actions": {
-        "run": "立即重启"
-      },
-      "messages": {
-        "runConfirm": "确定要立即重启服务器吗？已连接的玩家可能会断线。",
-        "runSuccess": "服务器重启请求已发送。",
-        "runFailed": "重启请求失败。"
-      },
-      "result": {
-        "title": "上次执行结果",
-        "succeeded": "成功",
-        "failed": "失败",
-        "summary": "摘要",
-        "durationMs": "耗时",
-        "errorMessage": "错误信息",
-        "startedAt": "开始时间",
-        "endedAt": "结束时间"
+    "serverConfig": {
+      "settings": {
+        "ServerName": {
+          "group": "服务器",
+          "desc": "服务器名字。随便填写你喜欢的名字"
+        },
+        "ServerDescription": {
+          "group": "服务器",
+          "desc": "服务器描述。 随便填写你喜欢的服务器描述"
+        },
+        "ServerWebsiteURL": {
+          "group": "服务器",
+          "desc": "服务器网站地址。将以可点击链接的形式显示在服务器浏览器中"
+        },
+        "ServerPassword": {
+          "group": "服务器",
+          "desc": "服务器密码。玩家进入游戏服务器的密码"
+        },
+        "ServerLoginConfirmationText": {
+          "group": "服务器",
+          "desc": "服务器登录确认文本。如果设置了该选项, 用户将在加入服务器时看到该信息, 并必须确认后才能继续。要对该窗口进行更复杂的更改, 可在 XUi 中更改 serverjoinrulesdialog 窗口"
+        },
+        "Region": {
+          "group": "服务器",
+          "desc": "服务器所在的地区。可选值有: Asia, NorthAmericaEast, NorthAmericaWest, CentralAmerica, SouthAmerica, Europe, Russia, MiddleEast, Africa, Oceania"
+        },
+        "Language": {
+          "group": "服务器",
+          "desc": "服务器上玩家的主要语言。使用玩家希望搜索的任何语言英文名称。可选值有: english, german, spanish, french, italian, japanese, koreana, polish, brazilian, russian, turkish, schinese, tchinese"
+        },
+        "ServerPort": {
+          "group": "网络",
+          "desc": "服务器程序监听的端口。如果希望同一局域网内的电脑将其视为局域网服务器, 请将其保持在 26900 至 26905 或 27015 至 27020 的范围内"
+        },
+        "ServerVisibility": {
+          "group": "网络",
+          "desc": "服务器的可见性。2 = 公开, 1 = 仅向好友显示, 0 = 未列出。由于您从来都不是专用服务器的好友, 因此将此设置为 1 只有在第一个玩家通过 IP 手动连接时才有效"
+        },
+        "ServerDisabledNetworkProtocols": {
+          "group": "网络",
+          "desc": "服务器禁用的网络协议。用逗号分隔, 可能的值LiteNetLib、SteamNetworking。如果用户和服务器之间没有 NAT 路由器, 或端口转发设置正确, 专用服务器应禁用 SteamNetworking"
+        },
+        "ServerMaxWorldTransferSpeedKiBs": {
+          "group": "网络",
+          "desc": "服务器最大世界传输速度。如果客户端还没有世界, 第一次连接时世界传输的最大速度（kiB/s）。最大值约为 1300 kiB/s, 即使您设置了更高的值也是如此"
+        },
+        "ServerMaxPlayerCount": {
+          "group": "插槽",
+          "desc": "服务器最大玩家数量。同时允许在线的最大玩家数量"
+        },
+        "ServerReservedSlots": {
+          "group": "插槽",
+          "desc": "服务器预留槽。在最大玩家数之外, 许多插槽只能由具有特定权限级别的玩家使用。"
+        },
+        "ServerReservedSlotsPermission": {
+          "group": "插槽",
+          "desc": "服务器预留插槽权限。使用上述预留位置所需的权限级别"
+        },
+        "ServerAdminSlots": {
+          "group": "插槽",
+          "desc": "服务器管理槽。即使服务器已达到最大玩家数, 仍有这么多管理员可以加入"
+        },
+        "ServerAdminSlotsPermission": {
+          "group": "插槽",
+          "desc": "服务器管理员权限槽。使用上述管理插槽所需的权限级别"
+        },
+        "WebDashboardEnabled": {
+          "group": "管理界面",
+          "desc": "启用/禁用网络仪表板。"
+        },
+        "WebDashboardPort": {
+          "group": "管理界面",
+          "desc": "网络仪表板的端口。"
+        },
+        "WebDashboardUrl": {
+          "group": "管理界面",
+          "desc": "网络仪表板的外部 URL。（如果不只使用服务器的公共 IP, 例如网络仪表板位于反向代理后面）。需要是完整的 URL, 如 https://domainOfReverseProxy.tld:1234/ 如果直接使用公网 IP 和仪表板端口, 则可以留空"
+        },
+        "EnableMapRendering": {
+          "group": "管理界面",
+          "desc": "启用地图渲染。在浏览地图时, 启用/禁用将地图渲染为磁贴图像。例如, 网络仪表板就可以用它来显示地图视图"
+        },
+        "TelnetEnabled": {
+          "group": "管理界面",
+          "desc": "Telnet服务是否启用。开启或关闭Telnet服务[true,false]"
+        },
+        "TelnetPort": {
+          "group": "管理界面",
+          "desc": "Telnet端口。Telnet服务端的端口"
+        },
+        "TelnetPassword": {
+          "group": "管理界面",
+          "desc": "Telnet访问密码。如果未设置密码, 服务器将只监听本地环回接口"
+        },
+        "TelnetFailedLoginLimit": {
+          "group": "管理界面",
+          "desc": "Telnet 登录失败次数限制。一个远程客户端多次输入错误密码后, 客户端将被阻止连接到 Telnet 接口"
+        },
+        "TelnetFailedLoginsBlocktime": {
+          "group": "管理界面",
+          "desc": "登录失败锁定时间。超出登录失败次数上限后, 阻止将持续多长时间（以秒为单位）"
+        },
+        "TerminalWindowEnabled": {
+          "group": "管理界面",
+          "desc": "终端窗口启用。显示用于日志输出/命令输入的终端窗口（仅限 Windows）"
+        },
+        "AdminFileName": {
+          "group": "文件夹和文件位置",
+          "desc": "服务器管理文件名。相对于 SaveGameFolder 的路径"
+        },
+        "UserDataFolder": {
+          "group": "文件夹和文件位置",
+          "desc": "用户数据文件夹。用它来覆盖服务器存储所有生成数据的位置, 包括 RWG 生成的世界。不要忘记取消注释"
+        },
+        "SaveGameFolder": {
+          "group": "文件夹和文件位置",
+          "desc": "游戏存档文件夹。仅用于覆盖游戏保存路径。不要忘记取消注释"
+        },
+        "ServerAllowCrossplay": {
+          "group": "其他技术设置",
+          "desc": "启用/禁用跨平台游戏, 跨平台游戏服务器仅在搜索中找到, 并且如果制裁未被忽略则可加入, 并且具有默认或更少的玩家槽数"
+        },
+        "EACEnabled": {
+          "group": "其他技术设置",
+          "desc": "EAC反作弊是否启动。是否开启反作弊功能(破解和汉化的服务器需要关闭)"
+        },
+        "IgnoreEOSSanctions": {
+          "group": "其他技术设置",
+          "desc": "忽略 EOS 制裁。在允许玩家加入时忽略 EOS 制裁"
+        },
+        "HideCommandExecutionLog": {
+          "group": "其他技术设置",
+          "desc": "隐藏命令执行记录。0 = 显示所有内容, 1 = 仅从 Telnet/控制面板隐藏, 2 = 也从远程游戏客户端隐藏, 3 = 隐藏所有内容"
+        },
+        "MaxUncoveredMapChunksPerPlayer": {
+          "group": "其他技术设置",
+          "desc": "每个玩家可在游戏地图上探索的区域。因此, 每个玩家的最大地图文件大小限制为（x * 512 字节）, 覆盖面积为（x * 256 平方米）。默认值 131072 意味着在任何时候都可以揭开最大 32 平方公里的地图"
+        },
+        "PersistentPlayerProfiles": {
+          "group": "其他技术设置",
+          "desc": "玩家档案是否可以变更。如果禁用, 玩家可以使用任何选定的配置文件加入。如果为 true, 他们将使用上次加入时的配置文件加入"
+        },
+        "MaxChunkAge": {
+          "group": "其他技术设置",
+          "desc": "在游戏中, 如果没有重新访问或保护（例如, 在附近有领地石或睡袋）, 则在访问某个小块后, 该小块会重置为原始状态的天数"
+        },
+        "SaveDataLimit": {
+          "group": "其他技术设置",
+          "desc": "保存数据限制。每个已保存游戏的最大磁盘空间允许值, 单位为 MB。当达到此限制时, 保存的游戏块可能会被强制重置为原始状态, 以释放空间。负值表示禁用限制"
+        },
+        "GameWorld": {
+          "group": "游戏世界",
+          "desc": "游戏世界地图。Navezgane[固定地图], RWG[随机地图]（请参阅下文的 '世界种子' 和 '世界大小' 选项）或 'Worlds' 文件夹中任何已存在的世界名称（例如 'Navezgane'、'PREGEN01'......）"
+        },
+        "WorldGenSeed": {
+          "group": "游戏世界",
+          "desc": "世界种子。如果是 RWG, 这就是生成新世界的种子。如果已经存在名称相同的世界, 则将直接加载它"
+        },
+        "WorldGenSize": {
+          "group": "游戏世界",
+          "desc": "世界生成尺寸。如果是 RWG, 则控制创建世界的宽度和高度。官方支持的尺寸介于 6144 和 10240 之间, 且必须是 2048 的倍数, 例如 6144、8192、10240"
+        },
+        "GameName": {
+          "group": "游戏世界",
+          "desc": "游戏名字。无论您希望游戏名称是什么, 这将影响保存的游戏名称以及在世界中放置装饰（树木等）时使用的种子。如果创建的是 RWG 世界, 它不会控制世界的通用布局"
+        },
+        "GameMode": {
+          "group": "游戏世界",
+          "desc": "游戏模式。GameModeSurvival(多人游戏)"
+        },
+        "GameDifficulty": {
+          "group": "游戏难度",
+          "desc": "游戏难度。难度从0到5, 0最简单, 5最难"
+        },
+        "BlockDamagePlayer": {
+          "group": "游戏难度",
+          "desc": "玩家方块伤害。玩家对方块造成的伤害（百分比, 以整数表示）"
+        },
+        "BlockDamageAI": {
+          "group": "游戏难度",
+          "desc": "AI方块伤害。人工智能对方块造成的伤害（百分比, 以整数表示）"
+        },
+        "BlockDamageAIBM": {
+          "group": "游戏难度",
+          "desc": "血月期间AI方块伤害。血月期间人工智能对方块造成的伤害（百分比, 以整数表示）"
+        },
+        "XPMultiplier": {
+          "group": "游戏难度",
+          "desc": "XP 增益倍数。玩家获取的经验倍数（百分比, 以整数表示）"
+        },
+        "PlayerSafeZoneLevel": {
+          "group": "游戏难度",
+          "desc": "新手玩家保护等级。如果玩家的等级小于或等于此等级, 他将在生成时创建一个安全区（没有敌人）。如果玩家低于这个等级那么将不再在他的周围刷新丧尸"
+        },
+        "PlayerSafeZoneHours": {
+          "group": "游戏难度",
+          "desc": "安全等级持续时间。玩家保护区域的有效时间(游戏中的小时单位)"
+        },
+        "BuildCreate": {
+          "group": "游戏难度",
+          "desc": "创造模式。作弊模式的开关"
+        },
+        "DayNightLength": {
+          "group": "游戏难度",
+          "desc": "游戏一天的现实时间(分钟)。代表真实时间每多少分钟相当于游戏的一天"
+        },
+        "DayLightLength": {
+          "group": "游戏难度",
+          "desc": "游戏里日照时长。代表一天当中的多少小时是白天(默认18小时)"
+        },
+        "BiomeProgression": {
+          "group": "游戏难度",
+          "desc": "启用生物群落危害和战利品阶段上限以促进生物群落进展。通过完成生物群落挑战来提高战利品阶段上限。"
+        },
+        "StormFreq": {
+          "group": "游戏难度",
+          "desc": "调整风暴的频率。0% 关闭它们。原版值: 0、50、100、150、200、300、400、500"
+        },
+        "DeathPenalty": {
+          "group": "游戏难度",
+          "desc": "死亡后的惩罚。0 = 无。1 = 默认: 经典 XP 惩罚。2 = 受伤: 你将保留大部分debuff。重生时食物和水的比例设定为 50%。3 = 永久死亡：您的角色将完全重置。您将在保存的游戏中从新重生)"
+        },
+        "DropOnDeath": {
+          "group": "游戏难度",
+          "desc": "死亡掉落。0 = 无, 1 = 所有, 2 = 仅工具带, 3 = 仅背包, 4 = 全部删除"
+        },
+        "DropOnQuit": {
+          "group": "游戏难度",
+          "desc": "登出掉落。0 = 无, 1 = 所有, 2 = 仅工具带, 3 = 仅背包"
+        },
+        "BedrollDeadZoneSize": {
+          "group": "游戏难度",
+          "desc": "睡袋禁区的大小（即每边长度为给定值的两倍的方框“半径”）, 在这个区域内不会生成僵尸, 任何已清理的睡眠者区域若与睡袋禁区相接触, 则在清理后不会再生成"
+        },
+        "BedrollExpiryTime": {
+          "group": "游戏难度",
+          "desc": "睡袋到期时间。睡袋在所有者最后一次在线后保持有效的真实世界天数数量"
+        },
+        "AllowSpawnNearFriend": {
+          "group": "游戏难度",
+          "desc": "新玩家首次加入服务器时是否可以选择靠近同时在线的朋友? 0 = 禁用, 1 = 始终, 2 = 仅在森林生物群落附近的朋友"
+        },
+        "CameraRestrictionMode": {
+          "group": "游戏难度",
+          "desc": "摄像机限制模式。0 = 玩家可以自由切换第一/第三人称视角, 1 = 仅限第一人称, 2 = 仅限第三人称"
+        },
+        "JarRefund": {
+          "group": "游戏难度",
+          "desc": "空玻璃罐返还比例。玩家消耗物品后返还空罐的百分比。可选值：0、5、10、20、30、40、50、60、70、80、90、100"
+        },
+        "MaxSpawnedZombies": {
+          "group": "性能相关",
+          "desc": "最大刷新丧尸数量。该设置覆盖整个地图, 整个地图上同时只能有这么多僵尸。更改此设置会对性能产生巨大影响"
+        },
+        "MaxSpawnedAnimals": {
+          "group": "性能相关",
+          "desc": "最大刷新动物数量。如果您的服务器上有大量玩家, 您可以增加这一限制来添加更多野生动物。动物不会像僵尸那样消耗大量 CPU。注意：这不会导致任意生成更多动物：生物群落产卵系统只会在给定区域内产卵一定数量的动物, 但如果您的玩家数量很多, 而且分布很分散, 那么您可能会遇到限制, 因此可以增加该限制"
+        },
+        "ServerMaxAllowedViewDistance": {
+          "group": "性能相关",
+          "desc": "客户端允许的最大视距（6 - 12）。对内存使用和性能影响较大"
+        },
+        "MaxQueuedMeshLayers": {
+          "group": "性能相关",
+          "desc": "网格生成过程中可排队的 Chunk 网格层的最大数量。减少该值会提高内存使用率, 但可能会增加 Chunk 生成时间"
+        },
+        "EnemySpawnMode": {
+          "group": "僵尸设置",
+          "desc": "启用/禁用敌人生成。"
+        },
+        "EnemyDifficulty": {
+          "group": "僵尸设置",
+          "desc": "僵尸强度。0 = 正常, 1 = 狂暴"
+        },
+        "ZombieFeralSense": {
+          "group": "僵尸设置",
+          "desc": "僵尸狂暴场景。0-3（关闭、日间、夜间、全部）"
+        },
+        "ZombieMove": {
+          "group": "僵尸设置",
+          "desc": "僵尸移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
+        },
+        "ZombieMoveNight": {
+          "group": "僵尸设置",
+          "desc": "僵尸夜间移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
+        },
+        "ZombieFeralMove": {
+          "group": "僵尸设置",
+          "desc": "僵尸狂暴移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
+        },
+        "ZombieBMMove": {
+          "group": "僵尸设置",
+          "desc": "僵尸BM移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
+        },
+        "AISmellMode": {
+          "group": "僵尸设置",
+          "desc": "AI 嗅觉模式。0-5（关闭、步行、慢跑、跑步、冲刺、噩梦）"
+        },
+        "BloodMoonFrequency": {
+          "group": "僵尸设置",
+          "desc": "血月频率。血月出现的频率（天数）, 设置为 0 表示没有血月"
+        },
+        "BloodMoonRange": {
+          "group": "僵尸设置",
+          "desc": "血月范围。实际血月日可以随机偏离上述设置多少天。将此值设为 0 时, 血月会在血月频率中指定的每 N 天准时出现"
+        },
+        "BloodMoonWarning": {
+          "group": "僵尸设置",
+          "desc": "血月警告。血月日红色天数开始的小时数。将其设置为-1 时, 红色将永不显示。"
+        },
+        "BloodMoonEnemyCount": {
+          "group": "僵尸设置",
+          "desc": "血月敌人数量。这是血月僵尸群中每个玩家在任何时候都能存活（同时产生）的僵尸数量, 但在多人游戏中, MaxSpawnedZombies 会覆盖此数量。还需注意的是, 游戏阶段会设置每方僵尸的最大数量。低游戏阶段值会导致僵尸数量低于血月敌人数量设置。更改此设置会对性能产生巨大影响。"
+        },
+        "LootAbundance": {
+          "group": "战利品",
+          "desc": "搜索物品丰富度百分比"
+        },
+        "LootRespawnDays": {
+          "group": "战利品",
+          "desc": "搜索物品刷新天数。经过多少天刷新可以搜索的物品资源"
+        },
+        "AirDropFrequency": {
+          "group": "战利品",
+          "desc": "空投频率。表示每多少个游戏小时就进行空投,0 = 从不空投"
+        },
+        "AirDropMarker": {
+          "group": "战利品",
+          "desc": "空投显示。设置是否为空投在地图/指南针上添加标记"
+        },
+        "PartySharedKillRange": {
+          "group": "多人游戏",
+          "desc": "组队共享杀戮范围。获得组队共享击杀奖励和任务组队击杀目标奖励所需的距离"
+        },
+        "PlayerKillingMode": {
+          "group": "多人游戏",
+          "desc": "玩家杀戮设置（0 = 无杀戮, 1 = 只对盟友造成伤害, 2 = 只对陌生人造成伤害, 3 = 对所有人造成伤害）"
+        },
+        "LandClaimCount": {
+          "group": "领地石选项",
+          "desc": "领地石数量。每位玩家允许的领地石上限"
+        },
+        "LandClaimSize": {
+          "group": "领地石选项",
+          "desc": "领地石保护范围。单位为方块"
+        },
+        "LandClaimDeadZone": {
+          "group": "领地石选项",
+          "desc": "领地石的相隔范围。领地石必须超过这个距离才能设置（除非您与对方是好友）"
+        },
+        "LandClaimExpiryTime": {
+          "group": "领地石选项",
+          "desc": "玩家离线领土石保护天数。玩家离线之后领地石有效的天数(真实时间)"
+        },
+        "LandClaimDecayMode": {
+          "group": "领地石选项",
+          "desc": "领地石保护的衰减模式。控制离线玩家的领地范围衰减模式。0 = 慢（线性）, 1 = 快（指数）, 2 = 无（全面保护, 直至到期）"
+        },
+        "LandClaimOnlineDurabilityModifier": {
+          "group": "领地石选项",
+          "desc": "玩家在线时领地石的保护倍数。表示玩家在线时领地石硬度倍数, 0表示无敌, 默认4倍"
+        },
+        "LandClaimOfflineDurabilityModifier": {
+          "group": "领地石选项",
+          "desc": "玩家离线时领地石的保护倍数。表示玩家离线时领地石硬度倍数, 0表示无敌, 默认4倍"
+        },
+        "LandClaimOfflineDelay": {
+          "group": "领地石选项",
+          "desc": "玩家退出游戏后, 领地石硬度从联机状态转为离线状态的分钟数。默认为 0"
+        },
+        "DynamicMeshEnabled": {
+          "group": "其他",
+          "desc": "是否启用动态网格系统"
+        },
+        "DynamicMeshLandClaimOnly": {
+          "group": "其他",
+          "desc": "动态网格系统是否只在玩家 LCB 区域有效"
+        },
+        "DynamicMeshLandClaimBuffer": {
+          "group": "其他",
+          "desc": "动态网格 LCB 块半径"
+        },
+        "DynamicMeshMaxItemCache": {
+          "group": "其他",
+          "desc": "动态网格最大项目缓存。可同时处理多少个项目, 数值越大, 使用的 RAM 越多"
+        },
+        "TwitchServerPermission": {
+          "group": "其他",
+          "desc": "在服务器上使用 twitch 集成所需的权限级别"
+        },
+        "TwitchBloodMoonAllowed": {
+          "group": "其他",
+          "desc": "是否允许 Twitch 血月。如果服务器允许在血月期间进行Twitch操作, 可能会在血月期间产生额外的僵尸, 从而导致服务器滞后"
+        },
+        "QuestProgressionDailyLimit": {
+          "group": "其他",
+          "desc": "每日任务进度限制。限制玩家每天可完成的有助于任务等级提升的任务数量。超过限制的任务仍可完成以获得奖励"
+        }
       }
-    }
-  },
-  "gameChat": {
-    "typeMessage": "输入消息",
-    "send": "发送",
-    "history": {
+    },
+    "console": {
+      "invalidCommand": {
+        "title": "无效命令",
+        "text": "请输入有效的命令。"
+      },
+      "send": "发送"
+    },
+    "banWhitelist": {
+      "ban": "黑名单",
+      "whitelist": "白名单",
+      "playerId": "玩家 ID",
+      "displayName": "显示名称",
+      "bannedUntil": "封禁至",
+      "reason": "封禁原因",
+      "addBan": "添加黑名单",
+      "editBan": "编辑黑名单",
+      "addWhitelist": "添加白名单",
+      "editWhitelist": "编辑白名单",
+      "tooltips": {
+        "playerId": "玩家的唯一标识，通常填写 SteamID64。",
+        "displayName": "在名单中显示的名称，便于识别目标玩家。",
+        "bannedUntil": "暂时封禁时填写到期时间；永久封禁请保持为空。",
+        "reason": "记录封禁或移除原因，方便后续审计和排查。"
+      }
+    },
+    "permission": {
+      "adminUser": "管理员用户",
+      "addCommandPermission": "新增命令权限",
+      "editCommandPermission": "编辑命令权限",
+      "command": "命令",
+      "commandPermission": "命令权限",
+      "description": "描述",
+      "addAdminUser": "新增管理员",
+      "editAdminUser": "编辑管理员",
+      "permissionLevel": "权限级别",
+      "tooltips": {
+        "playerId": "要授予权限的玩家唯一标识，通常填写 SteamID64。",
+        "displayName": "用于后台识别该账号的显示名称。",
+        "permissionLevel": "服务器权限等级，数值越接近上限，权限通常越高。",
+        "command": "这条规则对应的控制台命令名称。",
+        "description": "可选说明，用于记录这条命令权限的用途或限制。"
+      }
+    },
+    "gameEventLogs": {
       "columns": {
         "createdAt": "时间",
-        "chatType": "频道",
-        "senderName": "发送者",
-        "playerId": "玩家 ID",
-        "entityId": "实体 ID",
-        "message": "消息内容"
+        "eventType": "事件类型",
+        "playerName": "玩家",
+        "targetPlayerName": "目标玩家",
+        "entityType": "实体类型"
+      },
+      "eventTypes": {
+        "PlayerJoined": "玩家加入",
+        "PlayerLeft": "玩家离开",
+        "PlayerDied": "玩家死亡",
+        "PlayerKilledZombie": "击杀僵尸",
+        "PlayerKilledPlayer": "玩家击杀"
       },
       "filters": {
-        "senderName": "发送者",
-        "playerId": "玩家 ID",
-        "chatType": "频道",
+        "eventType": "事件类型",
         "timeRange": "时间范围"
       },
       "placeholders": {
-        "allChatTypes": "全部频道",
+        "allEventTypes": "全部事件",
         "timeRange": "选择时间范围"
-      },
-      "emptyPlayerId": "系统/未知"
-    }
-  },
-  "auditLogs": {
-    "tabs": {
-      "auditLogs": "审计日志",
-      "backupRuns": "备份运行记录"
-    },
-    "sources": {
-      "api": "接口请求",
-      "chatCommand": "聊天命令",
-      "consoleCommand": "控制台命令",
-      "scheduler": "调度任务",
-      "system": "系统",
-      "gameEvent": "游戏事件"
-    },
-    "actionTypes": {
-      "create": "创建",
-      "update": "更新",
-      "delete": "删除",
-      "enable": "启用",
-      "disable": "禁用",
-      "execute": "执行",
-      "send": "发送",
-      "kick": "踢出",
-      "ban": "封禁",
-      "unban": "解封",
-      "restart": "重启",
-      "reload": "重载",
-      "grant": "授予",
-      "revoke": "撤销",
-      "import": "导入",
-      "export": "导出",
-      "reset": "重置",
-      "other": "其他"
-    },
-    "filters": {
-      "timeRange": "时间范围",
-      "source": "来源",
-      "operatorId": "操作人ID",
-      "actionType": "动作类型",
-      "resourceType": "资源类型",
-      "resourceId": "资源标识",
-      "succeeded": "执行结果"
-    },
-    "placeholders": {
-      "timeRange": "请选择时间范围",
-      "allSources": "全部来源",
-      "allActionTypes": "全部动作类型",
-      "allResults": "全部结果"
-    },
-    "columns": {
-      "createdAt": "发生时间",
-      "source": "来源",
-      "operatorId": "操作人ID",
-      "operatorName": "操作人名称",
-      "actionType": "动作类型",
-      "resourceType": "资源类型",
-      "resourceId": "资源标识",
-      "summary": "摘要",
-      "succeeded": "成功",
-      "errorMessage": "错误信息"
-    },
-    "empty": {
-      "operatorId": "匿名或系统",
-      "operatorName": "未知操作人",
-      "source": "未知来源",
-      "actionType": "未知动作",
-      "resourceType": "未指定",
-      "resourceId": "无",
-      "summary": "无摘要",
-      "timestamp": "未知时间",
-      "details": "无详情数据",
-      "errorMessage": "无"
-    },
-    "detailDialog": {
-      "title": "审计日志详情",
-      "actions": {
-        "copy": "复制详情"
-      },
-      "messages": {
-        "copySuccess": "详情已复制到剪贴板。",
-        "copyFailed": "复制失败，请稍后重试。"
-      },
-      "sections": {
-        "metadata": "元数据",
-        "summary": "执行结果",
-        "details": "详细上下文"
       }
-    }
-  },
-  "serverConfig": {
-    "settings": {
-      "ServerName": {
-        "group": "服务器",
-        "desc": "服务器名字。随便填写你喜欢的名字"
-      },
-      "ServerDescription": {
-        "group": "服务器",
-        "desc": "服务器描述。 随便填写你喜欢的服务器描述"
-      },
-      "ServerWebsiteURL": {
-        "group": "服务器",
-        "desc": "服务器网站地址。将以可点击链接的形式显示在服务器浏览器中"
-      },
-      "ServerPassword": {
-        "group": "服务器",
-        "desc": "服务器密码。玩家进入游戏服务器的密码"
-      },
-      "ServerLoginConfirmationText": {
-        "group": "服务器",
-        "desc": "服务器登录确认文本。如果设置了该选项, 用户将在加入服务器时看到该信息, 并必须确认后才能继续。要对该窗口进行更复杂的更改, 可在 XUi 中更改 serverjoinrulesdialog 窗口"
-      },
-      "Region": {
-        "group": "服务器",
-        "desc": "服务器所在的地区。可选值有: Asia, NorthAmericaEast, NorthAmericaWest, CentralAmerica, SouthAmerica, Europe, Russia, MiddleEast, Africa, Oceania"
-      },
-      "Language": {
-        "group": "服务器",
-        "desc": "服务器上玩家的主要语言。使用玩家希望搜索的任何语言英文名称。可选值有: english, german, spanish, french, italian, japanese, koreana, polish, brazilian, russian, turkish, schinese, tchinese"
-      },
-      "ServerPort": {
-        "group": "网络",
-        "desc": "服务器程序监听的端口。如果希望同一局域网内的电脑将其视为局域网服务器, 请将其保持在 26900 至 26905 或 27015 至 27020 的范围内"
-      },
-      "ServerVisibility": {
-        "group": "网络",
-        "desc": "服务器的可见性。2 = 公开, 1 = 仅向好友显示, 0 = 未列出。由于您从来都不是专用服务器的好友, 因此将此设置为 1 只有在第一个玩家通过 IP 手动连接时才有效"
-      },
-      "ServerDisabledNetworkProtocols": {
-        "group": "网络",
-        "desc": "服务器禁用的网络协议。用逗号分隔, 可能的值LiteNetLib、SteamNetworking。如果用户和服务器之间没有 NAT 路由器, 或端口转发设置正确, 专用服务器应禁用 SteamNetworking"
-      },
-      "ServerMaxWorldTransferSpeedKiBs": {
-        "group": "网络",
-        "desc": "服务器最大世界传输速度。如果客户端还没有世界, 第一次连接时世界传输的最大速度（kiB/s）。最大值约为 1300 kiB/s, 即使您设置了更高的值也是如此"
-      },
-      "ServerMaxPlayerCount": {
-        "group": "插槽",
-        "desc": "服务器最大玩家数量。同时允许在线的最大玩家数量"
-      },
-      "ServerReservedSlots": {
-        "group": "插槽",
-        "desc": "服务器预留槽。在最大玩家数之外, 许多插槽只能由具有特定权限级别的玩家使用。"
-      },
-      "ServerReservedSlotsPermission": {
-        "group": "插槽",
-        "desc": "服务器预留插槽权限。使用上述预留位置所需的权限级别"
-      },
-      "ServerAdminSlots": {
-        "group": "插槽",
-        "desc": "服务器管理槽。即使服务器已达到最大玩家数, 仍有这么多管理员可以加入"
-      },
-      "ServerAdminSlotsPermission": {
-        "group": "插槽",
-        "desc": "服务器管理员权限槽。使用上述管理插槽所需的权限级别"
-      },
-      "WebDashboardEnabled": {
-        "group": "管理界面",
-        "desc": "启用/禁用网络仪表板。"
-      },
-      "WebDashboardPort": {
-        "group": "管理界面",
-        "desc": "网络仪表板的端口。"
-      },
-      "WebDashboardUrl": {
-        "group": "管理界面",
-        "desc": "网络仪表板的外部 URL。（如果不只使用服务器的公共 IP, 例如网络仪表板位于反向代理后面）。需要是完整的 URL, 如 https://domainOfReverseProxy.tld:1234/ 如果直接使用公网 IP 和仪表板端口, 则可以留空"
-      },
-      "EnableMapRendering": {
-        "group": "管理界面",
-        "desc": "启用地图渲染。在浏览地图时, 启用/禁用将地图渲染为磁贴图像。例如, 网络仪表板就可以用它来显示地图视图"
-      },
-      "TelnetEnabled": {
-        "group": "管理界面",
-        "desc": "Telnet服务是否启用。开启或关闭Telnet服务[true,false]"
-      },
-      "TelnetPort": {
-        "group": "管理界面",
-        "desc": "Telnet端口。Telnet服务端的端口"
-      },
-      "TelnetPassword": {
-        "group": "管理界面",
-        "desc": "Telnet访问密码。如果未设置密码, 服务器将只监听本地环回接口"
-      },
-      "TelnetFailedLoginLimit": {
-        "group": "管理界面",
-        "desc": "Telnet 登录失败次数限制。一个远程客户端多次输入错误密码后, 客户端将被阻止连接到 Telnet 接口"
-      },
-      "TelnetFailedLoginsBlocktime": {
-        "group": "管理界面",
-        "desc": "登录失败锁定时间。超出登录失败次数上限后, 阻止将持续多长时间（以秒为单位）"
-      },
-      "TerminalWindowEnabled": {
-        "group": "管理界面",
-        "desc": "终端窗口启用。显示用于日志输出/命令输入的终端窗口（仅限 Windows）"
-      },
-      "AdminFileName": {
-        "group": "文件夹和文件位置",
-        "desc": "服务器管理文件名。相对于 SaveGameFolder 的路径"
-      },
-      "UserDataFolder": {
-        "group": "文件夹和文件位置",
-        "desc": "用户数据文件夹。用它来覆盖服务器存储所有生成数据的位置, 包括 RWG 生成的世界。不要忘记取消注释"
-      },
-      "SaveGameFolder": {
-        "group": "文件夹和文件位置",
-        "desc": "游戏存档文件夹。仅用于覆盖游戏保存路径。不要忘记取消注释"
-      },
-      "ServerAllowCrossplay": {
-        "group": "其他技术设置",
-        "desc": "启用/禁用跨平台游戏, 跨平台游戏服务器仅在搜索中找到, 并且如果制裁未被忽略则可加入, 并且具有默认或更少的玩家槽数"
-      },
-      "EACEnabled": {
-        "group": "其他技术设置",
-        "desc": "EAC反作弊是否启动。是否开启反作弊功能(破解和汉化的服务器需要关闭)"
-      },
-      "IgnoreEOSSanctions": {
-        "group": "其他技术设置",
-        "desc": "忽略 EOS 制裁。在允许玩家加入时忽略 EOS 制裁"
-      },
-      "HideCommandExecutionLog": {
-        "group": "其他技术设置",
-        "desc": "隐藏命令执行记录。0 = 显示所有内容, 1 = 仅从 Telnet/控制面板隐藏, 2 = 也从远程游戏客户端隐藏, 3 = 隐藏所有内容"
-      },
-      "MaxUncoveredMapChunksPerPlayer": {
-        "group": "其他技术设置",
-        "desc": "每个玩家可在游戏地图上探索的区域。因此, 每个玩家的最大地图文件大小限制为（x * 512 字节）, 覆盖面积为（x * 256 平方米）。默认值 131072 意味着在任何时候都可以揭开最大 32 平方公里的地图"
-      },
-      "PersistentPlayerProfiles": {
-        "group": "其他技术设置",
-        "desc": "玩家档案是否可以变更。如果禁用, 玩家可以使用任何选定的配置文件加入。如果为 true, 他们将使用上次加入时的配置文件加入"
-      },
-      "MaxChunkAge": {
-        "group": "其他技术设置",
-        "desc": "在游戏中, 如果没有重新访问或保护（例如, 在附近有领地石或睡袋）, 则在访问某个小块后, 该小块会重置为原始状态的天数"
-      },
-      "SaveDataLimit": {
-        "group": "其他技术设置",
-        "desc": "保存数据限制。每个已保存游戏的最大磁盘空间允许值, 单位为 MB。当达到此限制时, 保存的游戏块可能会被强制重置为原始状态, 以释放空间。负值表示禁用限制"
-      },
-      "GameWorld": {
-        "group": "游戏世界",
-        "desc": "游戏世界地图。Navezgane[固定地图], RWG[随机地图]（请参阅下文的 '世界种子' 和 '世界大小' 选项）或 'Worlds' 文件夹中任何已存在的世界名称（例如 'Navezgane'、'PREGEN01'......）"
-      },
-      "WorldGenSeed": {
-        "group": "游戏世界",
-        "desc": "世界种子。如果是 RWG, 这就是生成新世界的种子。如果已经存在名称相同的世界, 则将直接加载它"
-      },
-      "WorldGenSize": {
-        "group": "游戏世界",
-        "desc": "世界生成尺寸。如果是 RWG, 则控制创建世界的宽度和高度。官方支持的尺寸介于 6144 和 10240 之间, 且必须是 2048 的倍数, 例如 6144、8192、10240"
-      },
-      "GameName": {
-        "group": "游戏世界",
-        "desc": "游戏名字。无论您希望游戏名称是什么, 这将影响保存的游戏名称以及在世界中放置装饰（树木等）时使用的种子。如果创建的是 RWG 世界, 它不会控制世界的通用布局"
-      },
-      "GameMode": {
-        "group": "游戏世界",
-        "desc": "游戏模式。GameModeSurvival(多人游戏)"
-      },
-      "GameDifficulty": {
-        "group": "游戏难度",
-        "desc": "游戏难度。难度从0到5, 0最简单, 5最难"
-      },
-      "BlockDamagePlayer": {
-        "group": "游戏难度",
-        "desc": "玩家方块伤害。玩家对方块造成的伤害（百分比, 以整数表示）"
-      },
-      "BlockDamageAI": {
-        "group": "游戏难度",
-        "desc": "AI方块伤害。人工智能对方块造成的伤害（百分比, 以整数表示）"
-      },
-      "BlockDamageAIBM": {
-        "group": "游戏难度",
-        "desc": "血月期间AI方块伤害。血月期间人工智能对方块造成的伤害（百分比, 以整数表示）"
-      },
-      "XPMultiplier": {
-        "group": "游戏难度",
-        "desc": "XP 增益倍数。玩家获取的经验倍数（百分比, 以整数表示）"
-      },
-      "PlayerSafeZoneLevel": {
-        "group": "游戏难度",
-        "desc": "新手玩家保护等级。如果玩家的等级小于或等于此等级, 他将在生成时创建一个安全区（没有敌人）。如果玩家低于这个等级那么将不再在他的周围刷新丧尸"
-      },
-      "PlayerSafeZoneHours": {
-        "group": "游戏难度",
-        "desc": "安全等级持续时间。玩家保护区域的有效时间(游戏中的小时单位)"
-      },
-      "BuildCreate": {
-        "group": "游戏难度",
-        "desc": "创造模式。作弊模式的开关"
-      },
-      "DayNightLength": {
-        "group": "游戏难度",
-        "desc": "游戏一天的现实时间(分钟)。代表真实时间每多少分钟相当于游戏的一天"
-      },
-      "DayLightLength": {
-        "group": "游戏难度",
-        "desc": "游戏里日照时长。代表一天当中的多少小时是白天(默认18小时)"
-      },
-      "BiomeProgression": {
-        "group": "游戏难度",
-        "desc": "启用生物群落危害和战利品阶段上限以促进生物群落进展。通过完成生物群落挑战来提高战利品阶段上限。"
-      },
-      "StormFreq": {
-        "group": "游戏难度",
-        "desc": "调整风暴的频率。0% 关闭它们。原版值: 0、50、100、150、200、300、400、500"
-      },
-      "DeathPenalty": {
-        "group": "游戏难度",
-        "desc": "死亡后的惩罚。0 = 无。1 = 默认: 经典 XP 惩罚。2 = 受伤: 你将保留大部分debuff。重生时食物和水的比例设定为 50%。3 = 永久死亡：您的角色将完全重置。您将在保存的游戏中从新重生)"
-      },
-      "DropOnDeath": {
-        "group": "游戏难度",
-        "desc": "死亡掉落。0 = 无, 1 = 所有, 2 = 仅工具带, 3 = 仅背包, 4 = 全部删除"
-      },
-      "DropOnQuit": {
-        "group": "游戏难度",
-        "desc": "登出掉落。0 = 无, 1 = 所有, 2 = 仅工具带, 3 = 仅背包"
-      },
-      "BedrollDeadZoneSize": {
-        "group": "游戏难度",
-        "desc": "睡袋禁区的大小（即每边长度为给定值的两倍的方框“半径”）, 在这个区域内不会生成僵尸, 任何已清理的睡眠者区域若与睡袋禁区相接触, 则在清理后不会再生成"
-      },
-      "BedrollExpiryTime": {
-        "group": "游戏难度",
-        "desc": "睡袋到期时间。睡袋在所有者最后一次在线后保持有效的真实世界天数数量"
-      },
-      "AllowSpawnNearFriend": {
-        "group": "游戏难度",
-        "desc": "新玩家首次加入服务器时是否可以选择靠近同时在线的朋友? 0 = 禁用, 1 = 始终, 2 = 仅在森林生物群落附近的朋友"
-      },
-      "CameraRestrictionMode": {
-        "group": "游戏难度",
-        "desc": "摄像机限制模式。0 = 玩家可以自由切换第一/第三人称视角, 1 = 仅限第一人称, 2 = 仅限第三人称"
-      },
-      "JarRefund": {
-        "group": "游戏难度",
-        "desc": "空玻璃罐返还比例。玩家消耗物品后返还空罐的百分比。可选值：0、5、10、20、30、40、50、60、70、80、90、100"
-      },
-      "MaxSpawnedZombies": {
-        "group": "性能相关",
-        "desc": "最大刷新丧尸数量。该设置覆盖整个地图, 整个地图上同时只能有这么多僵尸。更改此设置会对性能产生巨大影响"
-      },
-      "MaxSpawnedAnimals": {
-        "group": "性能相关",
-        "desc": "最大刷新动物数量。如果您的服务器上有大量玩家, 您可以增加这一限制来添加更多野生动物。动物不会像僵尸那样消耗大量 CPU。注意：这不会导致任意生成更多动物：生物群落产卵系统只会在给定区域内产卵一定数量的动物, 但如果您的玩家数量很多, 而且分布很分散, 那么您可能会遇到限制, 因此可以增加该限制"
-      },
-      "ServerMaxAllowedViewDistance": {
-        "group": "性能相关",
-        "desc": "客户端允许的最大视距（6 - 12）。对内存使用和性能影响较大"
-      },
-      "MaxQueuedMeshLayers": {
-        "group": "性能相关",
-        "desc": "网格生成过程中可排队的 Chunk 网格层的最大数量。减少该值会提高内存使用率, 但可能会增加 Chunk 生成时间"
-      },
-      "EnemySpawnMode": {
-        "group": "僵尸设置",
-        "desc": "启用/禁用敌人生成。"
-      },
-      "EnemyDifficulty": {
-        "group": "僵尸设置",
-        "desc": "僵尸强度。0 = 正常, 1 = 狂暴"
-      },
-      "ZombieFeralSense": {
-        "group": "僵尸设置",
-        "desc": "僵尸狂暴场景。0-3（关闭、日间、夜间、全部）"
-      },
-      "ZombieMove": {
-        "group": "僵尸设置",
-        "desc": "僵尸移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
-      },
-      "ZombieMoveNight": {
-        "group": "僵尸设置",
-        "desc": "僵尸夜间移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
-      },
-      "ZombieFeralMove": {
-        "group": "僵尸设置",
-        "desc": "僵尸狂暴移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
-      },
-      "ZombieBMMove": {
-        "group": "僵尸设置",
-        "desc": "僵尸BM移动。0-4（步行、慢跑、跑步、冲刺、噩梦）"
-      },
-      "AISmellMode": {
-        "group": "僵尸设置",
-        "desc": "AI 嗅觉模式。0-5（关闭、步行、慢跑、跑步、冲刺、噩梦）"
-      },
-      "BloodMoonFrequency": {
-        "group": "僵尸设置",
-        "desc": "血月频率。血月出现的频率（天数）, 设置为 0 表示没有血月"
-      },
-      "BloodMoonRange": {
-        "group": "僵尸设置",
-        "desc": "血月范围。实际血月日可以随机偏离上述设置多少天。将此值设为 0 时, 血月会在血月频率中指定的每 N 天准时出现"
-      },
-      "BloodMoonWarning": {
-        "group": "僵尸设置",
-        "desc": "血月警告。血月日红色天数开始的小时数。将其设置为-1 时, 红色将永不显示。"
-      },
-      "BloodMoonEnemyCount": {
-        "group": "僵尸设置",
-        "desc": "血月敌人数量。这是血月僵尸群中每个玩家在任何时候都能存活（同时产生）的僵尸数量, 但在多人游戏中, MaxSpawnedZombies 会覆盖此数量。还需注意的是, 游戏阶段会设置每方僵尸的最大数量。低游戏阶段值会导致僵尸数量低于血月敌人数量设置。更改此设置会对性能产生巨大影响。"
-      },
-      "LootAbundance": {
-        "group": "战利品",
-        "desc": "搜索物品丰富度百分比"
-      },
-      "LootRespawnDays": {
-        "group": "战利品",
-        "desc": "搜索物品刷新天数。经过多少天刷新可以搜索的物品资源"
-      },
-      "AirDropFrequency": {
-        "group": "战利品",
-        "desc": "空投频率。表示每多少个游戏小时就进行空投,0 = 从不空投"
-      },
-      "AirDropMarker": {
-        "group": "战利品",
-        "desc": "空投显示。设置是否为空投在地图/指南针上添加标记"
-      },
-      "PartySharedKillRange": {
-        "group": "多人游戏",
-        "desc": "组队共享杀戮范围。获得组队共享击杀奖励和任务组队击杀目标奖励所需的距离"
-      },
-      "PlayerKillingMode": {
-        "group": "多人游戏",
-        "desc": "玩家杀戮设置（0 = 无杀戮, 1 = 只对盟友造成伤害, 2 = 只对陌生人造成伤害, 3 = 对所有人造成伤害）"
-      },
-      "LandClaimCount": {
-        "group": "领地石选项",
-        "desc": "领地石数量。每位玩家允许的领地石上限"
-      },
-      "LandClaimSize": {
-        "group": "领地石选项",
-        "desc": "领地石保护范围。单位为方块"
-      },
-      "LandClaimDeadZone": {
-        "group": "领地石选项",
-        "desc": "领地石的相隔范围。领地石必须超过这个距离才能设置（除非您与对方是好友）"
-      },
-      "LandClaimExpiryTime": {
-        "group": "领地石选项",
-        "desc": "玩家离线领土石保护天数。玩家离线之后领地石有效的天数(真实时间)"
-      },
-      "LandClaimDecayMode": {
-        "group": "领地石选项",
-        "desc": "领地石保护的衰减模式。控制离线玩家的领地范围衰减模式。0 = 慢（线性）, 1 = 快（指数）, 2 = 无（全面保护, 直至到期）"
-      },
-      "LandClaimOnlineDurabilityModifier": {
-        "group": "领地石选项",
-        "desc": "玩家在线时领地石的保护倍数。表示玩家在线时领地石硬度倍数, 0表示无敌, 默认4倍"
-      },
-      "LandClaimOfflineDurabilityModifier": {
-        "group": "领地石选项",
-        "desc": "玩家离线时领地石的保护倍数。表示玩家离线时领地石硬度倍数, 0表示无敌, 默认4倍"
-      },
-      "LandClaimOfflineDelay": {
-        "group": "领地石选项",
-        "desc": "玩家退出游戏后, 领地石硬度从联机状态转为离线状态的分钟数。默认为 0"
-      },
-      "DynamicMeshEnabled": {
-        "group": "其他",
-        "desc": "是否启用动态网格系统"
-      },
-      "DynamicMeshLandClaimOnly": {
-        "group": "其他",
-        "desc": "动态网格系统是否只在玩家 LCB 区域有效"
-      },
-      "DynamicMeshLandClaimBuffer": {
-        "group": "其他",
-        "desc": "动态网格 LCB 块半径"
-      },
-      "DynamicMeshMaxItemCache": {
-        "group": "其他",
-        "desc": "动态网格最大项目缓存。可同时处理多少个项目, 数值越大, 使用的 RAM 越多"
-      },
-      "TwitchServerPermission": {
-        "group": "其他",
-        "desc": "在服务器上使用 twitch 集成所需的权限级别"
-      },
-      "TwitchBloodMoonAllowed": {
-        "group": "其他",
-        "desc": "是否允许 Twitch 血月。如果服务器允许在血月期间进行Twitch操作, 可能会在血月期间产生额外的僵尸, 从而导致服务器滞后"
-      },
-      "QuestProgressionDailyLimit": {
-        "group": "其他",
-        "desc": "每日任务进度限制。限制玩家每天可完成的有助于任务等级提升的任务数量。超过限制的任务仍可完成以获得奖励"
-      }
-    }
-  },
-  "console": {
-    "invalidCommand": {
-      "title": "无效命令",
-      "text": "请输入有效的命令。"
-    },
-    "send": "发送"
-  },
-  "banWhitelist": {
-    "ban": "黑名单",
-    "whitelist": "白名单",
-    "playerId": "玩家 ID",
-    "displayName": "显示名称",
-    "bannedUntil": "封禁至",
-    "reason": "封禁原因",
-    "addBan": "添加黑名单",
-    "editBan": "编辑黑名单",
-    "addWhitelist": "添加白名单",
-    "editWhitelist": "编辑白名单",
-    "tooltips": {
-      "playerId": "玩家的唯一标识，通常填写 SteamID64。",
-      "displayName": "在名单中显示的名称，便于识别目标玩家。",
-      "bannedUntil": "暂时封禁时填写到期时间；永久封禁请保持为空。",
-      "reason": "记录封禁或移除原因，方便后续审计和排查。"
-    }
-  },
-  "permission": {
-    "adminUser": "管理员用户",
-    "addCommandPermission": "新增命令权限",
-    "editCommandPermission": "编辑命令权限",
-    "command": "命令",
-    "commandPermission": "命令权限",
-    "description": "描述",
-    "addAdminUser": "新增管理员",
-    "editAdminUser": "编辑管理员",
-    "permissionLevel": "权限级别",
-    "tooltips": {
-      "playerId": "要授予权限的玩家唯一标识，通常填写 SteamID64。",
-      "displayName": "用于后台识别该账号的显示名称。",
-      "permissionLevel": "服务器权限等级，数值越接近上限，权限通常越高。",
-      "command": "这条规则对应的控制台命令名称。",
-      "description": "可选说明，用于记录这条命令权限的用途或限制。"
-    }
-  },
-  "gameEventLogs": {
-    "columns": {
-      "createdAt": "时间",
-      "eventType": "事件类型",
-      "playerName": "玩家",
-      "targetPlayerName": "目标玩家",
-      "entityType": "实体类型"
-    },
-    "eventTypes": {
-      "PlayerJoined": "玩家加入",
-      "PlayerLeft": "玩家离开",
-      "PlayerDied": "玩家死亡",
-      "PlayerKilledZombie": "击杀僵尸",
-      "PlayerKilledPlayer": "玩家击杀"
-    },
-    "filters": {
-      "eventType": "事件类型",
-      "timeRange": "时间范围"
-    },
-    "placeholders": {
-      "allEventTypes": "全部事件",
-      "timeRange": "选择时间范围"
     }
   }
 }

@@ -99,7 +99,8 @@
       "moreActions": "More Actions",
       "filters": "Filters",
       "collapse": "Collapse",
-      "expand": "Expand"
+      "expand": "Expand",
+      "edit": "Edit"
     },
     "myForm": {
       "pleaseInput": "Please Input",
@@ -1056,6 +1057,15 @@
       "messages": {
         "resetSuccess": "Backend default settings have been restored.",
         "saveSuccess": "Chat settings have been updated."
+      },
+      "preview": {
+        "title": "Effect Preview",
+        "sampleMessage": "This is a sample message.",
+        "defaultSender": "Server",
+        "channels": {
+          "global": "Global",
+          "whisper": "Whisper"
+        }
       }
     },
     "coloredChat": {
@@ -1398,388 +1408,388 @@
       "hints": {
         "onlinePlayers": "Only online players are listed"
       }
-    }
-  },
-  "backup": {
-    "tabs": {
-      "config": "Config",
-      "files": "Files"
     },
-    "settings": {
-      "fields": {
-        "isEnabled": "Enable Backup Feature",
-        "timeZoneId": "Cron Time Zone",
-        "historyRetentionDays": "Run History Retention (Days)"
+    "backup": {
+      "tabs": {
+        "config": "Config",
+        "files": "Files"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Backup Feature",
+          "timeZoneId": "Cron Time Zone",
+          "historyRetentionDays": "Run History Retention (Days)"
+        },
+        "tooltips": {
+          "timeZoneId": "IANA time zone id (e.g. Asia/Shanghai, UTC). Leave empty to use the server's local time zone. Applies to all backup cron schedules."
+        },
+        "actions": {
+          "save": "Save",
+          "reset": "Reset"
+        },
+        "messages": {
+          "saveSuccess": "Backup settings saved.",
+          "resetSuccess": "Backup settings restored to defaults."
+        }
       },
       "tooltips": {
-        "timeZoneId": "IANA time zone id (e.g. Asia/Shanghai, UTC). Leave empty to use the server's local time zone. Applies to all backup cron schedules."
+        "cronExpression": "Standard 5-field cron expression evaluated in the configured time zone.",
+        "destinationRoot": "Absolute or relative folder where backup outputs are written.",
+        "retentionCount": "Maximum kept backups. Use 0 to keep none, -1 to disable pruning."
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "Enable World Backup",
+          "cronExpression": "Cron Expression",
+          "destinationRoot": "Destination Root",
+          "compressToZip": "Compress to Zip",
+          "retentionCount": "Retention Count",
+          "saveWorldBeforeBackup": "Save World Before Backup"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "Run a `saveworld` console command and wait for completion before snapshotting."
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "Enable Database Backup",
+          "cronExpression": "Cron Expression",
+          "destinationRoot": "Destination Root",
+          "compressToZip": "Compress to Zip",
+          "retentionCount": "Retention Count"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "Enable Server Config Backup",
+          "cronExpression": "Cron Expression",
+          "destinationRoot": "Destination Root",
+          "compressToZip": "Compress to Zip",
+          "retentionCount": "Retention Count"
+        }
       },
       "actions": {
-        "save": "Save",
-        "reset": "Reset"
-      },
-      "messages": {
-        "saveSuccess": "Backup settings saved.",
-        "resetSuccess": "Backup settings restored to defaults."
-      }
-    },
-    "tooltips": {
-      "cronExpression": "Standard 5-field cron expression evaluated in the configured time zone.",
-      "destinationRoot": "Absolute or relative folder where backup outputs are written.",
-      "retentionCount": "Maximum kept backups. Use 0 to keep none, -1 to disable pruning."
-    },
-    "world": {
-      "fields": {
-        "isEnabled": "Enable World Backup",
-        "cronExpression": "Cron Expression",
-        "destinationRoot": "Destination Root",
-        "compressToZip": "Compress to Zip",
-        "retentionCount": "Retention Count",
-        "saveWorldBeforeBackup": "Save World Before Backup"
-      },
-      "tooltips": {
-        "saveWorldBeforeBackup": "Run a `saveworld` console command and wait for completion before snapshotting."
-      }
-    },
-    "database": {
-      "fields": {
-        "isEnabled": "Enable Database Backup",
-        "cronExpression": "Cron Expression",
-        "destinationRoot": "Destination Root",
-        "compressToZip": "Compress to Zip",
-        "retentionCount": "Retention Count"
-      }
-    },
-    "config": {
-      "fields": {
-        "isEnabled": "Enable Server Config Backup",
-        "cronExpression": "Cron Expression",
-        "destinationRoot": "Destination Root",
-        "compressToZip": "Compress to Zip",
-        "retentionCount": "Retention Count"
-      }
-    },
-    "actions": {
-      "runNow": "Run Now",
-      "runNowConfirm": "Trigger this backup immediately?",
-      "runNowReason": "Reason (optional)",
-      "runNowSuccess": "Backup finished successfully.",
-      "runNowFailed": "Backup failed.",
-      "download": "Download",
-      "delete": "Delete"
-    },
-    "files": {
-      "columns": {
-        "fileName": "File Name",
-        "size": "Size",
-        "createdAt": "Created At"
-      },
-      "messages": {
-        "confirmDelete": "Delete backup file '{name}'? This cannot be undone.",
-        "deleteSuccess": "Backup file deleted.",
-        "deleteError": "Failed to delete backup file. Please try again.",
-        "downloadError": "Failed to download backup file. Please try again.",
-        "directoryDownloadUnsupported": "Folder downloads are not supported. Enable zip compression to download as a single archive."
-      }
-    },
-    "taskTypes": {
-      "world": "World Backup",
-      "database": "Database Backup",
-      "serverConfig": "Server Config Backup"
-    }
-  },
-  "scheduler": {
-    "tabs": {
-      "settings": "Settings",
-      "tasks": "Tasks",
-      "history": "Run History"
-    },
-    "triggerSources": {
-      "cron": "Cron",
-      "manual": "Manual",
-      "system": "System"
-    },
-    "settings": {
-      "fields": {
-        "isEnabled": "Enable Scheduler",
-        "defaultTimeZoneId": "Default Time Zone",
-        "defaultAllowConcurrentExecution": "Allow Concurrent Execution by Default",
-        "historyRetentionDays": "History Retention Days"
-      },
-      "tooltips": {
-        "defaultTimeZoneId": "Use a platform time zone ID such as UTC, Asia/Shanghai, or Pacific Standard Time."
-      },
-      "actions": {
-        "save": "Save Scheduler Settings",
-        "reset": "Reset Defaults"
-      },
-      "messages": {
-        "saveSuccess": "Scheduler settings saved successfully.",
-        "resetSuccess": "Scheduler settings were reset to defaults."
-      }
-    },
-    "tasks": {
-      "columns": {
-        "name": "Name",
-        "isEnabled": "Enabled",
-        "cronExpression": "Cron Expression",
-        "timeZoneId": "Time Zone",
-        "allowConcurrentExecution": "Concurrent",
-        "lastRunAt": "Last Run",
-        "nextRunAt": "Next Run",
-        "lastStatus": "Last Status",
-        "updatedAt": "Updated At"
-      },
-      "filters": {
-        "isEnabled": "Enabled"
-      },
-      "placeholders": {
-        "timeZoneId": "UTC",
-        "cronExpression": "0 */5 * * * *"
-      },
-      "actions": {
-        "add": "Add Task",
-        "edit": "Edit Task",
-        "run": "Run Now",
+        "runNow": "Run Now",
+        "runNowConfirm": "Trigger this backup immediately?",
+        "runNowReason": "Reason (optional)",
+        "runNowSuccess": "Backup finished successfully.",
+        "runNowFailed": "Backup failed.",
+        "download": "Download",
         "delete": "Delete"
       },
-      "status": {
-        "success": "Success",
-        "failed": "Failed",
-        "skipped": "Skipped",
-        "running": "Running"
+      "files": {
+        "columns": {
+          "fileName": "File Name",
+          "size": "Size",
+          "createdAt": "Created At"
+        },
+        "messages": {
+          "confirmDelete": "Delete backup file '{name}'? This cannot be undone.",
+          "deleteSuccess": "Backup file deleted.",
+          "deleteError": "Failed to delete backup file. Please try again.",
+          "downloadError": "Failed to download backup file. Please try again.",
+          "directoryDownloadUnsupported": "Folder downloads are not supported. Enable zip compression to download as a single archive."
+        }
       },
-      "hints": {
-        "defaultSettings": "Default time zone: {timeZone}."
+      "taskTypes": {
+        "world": "World Backup",
+        "database": "Database Backup",
+        "serverConfig": "Server Config Backup"
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "Settings",
+        "tasks": "Tasks",
+        "history": "Run History"
       },
-      "messages": {
-        "runConfirm": "Run task {name} immediately?",
-        "deleteSuccess": "Scheduler task deleted successfully."
+      "triggerSources": {
+        "cron": "Cron",
+        "manual": "Manual",
+        "system": "System"
       },
-      "dialog": {
-        "createTitle": "Create Scheduler Task",
-        "editTitle": "Edit Scheduler Task",
+      "settings": {
         "fields": {
+          "isEnabled": "Enable Scheduler",
+          "defaultTimeZoneId": "Default Time Zone",
+          "defaultAllowConcurrentExecution": "Allow Concurrent Execution by Default",
+          "historyRetentionDays": "History Retention Days"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "Use a platform time zone ID such as UTC, Asia/Shanghai, or Pacific Standard Time."
+        },
+        "actions": {
+          "save": "Save Scheduler Settings",
+          "reset": "Reset Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Scheduler settings saved successfully.",
+          "resetSuccess": "Scheduler settings were reset to defaults."
+        }
+      },
+      "tasks": {
+        "columns": {
           "name": "Name",
           "isEnabled": "Enabled",
           "cronExpression": "Cron Expression",
           "timeZoneId": "Time Zone",
-          "allowConcurrentExecution": "Concurrent Execution",
-          "executeOnMainThread": "Execute on Main Thread",
-          "requireGameStartDone": "Require Game Started",
-          "captureOutput": "Capture Output",
-          "commands": "Console Commands",
-          "description": "Description"
+          "allowConcurrentExecution": "Concurrent",
+          "lastRunAt": "Last Run",
+          "nextRunAt": "Next Run",
+          "lastStatus": "Last Status",
+          "updatedAt": "Updated At"
         },
-        "tooltips": {
-          "cronExpression": "Use a cron expression with second precision so the backend can schedule the task accurately.",
-          "timeZoneId": "Leave this as UTC unless the schedule must follow a specific server or regional time zone."
+        "filters": {
+          "isEnabled": "Enabled"
         },
         "placeholders": {
-          "command": "Enter a console command, e.g. say Hello"
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
         },
         "actions": {
-          "addCommand": "Add Command",
-          "removeCommand": "Remove Command"
+          "add": "Add Task",
+          "edit": "Edit Task",
+          "run": "Run Now",
+          "delete": "Delete"
+        },
+        "status": {
+          "success": "Success",
+          "failed": "Failed",
+          "skipped": "Skipped",
+          "running": "Running"
+        },
+        "hints": {
+          "defaultSettings": "Default time zone: {timeZone}."
         },
         "messages": {
-          "noCommands": "Please add at least one console command.",
-          "saveSuccess": "Scheduler task saved successfully."
+          "runConfirm": "Run task {name} immediately?",
+          "deleteSuccess": "Scheduler task deleted successfully."
+        },
+        "dialog": {
+          "createTitle": "Create Scheduler Task",
+          "editTitle": "Edit Scheduler Task",
+          "fields": {
+            "name": "Name",
+            "isEnabled": "Enabled",
+            "cronExpression": "Cron Expression",
+            "timeZoneId": "Time Zone",
+            "allowConcurrentExecution": "Concurrent Execution",
+            "executeOnMainThread": "Execute on Main Thread",
+            "requireGameStartDone": "Require Game Started",
+            "captureOutput": "Capture Output",
+            "commands": "Console Commands",
+            "description": "Description"
+          },
+          "tooltips": {
+            "cronExpression": "Use a cron expression with second precision so the backend can schedule the task accurately.",
+            "timeZoneId": "Leave this as UTC unless the schedule must follow a specific server or regional time zone."
+          },
+          "placeholders": {
+            "command": "Enter a console command, e.g. say Hello"
+          },
+          "actions": {
+            "addCommand": "Add Command",
+            "removeCommand": "Remove Command"
+          },
+          "messages": {
+            "noCommands": "Please add at least one console command.",
+            "saveSuccess": "Scheduler task saved successfully."
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "Task Name",
+          "taskType": "Task Type",
+          "triggerSource": "Trigger",
+          "startedAt": "Started At",
+          "endedAt": "Ended At",
+          "succeeded": "Succeeded",
+          "durationMs": "Duration",
+          "summary": "Summary",
+          "errorMessage": "Error",
+          "operatorName": "Operator",
+          "sourceIp": "Source IP"
+        },
+        "filters": {
+          "taskType": "Task Type",
+          "triggerSource": "Trigger Source",
+          "succeeded": "Result",
+          "timeRange": "Time Range"
+        },
+        "placeholders": {
+          "timeRange": "Select a time range"
+        },
+        "actions": {
+          "viewDetails": "View Details"
+        },
+        "detailDialog": {
+          "title": "Run Details",
+          "titleWithName": "Run Details - {name}",
+          "details": "Details"
         }
       }
     },
-    "history": {
+    "restart": {
+      "tabs": {
+        "settings": "Settings",
+        "run": "Manual Run"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Scheduled Restart",
+          "cronExpression": "Cron Expression",
+          "timeZoneId": "Time Zone",
+          "warningLeadSeconds": "Warning Lead Time (Seconds)",
+          "warningMessage": "Warning Message",
+          "saveWorldBeforeRestart": "Save World Before Restart",
+          "restartMode": "Restart Mode",
+          "restartCommand": "Custom Restart Command",
+          "historyRetentionDays": "History Retention Days"
+        },
+        "tooltips": {
+          "timeZoneId": "Use a platform time zone ID such as UTC or Asia/Shanghai.",
+          "warningMessage": "Supports the {minutes} placeholder, replaced with the remaining wait time in minutes.",
+          "restartCommand": "Optional console command to initiate the restart. Overrides the built-in restart pipeline when set.",
+          "restartMode": "Graceful: flush pending operations before shutting down. Force: immediate shutdown."
+        },
+        "restartModes": {
+          "graceful": "Graceful",
+          "force": "Force"
+        },
+        "actions": {
+          "save": "Save Restart Settings"
+        },
+        "messages": {
+          "saveSuccess": "Restart settings saved."
+        }
+      },
+      "run": {
+        "description": "Trigger an immediate server restart. Override fields are optional and fall back to configured defaults if left blank.",
+        "fields": {
+          "reason": "Reason",
+          "warningLeadSecondsOverride": "Warning Lead Time Override (Seconds)",
+          "restartModeOverride": "Restart Mode Override"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "Leave empty to use the configured default.",
+          "restartModeOverride": "Leave empty to use the configured default."
+        },
+        "restartModeOptions": {
+          "graceful": "Graceful",
+          "force": "Force"
+        },
+        "actions": {
+          "run": "Run Now"
+        },
+        "messages": {
+          "runConfirm": "Trigger an immediate server restart? Connected players may be disconnected.",
+          "runSuccess": "Server restart has been requested.",
+          "runFailed": "Restart request failed."
+        },
+        "result": {
+          "title": "Last Run Result",
+          "succeeded": "Succeeded",
+          "failed": "Failed",
+          "summary": "Summary",
+          "durationMs": "Duration",
+          "errorMessage": "Error Message",
+          "startedAt": "Started At",
+          "endedAt": "Ended At"
+        }
+      }
+    },
+    "modManagement": {
       "columns": {
-        "taskName": "Task Name",
-        "taskType": "Task Type",
-        "triggerSource": "Trigger",
-        "startedAt": "Started At",
-        "endedAt": "Ended At",
-        "succeeded": "Succeeded",
-        "durationMs": "Duration",
-        "summary": "Summary",
-        "errorMessage": "Error",
-        "operatorName": "Operator",
-        "sourceIp": "Source IP"
+        "displayName": "Mod",
+        "author": "Author",
+        "version": "Version",
+        "website": "Website",
+        "loaded": "Loaded",
+        "uninstalled": "Uninstalled",
+        "actions": "Actions"
+      },
+      "status": {
+        "loaded": "Loaded",
+        "unloaded": "Unloaded",
+        "installed": "Installed",
+        "uninstalled": "Uninstalled"
+      },
+      "actions": {
+        "install": "Install",
+        "uninstall": "Uninstall"
+      },
+      "toast": {
+        "title": "Mod Management",
+        "toggleSuccess": "Mod status refreshed."
+      }
+    },
+    "console": {
+      "invalidCommand": {
+        "title": "Invalid Command",
+        "text": "Please enter a valid command."
+      },
+      "send": "Send"
+    },
+    "banWhitelist": {
+      "ban": "Ban",
+      "whitelist": "Whitelist",
+      "playerId": "Player ID",
+      "displayName": "Display Name",
+      "bannedUntil": "Banned Until",
+      "reason": "Reason",
+      "addBan": "Add Ban",
+      "editBan": "Edit Ban",
+      "addWhitelist": "Add Whitelist",
+      "editWhitelist": "Edit Whitelist",
+      "tooltips": {
+        "playerId": "Unique player identifier, usually a SteamID64.",
+        "displayName": "The name shown in the list so operators can identify the target quickly.",
+        "bannedUntil": "Leave this empty for a permanent ban; otherwise set the expiry time.",
+        "reason": "Record why the player was banned or removed for later audit and troubleshooting."
+      }
+    },
+    "permission": {
+      "adminUser": "Admin User",
+      "addAdminUser": "Add Admin User",
+      "editAdminUser": "Edit Admin User",
+      "addCommandPermission": "Add Command Permission",
+      "editCommandPermission": "Edit Command Permission",
+      "commandPermission": "Command Permission",
+      "command": "Command",
+      "description": "Description",
+      "permissionLevel": "Permission Level",
+      "tooltips": {
+        "playerId": "Unique player identifier to grant permissions to, usually a SteamID64.",
+        "displayName": "Display name used to recognize this account in the admin panel.",
+        "permissionLevel": "Server permission level. Higher values usually mean more privileges.",
+        "command": "The console command name this rule applies to.",
+        "description": "Optional note describing the purpose or constraint of this command rule."
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "Time",
+        "eventType": "Event Type",
+        "playerName": "Player",
+        "targetPlayerName": "Target Player",
+        "entityType": "Entity Type"
+      },
+      "eventTypes": {
+        "PlayerJoined": "Player Joined",
+        "PlayerLeft": "Player Left",
+        "PlayerDied": "Player Died",
+        "PlayerKilledZombie": "Killed Zombie",
+        "PlayerKilledPlayer": "Player Kill"
       },
       "filters": {
-        "taskType": "Task Type",
-        "triggerSource": "Trigger Source",
-        "succeeded": "Result",
+        "eventType": "Event Type",
         "timeRange": "Time Range"
       },
       "placeholders": {
-        "timeRange": "Select a time range"
-      },
-      "actions": {
-        "viewDetails": "View Details"
-      },
-      "detailDialog": {
-        "title": "Run Details",
-        "titleWithName": "Run Details - {name}",
-        "details": "Details"
+        "allEventTypes": "All Events",
+        "timeRange": "Select time range"
       }
-    }
-  },
-  "restart": {
-    "tabs": {
-      "settings": "Settings",
-      "run": "Manual Run"
-    },
-    "settings": {
-      "fields": {
-        "isEnabled": "Enable Scheduled Restart",
-        "cronExpression": "Cron Expression",
-        "timeZoneId": "Time Zone",
-        "warningLeadSeconds": "Warning Lead Time (Seconds)",
-        "warningMessage": "Warning Message",
-        "saveWorldBeforeRestart": "Save World Before Restart",
-        "restartMode": "Restart Mode",
-        "restartCommand": "Custom Restart Command",
-        "historyRetentionDays": "History Retention Days"
-      },
-      "tooltips": {
-        "timeZoneId": "Use a platform time zone ID such as UTC or Asia/Shanghai.",
-        "warningMessage": "Supports the {minutes} placeholder, replaced with the remaining wait time in minutes.",
-        "restartCommand": "Optional console command to initiate the restart. Overrides the built-in restart pipeline when set.",
-        "restartMode": "Graceful: flush pending operations before shutting down. Force: immediate shutdown."
-      },
-      "restartModes": {
-        "graceful": "Graceful",
-        "force": "Force"
-      },
-      "actions": {
-        "save": "Save Restart Settings"
-      },
-      "messages": {
-        "saveSuccess": "Restart settings saved."
-      }
-    },
-    "run": {
-      "description": "Trigger an immediate server restart. Override fields are optional and fall back to configured defaults if left blank.",
-      "fields": {
-        "reason": "Reason",
-        "warningLeadSecondsOverride": "Warning Lead Time Override (Seconds)",
-        "restartModeOverride": "Restart Mode Override"
-      },
-      "tooltips": {
-        "warningLeadSecondsOverride": "Leave empty to use the configured default.",
-        "restartModeOverride": "Leave empty to use the configured default."
-      },
-      "restartModeOptions": {
-        "graceful": "Graceful",
-        "force": "Force"
-      },
-      "actions": {
-        "run": "Run Now"
-      },
-      "messages": {
-        "runConfirm": "Trigger an immediate server restart? Connected players may be disconnected.",
-        "runSuccess": "Server restart has been requested.",
-        "runFailed": "Restart request failed."
-      },
-      "result": {
-        "title": "Last Run Result",
-        "succeeded": "Succeeded",
-        "failed": "Failed",
-        "summary": "Summary",
-        "durationMs": "Duration",
-        "errorMessage": "Error Message",
-        "startedAt": "Started At",
-        "endedAt": "Ended At"
-      }
-    }
-  },
-  "modManagement": {
-    "columns": {
-      "displayName": "Mod",
-      "author": "Author",
-      "version": "Version",
-      "website": "Website",
-      "loaded": "Loaded",
-      "uninstalled": "Uninstalled",
-      "actions": "Actions"
-    },
-    "status": {
-      "loaded": "Loaded",
-      "unloaded": "Unloaded",
-      "installed": "Installed",
-      "uninstalled": "Uninstalled"
-    },
-    "actions": {
-      "install": "Install",
-      "uninstall": "Uninstall"
-    },
-    "toast": {
-      "title": "Mod Management",
-      "toggleSuccess": "Mod status refreshed."
-    }
-  },
-  "console": {
-    "invalidCommand": {
-      "title": "Invalid Command",
-      "text": "Please enter a valid command."
-    },
-    "send": "Send"
-  },
-  "banWhitelist": {
-    "ban": "Ban",
-    "whitelist": "Whitelist",
-    "playerId": "Player ID",
-    "displayName": "Display Name",
-    "bannedUntil": "Banned Until",
-    "reason": "Reason",
-    "addBan": "Add Ban",
-    "editBan": "Edit Ban",
-    "addWhitelist": "Add Whitelist",
-    "editWhitelist": "Edit Whitelist",
-    "tooltips": {
-      "playerId": "Unique player identifier, usually a SteamID64.",
-      "displayName": "The name shown in the list so operators can identify the target quickly.",
-      "bannedUntil": "Leave this empty for a permanent ban; otherwise set the expiry time.",
-      "reason": "Record why the player was banned or removed for later audit and troubleshooting."
-    }
-  },
-  "permission": {
-    "adminUser": "Admin User",
-    "addAdminUser": "Add Admin User",
-    "editAdminUser": "Edit Admin User",
-    "addCommandPermission": "Add Command Permission",
-    "editCommandPermission": "Edit Command Permission",
-    "commandPermission": "Command Permission",
-    "command": "Command",
-    "description": "Description",
-    "permissionLevel": "Permission Level",
-    "tooltips": {
-      "playerId": "Unique player identifier to grant permissions to, usually a SteamID64.",
-      "displayName": "Display name used to recognize this account in the admin panel.",
-      "permissionLevel": "Server permission level. Higher values usually mean more privileges.",
-      "command": "The console command name this rule applies to.",
-      "description": "Optional note describing the purpose or constraint of this command rule."
-    }
-  },
-  "gameEventLogs": {
-    "columns": {
-      "createdAt": "Time",
-      "eventType": "Event Type",
-      "playerName": "Player",
-      "targetPlayerName": "Target Player",
-      "entityType": "Entity Type"
-    },
-    "eventTypes": {
-      "PlayerJoined": "Player Joined",
-      "PlayerLeft": "Player Left",
-      "PlayerDied": "Player Died",
-      "PlayerKilledZombie": "Killed Zombie",
-      "PlayerKilledPlayer": "Player Kill"
-    },
-    "filters": {
-      "eventType": "Event Type",
-      "timeRange": "Time Range"
-    },
-    "placeholders": {
-      "allEventTypes": "All Events",
-      "timeRange": "Select time range"
     }
   }
 }
