@@ -26,6 +26,15 @@ interface FormModel {
   dailyStreakBonusPercent: number;
   dailyStreakMaxDays: number;
   shopEnabled: boolean;
+  balCommandName: string;
+  balCommandAliases: string;
+  payCommandName: string;
+  dailyCommandName: string;
+  moneyTopCommandName: string;
+  moneyTopCommandAliases: string;
+  shopCommandName: string;
+  buyCommandName: string;
+  redeemCommandName: string;
 }
 
 interface FormExpose {
@@ -57,6 +66,15 @@ function buildDefaults(): FormModel {
     dailyStreakBonusPercent: 10,
     dailyStreakMaxDays: 7,
     shopEnabled: false,
+    balCommandName: 'bal',
+    balCommandAliases: 'balance, money',
+    payCommandName: 'pay',
+    dailyCommandName: 'daily',
+    moneyTopCommandName: 'moneytop',
+    moneyTopCommandAliases: 'baltop, ecotop',
+    shopCommandName: 'shop',
+    buyCommandName: 'buy',
+    redeemCommandName: 'redeem',
   };
 }
 
@@ -79,6 +97,15 @@ const schema = v.object({
   dailyStreakBonusPercent: v.pipe(v.number(), v.minValue(0)),
   dailyStreakMaxDays: v.pipe(v.number(), v.minValue(1)),
   shopEnabled: v.boolean(),
+  balCommandName: v.pipe(v.string(), v.minLength(1)),
+  balCommandAliases: v.string(),
+  payCommandName: v.pipe(v.string(), v.minLength(1)),
+  dailyCommandName: v.pipe(v.string(), v.minLength(1)),
+  moneyTopCommandName: v.pipe(v.string(), v.minLength(1)),
+  moneyTopCommandAliases: v.string(),
+  shopCommandName: v.pipe(v.string(), v.minLength(1)),
+  buyCommandName: v.pipe(v.string(), v.minLength(1)),
+  redeemCommandName: v.pipe(v.string(), v.minLength(1)),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -197,6 +224,67 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
+const aliasesHelp = computed(() => t('views.economy.settings.commands.aliasesHelp'));
+
+const commandFields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'balCommandName',
+    label: t('views.economy.settings.commands.fields.balCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'balCommandAliases',
+    label: t('views.economy.settings.commands.fields.balCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'payCommandName',
+    label: t('views.economy.settings.commands.fields.payCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'dailyCommandName',
+    label: t('views.economy.settings.commands.fields.dailyCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'moneyTopCommandName',
+    label: t('views.economy.settings.commands.fields.moneyTopCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'moneyTopCommandAliases',
+    label: t('views.economy.settings.commands.fields.moneyTopCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'shopCommandName',
+    label: t('views.economy.settings.commands.fields.shopCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'buyCommandName',
+    label: t('views.economy.settings.commands.fields.buyCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'redeemCommandName',
+    label: t('views.economy.settings.commands.fields.redeemCommandName'),
+    el: 'el-input',
+    span: { xs: 24, md: 12 },
+  },
+]);
+
 const previewItems = computed(() => {
   const name = form.currencyName || 'Coin';
   const symbol = form.currencySymbol || 'C';
@@ -243,6 +331,7 @@ const previewItems = computed(() => {
 
 function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
   const source = data ?? buildDefaults();
+  const parseAliases = (arr: string[] | undefined) => (arr ?? []).join(', ');
   return {
     isEnabled: source.isEnabled,
     currencyName: source.currencyName || 'Coin',
@@ -259,6 +348,15 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     dailyStreakBonusPercent: source.dailyStreakBonusPercent ?? 10,
     dailyStreakMaxDays: source.dailyStreakMaxDays ?? 7,
     shopEnabled: source.shopEnabled ?? false,
+    balCommandName: source.balCommandName || 'bal',
+    balCommandAliases: parseAliases(source.balCommandAliases),
+    payCommandName: source.payCommandName || 'pay',
+    dailyCommandName: source.dailyCommandName || 'daily',
+    moneyTopCommandName: source.moneyTopCommandName || 'moneytop',
+    moneyTopCommandAliases: parseAliases(source.moneyTopCommandAliases),
+    shopCommandName: source.shopCommandName || 'shop',
+    buyCommandName: source.buyCommandName || 'buy',
+    redeemCommandName: source.redeemCommandName || 'redeem',
   };
 }
 
@@ -278,6 +376,15 @@ function applyFormValues(values: FormModel): void {
   form.dailyStreakBonusPercent = values.dailyStreakBonusPercent;
   form.dailyStreakMaxDays = values.dailyStreakMaxDays;
   form.shopEnabled = values.shopEnabled;
+  form.balCommandName = values.balCommandName;
+  form.balCommandAliases = values.balCommandAliases;
+  form.payCommandName = values.payCommandName;
+  form.dailyCommandName = values.dailyCommandName;
+  form.moneyTopCommandName = values.moneyTopCommandName;
+  form.moneyTopCommandAliases = values.moneyTopCommandAliases;
+  form.shopCommandName = values.shopCommandName;
+  form.buyCommandName = values.buyCommandName;
+  form.redeemCommandName = values.redeemCommandName;
 }
 
 async function loadSettings() {
@@ -322,6 +429,7 @@ async function onReset() {
 }
 
 function toPayload(values: FormModel): API.Economy.Settings {
+  const parseAliases = (s: string) => s.split(',').map(x => x.trim()).filter(Boolean);
   return {
     isEnabled: values.isEnabled,
     currencyName: values.currencyName,
@@ -338,6 +446,15 @@ function toPayload(values: FormModel): API.Economy.Settings {
     dailyStreakBonusPercent: Number(values.dailyStreakBonusPercent ?? 10),
     dailyStreakMaxDays: Number(values.dailyStreakMaxDays ?? 7),
     shopEnabled: values.shopEnabled,
+    balCommandName: values.balCommandName,
+    balCommandAliases: parseAliases(values.balCommandAliases),
+    payCommandName: values.payCommandName,
+    dailyCommandName: values.dailyCommandName,
+    moneyTopCommandName: values.moneyTopCommandName,
+    moneyTopCommandAliases: parseAliases(values.moneyTopCommandAliases),
+    shopCommandName: values.shopCommandName,
+    buyCommandName: values.buyCommandName,
+    redeemCommandName: values.redeemCommandName,
   };
 }
 
@@ -407,14 +524,28 @@ onMounted(() => {
         />
       </div>
 
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+        <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
+          {{ t('views.economy.settings.commands.sectionTitle') }}
+        </h3>
+        <MyForm
+          v-model="form"
+          :fields="commandFields"
+          :rules="rules"
+          label-position="top"
+          label-width="auto"
+          :gutter="16"
+        />
+      </div>
+
       <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }" class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
         <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
           {{ t('views.economy.settings.preview.title') }}
         </h3>
-        <div class="rounded-3 bg-gray-950 px-4 py-3 font-mono text-sm flex flex-col gap-1 leading-6">
-          <div v-for="item in previewItems" :key="item.key" class="flex items-center gap-6">
-            <span :class="item.colorClass" class="w-40 shrink-0">{{ item.value }}</span>
-            <span class="text-gray-500 text-xs">{{ item.label }}</span>
+        <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
+          <div v-for="item in previewItems" :key="item.key" class="flex gap-6 items-center">
+            <span :class="item.colorClass" class="shrink-0 w-40">{{ item.value }}</span>
+            <span class="text-xs text-gray-500">{{ item.label }}</span>
           </div>
         </div>
       </div>

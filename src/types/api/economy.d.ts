@@ -21,6 +21,15 @@ declare namespace API {
       dailyStreakBonusPercent: number;
       dailyStreakMaxDays: number;
       shopEnabled: boolean;
+      balCommandName: string;
+      balCommandAliases: string[];
+      payCommandName: string;
+      dailyCommandName: string;
+      moneyTopCommandName: string;
+      moneyTopCommandAliases: string[];
+      shopCommandName: string;
+      buyCommandName: string;
+      redeemCommandName: string;
     }
 
     interface Account {

@@ -1176,6 +1176,21 @@
           "dailyStreakMaxDays": "Streak Max Days",
           "shopEnabled": "Enable Shop"
         },
+        "commands": {
+          "sectionTitle": "Chat Command Names",
+          "aliasesHelp": "Comma-separated aliases, e.g. balance, money",
+          "fields": {
+            "balCommandName": "Balance Command",
+            "balCommandAliases": "Balance Aliases",
+            "payCommandName": "Transfer Command",
+            "dailyCommandName": "Daily Reward Command",
+            "moneyTopCommandName": "Leaderboard Command",
+            "moneyTopCommandAliases": "Leaderboard Aliases",
+            "shopCommandName": "Shop Command",
+            "buyCommandName": "Buy Command",
+            "redeemCommandName": "Redeem Command"
+          }
+        },
         "actions": {
           "save": "Save Economy Settings",
           "reset": "Reset Defaults"
