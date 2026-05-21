@@ -193,9 +193,57 @@ const routes: RouteRecordRaw[] = [
         name: 'Teleport',
         path: 'teleport',
         component: () => import('../views/Teleport/index.vue'),
+        redirect: { name: 'TeleportTools' },
         meta: {
           title: () => t('menus.teleport'),
           icon: markIcon(() => import('~icons/mdi/map-marker-right')),
+        },
+        children: [
+          {
+            name: 'TeleportTools',
+            path: 'tools',
+            component: () => import('../views/Teleport/Tools/index.vue'),
+            meta: {
+              title: () => t('menus.teleportTools'),
+              icon: markIcon(() => import('~icons/mdi/map-marker-right')),
+            },
+          },
+          {
+            name: 'TeleportSettings',
+            path: 'settings',
+            component: () => import('../views/Teleport/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.teleportSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+          {
+            name: 'TeleportCities',
+            path: 'cities',
+            component: () => import('../views/Teleport/Cities/index.vue'),
+            meta: {
+              title: () => t('menus.teleportCities'),
+              icon: markIcon(() => import('~icons/mdi/city')),
+            },
+          },
+          {
+            name: 'TeleportHomes',
+            path: 'homes',
+            component: () => import('../views/Teleport/Homes/index.vue'),
+            meta: {
+              title: () => t('menus.teleportHomes'),
+              icon: markIcon(() => import('~icons/mdi/home-account')),
+            },
+          },
+        ],
+      },
+      {
+        name: 'GameNotice',
+        path: 'game-notice',
+        component: () => import('../views/GameNotice/index.vue'),
+        meta: {
+          title: () => t('menus.gameNotice'),
+          icon: markIcon(() => import('~icons/mdi/bullhorn-outline')),
         },
       },
       {

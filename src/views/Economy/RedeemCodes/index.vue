@@ -38,6 +38,7 @@ const isSubmitting = ref(false);
 const viewingCode = ref<API.Economy.RedeemCode | null>(null);
 const redemptions = ref<API.Economy.CodeRedemption[]>([]);
 const isLoadingRedemptions = ref(false);
+const commandRewards = ref<string[]>([]);
 
 function buildDefaults(): FormModel {
   return {
@@ -191,8 +192,17 @@ function formatTimestamp(value: string | null | undefined): string {
 
 function openAdd() {
   Object.assign(form, buildDefaults());
+  commandRewards.value = [];
   createDialogRef.value?.open();
   nextTick(() => formRef.value?.clearValidate());
+}
+
+function addCommandReward() {
+  commandRewards.value.push('');
+}
+
+function removeCommandReward(index: number) {
+  commandRewards.value.splice(index, 1);
 }
 
 async function onConfirm(): Promise<boolean | void> {
@@ -203,12 +213,19 @@ async function onConfirm(): Promise<boolean | void> {
 
   isSubmitting.value = true;
   try {
+    const filteredCommands = commandRewards.value.map(c => c.trim()).filter(c => c.length > 0);
+    if (form.amount === 0 && filteredCommands.length === 0) {
+      toast({ type: 'warning', text: t('views.economy.redeemCodes.form.messages.noReward') });
+      return false;
+    }
+
     await api.createRedeemCode({
       code: form.code.trim(),
       description: form.description.trim() || null,
       amount: Number(form.amount),
       maxUses: Number(form.maxUses),
       expiresAt: form.expiresAt || null,
+      commandRewards: filteredCommands.length > 0 ? filteredCommands : null,
     });
     toast({ type: 'success', text: t('views.economy.redeemCodes.messages.createSuccess') });
     tableRef.value?.reload();
@@ -317,6 +334,44 @@ async function onViewRedemptions(row: API.Economy.RedeemCode) {
         label-width="auto"
         :gutter="16"
       />
+
+      <!-- Command rewards list — managed outside MyForm because it is a dynamic array -->
+      <div class="mt-4 px-1">
+        <div class="mb-2 flex items-center justify-between">
+          <div>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {{ t('views.economy.redeemCodes.form.fields.commandRewards') }}
+            </span>
+            <div class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+              {{ t('views.economy.redeemCodes.form.hints.commandRewards') }}
+            </div>
+          </div>
+          <el-button size="small" plain @click="addCommandReward">
+            <el-icon><icon-mdi-plus /></el-icon>
+            {{ t('views.economy.redeemCodes.form.actions.addCommand') }}
+          </el-button>
+        </div>
+        <div v-auto-animate class="flex flex-col gap-2">
+          <div v-for="(_, index) in commandRewards" :key="index" class="flex items-center gap-2">
+            <span class="w-6 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">{{ index + 1 }}</span>
+            <el-input
+              v-model="commandRewards[index]"
+              :placeholder="t('views.economy.redeemCodes.form.placeholders.commandReward')"
+              class="flex-1 font-mono"
+              clearable
+            />
+            <IconButton
+              button-size="small"
+              icon-size="16"
+              plain
+              :tooltip-content="t('views.economy.redeemCodes.form.actions.removeCommand')"
+              @click="removeCommandReward(index)"
+            >
+              <icon-mdi-minus />
+            </IconButton>
+          </div>
+        </div>
+      </div>
     </MyDialog>
 
     <!-- Redemptions viewer dialog -->

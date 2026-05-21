@@ -76,6 +76,11 @@
     "backupHistory": "History",
     "restartHistory": "History",
     "teleport": "Teleport",
+    "teleportTools": "Tools",
+    "teleportSettings": "Settings",
+    "teleportCities": "Cities",
+    "teleportHomes": "Player Homes",
+    "gameNotice": "Game Notice",
     "gameEventLogs": "Game Event Logs"
   },
   "components": {
@@ -1378,7 +1383,21 @@
             "description": "Description",
             "amount": "Reward Amount",
             "maxUses": "Max Uses (0 = unlimited)",
-            "expiresAt": "Expires At (optional)"
+            "expiresAt": "Expires At (optional)",
+            "commandRewards": "Command Rewards"
+          },
+          "placeholders": {
+            "commandReward": "e.g. giveself {EntityId} iron_sword 1 0 false"
+          },
+          "actions": {
+            "addCommand": "Add Command",
+            "removeCommand": "Remove"
+          },
+          "hints": {
+            "commandRewards": "Supports {EntityId}, {PlayerId}, {PlayerName} placeholders."
+          },
+          "messages": {
+            "noReward": "Provide a currency amount, at least one command reward, or both."
           }
         },
         "redemptionsDialog": {
@@ -1397,31 +1416,201 @@
       }
     },
     "teleport": {
-      "tabs": {
-        "toPosition": "Teleport to Position",
-        "toPlayer": "Teleport to Player"
+      "tools": {
+        "tabs": {
+          "toPosition": "Teleport to Position",
+          "toPlayer": "Teleport to Player"
+        },
+        "fields": {
+          "sourcePlayer": "Player to Teleport",
+          "targetPlayer": "Destination Player",
+          "x": "X Coordinate",
+          "y": "Y Coordinate",
+          "z": "Z Coordinate"
+        },
+        "placeholders": {
+          "selectPlayer": "Select an online player"
+        },
+        "actions": {
+          "teleport": "Teleport"
+        },
+        "messages": {
+          "success": "Teleported successfully",
+          "confirmToPos": "Teleport {name} to ({x}, {y}, {z})?",
+          "confirmToPlayer": "Teleport {source} to {target}'s location?",
+          "noPlayers": "No online players available"
+        },
+        "hints": {
+          "onlinePlayers": "Only online players are listed"
+        }
       },
-      "fields": {
-        "sourcePlayer": "Player to Teleport",
-        "targetPlayer": "Destination Player",
-        "x": "X Coordinate",
-        "y": "Y Coordinate",
-        "z": "Z Coordinate"
+      "settings": {
+        "tabs": {
+          "home": "Home Teleport",
+          "city": "City Teleport",
+          "friend": "Friend Teleport"
+        },
+        "sections": {
+          "commands": "Commands",
+          "tips": "Tip Messages"
+        },
+        "fields": {
+          "isEnabled": "Enable Teleport Feature",
+          "home": {
+            "isEnabled": "Enable Home Teleport",
+            "cooldownSeconds": "Cooldown (seconds)",
+            "setCurrencyRequired": "Set Home Cost",
+            "teleCurrencyRequired": "Teleport Home Cost",
+            "maxHomes": "Max Homes per Player",
+            "listCommandName": "List Homes Command",
+            "setCommandName": "Set Home Command",
+            "deleteCommandName": "Delete Home Command",
+            "teleCommandName": "Teleport to Home Command",
+            "noHomeTip": "No Homes Message",
+            "setLimitTip": "Limit Reached Message",
+            "setSuccessTip": "Set Success Message",
+            "overwriteTip": "Overwrite Confirm Message",
+            "deleteSuccessTip": "Delete Success Message",
+            "homeNotFoundTip": "Home Not Found Message",
+            "coolingTip": "Cooldown Message",
+            "teleSuccessTip": "Teleport Success Message",
+            "setCurrencyNotEnoughTip": "Insufficient Funds (Set) Message",
+            "teleCurrencyNotEnoughTip": "Insufficient Funds (Teleport) Message"
+          },
+          "city": {
+            "isEnabled": "Enable City Teleport",
+            "cooldownSeconds": "Cooldown (seconds)",
+            "listCommandName": "List Cities Command",
+            "teleCommandName": "Teleport to City Command",
+            "noCitiesTip": "No Cities Message",
+            "cityNotFoundTip": "City Not Found Message",
+            "coolingTip": "Cooldown Message",
+            "teleSuccessTip": "Teleport Success Message",
+            "currencyNotEnoughTip": "Insufficient Funds Message"
+          },
+          "friend": {
+            "isEnabled": "Enable Friend Teleport",
+            "cooldownSeconds": "Cooldown (seconds)",
+            "currencyRequired": "Teleport Cost",
+            "requestExpirySeconds": "Request Expiry (seconds)",
+            "friendBypass": "Friends Skip Cooldown",
+            "requestCommandName": "Send Request Command",
+            "acceptCommandName": "Accept Request Command",
+            "rejectCommandName": "Reject Request Command",
+            "targetNotFoundTip": "Target Not Found Message",
+            "requestSentTip": "Request Sent Message",
+            "requestReceivedTip": "Request Received Message",
+            "acceptedTip": "Accepted Message",
+            "rejectedTip": "Rejected Message",
+            "targetRejectedTip": "Target Rejected Message",
+            "noRequestTip": "No Request Message",
+            "coolingTip": "Cooldown Message",
+            "teleSuccessTip": "Teleport Success Message",
+            "currencyNotEnoughTip": "Insufficient Funds Message"
+          }
+        },
+        "actions": {
+          "save": "Save Settings",
+          "reset": "Reset to Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Settings saved successfully.",
+          "resetSuccess": "Settings have been reset to defaults."
+        }
       },
-      "placeholders": {
-        "selectPlayer": "Select an online player"
+      "cities": {
+        "form": {
+          "addTitle": "Add City",
+          "editTitle": "Edit City",
+          "fields": {
+            "name": "City Name",
+            "description": "Description",
+            "x": "X",
+            "y": "Y",
+            "z": "Z",
+            "yawAngle": "Yaw Angle",
+            "currencyRequired": "Teleport Cost",
+            "isEnabled": "Enabled",
+            "sortOrder": "Sort Order"
+          }
+        },
+        "columns": {
+          "name": "Name",
+          "description": "Description",
+          "x": "X",
+          "y": "Y",
+          "z": "Z",
+          "yawAngle": "Yaw Angle",
+          "currencyRequired": "Cost",
+          "isEnabled": "Enabled",
+          "sortOrder": "Order"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete",
+          "deleteConfirm": "Delete this city?"
+        },
+        "messages": {
+          "createSuccess": "City created.",
+          "updateSuccess": "City updated.",
+          "deleteSuccess": "City deleted."
+        }
       },
-      "actions": {
-        "teleport": "Teleport"
-      },
-      "messages": {
-        "success": "Teleported successfully",
-        "confirmToPos": "Teleport {name} to ({x}, {y}, {z})?",
-        "confirmToPlayer": "Teleport {source} to {target}'s location?",
-        "noPlayers": "No online players available"
-      },
-      "hints": {
-        "onlinePlayers": "Only online players are listed"
+      "homes": {
+        "search": {
+          "playerIdLabel": "Player ID",
+          "playerIdPlaceholder": "Enter player ID to search homes",
+          "button": "Search",
+          "emptyHint": "Enter a player ID above to view their homes."
+        },
+        "columns": {
+          "homeName": "Home Name",
+          "playerName": "Player Name",
+          "x": "X",
+          "y": "Y",
+          "z": "Z",
+          "createdAt": "Created At"
+        },
+        "actions": {
+          "delete": "Delete",
+          "deleteConfirm": "Delete home \"{name}\"?"
+        },
+        "messages": {
+          "deleteSuccess": "Home deleted."
+        }
+      }
+    },
+    "gameNotice": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Game Notice",
+          "welcomeNotice": "Welcome Notice",
+          "rotatingNotices": "Rotating Notices",
+          "rotatingIntervalSeconds": "Rotating Interval (Seconds)",
+          "bloodMoonNotice1": "Blood Moon Notice — Stage 1",
+          "bloodMoonNotice2": "Blood Moon Notice — Stage 2",
+          "bloodMoonNotice3": "Blood Moon Notice — Stage 3"
+        },
+        "tooltips": {
+          "welcomeNotice": "Sent to a player when they join the server. Supports {PlayerName}, {PlayerId}, {EntityId}.",
+          "rotatingIntervalSeconds": "Interval in seconds between each rotating notice broadcast.",
+          "bloodMoonNotices": "Broadcast at different stages of the blood moon. Supports {BloodMoonDays}, {BloodMoonStartTime}, {BloodMoonEndTime}."
+        },
+        "placeholders": {
+          "rotatingNotice": "Enter notice text…"
+        },
+        "actions": {
+          "save": "Save Settings",
+          "resetToDefaults": "Reset to Defaults",
+          "addNotice": "Add Notice",
+          "removeNotice": "Remove"
+        },
+        "messages": {
+          "saveSuccess": "Game notice settings saved.",
+          "resetConfirm": "Reset all game notice settings to their defaults? This cannot be undone.",
+          "resetSuccess": "Game notice settings have been reset to defaults.",
+          "noRotatingNotices": "No rotating notices configured. Click \"Add Notice\" to add one."
+        }
       }
     },
     "backup": {

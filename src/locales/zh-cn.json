@@ -76,6 +76,11 @@
     "backupHistory": "执行历史",
     "restartHistory": "执行历史",
     "teleport": "玩家传送",
+    "teleportTools": "传送工具",
+    "teleportSettings": "传送设置",
+    "teleportCities": "城市管理",
+    "teleportHomes": "玩家家园",
+    "gameNotice": "游戏公告",
     "gameEventLogs": "游戏事件日志"
   },
   "components": {
@@ -890,7 +895,21 @@
             "description": "备注",
             "amount": "奖励金额",
             "maxUses": "最大使用次数（0 为无限制）",
-            "expiresAt": "过期时间（可选）"
+            "expiresAt": "过期时间（可选）",
+            "commandRewards": "命令奖励"
+          },
+          "placeholders": {
+            "commandReward": "例如：giveself {EntityId} iron_sword 1 0 false"
+          },
+          "actions": {
+            "addCommand": "添加命令",
+            "removeCommand": "移除"
+          },
+          "hints": {
+            "commandRewards": "支持 {EntityId}、{PlayerId}、{PlayerName} 占位符。"
+          },
+          "messages": {
+            "noReward": "请填写奖励金额，或至少添加一条命令奖励，或两者都填写。"
           }
         },
         "redemptionsDialog": {
@@ -909,31 +928,201 @@
       }
     },
     "teleport": {
-      "tabs": {
-        "toPosition": "传送到坐标",
-        "toPlayer": "传送到玩家"
+      "tools": {
+        "tabs": {
+          "toPosition": "传送到坐标",
+          "toPlayer": "传送到玩家"
+        },
+        "fields": {
+          "sourcePlayer": "传送谁",
+          "targetPlayer": "目标玩家",
+          "x": "X 坐标",
+          "y": "Y 坐标",
+          "z": "Z 坐标"
+        },
+        "placeholders": {
+          "selectPlayer": "请选择在线玩家"
+        },
+        "actions": {
+          "teleport": "传送"
+        },
+        "messages": {
+          "success": "传送成功",
+          "confirmToPos": "确认将 {name} 传送到坐标 ({x}, {y}, {z})？",
+          "confirmToPlayer": "确认将 {source} 传送到 {target} 的位置？",
+          "noPlayers": "当前没有在线玩家"
+        },
+        "hints": {
+          "onlinePlayers": "仅显示当前在线玩家"
+        }
       },
-      "fields": {
-        "sourcePlayer": "传送谁",
-        "targetPlayer": "目标玩家",
-        "x": "X 坐标",
-        "y": "Y 坐标",
-        "z": "Z 坐标"
+      "settings": {
+        "tabs": {
+          "home": "家园传送",
+          "city": "城市传送",
+          "friend": "好友传送"
+        },
+        "sections": {
+          "commands": "指令配置",
+          "tips": "提示消息"
+        },
+        "fields": {
+          "isEnabled": "启用传送功能",
+          "home": {
+            "isEnabled": "启用家园传送",
+            "cooldownSeconds": "冷却时间（秒）",
+            "setCurrencyRequired": "设置家园费用",
+            "teleCurrencyRequired": "传送到家园费用",
+            "maxHomes": "每玩家最大家园数",
+            "listCommandName": "列出家园指令",
+            "setCommandName": "设置家园指令",
+            "deleteCommandName": "删除家园指令",
+            "teleCommandName": "传送到家园指令",
+            "noHomeTip": "无家园提示",
+            "setLimitTip": "已达上限提示",
+            "setSuccessTip": "设置成功提示",
+            "overwriteTip": "覆盖确认提示",
+            "deleteSuccessTip": "删除成功提示",
+            "homeNotFoundTip": "家园不存在提示",
+            "coolingTip": "冷却中提示",
+            "teleSuccessTip": "传送成功提示",
+            "setCurrencyNotEnoughTip": "设置余额不足提示",
+            "teleCurrencyNotEnoughTip": "传送余额不足提示"
+          },
+          "city": {
+            "isEnabled": "启用城市传送",
+            "cooldownSeconds": "冷却时间（秒）",
+            "listCommandName": "列出城市指令",
+            "teleCommandName": "传送到城市指令",
+            "noCitiesTip": "无城市提示",
+            "cityNotFoundTip": "城市不存在提示",
+            "coolingTip": "冷却中提示",
+            "teleSuccessTip": "传送成功提示",
+            "currencyNotEnoughTip": "余额不足提示"
+          },
+          "friend": {
+            "isEnabled": "启用好友传送",
+            "cooldownSeconds": "冷却时间（秒）",
+            "currencyRequired": "传送费用",
+            "requestExpirySeconds": "请求过期时间（秒）",
+            "friendBypass": "好友跳过冷却",
+            "requestCommandName": "发送请求指令",
+            "acceptCommandName": "接受请求指令",
+            "rejectCommandName": "拒绝请求指令",
+            "targetNotFoundTip": "目标不存在提示",
+            "requestSentTip": "请求已发送提示",
+            "requestReceivedTip": "收到请求提示",
+            "acceptedTip": "已接受提示",
+            "rejectedTip": "已拒绝提示",
+            "targetRejectedTip": "目标拒绝提示",
+            "noRequestTip": "无请求提示",
+            "coolingTip": "冷却中提示",
+            "teleSuccessTip": "传送成功提示",
+            "currencyNotEnoughTip": "余额不足提示"
+          }
+        },
+        "actions": {
+          "save": "保存设置",
+          "reset": "重置为默认值"
+        },
+        "messages": {
+          "saveSuccess": "设置已保存。",
+          "resetSuccess": "设置已重置为默认值。"
+        }
       },
-      "placeholders": {
-        "selectPlayer": "请选择在线玩家"
+      "cities": {
+        "form": {
+          "addTitle": "添加城市",
+          "editTitle": "编辑城市",
+          "fields": {
+            "name": "城市名称",
+            "description": "描述",
+            "x": "X",
+            "y": "Y",
+            "z": "Z",
+            "yawAngle": "偏航角",
+            "currencyRequired": "传送费用",
+            "isEnabled": "是否启用",
+            "sortOrder": "排序"
+          }
+        },
+        "columns": {
+          "name": "名称",
+          "description": "描述",
+          "x": "X",
+          "y": "Y",
+          "z": "Z",
+          "yawAngle": "偏航角",
+          "currencyRequired": "费用",
+          "isEnabled": "启用",
+          "sortOrder": "排序"
+        },
+        "actions": {
+          "edit": "编辑",
+          "delete": "删除",
+          "deleteConfirm": "确定删除该城市？"
+        },
+        "messages": {
+          "createSuccess": "城市已创建。",
+          "updateSuccess": "城市已更新。",
+          "deleteSuccess": "城市已删除。"
+        }
       },
-      "actions": {
-        "teleport": "传送"
-      },
-      "messages": {
-        "success": "传送成功",
-        "confirmToPos": "确认将 {name} 传送到坐标 ({x}, {y}, {z})？",
-        "confirmToPlayer": "确认将 {source} 传送到 {target} 的位置？",
-        "noPlayers": "当前没有在线玩家"
-      },
-      "hints": {
-        "onlinePlayers": "仅显示当前在线玩家"
+      "homes": {
+        "search": {
+          "playerIdLabel": "玩家 ID",
+          "playerIdPlaceholder": "输入玩家 ID 查询其家园",
+          "button": "查询",
+          "emptyHint": "在上方输入玩家 ID 以查看其家园。"
+        },
+        "columns": {
+          "homeName": "家园名称",
+          "playerName": "玩家名称",
+          "x": "X",
+          "y": "Y",
+          "z": "Z",
+          "createdAt": "创建时间"
+        },
+        "actions": {
+          "delete": "删除",
+          "deleteConfirm": "确定删除家园 \"{name}\"？"
+        },
+        "messages": {
+          "deleteSuccess": "家园已删除。"
+        }
+      }
+    },
+    "gameNotice": {
+      "settings": {
+        "fields": {
+          "isEnabled": "启用游戏公告",
+          "welcomeNotice": "欢迎公告",
+          "rotatingNotices": "轮播公告",
+          "rotatingIntervalSeconds": "轮播间隔（秒）",
+          "bloodMoonNotice1": "血月公告 — 阶段一",
+          "bloodMoonNotice2": "血月公告 — 阶段二",
+          "bloodMoonNotice3": "血月公告 — 阶段三"
+        },
+        "tooltips": {
+          "welcomeNotice": "玩家加入服务器时发送。支持占位符：{PlayerName}、{PlayerId}、{EntityId}。",
+          "rotatingIntervalSeconds": "每条轮播公告之间的广播间隔（秒）。",
+          "bloodMoonNotices": "在血月不同阶段广播。支持占位符：{BloodMoonDays}、{BloodMoonStartTime}、{BloodMoonEndTime}。"
+        },
+        "placeholders": {
+          "rotatingNotice": "输入公告内容…"
+        },
+        "actions": {
+          "save": "保存设置",
+          "resetToDefaults": "恢复默认设置",
+          "addNotice": "添加公告",
+          "removeNotice": "删除"
+        },
+        "messages": {
+          "saveSuccess": "游戏公告设置已保存。",
+          "resetConfirm": "确定要将所有游戏公告设置恢复为默认值吗？此操作不可撤销。",
+          "resetSuccess": "游戏公告设置已恢复为默认值。",
+          "noRotatingNotices": "暂无轮播公告，点击「添加公告」以添加。"
+        }
       }
     },
     "backup": {

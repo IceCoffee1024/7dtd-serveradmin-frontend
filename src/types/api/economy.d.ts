@@ -168,6 +168,7 @@ declare namespace API {
       expiresAt: string | null;
       isEnabled: boolean;
       createdAt: string;
+      commandRewards: string[] | null;
     }
 
     type RedeemCodeQueryOrder = 'CreatedAt' | 'ExpiresAt' | 'Code';
@@ -187,6 +188,7 @@ declare namespace API {
       amount: number;
       maxUses: number;
       expiresAt?: string | null;
+      commandRewards?: string[] | null;
     }
 
     interface CodeRedemption {
