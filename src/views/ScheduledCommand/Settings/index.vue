@@ -15,6 +15,8 @@ interface FormModel {
   defaultTimeZoneId: string;
   defaultAllowConcurrentExecution: boolean;
   historyRetentionDays: number;
+  failureNotifyEnabled: boolean;
+  failureNotifyMessage: string;
 }
 
 interface FormExpose {
@@ -35,6 +37,8 @@ function buildDefaults(): FormModel {
     defaultTimeZoneId: '',
     defaultAllowConcurrentExecution: false,
     historyRetentionDays: 30,
+    failureNotifyEnabled: false,
+    failureNotifyMessage: '',
   };
 }
 
@@ -46,6 +50,8 @@ const schema = v.object({
   defaultTimeZoneId: v.string(),
   defaultAllowConcurrentExecution: v.boolean(),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
+  failureNotifyEnabled: v.boolean(),
+  failureNotifyMessage: v.optional(v.string()),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -84,6 +90,21 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     props: { min: 0, precision: 0, class: 'w-full' },
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'failureNotifyEnabled',
+    label: t('views.scheduler.settings.fields.failureNotifyEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    tooltip: t('views.scheduler.settings.tooltips.failureNotifyEnabled'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'failureNotifyMessage',
+    label: t('views.scheduler.settings.fields.failureNotifyMessage'),
+    el: 'el-input',
+    tooltip: t('views.scheduler.settings.tooltips.failureNotifyMessage'),
+    span: { xs: 24 },
+  },
 ]);
 
 function mapSettings(data: API.ScheduledCommand.Settings | null | undefined): FormModel {
@@ -93,6 +114,8 @@ function mapSettings(data: API.ScheduledCommand.Settings | null | undefined): Fo
     defaultTimeZoneId: source.defaultTimeZoneId ?? '',
     defaultAllowConcurrentExecution: source.defaultAllowConcurrentExecution,
     historyRetentionDays: source.historyRetentionDays,
+    failureNotifyEnabled: source.failureNotifyEnabled ?? false,
+    failureNotifyMessage: source.failureNotifyMessage ?? '',
   };
 }
 
@@ -101,6 +124,8 @@ function applyFormValues(values: FormModel): void {
   form.defaultTimeZoneId = values.defaultTimeZoneId;
   form.defaultAllowConcurrentExecution = values.defaultAllowConcurrentExecution;
   form.historyRetentionDays = values.historyRetentionDays;
+  form.failureNotifyEnabled = values.failureNotifyEnabled;
+  form.failureNotifyMessage = values.failureNotifyMessage;
 }
 
 async function loadSettings() {
@@ -150,6 +175,8 @@ function toPayload(values: FormModel): API.ScheduledCommand.Settings {
     defaultTimeZoneId: values.defaultTimeZoneId.trim() || null,
     defaultAllowConcurrentExecution: values.defaultAllowConcurrentExecution,
     historyRetentionDays: Number(values.historyRetentionDays ?? 0),
+    failureNotifyEnabled: values.failureNotifyEnabled,
+    failureNotifyMessage: values.failureNotifyMessage.trim() || null,
   };
 }
 

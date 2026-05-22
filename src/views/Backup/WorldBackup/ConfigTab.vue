@@ -17,6 +17,10 @@ interface FormModel {
   compressToZip: boolean;
   retentionCount: number;
   saveWorldBeforeBackup: boolean;
+  broadcastOnStart: boolean;
+  broadcastStartMessage: string;
+  broadcastOnComplete: boolean;
+  broadcastCompleteMessage: string;
 }
 
 interface FormExpose {
@@ -41,6 +45,10 @@ function buildDefaults(): FormModel {
     compressToZip: true,
     retentionCount: 7,
     saveWorldBeforeBackup: true,
+    broadcastOnStart: false,
+    broadcastStartMessage: '',
+    broadcastOnComplete: false,
+    broadcastCompleteMessage: '',
   };
 }
 
@@ -53,6 +61,10 @@ const schema = v.object({
   compressToZip: v.boolean(),
   retentionCount: v.pipe(v.number(), v.minValue(-1)),
   saveWorldBeforeBackup: v.boolean(),
+  broadcastOnStart: v.boolean(),
+  broadcastStartMessage: v.optional(v.string()),
+  broadcastOnComplete: v.boolean(),
+  broadcastCompleteMessage: v.optional(v.string()),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -72,6 +84,10 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'compressToZip', label: t('views.backup.world.fields.compressToZip'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
   { prop: 'retentionCount', label: t('views.backup.world.fields.retentionCount'), el: 'el-input-number', props: { min: -1, precision: 0, class: 'w-full' }, tooltip: t('views.backup.tooltips.retentionCount'), span: { xs: 24, md: 12 } },
   { prop: 'saveWorldBeforeBackup', label: t('views.backup.world.fields.saveWorldBeforeBackup'), el: 'el-select', options: booleanOptions.value, tooltip: t('views.backup.world.tooltips.saveWorldBeforeBackup'), span: { xs: 24, md: 12 } },
+  { prop: 'broadcastOnStart', label: t('views.backup.fields.broadcastOnStart'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
+  { prop: 'broadcastStartMessage', label: t('views.backup.fields.broadcastStartMessage'), el: 'el-input', tooltip: t('views.backup.tooltips.broadcastMessage'), span: { xs: 24 } },
+  { prop: 'broadcastOnComplete', label: t('views.backup.fields.broadcastOnComplete'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
+  { prop: 'broadcastCompleteMessage', label: t('views.backup.fields.broadcastCompleteMessage'), el: 'el-input', tooltip: t('views.backup.tooltips.broadcastMessage'), span: { xs: 24 } },
 ]);
 
 function applyValues(source: API.Backup.WorldBackupConfig) {
@@ -81,6 +97,10 @@ function applyValues(source: API.Backup.WorldBackupConfig) {
   form.compressToZip = source.compressToZip;
   form.retentionCount = source.retentionCount;
   form.saveWorldBeforeBackup = source.saveWorldBeforeBackup;
+  form.broadcastOnStart = source.broadcastOnStart ?? false;
+  form.broadcastStartMessage = source.broadcastStartMessage ?? '';
+  form.broadcastOnComplete = source.broadcastOnComplete ?? false;
+  form.broadcastCompleteMessage = source.broadcastCompleteMessage ?? '';
 }
 
 async function loadSettings() {
@@ -119,6 +139,10 @@ async function onSubmit() {
         compressToZip: form.compressToZip,
         retentionCount: Number(form.retentionCount ?? 0),
         saveWorldBeforeBackup: form.saveWorldBeforeBackup,
+        broadcastOnStart: form.broadcastOnStart,
+        broadcastStartMessage: form.broadcastStartMessage.trim() || null,
+        broadcastOnComplete: form.broadcastOnComplete,
+        broadcastCompleteMessage: form.broadcastCompleteMessage.trim() || null,
       },
     };
     await updateSettings(payload);

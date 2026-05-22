@@ -28,7 +28,15 @@ export function runRestart(request: API.Restart.RunRequest = {}) {
 }
 
 /**
- * Queries paginated run history for restart tasks.
+ * Cancels the currently pending scheduled restart if one is active.
+ * Returns whether a restart was successfully cancelled and a status message.
+ * @returns The cancel result including a success flag and message.
+ */
+export function cancelRestart() {
+  return http.post<API.Restart.CancelRestartResponse>('Restart/Cancel').json();
+}
+
+
  * Reuses the ScheduledCommand run log endpoint filtered to the restart feature.
  * @param params - Optional pagination and filter parameters.
  * @returns Paged run history.

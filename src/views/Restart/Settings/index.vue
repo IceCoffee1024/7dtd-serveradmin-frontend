@@ -2,7 +2,7 @@
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
-import { getSettings, updateSettings } from '~/api/restart';
+import { cancelRestart, getSettings, updateSettings } from '~/api/restart';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import v from '~/plugins/valibot';
@@ -22,6 +22,11 @@ interface FormModel {
   historyRetentionDays: number;
 }
 
+interface WarningStageRow {
+  leadSeconds: number;
+  message: string;
+}
+
 interface FormExpose {
   validate: () => Promise<boolean | undefined>;
   clearValidate: (props?: string | string[]) => void;
@@ -33,7 +38,9 @@ const { toast } = usePopup();
 const formRef = useTemplateRef<FormExpose>('formRef');
 const isLoading = ref(false);
 const isSubmitting = ref(false);
+const isCancelling = ref(false);
 const settings = ref<API.Restart.Settings | null>(null);
+const warningStages = ref<WarningStageRow[]>([]);
 
 function buildDefaults(): FormModel {
   return {
@@ -151,6 +158,15 @@ function applyValues(source: API.Restart.Settings) {
   form.restartMode = source.restartMode ?? 'Graceful';
   form.restartCommand = source.restartCommand ?? '';
   form.historyRetentionDays = source.historyRetentionDays ?? 30;
+  warningStages.value = (source.warningStages ?? []).map(s => ({ leadSeconds: s.leadSeconds, message: s.message }));
+}
+
+function addWarningStage() {
+  warningStages.value.push({ leadSeconds: 60, message: '' });
+}
+
+function removeWarningStage(index: number) {
+  warningStages.value.splice(index, 1);
 }
 
 async function loadSettings() {
@@ -188,6 +204,9 @@ async function onSubmit() {
       timeZoneId: form.timeZoneId.trim() || null,
       warningLeadSeconds: Number(form.warningLeadSeconds ?? 0),
       warningMessage: form.warningMessage,
+      warningStages: warningStages.value.length > 0
+        ? warningStages.value.map(s => ({ leadSeconds: Number(s.leadSeconds ?? 0), message: s.message }))
+        : null,
       saveWorldBeforeRestart: form.saveWorldBeforeRestart,
       restartMode: form.restartMode,
       restartCommand: form.restartCommand.trim() || null,
@@ -208,6 +227,25 @@ async function onSubmit() {
 onMounted(() => {
   loadSettings();
 });
+
+async function onCancelRestart() {
+  isCancelling.value = true;
+  try {
+    const result = await cancelRestart();
+    toast({
+      type: result.succeeded ? 'success' : 'warning',
+      text: result.message || (result.succeeded
+        ? t('views.restart.settings.messages.cancelSuccess')
+        : t('views.restart.settings.messages.cancelNoActive')),
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isCancelling.value = false;
+  }
+}
 </script>
 
 <template>
@@ -232,7 +270,42 @@ onMounted(() => {
         @submit.prevent="onSubmit"
       />
 
+      <div class="mt-4">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {{ t('views.restart.settings.warningStages.sectionTitle') }}
+          </h3>
+          <el-button size="small" @click="addWarningStage">
+            <el-icon><icon-mdi-plus /></el-icon>
+            {{ t('views.restart.settings.warningStages.add') }}
+          </el-button>
+        </div>
+        <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
+          {{ t('views.restart.settings.warningStages.description') }}
+        </p>
+        <div v-if="warningStages.length === 0" class="text-xs text-gray-400 dark:text-gray-500 mb-2">
+          {{ t('views.restart.settings.warningStages.empty') }}
+        </div>
+        <div v-for="(stage, idx) in warningStages" :key="idx" class="flex gap-2 items-end mb-2">
+          <el-form-item :label="t('views.restart.settings.warningStages.leadSeconds')" class="flex-none w-48">
+            <el-input-number v-model="stage.leadSeconds" :min="1" :precision="0" class="w-full" />
+          </el-form-item>
+          <el-form-item :label="t('views.restart.settings.warningStages.message')" class="flex-1">
+            <el-input v-model="stage.message" :placeholder="t('views.restart.settings.warningStages.messagePlaceholder')" />
+          </el-form-item>
+          <el-form-item class="flex-none">
+            <el-button type="danger" plain size="small" @click="removeWarningStage(idx)">
+              <el-icon><icon-mdi-trash-can-outline /></el-icon>
+            </el-button>
+          </el-form-item>
+        </div>
+      </div>
+
       <div class="mt-4 flex gap-2 justify-end">
+        <el-button :loading="isCancelling" @click="onCancelRestart">
+          <el-icon><icon-mdi-cancel /></el-icon>
+          {{ t('views.restart.settings.actions.cancelPending') }}
+        </el-button>
         <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.restart.settings.actions.save') }}

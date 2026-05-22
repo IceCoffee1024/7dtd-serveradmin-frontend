@@ -17,6 +17,8 @@ interface FormModel {
   chatCommandPrefixes: string;
   allowNoPrefix: boolean;
   chatCommandSeparators: string;
+  historyRetentionDays: number;
+  excludeCommandsFromHistory: boolean;
 }
 
 interface FormExpose {
@@ -39,6 +41,8 @@ function buildDefaults(): FormModel {
     chatCommandPrefixes: '/',
     allowNoPrefix: false,
     chatCommandSeparators: ' ',
+    historyRetentionDays: 0,
+    excludeCommandsFromHistory: false,
   };
 }
 
@@ -52,6 +56,8 @@ const schema = v.object({
   chatCommandPrefixes: v.pipe(v.string(), v.minLength(1)),
   allowNoPrefix: v.boolean(),
   chatCommandSeparators: v.pipe(v.string(), v.minLength(1)),
+  historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
+  excludeCommandsFromHistory: v.boolean(),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -107,6 +113,22 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     tooltip: t('views.chatSettings.tooltips.chatCommandSeparators'),
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'historyRetentionDays',
+    label: t('views.chatSettings.fields.historyRetentionDays'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    tooltip: t('views.chatSettings.tooltips.historyRetentionDays'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'excludeCommandsFromHistory',
+    label: t('views.chatSettings.fields.excludeCommandsFromHistory'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    tooltip: t('views.chatSettings.tooltips.excludeCommandsFromHistory'),
+    span: { xs: 24, md: 12 },
+  },
 ]);
 
 const previewChannels = computed(() => [
@@ -137,6 +159,8 @@ function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel 
     chatCommandPrefixes: (source.chatCommandPrefixes ?? ['/']).join(','),
     allowNoPrefix: source.allowNoPrefix,
     chatCommandSeparators: (source.chatCommandSeparators ?? [' ']).join(','),
+    historyRetentionDays: source.historyRetentionDays ?? 0,
+    excludeCommandsFromHistory: source.excludeCommandsFromHistory ?? false,
   };
 }
 
@@ -147,6 +171,8 @@ function applyFormValues(values: FormModel): void {
   form.chatCommandPrefixes = values.chatCommandPrefixes;
   form.allowNoPrefix = values.allowNoPrefix;
   form.chatCommandSeparators = values.chatCommandSeparators;
+  form.historyRetentionDays = values.historyRetentionDays;
+  form.excludeCommandsFromHistory = values.excludeCommandsFromHistory;
 }
 
 function splitCommaSeparated(value: string, trimItems: boolean = true): string[] {
@@ -204,6 +230,8 @@ function toPayload(values: FormModel): API.Chat.ChatSettings {
     chatCommandPrefixes: splitCommaSeparated(values.chatCommandPrefixes),
     allowNoPrefix: values.allowNoPrefix,
     chatCommandSeparators: splitCommaSeparated(values.chatCommandSeparators, false),
+    historyRetentionDays: Number(values.historyRetentionDays ?? 0),
+    excludeCommandsFromHistory: values.excludeCommandsFromHistory,
   };
 }
 

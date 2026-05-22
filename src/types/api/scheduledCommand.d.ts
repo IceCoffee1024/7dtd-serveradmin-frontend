@@ -12,6 +12,8 @@ declare namespace API {
       defaultTimeZoneId: string | null;
       defaultAllowConcurrentExecution: boolean;
       historyRetentionDays: number;
+      failureNotifyEnabled: boolean;
+      failureNotifyMessage: string | null;
     }
 
     /** Built-in task type metadata returned to the task editor. */

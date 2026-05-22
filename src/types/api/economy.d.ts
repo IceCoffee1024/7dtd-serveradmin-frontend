@@ -21,6 +21,8 @@ declare namespace API {
       dailyStreakBonusPercent: number;
       dailyStreakMaxDays: number;
       shopEnabled: boolean;
+      playerConnectedRewardEnabled: boolean;
+      playerConnectedRewardAmount: number;
       balCommandName: string;
       balCommandAliases: string[];
       payCommandName: string;
@@ -30,6 +32,17 @@ declare namespace API {
       shopCommandName: string;
       buyCommandName: string;
       redeemCommandName: string;
+      balanceTip: string | null;
+      paySuccessTip: string | null;
+      payUsageTip: string | null;
+      payTargetNotFoundTip: string | null;
+      dailySuccessTip: string | null;
+      dailyAlreadyClaimedTip: string | null;
+      shopEmptyTip: string | null;
+      buyUsageTip: string | null;
+      buySuccessTip: string | null;
+      redeemUsageTip: string | null;
+      redeemSuccessTip: string | null;
     }
 
     interface Account {

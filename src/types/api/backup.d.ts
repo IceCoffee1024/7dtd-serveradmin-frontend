@@ -8,6 +8,10 @@ declare namespace API {
       compressToZip: boolean;
       retentionCount: number;
       saveWorldBeforeBackup: boolean;
+      broadcastOnStart: boolean;
+      broadcastStartMessage: string | null;
+      broadcastOnComplete: boolean;
+      broadcastCompleteMessage: string | null;
     }
 
     /** Cron-driven SQLite hot-backup configuration. */
@@ -17,6 +21,10 @@ declare namespace API {
       destinationRoot: string;
       compressToZip: boolean;
       retentionCount: number;
+      broadcastOnStart: boolean;
+      broadcastStartMessage: string | null;
+      broadcastOnComplete: boolean;
+      broadcastCompleteMessage: string | null;
     }
 
     /** Cron-driven server config XML backup configuration. */
@@ -26,6 +34,10 @@ declare namespace API {
       destinationRoot: string;
       compressToZip: boolean;
       retentionCount: number;
+      broadcastOnStart: boolean;
+      broadcastStartMessage: string | null;
+      broadcastOnComplete: boolean;
+      broadcastCompleteMessage: string | null;
     }
 
     /** Root backup feature settings persisted in the feature configuration store. */

@@ -11,6 +11,8 @@ declare namespace API {
       chatCommandPrefixes: string[] | null;
       allowNoPrefix: boolean;
       chatCommandSeparators: string[] | null;
+      historyRetentionDays: number;
+      excludeCommandsFromHistory: boolean;
     }
 
     interface ChatMessage {

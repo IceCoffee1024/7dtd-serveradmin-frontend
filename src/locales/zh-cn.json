@@ -533,7 +533,9 @@
         "whisperServerName": "私聊消息发送者",
         "chatCommandPrefixes": "命令前缀",
         "allowNoPrefix": "允许无前缀命令",
-        "chatCommandSeparators": "命令参数分隔符"
+        "chatCommandSeparators": "命令参数分隔符",
+        "historyRetentionDays": "聊天记录保留天数",
+        "excludeCommandsFromHistory": "排除命令消息"
       },
       "tooltips": {
         "isEnabled": "聊天功能是系统核心服务，所有依赖聊天命令的功能均通过它注册和分发命令，不可禁用。",
@@ -541,7 +543,9 @@
         "whisperServerName": "服务端发送私聊消息时显示的名字。",
         "chatCommandPrefixes": "多个前缀使用逗号分隔，例如 /,!。",
         "allowNoPrefix": "启用后，普通全局聊天也可以被解析为命令。",
-        "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。"
+        "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。",
+        "historyRetentionDays": "聊天记录保留天数，0 表示永久保留。",
+        "excludeCommandsFromHistory": "启用后，以命令前缀开头的消息不会被保存到历史记录中。"
       },
       "actions": {
         "save": "保存聊天配置",
@@ -600,10 +604,12 @@
           "partyDefault": "队伍频道默认色",
           "adminDefault": "管理员默认色",
           "systemDefault": "系统消息默认色",
-          "allowPlayerColorTags": "允许玩家颜色标签"
+          "allowPlayerColorTags": "允许玩家颜色标签",
+          "playerColorTagPermission": "玩家颜色标签权限"
         },
         "tooltips": {
           "isEnabled": "是否启用 ColoredChat 功能。",
+          "playerColorTagPermission": "控制哪些玩家可以在聊天中使用颜色标签。None：禁用；All：所有玩家；AdminOnly：仅管理员。",
           "allowPlayerColorTags": "启用后，玩家可以使用受控颜色标签语法。",
           "hexColor": "请输入 6 位十六进制颜色值，例如 FFCC00。"
         },
@@ -615,6 +621,11 @@
           "colorsHint": "以下颜色会自动保存为 6 位十六进制值。",
           "playerChannels": "玩家频道",
           "systemChannels": "系统频道"
+        },
+        "playerColorTagPermissions": {
+          "none": "禁用",
+          "all": "所有玩家",
+          "adminOnly": "仅管理员"
         },
         "preview": {
           "title": "效果预览",
@@ -692,7 +703,9 @@
           "dailyStreakEnabled": "连续签到奖励",
           "dailyStreakBonusPercent": "连续签到加成百分比",
           "dailyStreakMaxDays": "连续签到最大天数",
-          "shopEnabled": "启用商店"
+          "shopEnabled": "启用商店",
+          "playerConnectedRewardEnabled": "上线奖励",
+          "playerConnectedRewardAmount": "上线奖励金额"
         },
         "commands": {
           "sectionTitle": "聊天指令名称",
@@ -707,6 +720,32 @@
             "shopCommandName": "商店指令",
             "buyCommandName": "购买指令",
             "redeemCommandName": "兑换指令"
+          }
+        },
+        "tips": {
+          "sectionTitle": "指令响应消息",
+          "sectionDescription": "覆盖指令执行后游戏内发送的提示消息。留空将使用内置默认文本。支持占位符（见提示）。",
+          "fields": {
+            "balanceTip": "余额提示",
+            "payUsageTip": "转账用法提示",
+            "payTargetNotFoundTip": "转账目标不存在提示",
+            "paySuccessTip": "转账成功提示",
+            "dailySuccessTip": "签到成功提示",
+            "dailyAlreadyClaimedTip": "今日已签到提示",
+            "shopEmptyTip": "商店空提示",
+            "buyUsageTip": "购买用法提示",
+            "buySuccessTip": "购买成功提示",
+            "redeemUsageTip": "兑换用法提示",
+            "redeemSuccessTip": "兑换成功提示"
+          },
+          "tooltips": {
+            "balanceTip": "支持占位符：{balance}, {currency}",
+            "payUsageTip": "支持占位符：{currency}",
+            "paySuccessTip": "支持占位符：{amount}, {currency}, {playerName}, {tax}",
+            "dailySuccessTip": "支持占位符：{amount}, {currency}, {streak}, {bonusPercent}",
+            "buyUsageTip": "支持占位符：{currency}",
+            "buySuccessTip": "支持占位符：{name}, {quantity}, {cost}, {currency}",
+            "redeemSuccessTip": "支持占位符：{amount}, {currency}"
           }
         },
         "actions": {
@@ -1195,7 +1234,14 @@
       "tooltips": {
         "cronExpression": "标准 5 段 Cron 表达式，按配置的时区计算。",
         "destinationRoot": "备份输出目录的绝对或相对路径。",
-        "retentionCount": "保留的备份份数。 0 表示不保留， -1 表示不清理。"
+        "retentionCount": "保留的备份份数。 0 表示不保留， -1 表示不清理。",
+        "broadcastMessage": "支持占位符：{taskName}, {status}"
+      },
+      "fields": {
+        "broadcastOnStart": "开始时广播",
+        "broadcastStartMessage": "开始广播消息",
+        "broadcastOnComplete": "完成时广播",
+        "broadcastCompleteMessage": "完成广播消息"
       },
       "world": {
         "fields": {
@@ -1273,10 +1319,14 @@
           "isEnabled": "启用调度器",
           "defaultTimeZoneId": "默认时区",
           "defaultAllowConcurrentExecution": "默认允许并发执行",
-          "historyRetentionDays": "历史保留天数"
+          "historyRetentionDays": "历史保留天数",
+          "failureNotifyEnabled": "失败通知",
+          "failureNotifyMessage": "失败通知消息"
         },
         "tooltips": {
-          "defaultTimeZoneId": "可以填写 UTC、Asia/Shanghai、Pacific Standard Time 这类平台时区 ID。"
+          "defaultTimeZoneId": "可以填写 UTC、Asia/Shanghai、Pacific Standard Time 这类平台时区 ID。",
+          "failureNotifyEnabled": "启用后，计划命令执行失败时将向所有玩家广播一条消息。",
+          "failureNotifyMessage": "支持占位符：{taskName}, {error}"
         },
         "actions": {
           "save": "保存调度器设置",
@@ -1417,11 +1467,23 @@
           "graceful": "优雅",
           "force": "强制"
         },
+        "warningStages": {
+          "sectionTitle": "多阶段预警计划",
+          "description": "在不同提前时间定义多个倒计时预警。配置后将替换上方的单次预警，系统会自动按提前时间排序。",
+          "empty": "未配置多阶段预警，将使用上方的单次预警。",
+          "add": "添加阶段",
+          "leadSeconds": "提前秒数",
+          "message": "消息",
+          "messagePlaceholder": "服务器将在 {minutes} 分钟后重启。"
+        },
         "actions": {
-          "save": "保存重启设置"
+          "save": "保存重启设置",
+          "cancelPending": "取消待执行的重启"
         },
         "messages": {
-          "saveSuccess": "重启设置已保存。"
+          "saveSuccess": "重启设置已保存。",
+          "cancelSuccess": "待执行的重启已成功取消。",
+          "cancelNoActive": "当前没有待执行的重启任务。"
         }
       },
       "run": {

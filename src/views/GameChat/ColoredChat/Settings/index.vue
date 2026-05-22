@@ -19,7 +19,7 @@ interface FormModel {
   partyDefault: string;
   adminDefault: string;
   systemDefault: string;
-  allowPlayerColorTags: boolean;
+  playerColorTagPermission: string;
 }
 
 interface FormExpose {
@@ -43,7 +43,7 @@ function buildDefaults(): FormModel {
     partyDefault: 'FFCC00',
     adminDefault: 'FF4D4D',
     systemDefault: 'FF8C00',
-    allowPlayerColorTags: false,
+    playerColorTagPermission: 'None',
   };
 }
 
@@ -58,7 +58,7 @@ const schema = v.object({
   partyDefault: v.optional(v.string()),
   adminDefault: v.optional(v.string()),
   systemDefault: v.optional(v.string()),
-  allowPlayerColorTags: v.boolean(),
+  playerColorTagPermission: v.pipe(v.string(), v.minLength(1)),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -66,6 +66,12 @@ const rules: FormRules = generateElementRules(schema);
 const booleanOptions = computed(() => [
   { label: t('common.yes'), value: true },
   { label: t('common.no'), value: false },
+]);
+
+const playerColorTagPermissionOptions = computed(() => [
+  { label: t('views.coloredChat.settings.playerColorTagPermissions.none'), value: 'None' },
+  { label: t('views.coloredChat.settings.playerColorTagPermissions.all'), value: 'All' },
+  { label: t('views.coloredChat.settings.playerColorTagPermissions.adminOnly'), value: 'AdminOnly' },
 ]);
 
 const colorPresets = computed(() => [...COLORED_CHAT_COLOR_PRESETS]);
@@ -80,11 +86,11 @@ const policyFields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24, md: 12 },
   },
   {
-    prop: 'allowPlayerColorTags',
-    label: t('views.coloredChat.settings.fields.allowPlayerColorTags'),
+    prop: 'playerColorTagPermission',
+    label: t('views.coloredChat.settings.fields.playerColorTagPermission'),
     el: 'el-select',
-    options: booleanOptions.value,
-    tooltip: t('views.coloredChat.settings.tooltips.allowPlayerColorTags'),
+    options: playerColorTagPermissionOptions.value,
+    tooltip: t('views.coloredChat.settings.tooltips.playerColorTagPermission'),
     span: { xs: 24, md: 12 },
   },
 ]);
@@ -165,7 +171,7 @@ function mapSettings(data: API.ColoredChat.Settings | null | undefined): FormMod
     partyDefault: null,
     adminDefault: null,
     systemDefault: null,
-    allowPlayerColorTags: false,
+    playerColorTagPermission: 'None',
   };
   return {
     isEnabled: source.isEnabled,
@@ -175,7 +181,7 @@ function mapSettings(data: API.ColoredChat.Settings | null | undefined): FormMod
     partyDefault: source.partyDefault ?? 'FFCC00',
     adminDefault: source.adminDefault ?? 'FF4D4D',
     systemDefault: source.systemDefault ?? 'FF8C00',
-    allowPlayerColorTags: source.allowPlayerColorTags,
+    playerColorTagPermission: source.playerColorTagPermission ?? 'None',
   };
 }
 
@@ -187,7 +193,7 @@ function applyFormValues(values: FormModel): void {
   form.partyDefault = values.partyDefault;
   form.adminDefault = values.adminDefault;
   form.systemDefault = values.systemDefault;
-  form.allowPlayerColorTags = values.allowPlayerColorTags;
+  form.playerColorTagPermission = values.playerColorTagPermission;
 }
 
 async function loadSettings() {
@@ -240,7 +246,7 @@ function toPayload(values: FormModel): API.ColoredChat.Settings {
     partyDefault: values.partyDefault || null,
     adminDefault: values.adminDefault || null,
     systemDefault: values.systemDefault || null,
-    allowPlayerColorTags: values.allowPlayerColorTags,
+    playerColorTagPermission: values.playerColorTagPermission,
   };
 }
 

@@ -1046,7 +1046,9 @@
         "whisperServerName": "Whisper Sender Name",
         "chatCommandPrefixes": "Command Prefixes",
         "allowNoPrefix": "Allow Prefixless Commands",
-        "chatCommandSeparators": "Command Separators"
+        "chatCommandSeparators": "Command Separators",
+        "historyRetentionDays": "History Retention Days",
+        "excludeCommandsFromHistory": "Exclude Commands from History"
       },
       "tooltips": {
         "isEnabled": "Chat is a core service required by all features that register chat commands. It cannot be disabled.",
@@ -1054,7 +1056,9 @@
         "whisperServerName": "Display name used when the server sends a whisper message.",
         "chatCommandPrefixes": "Separate multiple prefixes with commas, for example /,!.",
         "allowNoPrefix": "When enabled, plain global chat lines may be interpreted as commands.",
-        "chatCommandSeparators": "Separate multiple delimiters with commas. A single space is the usual default."
+        "chatCommandSeparators": "Separate multiple delimiters with commas. A single space is the usual default.",
+        "historyRetentionDays": "Number of days to keep chat history. Set to 0 to keep forever.",
+        "excludeCommandsFromHistory": "When enabled, chat messages that begin with a command prefix will not be saved in history."
       },
       "actions": {
         "save": "Save Chat Settings",
@@ -1088,10 +1092,12 @@
           "partyDefault": "Party Default Color",
           "adminDefault": "Admin Default Color",
           "systemDefault": "System Default Color",
-          "allowPlayerColorTags": "Allow Player Color Tags"
+          "allowPlayerColorTags": "Allow Player Color Tags",
+          "playerColorTagPermission": "Player Color Tag Permission"
         },
         "tooltips": {
           "isEnabled": "Controls whether the ColoredChat feature is active.",
+          "playerColorTagPermission": "Controls which players can use color tags in chat. None: disabled; All: all players; AdminOnly: admins only.",
           "allowPlayerColorTags": "When enabled, players may use the controlled color tag syntax.",
           "hexColor": "Enter a 6-digit hexadecimal color value such as FFCC00."
         },
@@ -1103,6 +1109,11 @@
           "colorsHint": "The values below are saved as 6-digit hexadecimal colors.",
           "playerChannels": "Player Channels",
           "systemChannels": "System Channels"
+        },
+        "playerColorTagPermissions": {
+          "none": "Disabled",
+          "all": "All Players",
+          "adminOnly": "Admins Only"
         },
         "preview": {
           "title": "Effect Preview",
@@ -1180,7 +1191,9 @@
           "dailyStreakEnabled": "Daily Streak Bonus",
           "dailyStreakBonusPercent": "Streak Bonus Percent",
           "dailyStreakMaxDays": "Streak Max Days",
-          "shopEnabled": "Enable Shop"
+          "shopEnabled": "Enable Shop",
+          "playerConnectedRewardEnabled": "Connected Reward",
+          "playerConnectedRewardAmount": "Connected Reward Amount"
         },
         "commands": {
           "sectionTitle": "Chat Command Names",
@@ -1195,6 +1208,32 @@
             "shopCommandName": "Shop Command",
             "buyCommandName": "Buy Command",
             "redeemCommandName": "Redeem Command"
+          }
+        },
+        "tips": {
+          "sectionTitle": "Command Response Messages",
+          "sectionDescription": "Override the default in-game tip messages sent after command execution. Leave blank to use the built-in defaults. Supports placeholders listed in the tooltip.",
+          "fields": {
+            "balanceTip": "Balance Tip",
+            "payUsageTip": "Pay Usage Tip",
+            "payTargetNotFoundTip": "Pay Target Not Found Tip",
+            "paySuccessTip": "Pay Success Tip",
+            "dailySuccessTip": "Daily Reward Success Tip",
+            "dailyAlreadyClaimedTip": "Daily Already Claimed Tip",
+            "shopEmptyTip": "Shop Empty Tip",
+            "buyUsageTip": "Buy Usage Tip",
+            "buySuccessTip": "Buy Success Tip",
+            "redeemUsageTip": "Redeem Usage Tip",
+            "redeemSuccessTip": "Redeem Success Tip"
+          },
+          "tooltips": {
+            "balanceTip": "Supports: {balance}, {currency}",
+            "payUsageTip": "Supports: {currency}",
+            "paySuccessTip": "Supports: {amount}, {currency}, {playerName}, {tax}",
+            "dailySuccessTip": "Supports: {amount}, {currency}, {streak}, {bonusPercent}",
+            "buyUsageTip": "Supports: {currency}",
+            "buySuccessTip": "Supports: {name}, {quantity}, {cost}, {currency}",
+            "redeemSuccessTip": "Supports: {amount}, {currency}"
           }
         },
         "actions": {
@@ -1683,7 +1722,14 @@
       "tooltips": {
         "cronExpression": "Standard 5-field cron expression evaluated in the configured time zone.",
         "destinationRoot": "Absolute or relative folder where backup outputs are written.",
-        "retentionCount": "Maximum kept backups. Use 0 to keep none, -1 to disable pruning."
+        "retentionCount": "Maximum kept backups. Use 0 to keep none, -1 to disable pruning.",
+        "broadcastMessage": "Supports: {taskName}, {status}"
+      },
+      "fields": {
+        "broadcastOnStart": "Broadcast on Start",
+        "broadcastStartMessage": "Broadcast Start Message",
+        "broadcastOnComplete": "Broadcast on Complete",
+        "broadcastCompleteMessage": "Broadcast Complete Message"
       },
       "world": {
         "fields": {
@@ -1761,10 +1807,14 @@
           "isEnabled": "Enable Scheduler",
           "defaultTimeZoneId": "Default Time Zone",
           "defaultAllowConcurrentExecution": "Allow Concurrent Execution by Default",
-          "historyRetentionDays": "History Retention Days"
+          "historyRetentionDays": "History Retention Days",
+          "failureNotifyEnabled": "Failure Notification",
+          "failureNotifyMessage": "Failure Notification Message"
         },
         "tooltips": {
-          "defaultTimeZoneId": "Use a platform time zone ID such as UTC, Asia/Shanghai, or Pacific Standard Time."
+          "defaultTimeZoneId": "Use a platform time zone ID such as UTC, Asia/Shanghai, or Pacific Standard Time.",
+          "failureNotifyEnabled": "When enabled, a message will be broadcast to all players when a scheduled command fails.",
+          "failureNotifyMessage": "Supports: {taskName}, {error}"
         },
         "actions": {
           "save": "Save Scheduler Settings",
@@ -1905,11 +1955,23 @@
           "graceful": "Graceful",
           "force": "Force"
         },
+        "warningStages": {
+          "sectionTitle": "Multi-Stage Warning Schedule",
+          "description": "Define multiple countdown warnings at different lead times. When configured, these stages replace the single warning above. Stages are sorted by lead time automatically.",
+          "empty": "No warning stages defined. Using the single warning above.",
+          "add": "Add Stage",
+          "leadSeconds": "Lead Time (s)",
+          "message": "Message",
+          "messagePlaceholder": "Server will restart in {minutes} minutes."
+        },
         "actions": {
-          "save": "Save Restart Settings"
+          "save": "Save Restart Settings",
+          "cancelPending": "Cancel Pending Restart"
         },
         "messages": {
-          "saveSuccess": "Restart settings saved."
+          "saveSuccess": "Restart settings saved.",
+          "cancelSuccess": "Pending restart has been cancelled.",
+          "cancelNoActive": "No active restart to cancel."
         }
       },
       "run": {

@@ -26,6 +26,8 @@ interface FormModel {
   dailyStreakBonusPercent: number;
   dailyStreakMaxDays: number;
   shopEnabled: boolean;
+  playerConnectedRewardEnabled: boolean;
+  playerConnectedRewardAmount: number;
   balCommandName: string;
   balCommandAliases: string;
   payCommandName: string;
@@ -35,6 +37,17 @@ interface FormModel {
   shopCommandName: string;
   buyCommandName: string;
   redeemCommandName: string;
+  balanceTip: string;
+  paySuccessTip: string;
+  payUsageTip: string;
+  payTargetNotFoundTip: string;
+  dailySuccessTip: string;
+  dailyAlreadyClaimedTip: string;
+  shopEmptyTip: string;
+  buyUsageTip: string;
+  buySuccessTip: string;
+  redeemUsageTip: string;
+  redeemSuccessTip: string;
 }
 
 interface FormExpose {
@@ -66,6 +79,8 @@ function buildDefaults(): FormModel {
     dailyStreakBonusPercent: 10,
     dailyStreakMaxDays: 7,
     shopEnabled: false,
+    playerConnectedRewardEnabled: false,
+    playerConnectedRewardAmount: 0,
     balCommandName: 'bal',
     balCommandAliases: 'balance, money',
     payCommandName: 'pay',
@@ -75,6 +90,17 @@ function buildDefaults(): FormModel {
     shopCommandName: 'shop',
     buyCommandName: 'buy',
     redeemCommandName: 'redeem',
+    balanceTip: '',
+    paySuccessTip: '',
+    payUsageTip: '',
+    payTargetNotFoundTip: '',
+    dailySuccessTip: '',
+    dailyAlreadyClaimedTip: '',
+    shopEmptyTip: '',
+    buyUsageTip: '',
+    buySuccessTip: '',
+    redeemUsageTip: '',
+    redeemSuccessTip: '',
   };
 }
 
@@ -106,6 +132,19 @@ const schema = v.object({
   shopCommandName: v.pipe(v.string(), v.minLength(1)),
   buyCommandName: v.pipe(v.string(), v.minLength(1)),
   redeemCommandName: v.pipe(v.string(), v.minLength(1)),
+  playerConnectedRewardEnabled: v.boolean(),
+  playerConnectedRewardAmount: v.pipe(v.number(), v.minValue(0)),
+  balanceTip: v.optional(v.string()),
+  paySuccessTip: v.optional(v.string()),
+  payUsageTip: v.optional(v.string()),
+  payTargetNotFoundTip: v.optional(v.string()),
+  dailySuccessTip: v.optional(v.string()),
+  dailyAlreadyClaimedTip: v.optional(v.string()),
+  shopEmptyTip: v.optional(v.string()),
+  buyUsageTip: v.optional(v.string()),
+  buySuccessTip: v.optional(v.string()),
+  redeemUsageTip: v.optional(v.string()),
+  redeemSuccessTip: v.optional(v.string()),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -222,9 +261,99 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     options: booleanOptions.value,
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'playerConnectedRewardEnabled',
+    label: t('views.economy.settings.fields.playerConnectedRewardEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'playerConnectedRewardAmount',
+    label: t('views.economy.settings.fields.playerConnectedRewardAmount'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
 ]);
 
 const aliasesHelp = computed(() => t('views.economy.settings.commands.aliasesHelp'));
+
+const tipsFields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'balanceTip',
+    label: t('views.economy.settings.tips.fields.balanceTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.balanceTip'),
+    span: { xs: 24 },
+  },
+  {
+    prop: 'payUsageTip',
+    label: t('views.economy.settings.tips.fields.payUsageTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.payUsageTip'),
+    span: { xs: 24 },
+  },
+  {
+    prop: 'payTargetNotFoundTip',
+    label: t('views.economy.settings.tips.fields.payTargetNotFoundTip'),
+    el: 'el-input',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'paySuccessTip',
+    label: t('views.economy.settings.tips.fields.paySuccessTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.paySuccessTip'),
+    span: { xs: 24 },
+  },
+  {
+    prop: 'dailySuccessTip',
+    label: t('views.economy.settings.tips.fields.dailySuccessTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.dailySuccessTip'),
+    span: { xs: 24 },
+  },
+  {
+    prop: 'dailyAlreadyClaimedTip',
+    label: t('views.economy.settings.tips.fields.dailyAlreadyClaimedTip'),
+    el: 'el-input',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'shopEmptyTip',
+    label: t('views.economy.settings.tips.fields.shopEmptyTip'),
+    el: 'el-input',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'buyUsageTip',
+    label: t('views.economy.settings.tips.fields.buyUsageTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.buyUsageTip'),
+    span: { xs: 24 },
+  },
+  {
+    prop: 'buySuccessTip',
+    label: t('views.economy.settings.tips.fields.buySuccessTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.buySuccessTip'),
+    span: { xs: 24 },
+  },
+  {
+    prop: 'redeemUsageTip',
+    label: t('views.economy.settings.tips.fields.redeemUsageTip'),
+    el: 'el-input',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'redeemSuccessTip',
+    label: t('views.economy.settings.tips.fields.redeemSuccessTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.redeemSuccessTip'),
+    span: { xs: 24 },
+  },
+]);
 
 const commandFields = computed<MyFormField<FormModel>[]>(() => [
   {
@@ -348,6 +477,8 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     dailyStreakBonusPercent: source.dailyStreakBonusPercent ?? 10,
     dailyStreakMaxDays: source.dailyStreakMaxDays ?? 7,
     shopEnabled: source.shopEnabled ?? false,
+    playerConnectedRewardEnabled: source.playerConnectedRewardEnabled ?? false,
+    playerConnectedRewardAmount: source.playerConnectedRewardAmount ?? 0,
     balCommandName: source.balCommandName || 'bal',
     balCommandAliases: parseAliases(source.balCommandAliases),
     payCommandName: source.payCommandName || 'pay',
@@ -357,6 +488,17 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     shopCommandName: source.shopCommandName || 'shop',
     buyCommandName: source.buyCommandName || 'buy',
     redeemCommandName: source.redeemCommandName || 'redeem',
+    balanceTip: source.balanceTip ?? '',
+    paySuccessTip: source.paySuccessTip ?? '',
+    payUsageTip: source.payUsageTip ?? '',
+    payTargetNotFoundTip: source.payTargetNotFoundTip ?? '',
+    dailySuccessTip: source.dailySuccessTip ?? '',
+    dailyAlreadyClaimedTip: source.dailyAlreadyClaimedTip ?? '',
+    shopEmptyTip: source.shopEmptyTip ?? '',
+    buyUsageTip: source.buyUsageTip ?? '',
+    buySuccessTip: source.buySuccessTip ?? '',
+    redeemUsageTip: source.redeemUsageTip ?? '',
+    redeemSuccessTip: source.redeemSuccessTip ?? '',
   };
 }
 
@@ -376,6 +518,8 @@ function applyFormValues(values: FormModel): void {
   form.dailyStreakBonusPercent = values.dailyStreakBonusPercent;
   form.dailyStreakMaxDays = values.dailyStreakMaxDays;
   form.shopEnabled = values.shopEnabled;
+  form.playerConnectedRewardEnabled = values.playerConnectedRewardEnabled;
+  form.playerConnectedRewardAmount = values.playerConnectedRewardAmount;
   form.balCommandName = values.balCommandName;
   form.balCommandAliases = values.balCommandAliases;
   form.payCommandName = values.payCommandName;
@@ -385,6 +529,17 @@ function applyFormValues(values: FormModel): void {
   form.shopCommandName = values.shopCommandName;
   form.buyCommandName = values.buyCommandName;
   form.redeemCommandName = values.redeemCommandName;
+  form.balanceTip = values.balanceTip;
+  form.paySuccessTip = values.paySuccessTip;
+  form.payUsageTip = values.payUsageTip;
+  form.payTargetNotFoundTip = values.payTargetNotFoundTip;
+  form.dailySuccessTip = values.dailySuccessTip;
+  form.dailyAlreadyClaimedTip = values.dailyAlreadyClaimedTip;
+  form.shopEmptyTip = values.shopEmptyTip;
+  form.buyUsageTip = values.buyUsageTip;
+  form.buySuccessTip = values.buySuccessTip;
+  form.redeemUsageTip = values.redeemUsageTip;
+  form.redeemSuccessTip = values.redeemSuccessTip;
 }
 
 async function loadSettings() {
@@ -446,6 +601,8 @@ function toPayload(values: FormModel): API.Economy.Settings {
     dailyStreakBonusPercent: Number(values.dailyStreakBonusPercent ?? 10),
     dailyStreakMaxDays: Number(values.dailyStreakMaxDays ?? 7),
     shopEnabled: values.shopEnabled,
+    playerConnectedRewardEnabled: values.playerConnectedRewardEnabled,
+    playerConnectedRewardAmount: Number(values.playerConnectedRewardAmount ?? 0),
     balCommandName: values.balCommandName,
     balCommandAliases: parseAliases(values.balCommandAliases),
     payCommandName: values.payCommandName,
@@ -455,6 +612,17 @@ function toPayload(values: FormModel): API.Economy.Settings {
     shopCommandName: values.shopCommandName,
     buyCommandName: values.buyCommandName,
     redeemCommandName: values.redeemCommandName,
+    balanceTip: values.balanceTip.trim() || null,
+    paySuccessTip: values.paySuccessTip.trim() || null,
+    payUsageTip: values.payUsageTip.trim() || null,
+    payTargetNotFoundTip: values.payTargetNotFoundTip.trim() || null,
+    dailySuccessTip: values.dailySuccessTip.trim() || null,
+    dailyAlreadyClaimedTip: values.dailyAlreadyClaimedTip.trim() || null,
+    shopEmptyTip: values.shopEmptyTip.trim() || null,
+    buyUsageTip: values.buyUsageTip.trim() || null,
+    buySuccessTip: values.buySuccessTip.trim() || null,
+    redeemUsageTip: values.redeemUsageTip.trim() || null,
+    redeemSuccessTip: values.redeemSuccessTip.trim() || null,
   };
 }
 
@@ -531,6 +699,23 @@ onMounted(() => {
         <MyForm
           v-model="form"
           :fields="commandFields"
+          :rules="rules"
+          label-position="top"
+          label-width="auto"
+          :gutter="16"
+        />
+      </div>
+
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+        <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
+          {{ t('views.economy.settings.tips.sectionTitle') }}
+        </h3>
+        <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
+          {{ t('views.economy.settings.tips.sectionDescription') }}
+        </p>
+        <MyForm
+          v-model="form"
+          :fields="tipsFields"
           :rules="rules"
           label-position="top"
           label-width="auto"

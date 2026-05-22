@@ -13,7 +13,7 @@ declare namespace API {
       partyDefault: string | null;
       adminDefault: string | null;
       systemDefault: string | null;
-      allowPlayerColorTags: boolean;
+      playerColorTagPermission: string;
     }
 
     interface Profile {
