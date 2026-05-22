@@ -12,7 +12,6 @@ defineOptions({ name: 'GameNoticePage' });
 
 interface FormModel {
   isEnabled: boolean;
-  welcomeNotice: string;
   rotatingIntervalSeconds: number;
   bloodMoonNotice1: string;
   bloodMoonNotice2: string;
@@ -32,11 +31,11 @@ const isLoading = ref(false);
 const isSubmitting = ref(false);
 const settings = ref<API.GameNotice.Settings | null>(null);
 const rotatingNotices = ref<string[]>([]);
+const welcomeNotices = ref<string[]>([]);
 
 function buildDefaults(): FormModel {
   return {
     isEnabled: false,
-    welcomeNotice: '',
     rotatingIntervalSeconds: 300,
     bloodMoonNotice1: '',
     bloodMoonNotice2: '',
@@ -48,7 +47,6 @@ const form = reactive<FormModel>(buildDefaults());
 
 const schema = v.object({
   isEnabled: v.boolean(),
-  welcomeNotice: v.string(),
   rotatingIntervalSeconds: v.pipe(v.number(), v.minValue(1)),
   bloodMoonNotice1: v.string(),
   bloodMoonNotice2: v.string(),
@@ -79,14 +77,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24, md: 12 },
   },
   {
-    prop: 'welcomeNotice',
-    label: t('views.gameNotice.settings.fields.welcomeNotice'),
-    el: 'el-input',
-    props: { type: 'textarea', rows: 2 },
-    tooltip: t('views.gameNotice.settings.tooltips.welcomeNotice'),
-    span: { xs: 24 },
-  },
-  {
     prop: 'bloodMoonNotice1',
     label: t('views.gameNotice.settings.fields.bloodMoonNotice1'),
     el: 'el-input',
@@ -112,11 +102,11 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
 
 function applyValues(source: API.GameNotice.Settings) {
   form.isEnabled = source.isEnabled;
-  form.welcomeNotice = source.welcomeNotice ?? '';
   form.rotatingIntervalSeconds = source.rotatingIntervalSeconds;
   form.bloodMoonNotice1 = source.bloodMoonNotice1 ?? '';
   form.bloodMoonNotice2 = source.bloodMoonNotice2 ?? '';
   form.bloodMoonNotice3 = source.bloodMoonNotice3 ?? '';
+  welcomeNotices.value = source.welcomeNotices ? [...source.welcomeNotices] : [];
   rotatingNotices.value = source.rotatingNotices ? [...source.rotatingNotices] : [];
 }
 
@@ -144,6 +134,14 @@ function removeNotice(index: number) {
   rotatingNotices.value.splice(index, 1);
 }
 
+function addWelcomeNotice() {
+  welcomeNotices.value.push('');
+}
+
+function removeWelcomeNotice(index: number) {
+  welcomeNotices.value.splice(index, 1);
+}
+
 async function onSubmit() {
   if (formRef.value == null || settings.value == null) {
     return;
@@ -156,11 +154,12 @@ async function onSubmit() {
 
   isSubmitting.value = true;
   try {
+    const filteredWelcomeNotices = welcomeNotices.value.map(n => n.trim()).filter(n => n.length > 0);
     const filteredNotices = rotatingNotices.value.map(n => n.trim()).filter(n => n.length > 0);
     const payload: API.GameNotice.Settings = {
       ...settings.value,
       isEnabled: form.isEnabled,
-      welcomeNotice: form.welcomeNotice.trim() || null,
+      welcomeNotices: filteredWelcomeNotices.length > 0 ? filteredWelcomeNotices : null,
       rotatingNotices: filteredNotices.length > 0 ? filteredNotices : null,
       rotatingIntervalSeconds: Number(form.rotatingIntervalSeconds),
       bloodMoonNotice1: form.bloodMoonNotice1.trim() || null,
@@ -230,6 +229,42 @@ onMounted(() => {
         :gutter="16"
         @submit.prevent="onSubmit"
       />
+
+      <!-- Welcome notices list is managed outside MyForm because it is a dynamic string array -->
+      <div class="mt-4 px-1">
+        <div class="mb-2 flex items-center justify-between">
+          <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
+            {{ t('views.gameNotice.settings.fields.welcomeNotices') }}
+          </span>
+          <el-button size="small" plain @click="addWelcomeNotice">
+            <el-icon><icon-mdi-plus /></el-icon>
+            {{ t('views.gameNotice.settings.actions.addNotice') }}
+          </el-button>
+        </div>
+        <p v-if="welcomeNotices.length === 0" class="text-sm text-gray-400 dark:text-gray-500">
+          {{ t('views.gameNotice.settings.messages.noWelcomeNotices') }}
+        </p>
+        <div v-auto-animate class="flex flex-col gap-2">
+          <div v-for="(_, index) in welcomeNotices" :key="index" class="flex gap-2 items-center">
+            <span class="text-xs text-gray-400 text-right shrink-0 w-6 dark:text-gray-500">{{ index + 1 }}</span>
+            <el-input
+              v-model="welcomeNotices[index]"
+              :placeholder="t('views.gameNotice.settings.placeholders.welcomeNotice')"
+              class="flex-1"
+              clearable
+            />
+            <IconButton
+              button-size="small"
+              icon-size="16"
+              plain
+              :tooltip-content="t('views.gameNotice.settings.actions.removeNotice')"
+              @click="removeWelcomeNotice(index)"
+            >
+              <icon-mdi-minus />
+            </IconButton>
+          </div>
+        </div>
+      </div>
 
       <!-- Rotating notices list is managed outside MyForm because it is a dynamic string array -->
       <div class="mt-4 px-1">

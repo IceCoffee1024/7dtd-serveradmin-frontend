@@ -20,6 +20,8 @@ declare namespace API {
       teleSuccessTip: string | null
       setCurrencyNotEnoughTip: string | null
       teleCurrencyNotEnoughTip: string | null
+      allowDuringBloodMoon: boolean
+      bloodMoonBlockedTip: string | null
     }
 
     interface CitySettings {
@@ -55,11 +57,29 @@ declare namespace API {
       currencyNotEnoughTip: string | null
     }
 
+    interface GlobalCooldownSettings {
+      isEnabled: boolean
+      cooldownSeconds: number
+    }
+
+    interface BackSettings {
+      isEnabled: boolean
+      cooldownSeconds: number
+      currencyRequired: number
+      commandName: string | null
+      noPositionTip: string | null
+      coolingTip: string | null
+      teleSuccessTip: string | null
+      currencyNotEnoughTip: string | null
+    }
+
     interface FeatureSettings {
       isEnabled: boolean
       home: HomeSettings
       city: CitySettings
       friend: FriendSettings
+      globalCooldown: GlobalCooldownSettings
+      back: BackSettings
     }
 
     interface CityLocation {
@@ -98,6 +118,35 @@ declare namespace API {
       y: number
       z: number
       createdAt: string
+    }
+
+    interface Paged<T> {
+      total: number
+      items: T[]
+    }
+
+    interface TeleportLog {
+      id: number
+      timestamp: string
+      playerId: string
+      playerName: string
+      subSystem: string
+      fromX: number
+      fromY: number
+      fromZ: number
+      toX: number
+      toY: number
+      toZ: number
+      costPaid: number
+      remark: string | null
+    }
+
+    interface TeleportLogQuery {
+      playerId?: string
+      startTime?: string
+      endTime?: string
+      pageNumber?: number
+      pageSize?: number
     }
   }
 }

@@ -39,3 +39,14 @@ export function deleteHome(playerId: string, homeName: string) {
     `Teleport/Homes/${encodeURIComponent(playerId)}/${encodeURIComponent(homeName)}`,
   ).then(() => undefined);
 }
+
+/**
+ * Queries paginated teleport audit logs with optional player and date-range filters.
+ * @param params - Filtering and pagination criteria.
+ * @returns Paged collection of teleport log records.
+ */
+export function getLogs(params: API.Teleport.TeleportLogQuery = {}) {
+  return http.get<API.Teleport.Paged<API.Teleport.TeleportLog>>('Teleport/Logs', {
+    searchParams: { ...params },
+  }).json();
+}

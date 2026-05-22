@@ -2,7 +2,7 @@ declare namespace API {
   namespace GameNotice {
     interface Settings {
       isEnabled: boolean;
-      welcomeNotice: string | null;
+      welcomeNotices: string[] | null;
       rotatingNotices: string[] | null;
       rotatingIntervalSeconds: number;
       bloodMoonNotice1: string | null;

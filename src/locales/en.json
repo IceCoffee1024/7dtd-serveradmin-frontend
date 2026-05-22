@@ -80,6 +80,7 @@
     "teleportSettings": "Settings",
     "teleportCities": "Cities",
     "teleportHomes": "Player Homes",
+    "teleportLogs": "Teleport Logs",
     "gameNotice": "Game Notice",
     "gameEventLogs": "Game Event Logs"
   },
@@ -1448,7 +1449,9 @@
         "tabs": {
           "home": "Home Teleport",
           "city": "City Teleport",
-          "friend": "Friend Teleport"
+          "friend": "Friend Teleport",
+          "globalCooldown": "Global Cooldown",
+          "back": "Back Teleport"
         },
         "sections": {
           "commands": "Commands",
@@ -1475,7 +1478,9 @@
             "coolingTip": "Cooldown Message",
             "teleSuccessTip": "Teleport Success Message",
             "setCurrencyNotEnoughTip": "Insufficient Funds (Set) Message",
-            "teleCurrencyNotEnoughTip": "Insufficient Funds (Teleport) Message"
+            "teleCurrencyNotEnoughTip": "Insufficient Funds (Teleport) Message",
+            "allowDuringBloodMoon": "Allow Teleport During Blood Moon",
+            "bloodMoonBlockedTip": "Blood Moon Blocked Message"
           },
           "city": {
             "isEnabled": "Enable City Teleport",
@@ -1504,6 +1509,20 @@
             "rejectedTip": "Rejected Message",
             "targetRejectedTip": "Target Rejected Message",
             "noRequestTip": "No Request Message",
+            "coolingTip": "Cooldown Message",
+            "teleSuccessTip": "Teleport Success Message",
+            "currencyNotEnoughTip": "Insufficient Funds Message"
+          },
+          "globalCooldown": {
+            "isEnabled": "Enable Global Cooldown",
+            "cooldownSeconds": "Global Cooldown (seconds)"
+          },
+          "back": {
+            "isEnabled": "Enable Back Teleport",
+            "cooldownSeconds": "Cooldown (seconds)",
+            "currencyRequired": "Teleport Cost",
+            "commandName": "Back Command",
+            "noPositionTip": "No Previous Position Message",
             "coolingTip": "Cooldown Message",
             "teleSuccessTip": "Teleport Success Message",
             "currencyNotEnoughTip": "Insufficient Funds Message"
@@ -1578,13 +1597,36 @@
         "messages": {
           "deleteSuccess": "Home deleted."
         }
+      },
+      "logs": {
+        "filters": {
+          "playerId": "Player ID",
+          "timeRange": "Time Range"
+        },
+        "placeholders": {
+          "playerId": "Filter by player ID",
+          "timeRange": "Select date range"
+        },
+        "columns": {
+          "timestamp": "Timestamp",
+          "playerName": "Player Name",
+          "subSystem": "Sub-System",
+          "fromX": "From X",
+          "fromY": "From Y",
+          "fromZ": "From Z",
+          "toX": "To X",
+          "toY": "To Y",
+          "toZ": "To Z",
+          "costPaid": "Cost Paid",
+          "remark": "Remark"
+        }
       }
     },
     "gameNotice": {
       "settings": {
         "fields": {
           "isEnabled": "Enable Game Notice",
-          "welcomeNotice": "Welcome Notice",
+          "welcomeNotices": "Welcome Notices",
           "rotatingNotices": "Rotating Notices",
           "rotatingIntervalSeconds": "Rotating Interval (Seconds)",
           "bloodMoonNotice1": "Blood Moon Notice — Stage 1",
@@ -1592,11 +1634,12 @@
           "bloodMoonNotice3": "Blood Moon Notice — Stage 3"
         },
         "tooltips": {
-          "welcomeNotice": "Sent to a player when they join the server. Supports {PlayerName}, {PlayerId}, {EntityId}.",
+          "welcomeNotices": "Sent to a player when they join the server. Supports {PlayerName}, {PlayerId}, {EntityId}. Each entry is sent as a separate message.",
           "rotatingIntervalSeconds": "Interval in seconds between each rotating notice broadcast.",
           "bloodMoonNotices": "Broadcast at different stages of the blood moon. Supports {BloodMoonDays}, {BloodMoonStartTime}, {BloodMoonEndTime}."
         },
         "placeholders": {
+          "welcomeNotice": "Enter welcome notice text…",
           "rotatingNotice": "Enter notice text…"
         },
         "actions": {
@@ -1609,7 +1652,8 @@
           "saveSuccess": "Game notice settings saved.",
           "resetConfirm": "Reset all game notice settings to their defaults? This cannot be undone.",
           "resetSuccess": "Game notice settings have been reset to defaults.",
-          "noRotatingNotices": "No rotating notices configured. Click \"Add Notice\" to add one."
+          "noRotatingNotices": "No rotating notices configured. Click \"Add Notice\" to add one.",
+          "noWelcomeNotices": "No welcome notices configured. Click \"Add Notice\" to add one."
         }
       }
     },

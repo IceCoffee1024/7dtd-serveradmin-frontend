@@ -80,6 +80,7 @@
     "teleportSettings": "传送设置",
     "teleportCities": "城市管理",
     "teleportHomes": "玩家家园",
+    "teleportLogs": "传送日志",
     "gameNotice": "游戏公告",
     "gameEventLogs": "游戏事件日志"
   },
@@ -960,7 +961,9 @@
         "tabs": {
           "home": "家园传送",
           "city": "城市传送",
-          "friend": "好友传送"
+          "friend": "好友传送",
+          "globalCooldown": "全局冷却",
+          "back": "返回传送"
         },
         "sections": {
           "commands": "指令配置",
@@ -987,7 +990,9 @@
             "coolingTip": "冷却中提示",
             "teleSuccessTip": "传送成功提示",
             "setCurrencyNotEnoughTip": "设置余额不足提示",
-            "teleCurrencyNotEnoughTip": "传送余额不足提示"
+            "teleCurrencyNotEnoughTip": "传送余额不足提示",
+            "allowDuringBloodMoon": "血月期间允许传送",
+            "bloodMoonBlockedTip": "血月期间禁止传送提示"
           },
           "city": {
             "isEnabled": "启用城市传送",
@@ -1016,6 +1021,20 @@
             "rejectedTip": "已拒绝提示",
             "targetRejectedTip": "目标拒绝提示",
             "noRequestTip": "无请求提示",
+            "coolingTip": "冷却中提示",
+            "teleSuccessTip": "传送成功提示",
+            "currencyNotEnoughTip": "余额不足提示"
+          },
+          "globalCooldown": {
+            "isEnabled": "启用全局冷却",
+            "cooldownSeconds": "全局冷却时间（秒）"
+          },
+          "back": {
+            "isEnabled": "启用返回传送",
+            "cooldownSeconds": "冷却时间（秒）",
+            "currencyRequired": "传送费用",
+            "commandName": "返回指令",
+            "noPositionTip": "无历史位置提示",
             "coolingTip": "冷却中提示",
             "teleSuccessTip": "传送成功提示",
             "currencyNotEnoughTip": "余额不足提示"
@@ -1090,13 +1109,36 @@
         "messages": {
           "deleteSuccess": "家园已删除。"
         }
+      },
+      "logs": {
+        "filters": {
+          "playerId": "玩家 ID",
+          "timeRange": "时间范围"
+        },
+        "placeholders": {
+          "playerId": "按玩家 ID 筛选",
+          "timeRange": "选择日期范围"
+        },
+        "columns": {
+          "timestamp": "时间",
+          "playerName": "玩家名称",
+          "subSystem": "子系统",
+          "fromX": "出发 X",
+          "fromY": "出发 Y",
+          "fromZ": "出发 Z",
+          "toX": "目标 X",
+          "toY": "目标 Y",
+          "toZ": "目标 Z",
+          "costPaid": "扣费",
+          "remark": "备注"
+        }
       }
     },
     "gameNotice": {
       "settings": {
         "fields": {
           "isEnabled": "启用游戏公告",
-          "welcomeNotice": "欢迎公告",
+          "welcomeNotices": "欢迎公告",
           "rotatingNotices": "轮播公告",
           "rotatingIntervalSeconds": "轮播间隔（秒）",
           "bloodMoonNotice1": "血月公告 — 阶段一",
@@ -1104,11 +1146,12 @@
           "bloodMoonNotice3": "血月公告 — 阶段三"
         },
         "tooltips": {
-          "welcomeNotice": "玩家加入服务器时发送。支持占位符：{PlayerName}、{PlayerId}、{EntityId}。",
+          "welcomeNotices": "玩家加入服务器时发送。支持占位符：{PlayerName}、{PlayerId}、{EntityId}。每条作为独立消息发送。",
           "rotatingIntervalSeconds": "每条轮播公告之间的广播间隔（秒）。",
           "bloodMoonNotices": "在血月不同阶段广播。支持占位符：{BloodMoonDays}、{BloodMoonStartTime}、{BloodMoonEndTime}。"
         },
         "placeholders": {
+          "welcomeNotice": "输入欢迎公告内容…",
           "rotatingNotice": "输入公告内容…"
         },
         "actions": {
@@ -1121,7 +1164,8 @@
           "saveSuccess": "游戏公告设置已保存。",
           "resetConfirm": "确定要将所有游戏公告设置恢复为默认值吗？此操作不可撤销。",
           "resetSuccess": "游戏公告设置已恢复为默认值。",
-          "noRotatingNotices": "暂无轮播公告，点击「添加公告」以添加。"
+          "noRotatingNotices": "暂无轮播公告，点击「添加公告」以添加。",
+          "noWelcomeNotices": "暂无欢迎公告，点击「添加公告」以添加。"
         }
       }
     },

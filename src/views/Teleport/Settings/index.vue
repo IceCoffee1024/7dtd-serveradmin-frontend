@@ -18,6 +18,7 @@ interface FormModel {
   homeSetCurrencyRequired: number
   homeTeleCurrencyRequired: number
   homeMaxHomes: number
+  homeAllowDuringBloodMoon: boolean
   homeListCommandName: string
   homeSetCommandName: string
   homeDeleteCommandName: string
@@ -32,6 +33,7 @@ interface FormModel {
   homeTeleSuccessTip: string
   homeSetCurrencyNotEnoughTip: string
   homeTeleCurrencyNotEnoughTip: string
+  homeBloodMoonBlockedTip: string
   // City
   cityEnabled: boolean
   cityCooldownSeconds: number
@@ -61,6 +63,18 @@ interface FormModel {
   friendCoolingTip: string
   friendTeleSuccessTip: string
   friendCurrencyNotEnoughTip: string
+  // Global Cooldown
+  globalCooldownEnabled: boolean
+  globalCooldownSeconds: number
+  // Back
+  backEnabled: boolean
+  backCooldownSeconds: number
+  backCurrencyRequired: number
+  backCommandName: string
+  backNoPositionTip: string
+  backCoolingTip: string
+  backTeleSuccessTip: string
+  backCurrencyNotEnoughTip: string
 }
 
 interface FormExpose {
@@ -83,7 +97,8 @@ function buildDefaults(): FormModel {
     homeSetCurrencyRequired: 0,
     homeTeleCurrencyRequired: 0,
     homeMaxHomes: 3,
-    homeListCommandName: '',
+    homeAllowDuringBloodMoon: false,
+    homeListCommandName: '',,
     homeSetCommandName: '',
     homeDeleteCommandName: '',
     homeTeleCommandName: '',
@@ -97,6 +112,7 @@ function buildDefaults(): FormModel {
     homeTeleSuccessTip: '',
     homeSetCurrencyNotEnoughTip: '',
     homeTeleCurrencyNotEnoughTip: '',
+    homeBloodMoonBlockedTip: '',
     cityEnabled: false,
     cityCooldownSeconds: 60,
     cityListCommandName: '',
@@ -124,6 +140,16 @@ function buildDefaults(): FormModel {
     friendCoolingTip: '',
     friendTeleSuccessTip: '',
     friendCurrencyNotEnoughTip: '',
+    globalCooldownEnabled: false,
+    globalCooldownSeconds: 60,
+    backEnabled: false,
+    backCooldownSeconds: 60,
+    backCurrencyRequired: 0,
+    backCommandName: '',
+    backNoPositionTip: '',
+    backCoolingTip: '',
+    backTeleSuccessTip: '',
+    backCurrencyNotEnoughTip: '',
   };
 }
 
@@ -136,6 +162,7 @@ const schema = v.object({
   homeSetCurrencyRequired: v.pipe(v.number(), v.minValue(0)),
   homeTeleCurrencyRequired: v.pipe(v.number(), v.minValue(0)),
   homeMaxHomes: v.pipe(v.number(), v.minValue(1)),
+  homeAllowDuringBloodMoon: v.boolean(),
   homeListCommandName: v.optional(v.string()),
   homeSetCommandName: v.optional(v.string()),
   homeDeleteCommandName: v.optional(v.string()),
@@ -150,6 +177,7 @@ const schema = v.object({
   homeTeleSuccessTip: v.optional(v.string()),
   homeSetCurrencyNotEnoughTip: v.optional(v.string()),
   homeTeleCurrencyNotEnoughTip: v.optional(v.string()),
+  homeBloodMoonBlockedTip: v.optional(v.string()),
   cityEnabled: v.boolean(),
   cityCooldownSeconds: v.pipe(v.number(), v.minValue(0)),
   cityListCommandName: v.optional(v.string()),
@@ -177,6 +205,16 @@ const schema = v.object({
   friendCoolingTip: v.optional(v.string()),
   friendTeleSuccessTip: v.optional(v.string()),
   friendCurrencyNotEnoughTip: v.optional(v.string()),
+  globalCooldownEnabled: v.boolean(),
+  globalCooldownSeconds: v.pipe(v.number(), v.minValue(0)),
+  backEnabled: v.boolean(),
+  backCooldownSeconds: v.pipe(v.number(), v.minValue(0)),
+  backCurrencyRequired: v.pipe(v.number(), v.minValue(0)),
+  backCommandName: v.optional(v.string()),
+  backNoPositionTip: v.optional(v.string()),
+  backCoolingTip: v.optional(v.string()),
+  backTeleSuccessTip: v.optional(v.string()),
+  backCurrencyNotEnoughTip: v.optional(v.string()),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -234,6 +272,13 @@ const homeBasicFields = computed<MyFormField<FormModel>[]>(() => [
     props: { min: 0, precision: 0, class: 'w-full' },
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'homeAllowDuringBloodMoon',
+    label: t('views.teleport.settings.fields.home.allowDuringBloodMoon'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
 ]);
 
 const homeCommandFields = computed<MyFormField<FormModel>[]>(() => [
@@ -254,6 +299,7 @@ const homeTipFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'homeTeleSuccessTip', label: t('views.teleport.settings.fields.home.teleSuccessTip'), el: 'el-input', span: { xs: 24 } },
   { prop: 'homeSetCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.home.setCurrencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
   { prop: 'homeTeleCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.home.teleCurrencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'homeBloodMoonBlockedTip', label: t('views.teleport.settings.fields.home.bloodMoonBlockedTip'), el: 'el-input', span: { xs: 24 } },
 ]);
 
 // ---- City fields ----
@@ -345,11 +391,67 @@ const friendTipFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'friendCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.friend.currencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
 ]);
 
+// ---- Global Cooldown fields ----
+const globalCooldownFields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'globalCooldownEnabled',
+    label: t('views.teleport.settings.fields.globalCooldown.isEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'globalCooldownSeconds',
+    label: t('views.teleport.settings.fields.globalCooldown.cooldownSeconds'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+]);
+
+// ---- Back fields ----
+const backBasicFields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'backEnabled',
+    label: t('views.teleport.settings.fields.back.isEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'backCooldownSeconds',
+    label: t('views.teleport.settings.fields.back.cooldownSeconds'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'backCurrencyRequired',
+    label: t('views.teleport.settings.fields.back.currencyRequired'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+]);
+
+const backCommandFields = computed<MyFormField<FormModel>[]>(() => [
+  { prop: 'backCommandName', label: t('views.teleport.settings.fields.back.commandName'), el: 'el-input', span: { xs: 24, md: 12 } },
+]);
+
+const backTipFields = computed<MyFormField<FormModel>[]>(() => [
+  { prop: 'backNoPositionTip', label: t('views.teleport.settings.fields.back.noPositionTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'backCoolingTip', label: t('views.teleport.settings.fields.back.coolingTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'backTeleSuccessTip', label: t('views.teleport.settings.fields.back.teleSuccessTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'backCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.back.currencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
+]);
+
 // ---- Data mapping ----
 function mapSettings(dto: API.Teleport.FeatureSettings | null | undefined): FormModel {
   const h = dto?.home;
   const c = dto?.city;
   const f = dto?.friend;
+  const g = dto?.globalCooldown;
+  const b = dto?.back;
   return {
     isEnabled: dto?.isEnabled ?? false,
     homeEnabled: h?.isEnabled ?? false,
@@ -357,6 +459,7 @@ function mapSettings(dto: API.Teleport.FeatureSettings | null | undefined): Form
     homeSetCurrencyRequired: h?.setCurrencyRequired ?? 0,
     homeTeleCurrencyRequired: h?.teleCurrencyRequired ?? 0,
     homeMaxHomes: h?.maxHomes ?? 3,
+    homeAllowDuringBloodMoon: h?.allowDuringBloodMoon ?? false,
     homeListCommandName: h?.listCommandName ?? '',
     homeSetCommandName: h?.setCommandName ?? '',
     homeDeleteCommandName: h?.deleteCommandName ?? '',
@@ -371,6 +474,7 @@ function mapSettings(dto: API.Teleport.FeatureSettings | null | undefined): Form
     homeTeleSuccessTip: h?.teleSuccessTip ?? '',
     homeSetCurrencyNotEnoughTip: h?.setCurrencyNotEnoughTip ?? '',
     homeTeleCurrencyNotEnoughTip: h?.teleCurrencyNotEnoughTip ?? '',
+    homeBloodMoonBlockedTip: h?.bloodMoonBlockedTip ?? '',
     cityEnabled: c?.isEnabled ?? false,
     cityCooldownSeconds: c?.cooldownSeconds ?? 60,
     cityListCommandName: c?.listCommandName ?? '',
@@ -398,6 +502,16 @@ function mapSettings(dto: API.Teleport.FeatureSettings | null | undefined): Form
     friendCoolingTip: f?.coolingTip ?? '',
     friendTeleSuccessTip: f?.teleSuccessTip ?? '',
     friendCurrencyNotEnoughTip: f?.currencyNotEnoughTip ?? '',
+    globalCooldownEnabled: g?.isEnabled ?? false,
+    globalCooldownSeconds: g?.cooldownSeconds ?? 60,
+    backEnabled: b?.isEnabled ?? false,
+    backCooldownSeconds: b?.cooldownSeconds ?? 60,
+    backCurrencyRequired: b?.currencyRequired ?? 0,
+    backCommandName: b?.commandName ?? '',
+    backNoPositionTip: b?.noPositionTip ?? '',
+    backCoolingTip: b?.coolingTip ?? '',
+    backTeleSuccessTip: b?.teleSuccessTip ?? '',
+    backCurrencyNotEnoughTip: b?.currencyNotEnoughTip ?? '',
   };
 }
 
@@ -411,6 +525,7 @@ function buildPayload(): API.Teleport.FeatureSettings {
       setCurrencyRequired: Number(form.homeSetCurrencyRequired),
       teleCurrencyRequired: Number(form.homeTeleCurrencyRequired),
       maxHomes: Number(form.homeMaxHomes),
+      allowDuringBloodMoon: form.homeAllowDuringBloodMoon,
       listCommandName: nullIfEmpty(form.homeListCommandName),
       setCommandName: nullIfEmpty(form.homeSetCommandName),
       deleteCommandName: nullIfEmpty(form.homeDeleteCommandName),
@@ -425,6 +540,7 @@ function buildPayload(): API.Teleport.FeatureSettings {
       teleSuccessTip: nullIfEmpty(form.homeTeleSuccessTip),
       setCurrencyNotEnoughTip: nullIfEmpty(form.homeSetCurrencyNotEnoughTip),
       teleCurrencyNotEnoughTip: nullIfEmpty(form.homeTeleCurrencyNotEnoughTip),
+      bloodMoonBlockedTip: nullIfEmpty(form.homeBloodMoonBlockedTip),
     },
     city: {
       isEnabled: form.cityEnabled,
@@ -456,6 +572,20 @@ function buildPayload(): API.Teleport.FeatureSettings {
       coolingTip: nullIfEmpty(form.friendCoolingTip),
       teleSuccessTip: nullIfEmpty(form.friendTeleSuccessTip),
       currencyNotEnoughTip: nullIfEmpty(form.friendCurrencyNotEnoughTip),
+    },
+    globalCooldown: {
+      isEnabled: form.globalCooldownEnabled,
+      cooldownSeconds: Number(form.globalCooldownSeconds),
+    },
+    back: {
+      isEnabled: form.backEnabled,
+      cooldownSeconds: Number(form.backCooldownSeconds),
+      currencyRequired: Number(form.backCurrencyRequired),
+      commandName: nullIfEmpty(form.backCommandName),
+      noPositionTip: nullIfEmpty(form.backNoPositionTip),
+      coolingTip: nullIfEmpty(form.backCoolingTip),
+      teleSuccessTip: nullIfEmpty(form.backTeleSuccessTip),
+      currencyNotEnoughTip: nullIfEmpty(form.backCurrencyNotEnoughTip),
     },
   };
 }
@@ -645,6 +775,57 @@ onMounted(() => loadSettings());
                   <MyForm
                     v-model="form"
                     :fields="friendTipFields"
+                    :rules="rules"
+                    label-position="top"
+                    label-width="auto"
+                    :gutter="16"
+                  />
+                </el-collapse-item>
+              </el-collapse>
+            </div>
+          </el-tab-pane>
+
+          <!-- ==================== Global Cooldown Tab ==================== -->
+          <el-tab-pane :label="t('views.teleport.settings.tabs.globalCooldown')">
+            <MyForm
+              v-model="form"
+              :fields="globalCooldownFields"
+              :rules="rules"
+              label-position="top"
+              label-width="auto"
+              :gutter="16"
+            />
+          </el-tab-pane>
+
+          <!-- ==================== Back Tab ==================== -->
+          <el-tab-pane :label="t('views.teleport.settings.tabs.back')">
+            <MyForm
+              v-model="form"
+              :fields="backBasicFields"
+              :rules="rules"
+              label-position="top"
+              label-width="auto"
+              :gutter="16"
+            />
+
+            <div :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
+              <h3 class="text-sm font-semibold text-gray-900 mb-2 mt-4 dark:text-gray-100">
+                {{ t('views.teleport.settings.sections.commands') }}
+              </h3>
+              <MyForm
+                v-model="form"
+                :fields="backCommandFields"
+                :rules="rules"
+                label-position="top"
+                label-width="auto"
+                :gutter="16"
+              />
+
+              <el-collapse class="mt-2">
+                <el-collapse-item :title="t('views.teleport.settings.sections.tips')">
+                  <MyForm
+                    v-model="form"
+                    :fields="backTipFields"
                     :rules="rules"
                     label-position="top"
                     label-width="auto"

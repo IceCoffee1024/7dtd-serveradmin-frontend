@@ -235,6 +235,15 @@ const routes: RouteRecordRaw[] = [
               icon: markIcon(() => import('~icons/mdi/home-account')),
             },
           },
+          {
+            name: 'TeleportLogs',
+            path: 'logs',
+            component: () => import('../views/Teleport/Logs/index.vue'),
+            meta: {
+              title: () => t('menus.teleportLogs'),
+              icon: markIcon(() => import('~icons/mdi/history')),
+            },
+          },
         ],
       },
       {
