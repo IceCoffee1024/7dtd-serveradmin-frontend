@@ -688,6 +688,13 @@
         "settings": "经济设置"
       },
       "settings": {
+        "sections": {
+          "basic": "基础货币",
+          "transfer": "转账设置",
+          "dailyReward": "每日签到",
+          "bonus": "特殊奖励",
+          "shop": "商店设置"
+        },
         "fields": {
           "isEnabled": "启用经济系统",
           "currencyName": "货币名称",

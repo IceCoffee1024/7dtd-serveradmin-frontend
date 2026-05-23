@@ -59,6 +59,7 @@ const { t } = useI18n();
 const { toast } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
+const commandFormRef = useTemplateRef<FormExpose>('commandFormRef');
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 
@@ -164,116 +165,128 @@ const policyFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-const settingsFields = computed<MyFormField<FormModel>[]>(() => [
-  {
-    prop: 'allowTransfer',
-    label: t('views.economy.settings.fields.allowTransfer'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
-  },
+const basicFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'currencyName',
     label: t('views.economy.settings.fields.currencyName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'currencySymbol',
     label: t('views.economy.settings.fields.currencySymbol'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'defaultBalance',
     label: t('views.economy.settings.fields.defaultBalance'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
+  },
+]);
+
+const transferFields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'allowTransfer',
+    label: t('views.economy.settings.fields.allowTransfer'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24 },
   },
   {
     prop: 'minTransferAmount',
     label: t('views.economy.settings.fields.minTransferAmount'),
     el: 'el-input-number',
     props: { min: 1, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'transferTaxRate',
     label: t('views.economy.settings.fields.transferTaxRate'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
+]);
+
+const dailyRewardFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'dailyRewardAmount',
     label: t('views.economy.settings.fields.dailyRewardAmount'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
-  },
-  {
-    prop: 'leaderboardSize',
-    label: t('views.economy.settings.fields.leaderboardSize'),
-    el: 'el-input-number',
-    props: { min: 1, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
-  },
-  {
-    prop: 'zombieKillRewardEnabled',
-    label: t('views.economy.settings.fields.zombieKillRewardEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
-  },
-  {
-    prop: 'zombieKillRewardAmount',
-    label: t('views.economy.settings.fields.zombieKillRewardAmount'),
-    el: 'el-input-number',
-    props: { min: 0, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'dailyStreakEnabled',
     label: t('views.economy.settings.fields.dailyStreakEnabled'),
     el: 'el-select',
     options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'dailyStreakBonusPercent',
     label: t('views.economy.settings.fields.dailyStreakBonusPercent'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'dailyStreakMaxDays',
     label: t('views.economy.settings.fields.dailyStreakMaxDays'),
     el: 'el-input-number',
     props: { min: 1, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
+]);
+
+const bonusFields = computed<MyFormField<FormModel>[]>(() => [
   {
-    prop: 'shopEnabled',
-    label: t('views.economy.settings.fields.shopEnabled'),
+    prop: 'zombieKillRewardEnabled',
+    label: t('views.economy.settings.fields.zombieKillRewardEnabled'),
     el: 'el-select',
     options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
+  },
+  {
+    prop: 'zombieKillRewardAmount',
+    label: t('views.economy.settings.fields.zombieKillRewardAmount'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24 },
   },
   {
     prop: 'playerConnectedRewardEnabled',
     label: t('views.economy.settings.fields.playerConnectedRewardEnabled'),
     el: 'el-select',
     options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'playerConnectedRewardAmount',
     label: t('views.economy.settings.fields.playerConnectedRewardAmount'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
+  },
+]);
+
+const shopFields = computed<MyFormField<FormModel>[]>(() => [
+  {
+    prop: 'shopEnabled',
+    label: t('views.economy.settings.fields.shopEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24 },
+  },
+  {
+    prop: 'leaderboardSize',
+    label: t('views.economy.settings.fields.leaderboardSize'),
+    el: 'el-input-number',
+    props: { min: 1, precision: 0, class: 'w-full' },
+    span: { xs: 24 },
   },
 ]);
 
@@ -285,73 +298,73 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.balanceTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.balanceTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'payUsageTip',
     label: t('views.economy.settings.tips.fields.payUsageTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.payUsageTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'payTargetNotFoundTip',
     label: t('views.economy.settings.tips.fields.payTargetNotFoundTip'),
     el: 'el-input',
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'paySuccessTip',
     label: t('views.economy.settings.tips.fields.paySuccessTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.paySuccessTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'dailySuccessTip',
     label: t('views.economy.settings.tips.fields.dailySuccessTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.dailySuccessTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'dailyAlreadyClaimedTip',
     label: t('views.economy.settings.tips.fields.dailyAlreadyClaimedTip'),
     el: 'el-input',
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'shopEmptyTip',
     label: t('views.economy.settings.tips.fields.shopEmptyTip'),
     el: 'el-input',
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'buyUsageTip',
     label: t('views.economy.settings.tips.fields.buyUsageTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.buyUsageTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'buySuccessTip',
     label: t('views.economy.settings.tips.fields.buySuccessTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.buySuccessTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'redeemUsageTip',
     label: t('views.economy.settings.tips.fields.redeemUsageTip'),
     el: 'el-input',
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
   {
     prop: 'redeemSuccessTip',
     label: t('views.economy.settings.tips.fields.redeemSuccessTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.redeemSuccessTip'),
-    span: { xs: 24 },
+    span: { xs: 24, md: 12 },
   },
 ]);
 
@@ -360,57 +373,57 @@ const commandFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'balCommandName',
     label: t('views.economy.settings.commands.fields.balCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'balCommandAliases',
     label: t('views.economy.settings.commands.fields.balCommandAliases'),
     el: 'el-input',
     tooltip: aliasesHelp.value,
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'payCommandName',
     label: t('views.economy.settings.commands.fields.payCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'dailyCommandName',
     label: t('views.economy.settings.commands.fields.dailyCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'moneyTopCommandName',
     label: t('views.economy.settings.commands.fields.moneyTopCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'moneyTopCommandAliases',
     label: t('views.economy.settings.commands.fields.moneyTopCommandAliases'),
     el: 'el-input',
     tooltip: aliasesHelp.value,
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'shopCommandName',
     label: t('views.economy.settings.commands.fields.shopCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'buyCommandName',
     label: t('views.economy.settings.commands.fields.buyCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
   {
     prop: 'redeemCommandName',
     label: t('views.economy.settings.commands.fields.redeemCommandName'),
     el: 'el-input',
-    span: { xs: 24, md: 12 },
+    span: { xs: 24 },
   },
 ]);
 
@@ -550,6 +563,7 @@ async function loadSettings() {
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
+    commandFormRef.value?.clearValidate();
   }
   catch (error) {
     console.error(error);
@@ -569,6 +583,7 @@ async function onReset() {
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
+    commandFormRef.value?.clearValidate();
     toast({
       type: 'success',
       title: t('views.economy.settings.actions.reset'),
@@ -627,12 +642,15 @@ function toPayload(values: FormModel): API.Economy.Settings {
 }
 
 async function onSubmit() {
-  if (!formRef.value) {
+  if (!formRef.value || !commandFormRef.value) {
     return;
   }
 
-  const valid = await formRef.value.validate().catch(() => false);
-  if (!valid) {
+  const [valid1, valid2] = await Promise.all([
+    formRef.value.validate().catch(() => false),
+    commandFormRef.value.validate().catch(() => false),
+  ]);
+  if (!valid1 || !valid2) {
     return;
   }
 
@@ -669,68 +687,140 @@ onMounted(() => {
       </el-skeleton>
     </div>
     <template v-else>
+      <!-- Enable toggle -->
       <MyForm
         v-model="form"
         :fields="policyFields"
         :rules="rules"
-        label-position="top"
-        label-width="auto"
+        label-position="left"
+        label-width="140px"
         :gutter="16"
       />
 
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
-        <MyForm
-          id="economySettingsForm"
-          ref="formRef"
-          v-model="form"
-          :fields="settingsFields"
-          :rules="rules"
-          label-position="top"
-          label-width="auto"
-          :gutter="16"
-          @submit.prevent="onSubmit"
-        />
-      </div>
+      <!-- All setting cards: disabled when economy is off -->
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }" class="mt-4 space-y-4">
+        <!-- Row 1: Basic currency + Transfers -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <el-card shadow="never">
+            <template #header>
+              <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.basic') }}</span>
+            </template>
+            <MyForm
+              id="economySettingsForm"
+              ref="formRef"
+              v-model="form"
+              :fields="basicFields"
+              :rules="rules"
+              label-position="left"
+              label-width="120px"
+              :gutter="16"
+              @submit.prevent="onSubmit"
+            />
+          </el-card>
+          <el-card shadow="never">
+            <template #header>
+              <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.transfer') }}</span>
+            </template>
+            <MyForm
+              v-model="form"
+              :fields="transferFields"
+              :rules="rules"
+              label-position="left"
+              label-width="120px"
+              :gutter="16"
+            />
+          </el-card>
+        </div>
 
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
-        <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
-          {{ t('views.economy.settings.commands.sectionTitle') }}
-        </h3>
-        <MyForm
-          v-model="form"
-          :fields="commandFields"
-          :rules="rules"
-          label-position="top"
-          label-width="auto"
-          :gutter="16"
-        />
-      </div>
+        <!-- Row 2: Daily rewards + Bonus rewards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <el-card shadow="never">
+            <template #header>
+              <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.dailyReward') }}</span>
+            </template>
+            <MyForm
+              v-model="form"
+              :fields="dailyRewardFields"
+              :rules="rules"
+              label-position="left"
+              label-width="120px"
+              :gutter="16"
+            />
+          </el-card>
+          <el-card shadow="never">
+            <template #header>
+              <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.bonus') }}</span>
+            </template>
+            <MyForm
+              v-model="form"
+              :fields="bonusFields"
+              :rules="rules"
+              label-position="left"
+              label-width="120px"
+              :gutter="16"
+            />
+          </el-card>
+        </div>
 
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
-        <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
-          {{ t('views.economy.settings.tips.sectionTitle') }}
-        </h3>
-        <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
-          {{ t('views.economy.settings.tips.sectionDescription') }}
-        </p>
-        <MyForm
-          v-model="form"
-          :fields="tipsFields"
-          :rules="rules"
-          label-position="top"
-          label-width="auto"
-          :gutter="16"
-        />
-      </div>
+        <!-- Row 3: Shop + Commands -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <el-card shadow="never">
+            <template #header>
+              <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.shop') }}</span>
+            </template>
+            <MyForm
+              v-model="form"
+              :fields="shopFields"
+              :rules="rules"
+              label-position="left"
+              label-width="120px"
+              :gutter="16"
+            />
+          </el-card>
+          <el-card shadow="never">
+            <template #header>
+              <span class="text-sm font-semibold">{{ t('views.economy.settings.commands.sectionTitle') }}</span>
+            </template>
+            <MyForm
+              ref="commandFormRef"
+              v-model="form"
+              :fields="commandFields"
+              :rules="rules"
+              label-position="left"
+              label-width="120px"
+              :gutter="16"
+            />
+          </el-card>
+        </div>
 
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }" class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
-        <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
-          {{ t('views.economy.settings.preview.title') }}
-        </h3>
-        <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
-          <div v-for="item in previewItems" :key="item.key" class="flex gap-6 items-center">
-            <span :class="item.colorClass" class="shrink-0 w-40">{{ item.value }}</span>
-            <span class="text-xs text-gray-500">{{ item.label }}</span>
+        <!-- Tips: full-width card with 2-column fields -->
+        <el-card shadow="never">
+          <template #header>
+            <span class="text-sm font-semibold">{{ t('views.economy.settings.tips.sectionTitle') }}</span>
+          </template>
+          <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
+            {{ t('views.economy.settings.tips.sectionDescription') }}
+          </p>
+          <MyForm
+            v-model="form"
+            :fields="tipsFields"
+            :rules="rules"
+            label-position="left"
+            label-width="140px"
+            :gutter="16"
+          />
+        </el-card>
+
+        <!-- Preview -->
+        <div class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
+          <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+            {{ t('views.economy.settings.preview.title') }}
+          </h3>
+          <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
+            <div v-for="item in previewItems" :key="item.key" class="flex gap-6 items-center">
+              <span :class="item.colorClass" class="shrink-0 w-40">{{ item.value }}</span>
+              <span class="text-xs text-gray-500">{{ item.label }}</span>
+            </div>
           </div>
         </div>
       </div>

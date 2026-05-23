@@ -39,8 +39,12 @@ body {
   }
 
   --el-bg-color: var(--colors-surface-50);
+  --el-border-color: #c0c4cc;
+  --el-border-color-light: #d9dde5;
   .dark & {
     --el-bg-color: var(--colors-surface-950);
+    --el-border-color: #58595c;
+    --el-border-color-light: #4e4f52;
   }
 }
 

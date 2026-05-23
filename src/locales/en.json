@@ -1176,8 +1176,14 @@
         "settings": "Settings"
       },
       "settings": {
+        "sections": {
+          "basic": "Basic Currency",
+          "transfer": "Transfers",
+          "dailyReward": "Daily Rewards",
+          "bonus": "Bonus Rewards",
+          "shop": "Shop"
+        },
         "fields": {
-          "isEnabled": "Enable Economy",
           "currencyName": "Currency Name",
           "currencySymbol": "Currency Symbol",
           "defaultBalance": "Default Balance",

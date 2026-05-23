@@ -661,8 +661,8 @@ onMounted(() => loadSettings());
         v-model="form"
         :fields="masterFields"
         :rules="rules"
-        label-position="top"
-        label-width="auto"
+        label-position="left"
+        label-width="140px"
         :gutter="16"
       />
 
@@ -674,8 +674,8 @@ onMounted(() => loadSettings());
               v-model="form"
               :fields="homeBasicFields"
               :rules="rules"
-              label-position="top"
-              label-width="auto"
+              label-position="left"
+              label-width="140px"
               :gutter="16"
             />
 
@@ -687,8 +687,8 @@ onMounted(() => loadSettings());
                 v-model="form"
                 :fields="homeCommandFields"
                 :rules="rules"
-                label-position="top"
-                label-width="auto"
+                label-position="left"
+                label-width="140px"
                 :gutter="16"
               />
 
@@ -698,8 +698,8 @@ onMounted(() => loadSettings());
                     v-model="form"
                     :fields="homeTipFields"
                     :rules="rules"
-                    label-position="top"
-                    label-width="auto"
+                    label-position="left"
+                    label-width="140px"
                     :gutter="16"
                   />
                 </el-collapse-item>
@@ -713,8 +713,8 @@ onMounted(() => loadSettings());
               v-model="form"
               :fields="cityBasicFields"
               :rules="rules"
-              label-position="top"
-              label-width="auto"
+              label-position="left"
+              label-width="140px"
               :gutter="16"
             />
 
@@ -726,8 +726,8 @@ onMounted(() => loadSettings());
                 v-model="form"
                 :fields="cityCommandFields"
                 :rules="rules"
-                label-position="top"
-                label-width="auto"
+                label-position="left"
+                label-width="140px"
                 :gutter="16"
               />
 
@@ -737,8 +737,8 @@ onMounted(() => loadSettings());
                     v-model="form"
                     :fields="cityTipFields"
                     :rules="rules"
-                    label-position="top"
-                    label-width="auto"
+                    label-position="left"
+                    label-width="140px"
                     :gutter="16"
                   />
                 </el-collapse-item>
@@ -752,8 +752,8 @@ onMounted(() => loadSettings());
               v-model="form"
               :fields="friendBasicFields"
               :rules="rules"
-              label-position="top"
-              label-width="auto"
+              label-position="left"
+              label-width="140px"
               :gutter="16"
             />
 
@@ -765,8 +765,8 @@ onMounted(() => loadSettings());
                 v-model="form"
                 :fields="friendCommandFields"
                 :rules="rules"
-                label-position="top"
-                label-width="auto"
+                label-position="left"
+                label-width="140px"
                 :gutter="16"
               />
 
@@ -776,8 +776,8 @@ onMounted(() => loadSettings());
                     v-model="form"
                     :fields="friendTipFields"
                     :rules="rules"
-                    label-position="top"
-                    label-width="auto"
+                    label-position="left"
+                    label-width="140px"
                     :gutter="16"
                   />
                 </el-collapse-item>
@@ -791,8 +791,8 @@ onMounted(() => loadSettings());
               v-model="form"
               :fields="globalCooldownFields"
               :rules="rules"
-              label-position="top"
-              label-width="auto"
+              label-position="left"
+              label-width="140px"
               :gutter="16"
             />
           </el-tab-pane>
@@ -803,8 +803,8 @@ onMounted(() => loadSettings());
               v-model="form"
               :fields="backBasicFields"
               :rules="rules"
-              label-position="top"
-              label-width="auto"
+              label-position="left"
+              label-width="140px"
               :gutter="16"
             />
 
@@ -816,8 +816,8 @@ onMounted(() => loadSettings());
                 v-model="form"
                 :fields="backCommandFields"
                 :rules="rules"
-                label-position="top"
-                label-width="auto"
+                label-position="left"
+                label-width="140px"
                 :gutter="16"
               />
 
@@ -827,8 +827,8 @@ onMounted(() => loadSettings());
                     v-model="form"
                     :fields="backTipFields"
                     :rules="rules"
-                    label-position="top"
-                    label-width="auto"
+                    label-position="left"
+                    label-width="140px"
                     :gutter="16"
                   />
                 </el-collapse-item>
