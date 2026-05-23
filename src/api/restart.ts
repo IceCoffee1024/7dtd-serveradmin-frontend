@@ -36,7 +36,7 @@ export function cancelRestart() {
   return http.post<API.Restart.CancelRestartResponse>('Restart/Cancel').json();
 }
 
-
+/**
  * Reuses the ScheduledCommand run log endpoint filtered to the restart feature.
  * @param params - Optional pagination and filter parameters.
  * @returns Paged run history.

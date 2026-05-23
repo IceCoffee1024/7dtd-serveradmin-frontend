@@ -11,75 +11,75 @@ import { generateElementRules } from '~/utils';
 defineOptions({ name: 'TeleportSettingsPage' });
 
 interface FormModel {
-  isEnabled: boolean
+  isEnabled: boolean;
   // Home
-  homeEnabled: boolean
-  homeCooldownSeconds: number
-  homeSetCurrencyRequired: number
-  homeTeleCurrencyRequired: number
-  homeMaxHomes: number
-  homeAllowDuringBloodMoon: boolean
-  homeListCommandName: string
-  homeSetCommandName: string
-  homeDeleteCommandName: string
-  homeTeleCommandName: string
-  homeNoHomeTip: string
-  homeSetLimitTip: string
-  homeSetSuccessTip: string
-  homeOverwriteTip: string
-  homeDeleteSuccessTip: string
-  homeHomeNotFoundTip: string
-  homeCoolingTip: string
-  homeTeleSuccessTip: string
-  homeSetCurrencyNotEnoughTip: string
-  homeTeleCurrencyNotEnoughTip: string
-  homeBloodMoonBlockedTip: string
+  homeEnabled: boolean;
+  homeCooldownSeconds: number;
+  homeSetCurrencyRequired: number;
+  homeTeleCurrencyRequired: number;
+  homeMaxHomes: number;
+  homeAllowDuringBloodMoon: boolean;
+  homeListCommandName: string;
+  homeSetCommandName: string;
+  homeDeleteCommandName: string;
+  homeTeleCommandName: string;
+  homeNoHomeTip: string;
+  homeSetLimitTip: string;
+  homeSetSuccessTip: string;
+  homeOverwriteTip: string;
+  homeDeleteSuccessTip: string;
+  homeHomeNotFoundTip: string;
+  homeCoolingTip: string;
+  homeTeleSuccessTip: string;
+  homeSetCurrencyNotEnoughTip: string;
+  homeTeleCurrencyNotEnoughTip: string;
+  homeBloodMoonBlockedTip: string;
   // City
-  cityEnabled: boolean
-  cityCooldownSeconds: number
-  cityListCommandName: string
-  cityTeleCommandName: string
-  cityNoCitiesTip: string
-  cityCityNotFoundTip: string
-  cityCoolingTip: string
-  cityTeleSuccessTip: string
-  cityCurrencyNotEnoughTip: string
+  cityEnabled: boolean;
+  cityCooldownSeconds: number;
+  cityListCommandName: string;
+  cityTeleCommandName: string;
+  cityNoCitiesTip: string;
+  cityCityNotFoundTip: string;
+  cityCoolingTip: string;
+  cityTeleSuccessTip: string;
+  cityCurrencyNotEnoughTip: string;
   // Friend
-  friendEnabled: boolean
-  friendCooldownSeconds: number
-  friendCurrencyRequired: number
-  friendRequestExpirySeconds: number
-  friendFriendBypass: boolean
-  friendRequestCommandName: string
-  friendAcceptCommandName: string
-  friendRejectCommandName: string
-  friendTargetNotFoundTip: string
-  friendRequestSentTip: string
-  friendRequestReceivedTip: string
-  friendAcceptedTip: string
-  friendRejectedTip: string
-  friendTargetRejectedTip: string
-  friendNoRequestTip: string
-  friendCoolingTip: string
-  friendTeleSuccessTip: string
-  friendCurrencyNotEnoughTip: string
+  friendEnabled: boolean;
+  friendCooldownSeconds: number;
+  friendCurrencyRequired: number;
+  friendRequestExpirySeconds: number;
+  friendFriendBypass: boolean;
+  friendRequestCommandName: string;
+  friendAcceptCommandName: string;
+  friendRejectCommandName: string;
+  friendTargetNotFoundTip: string;
+  friendRequestSentTip: string;
+  friendRequestReceivedTip: string;
+  friendAcceptedTip: string;
+  friendRejectedTip: string;
+  friendTargetRejectedTip: string;
+  friendNoRequestTip: string;
+  friendCoolingTip: string;
+  friendTeleSuccessTip: string;
+  friendCurrencyNotEnoughTip: string;
   // Global Cooldown
-  globalCooldownEnabled: boolean
-  globalCooldownSeconds: number
+  globalCooldownEnabled: boolean;
+  globalCooldownSeconds: number;
   // Back
-  backEnabled: boolean
-  backCooldownSeconds: number
-  backCurrencyRequired: number
-  backCommandName: string
-  backNoPositionTip: string
-  backCoolingTip: string
-  backTeleSuccessTip: string
-  backCurrencyNotEnoughTip: string
+  backEnabled: boolean;
+  backCooldownSeconds: number;
+  backCurrencyRequired: number;
+  backCommandName: string;
+  backNoPositionTip: string;
+  backCoolingTip: string;
+  backTeleSuccessTip: string;
+  backCurrencyNotEnoughTip: string;
 }
 
 interface FormExpose {
-  validate: () => Promise<boolean | undefined>
-  clearValidate: (props?: string | string[]) => void
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
 }
 
 const { t } = useI18n();
@@ -98,7 +98,7 @@ function buildDefaults(): FormModel {
     homeTeleCurrencyRequired: 0,
     homeMaxHomes: 3,
     homeAllowDuringBloodMoon: false,
-    homeListCommandName: '',,
+    homeListCommandName: '',
     homeSetCommandName: '',
     homeDeleteCommandName: '',
     homeTeleCommandName: '',
@@ -680,7 +680,7 @@ onMounted(() => loadSettings());
             />
 
             <div :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
-              <h3 class="text-sm font-semibold text-gray-900 mb-2 mt-4 dark:text-gray-100">
+              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
                 {{ t('views.teleport.settings.sections.commands') }}
               </h3>
               <MyForm
@@ -719,7 +719,7 @@ onMounted(() => loadSettings());
             />
 
             <div :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
-              <h3 class="text-sm font-semibold text-gray-900 mb-2 mt-4 dark:text-gray-100">
+              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
                 {{ t('views.teleport.settings.sections.commands') }}
               </h3>
               <MyForm
@@ -758,7 +758,7 @@ onMounted(() => loadSettings());
             />
 
             <div :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
-              <h3 class="text-sm font-semibold text-gray-900 mb-2 mt-4 dark:text-gray-100">
+              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
                 {{ t('views.teleport.settings.sections.commands') }}
               </h3>
               <MyForm
@@ -809,7 +809,7 @@ onMounted(() => loadSettings());
             />
 
             <div :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
-              <h3 class="text-sm font-semibold text-gray-900 mb-2 mt-4 dark:text-gray-100">
+              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
                 {{ t('views.teleport.settings.sections.commands') }}
               </h3>
               <MyForm
