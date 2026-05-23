@@ -23,6 +23,9 @@ declare namespace API {
       shopEnabled: boolean;
       playerConnectedRewardEnabled: boolean;
       playerConnectedRewardAmount: number;
+      playerDiedPenaltyEnabled: boolean;
+      playerDiedPenaltyAmount: number;
+      playerDiedPenaltyTip: string | null;
       balCommandName: string;
       balCommandAliases: string[];
       payCommandName: string;

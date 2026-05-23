@@ -712,7 +712,9 @@
           "dailyStreakMaxDays": "连续签到最大天数",
           "shopEnabled": "启用商店",
           "playerConnectedRewardEnabled": "上线奖励",
-          "playerConnectedRewardAmount": "上线奖励金额"
+          "playerConnectedRewardAmount": "上线奖励金额",
+          "playerDiedPenaltyEnabled": "启用死亡惩罚",
+          "playerDiedPenaltyAmount": "死亡扣除金额"
         },
         "commands": {
           "sectionTitle": "聊天指令名称",
@@ -743,7 +745,8 @@
             "buyUsageTip": "购买用法提示",
             "buySuccessTip": "购买成功提示",
             "redeemUsageTip": "兑换用法提示",
-            "redeemSuccessTip": "兑换成功提示"
+            "redeemSuccessTip": "兑换成功提示",
+            "playerDiedPenaltyTip": "死亡惩罚提示"
           },
           "tooltips": {
             "balanceTip": "支持占位符：{balance}, {currency}",
@@ -752,7 +755,8 @@
             "dailySuccessTip": "支持占位符：{amount}, {currency}, {streak}, {bonusPercent}",
             "buyUsageTip": "支持占位符：{currency}",
             "buySuccessTip": "支持占位符：{name}, {quantity}, {cost}, {currency}",
-            "redeemSuccessTip": "支持占位符：{amount}, {currency}"
+            "redeemSuccessTip": "支持占位符：{amount}, {currency}",
+            "playerDiedPenaltyTip": "支持占位符：{amount}, {currency}"
           }
         },
         "actions": {

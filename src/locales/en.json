@@ -1199,7 +1199,9 @@
           "dailyStreakMaxDays": "Streak Max Days",
           "shopEnabled": "Enable Shop",
           "playerConnectedRewardEnabled": "Connected Reward",
-          "playerConnectedRewardAmount": "Connected Reward Amount"
+          "playerConnectedRewardAmount": "Connected Reward Amount",
+          "playerDiedPenaltyEnabled": "Enable Death Penalty",
+          "playerDiedPenaltyAmount": "Death Deduction Amount"
         },
         "commands": {
           "sectionTitle": "Chat Command Names",
@@ -1230,7 +1232,8 @@
             "buyUsageTip": "Buy Usage Tip",
             "buySuccessTip": "Buy Success Tip",
             "redeemUsageTip": "Redeem Usage Tip",
-            "redeemSuccessTip": "Redeem Success Tip"
+            "redeemSuccessTip": "Redeem Success Tip",
+            "playerDiedPenaltyTip": "Death Penalty Tip"
           },
           "tooltips": {
             "balanceTip": "Supports: {balance}, {currency}",
@@ -1239,7 +1242,8 @@
             "dailySuccessTip": "Supports: {amount}, {currency}, {streak}, {bonusPercent}",
             "buyUsageTip": "Supports: {currency}",
             "buySuccessTip": "Supports: {name}, {quantity}, {cost}, {currency}",
-            "redeemSuccessTip": "Supports: {amount}, {currency}"
+            "redeemSuccessTip": "Supports: {amount}, {currency}",
+            "playerDiedPenaltyTip": "Supports: {amount}, {currency}"
           }
         },
         "actions": {

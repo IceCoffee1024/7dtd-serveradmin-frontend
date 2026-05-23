@@ -28,6 +28,9 @@ interface FormModel {
   shopEnabled: boolean;
   playerConnectedRewardEnabled: boolean;
   playerConnectedRewardAmount: number;
+  playerDiedPenaltyEnabled: boolean;
+  playerDiedPenaltyAmount: number;
+  playerDiedPenaltyTip: string;
   balCommandName: string;
   balCommandAliases: string;
   payCommandName: string;
@@ -82,6 +85,9 @@ function buildDefaults(): FormModel {
     shopEnabled: false,
     playerConnectedRewardEnabled: false,
     playerConnectedRewardAmount: 0,
+    playerDiedPenaltyEnabled: false,
+    playerDiedPenaltyAmount: 0,
+    playerDiedPenaltyTip: '',
     balCommandName: 'bal',
     balCommandAliases: 'balance, money',
     payCommandName: 'pay',
@@ -135,6 +141,9 @@ const schema = v.object({
   redeemCommandName: v.pipe(v.string(), v.minLength(1)),
   playerConnectedRewardEnabled: v.boolean(),
   playerConnectedRewardAmount: v.pipe(v.number(), v.minValue(0)),
+  playerDiedPenaltyEnabled: v.boolean(),
+  playerDiedPenaltyAmount: v.pipe(v.number(), v.minValue(0)),
+  playerDiedPenaltyTip: v.optional(v.string()),
   balanceTip: v.optional(v.string()),
   paySuccessTip: v.optional(v.string()),
   payUsageTip: v.optional(v.string()),
@@ -271,6 +280,20 @@ const bonusFields = computed<MyFormField<FormModel>[]>(() => [
     props: { min: 0, precision: 0, class: 'w-full' },
     span: { xs: 24 },
   },
+  {
+    prop: 'playerDiedPenaltyEnabled',
+    label: t('views.economy.settings.fields.playerDiedPenaltyEnabled'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24 },
+  },
+  {
+    prop: 'playerDiedPenaltyAmount',
+    label: t('views.economy.settings.fields.playerDiedPenaltyAmount'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24 },
+  },
 ]);
 
 const shopFields = computed<MyFormField<FormModel>[]>(() => [
@@ -364,6 +387,13 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.redeemSuccessTip'),
     el: 'el-input',
     tooltip: t('views.economy.settings.tips.tooltips.redeemSuccessTip'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'playerDiedPenaltyTip',
+    label: t('views.economy.settings.tips.fields.playerDiedPenaltyTip'),
+    el: 'el-input',
+    tooltip: t('views.economy.settings.tips.tooltips.playerDiedPenaltyTip'),
     span: { xs: 24, md: 12 },
   },
 ]);
@@ -492,6 +522,9 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     shopEnabled: source.shopEnabled ?? false,
     playerConnectedRewardEnabled: source.playerConnectedRewardEnabled ?? false,
     playerConnectedRewardAmount: source.playerConnectedRewardAmount ?? 0,
+    playerDiedPenaltyEnabled: source.playerDiedPenaltyEnabled ?? false,
+    playerDiedPenaltyAmount: source.playerDiedPenaltyAmount ?? 0,
+    playerDiedPenaltyTip: source.playerDiedPenaltyTip ?? '',
     balCommandName: source.balCommandName || 'bal',
     balCommandAliases: parseAliases(source.balCommandAliases),
     payCommandName: source.payCommandName || 'pay',
@@ -533,6 +566,9 @@ function applyFormValues(values: FormModel): void {
   form.shopEnabled = values.shopEnabled;
   form.playerConnectedRewardEnabled = values.playerConnectedRewardEnabled;
   form.playerConnectedRewardAmount = values.playerConnectedRewardAmount;
+  form.playerDiedPenaltyEnabled = values.playerDiedPenaltyEnabled;
+  form.playerDiedPenaltyAmount = values.playerDiedPenaltyAmount;
+  form.playerDiedPenaltyTip = values.playerDiedPenaltyTip;
   form.balCommandName = values.balCommandName;
   form.balCommandAliases = values.balCommandAliases;
   form.payCommandName = values.payCommandName;
@@ -618,6 +654,9 @@ function toPayload(values: FormModel): API.Economy.Settings {
     shopEnabled: values.shopEnabled,
     playerConnectedRewardEnabled: values.playerConnectedRewardEnabled,
     playerConnectedRewardAmount: Number(values.playerConnectedRewardAmount ?? 0),
+    playerDiedPenaltyEnabled: values.playerDiedPenaltyEnabled,
+    playerDiedPenaltyAmount: Number(values.playerDiedPenaltyAmount ?? 0),
+    playerDiedPenaltyTip: values.playerDiedPenaltyTip.trim() || null,
     balCommandName: values.balCommandName,
     balCommandAliases: parseAliases(values.balCommandAliases),
     payCommandName: values.payCommandName,
