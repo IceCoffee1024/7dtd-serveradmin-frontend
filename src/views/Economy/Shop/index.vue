@@ -4,6 +4,7 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
 import * as api from '~/api/economy';
+import * as gameServerApi from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -37,6 +38,30 @@ const formRef = useTemplateRef<FormExpose>('formRef');
 
 const isSubmitting = ref(false);
 const editingId = ref<number | null>(null);
+
+interface GameItemOption {
+  value: string;
+  label: string;
+}
+
+const gameItemOptions = ref<GameItemOption[]>([]);
+const itemOptionsLoading = ref(false);
+
+async function loadGameItems() {
+  if (gameItemOptions.value.length > 0)
+    return;
+  itemOptionsLoading.value = true;
+  try {
+    const items = await gameServerApi.getGameItems();
+    gameItemOptions.value = items.map(i => ({
+      value: i.name,
+      label: i.localizedName ? `${i.localizedName}  (${i.name})` : i.name,
+    }));
+  }
+  finally {
+    itemOptionsLoading.value = false;
+  }
+}
 
 function buildDefaults(): FormModel {
   return {
@@ -87,7 +112,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'itemName',
     label: t('views.economy.shop.form.fields.itemName'),
-    el: 'el-input',
+    el: 'custom',
     span: { xs: 24, md: 12 },
   },
   {
@@ -223,11 +248,13 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 function openAdd() {
   editingId.value = null;
   Object.assign(form, buildDefaults());
+  loadGameItems();
   dialogRef.value?.open();
   nextTick(() => formRef.value?.clearValidate());
 }
 
 function openEdit(row: API.Economy.ShopItem) {
+  loadGameItems();
   editingId.value = row.id;
   form.name = row.name;
   form.description = row.description ?? '';
@@ -348,7 +375,19 @@ async function onDelete(row: API.Economy.ShopItem) {
         label-position="top"
         label-width="auto"
         :gutter="16"
-      />
+      >
+        <template #itemName>
+          <el-select-v2
+            v-model="form.itemName"
+            :options="gameItemOptions"
+            :loading="itemOptionsLoading"
+            filterable
+            clearable
+            class="w-full"
+            :placeholder="t('views.economy.shop.form.fields.itemName')"
+          />
+        </template>
+      </MyForm>
     </MyDialog>
   </div>
 </template>

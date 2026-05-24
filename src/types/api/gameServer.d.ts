@@ -312,6 +312,12 @@ declare namespace API {
         | 'Schinese'
         | 'Tchinese';
 
+    interface GameItem {
+      name: string;
+      localizedName: string | null;
+      iconName: string | null;
+    }
+
     interface MapInfo {
       blockSize: number;
       maxZoom: number;

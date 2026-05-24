@@ -475,6 +475,17 @@ export function addCommandPermission(data: API.GameServer.CommandPermissionCreat
 export function deleteCommandPermissions(commands: string[]) {
   return http.delete<API.GameServer.CommandExecutionResult>('GameServer/CommandPermissions', { json: { commands } }).json();
 }
+
+// #region GameItems
+/**
+ * Returns all game items eligible for use in shop entries.
+ * Results are cached on the backend for 1 hour.
+ * @param {boolean} [showUserHidden] Include engine-internal hidden items.
+ */
+export function getGameItems(showUserHidden = false) {
+  return http.get<API.GameServer.GameItem[]>('GameServer/GameItems', { searchParams: { showUserHidden } }).json();
+}
+// #endregion
 // #endregion
 
 // #region AppSettings
