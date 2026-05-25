@@ -298,6 +298,45 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'Achievement',
+        path: 'achievement',
+        component: () => import('../views/Achievement/index.vue'),
+        redirect: { name: 'AchievementDefinitions' },
+        meta: {
+          title: () => t('menus.achievement'),
+          icon: markIcon(() => import('~icons/mdi/trophy-outline')),
+        },
+        children: [
+          {
+            name: 'AchievementDefinitions',
+            path: 'definitions',
+            component: () => import('../views/Achievement/Definitions/index.vue'),
+            meta: {
+              title: () => t('menus.achievementDefinitions'),
+              icon: markIcon(() => import('~icons/mdi/trophy-variant-outline')),
+            },
+          },
+          {
+            name: 'AchievementRecords',
+            path: 'records',
+            component: () => import('../views/Achievement/Records/index.vue'),
+            meta: {
+              title: () => t('menus.achievementRecords'),
+              icon: markIcon(() => import('~icons/mdi/history')),
+            },
+          },
+          {
+            name: 'AchievementSettings',
+            path: 'settings',
+            component: () => import('../views/Achievement/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.achievementSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),

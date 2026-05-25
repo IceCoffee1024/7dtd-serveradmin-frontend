@@ -86,6 +86,10 @@
     "voteRestartSettings": "Settings",
     "voteKick": "Vote Kick",
     "voteKickSettings": "Settings",
+    "achievement": "Achievement",
+    "achievementDefinitions": "Definitions",
+    "achievementRecords": "Records",
+    "achievementSettings": "Settings",
     "gameEventLogs": "Game Event Logs"
   },
   "components": {
@@ -1808,6 +1812,84 @@
           "saveSuccess": "Vote kick settings saved.",
           "resetSuccess": "Vote kick settings have been reset to defaults.",
           "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+        }
+      }
+    },
+    "achievement": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Achievement System"
+        },
+        "actions": {
+          "save": "Save Settings",
+          "reset": "Reset to Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Achievement settings saved.",
+          "resetSuccess": "Achievement settings have been reset to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+        }
+      },
+      "definitions": {
+        "columns": {
+          "name": "Name",
+          "triggerType": "Trigger Type",
+          "threshold": "Threshold",
+          "economyReward": "Economy Reward",
+          "isEnabled": "Enabled",
+          "sortOrder": "Sort Order"
+        },
+        "triggerTypes": {
+          "level": "Level",
+          "zombieKills": "Zombie Kills",
+          "playerKills": "Player Kills",
+          "deaths": "Deaths",
+          "gameStage": "Game Stage"
+        },
+        "form": {
+          "addTitle": "Add Achievement",
+          "editTitle": "Edit Achievement",
+          "fields": {
+            "name": "Name",
+            "description": "Description",
+            "isEnabled": "Enabled",
+            "triggerType": "Trigger Type",
+            "threshold": "Threshold",
+            "economyReward": "Economy Reward",
+            "consoleCommands": "Console Commands",
+            "playerMessage": "Player Message",
+            "broadcastMessage": "Broadcast Message",
+            "sortOrder": "Sort Order"
+          },
+          "tooltips": {
+            "economyReward": "Currency granted to the player when the achievement is earned. Set to 0 to skip.",
+            "playerMessage": "Private message sent to the player who earns the achievement. Supports {achievementName}, {playerName}, {threshold}.",
+            "broadcastMessage": "Message broadcast to all online players when an achievement is earned. Supports {achievementName}, {playerName}, {threshold}.",
+            "consoleCommands": "Console commands executed when the achievement is earned, one per line. Supports {playerId}, {playerName}."
+          }
+        },
+        "actions": {
+          "deleteConfirm": "Delete this achievement definition and all its earn records?"
+        },
+        "messages": {
+          "createSuccess": "Achievement definition created.",
+          "updateSuccess": "Achievement definition updated.",
+          "deleteSuccess": "Achievement definition deleted."
+        }
+      },
+      "records": {
+        "columns": {
+          "achievementName": "Achievement",
+          "playerName": "Player Name",
+          "playerId": "Player ID",
+          "economyRewarded": "Economy Rewarded",
+          "createdAt": "Earned At"
+        },
+        "actions": {
+          "deleteConfirm": "Delete this earn record? The achievement will be re-granted to the player the next time the condition is met."
+        },
+        "messages": {
+          "deleteSuccess": "Earn record deleted."
         }
       }
     },

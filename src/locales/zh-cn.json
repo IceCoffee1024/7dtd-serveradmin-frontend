@@ -86,6 +86,10 @@
     "voteRestartSettings": "设置",
     "voteKick": "投票踢人",
     "voteKickSettings": "设置",
+    "achievement": "成就系统",
+    "achievementDefinitions": "成就定义",
+    "achievementRecords": "获得记录",
+    "achievementSettings": "设置",
     "gameEventLogs": "游戏事件日志"
   },
   "components": {
@@ -1321,6 +1325,84 @@
           "saveSuccess": "投票踢人设置已保存。",
           "resetSuccess": "投票踢人设置已恢复为默认值。",
           "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
+        }
+      }
+    },
+    "achievement": {
+      "settings": {
+        "fields": {
+          "isEnabled": "启用成就系统"
+        },
+        "actions": {
+          "save": "保存设置",
+          "reset": "恢复默认设置"
+        },
+        "messages": {
+          "saveSuccess": "成就系统设置已保存。",
+          "resetSuccess": "成就系统设置已恢复为默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
+        }
+      },
+      "definitions": {
+        "columns": {
+          "name": "成就名称",
+          "triggerType": "触发类型",
+          "threshold": "触发阈值",
+          "economyReward": "货币奖励",
+          "isEnabled": "已启用",
+          "sortOrder": "排序"
+        },
+        "triggerTypes": {
+          "level": "等级",
+          "zombieKills": "击杀僵尸数",
+          "playerKills": "击杀玩家数",
+          "deaths": "死亡次数",
+          "gameStage": "游戏阶段"
+        },
+        "form": {
+          "addTitle": "新增成就",
+          "editTitle": "编辑成就",
+          "fields": {
+            "name": "名称",
+            "description": "描述",
+            "isEnabled": "已启用",
+            "triggerType": "触发类型",
+            "threshold": "触发阈值",
+            "economyReward": "货币奖励",
+            "consoleCommands": "执行控制台命令",
+            "playerMessage": "玩家消息",
+            "broadcastMessage": "广播消息",
+            "sortOrder": "排序"
+          },
+          "tooltips": {
+            "economyReward": "达成成就时授予玩家的货币数量。设为 0 则不授予。",
+            "playerMessage": "发送给达成成就的玩家的私信。支持占位符：{achievementName}、{playerName}、{threshold}。",
+            "broadcastMessage": "达成成就时向所有在线玩家广播的消息。支持占位符：{achievementName}、{playerName}、{threshold}。",
+            "consoleCommands": "达成成就时执行的控制台命令，每行一条。支持占位符：{playerId}、{playerName}。"
+          }
+        },
+        "actions": {
+          "deleteConfirm": "确定要删除此成就定义及其所有获得记录吗？"
+        },
+        "messages": {
+          "createSuccess": "成就定义已创建。",
+          "updateSuccess": "成就定义已更新。",
+          "deleteSuccess": "成就定义已删除。"
+        }
+      },
+      "records": {
+        "columns": {
+          "achievementName": "成就名称",
+          "playerName": "玩家名称",
+          "playerId": "玩家 ID",
+          "economyRewarded": "已发放货币",
+          "createdAt": "获得时间"
+        },
+        "actions": {
+          "deleteConfirm": "确定要删除此获得记录吗？删除后，该玩家下次触发条件时将重新获得此成就。"
+        },
+        "messages": {
+          "deleteSuccess": "获得记录已删除。"
         }
       }
     },
