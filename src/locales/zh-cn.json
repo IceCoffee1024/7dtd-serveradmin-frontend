@@ -82,6 +82,10 @@
     "teleportHomes": "玩家家园",
     "teleportLogs": "传送日志",
     "gameNotice": "游戏公告",
+    "voteRestart": "投票重启",
+    "voteRestartSettings": "设置",
+    "voteKick": "投票踢人",
+    "voteKickSettings": "设置",
     "gameEventLogs": "游戏事件日志"
   },
   "components": {
@@ -1225,6 +1229,97 @@
           "resetSuccess": "游戏公告设置已恢复为默认值。",
           "noRotatingNotices": "暂无轮播公告，点击「添加公告」以添加。",
           "noWelcomeNotices": "暂无欢迎公告，点击「添加公告」以添加。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
+        }
+      }
+    },
+    "voteRestart": {
+      "settings": {
+        "fields": {
+          "isEnabled": "启用投票重启",
+          "commandName": "命令名称",
+          "commandAliases": "命令别名",
+          "minOnlinePlayers": "最少在线玩家数",
+          "voteDurationSeconds": "投票时长（秒）",
+          "passThresholdPercent": "通过阈值（%）",
+          "initiatorCooldownSeconds": "发起者冷却时间（秒）",
+          "globalCooldownSeconds": "全局冷却时间（秒）",
+          "warningLeadSeconds": "重启预警时间（秒）",
+          "voteStartedMessage": "投票发起消息",
+          "votePassedMessage": "投票通过消息",
+          "voteFailedMessage": "投票失败消息",
+          "voteProgressMessage": "投票进度消息",
+          "alreadyVotedMessage": "已投票提示",
+          "initiatorCooldownMessage": "发起者冷却提示",
+          "globalCooldownMessage": "全局冷却提示",
+          "notEnoughPlayersMessage": "人数不足提示",
+          "alreadyActiveMessage": "投票进行中提示"
+        },
+        "tooltips": {
+          "commandAliases": "逗号分隔的命令别名列表（如 vr, restart-vote）。",
+          "minOnlinePlayers": "发起投票所需的最少在线玩家数。",
+          "passThresholdPercent": "投票通过所需的赞成票百分比（1–100）。",
+          "warningLeadSeconds": "重启前提前广播倒计时警告的秒数。",
+          "voteStartedMessage": "支持占位符：{Initiator}、{Duration}、{Command}。",
+          "voteProgressMessage": "支持占位符：{Yes}、{No}、{Total}、{Threshold}。",
+          "cooldownMessage": "支持占位符 {RemainingSeconds} 显示剩余冷却时间。",
+          "notEnoughPlayersMessage": "支持占位符：{MinPlayers}、{CurrentPlayers}。"
+        },
+        "actions": {
+          "save": "保存设置",
+          "reset": "恢复默认设置"
+        },
+        "messages": {
+          "saveSuccess": "投票重启设置已保存。",
+          "resetSuccess": "投票重启设置已恢复为默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
+        }
+      }
+    },
+    "voteKick": {
+      "settings": {
+        "fields": {
+          "isEnabled": "启用投票踢人",
+          "commandName": "命令名称",
+          "commandAliases": "命令别名",
+          "minOnlinePlayers": "最少在线玩家数",
+          "voteDurationSeconds": "投票时长（秒）",
+          "passThresholdPercent": "通过阈值（%）",
+          "initiatorCooldownSeconds": "发起者冷却时间（秒）",
+          "targetImmunitySeconds": "被踢目标免疫时间（秒）",
+          "kickReason": "踢出原因",
+          "voteStartedMessage": "投票发起消息",
+          "votePassedMessage": "投票通过消息",
+          "voteFailedMessage": "投票失败消息",
+          "voteProgressMessage": "投票进度消息",
+          "alreadyVotedMessage": "已投票提示",
+          "cooldownMessage": "冷却时间提示",
+          "cannotKickAdminMessage": "无法踢出管理员提示",
+          "targetNotFoundMessage": "目标玩家不存在提示",
+          "targetAlreadyGoneMessage": "目标玩家已离线提示",
+          "alreadyActiveMessage": "投票进行中提示",
+          "usageTipMessage": "用法提示",
+          "notEnoughPlayersMessage": "人数不足提示"
+        },
+        "tooltips": {
+          "commandAliases": "逗号分隔的命令别名列表（如 vk, kick-vote）。",
+          "minOnlinePlayers": "发起踢人投票所需的最少在线玩家数。",
+          "passThresholdPercent": "投票通过所需的赞成票百分比（1–100）。",
+          "targetImmunitySeconds": "玩家被踢出后的免疫时间，期间无法再次被投票踢出。",
+          "kickReason": "踢出玩家时显示在断开连接消息中的原因。",
+          "voteStartedMessage": "支持占位符：{Initiator}、{Target}、{Duration}、{Command}。",
+          "voteProgressMessage": "支持占位符：{Yes}、{No}、{Total}、{Threshold}。",
+          "cooldownMessage": "支持占位符 {RemainingSeconds} 显示剩余冷却时间。",
+          "usageTipMessage": "在未指定目标名时显示。",
+          "notEnoughPlayersMessage": "支持占位符：{MinPlayers}、{CurrentPlayers}。"
+        },
+        "actions": {
+          "save": "保存设置",
+          "reset": "恢复默认设置"
+        },
+        "messages": {
+          "saveSuccess": "投票踢人设置已保存。",
+          "resetSuccess": "投票踢人设置已恢复为默认值。",
           "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       }

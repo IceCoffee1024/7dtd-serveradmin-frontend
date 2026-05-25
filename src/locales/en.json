@@ -82,6 +82,10 @@
     "teleportHomes": "Player Homes",
     "teleportLogs": "Teleport Logs",
     "gameNotice": "Game Notice",
+    "voteRestart": "Vote Restart",
+    "voteRestartSettings": "Settings",
+    "voteKick": "Vote Kick",
+    "voteKickSettings": "Settings",
     "gameEventLogs": "Game Event Logs"
   },
   "components": {
@@ -1712,6 +1716,97 @@
           "resetSuccess": "Game notice settings have been reset to defaults.",
           "noRotatingNotices": "No rotating notices configured. Click \"Add Notice\" to add one.",
           "noWelcomeNotices": "No welcome notices configured. Click \"Add Notice\" to add one.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+        }
+      }
+    },
+    "voteRestart": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Vote Restart",
+          "commandName": "Command Name",
+          "commandAliases": "Command Aliases",
+          "minOnlinePlayers": "Min Online Players",
+          "voteDurationSeconds": "Vote Duration (Seconds)",
+          "passThresholdPercent": "Pass Threshold (%)",
+          "initiatorCooldownSeconds": "Initiator Cooldown (Seconds)",
+          "globalCooldownSeconds": "Global Cooldown (Seconds)",
+          "warningLeadSeconds": "Warning Lead Time (Seconds)",
+          "voteStartedMessage": "Vote Started Message",
+          "votePassedMessage": "Vote Passed Message",
+          "voteFailedMessage": "Vote Failed Message",
+          "voteProgressMessage": "Vote Progress Message",
+          "alreadyVotedMessage": "Already Voted Message",
+          "initiatorCooldownMessage": "Initiator Cooldown Message",
+          "globalCooldownMessage": "Global Cooldown Message",
+          "notEnoughPlayersMessage": "Not Enough Players Message",
+          "alreadyActiveMessage": "Vote Already Active Message"
+        },
+        "tooltips": {
+          "commandAliases": "Comma-separated list of alternative command names (e.g. vr, restart-vote).",
+          "minOnlinePlayers": "Minimum number of online players required to start a vote.",
+          "passThresholdPercent": "Percentage of yes-votes required for the vote to pass (1–100).",
+          "warningLeadSeconds": "Seconds before restart to broadcast a countdown warning.",
+          "voteStartedMessage": "Supports {Initiator}, {Duration}, {Command}.",
+          "voteProgressMessage": "Supports {Yes}, {No}, {Total}, {Threshold}.",
+          "cooldownMessage": "Supports {RemainingSeconds} for time remaining.",
+          "notEnoughPlayersMessage": "Supports {MinPlayers}, {CurrentPlayers}."
+        },
+        "actions": {
+          "save": "Save Settings",
+          "reset": "Reset to Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Vote restart settings saved.",
+          "resetSuccess": "Vote restart settings have been reset to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+        }
+      }
+    },
+    "voteKick": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Vote Kick",
+          "commandName": "Command Name",
+          "commandAliases": "Command Aliases",
+          "minOnlinePlayers": "Min Online Players",
+          "voteDurationSeconds": "Vote Duration (Seconds)",
+          "passThresholdPercent": "Pass Threshold (%)",
+          "initiatorCooldownSeconds": "Initiator Cooldown (Seconds)",
+          "targetImmunitySeconds": "Target Immunity (Seconds)",
+          "kickReason": "Kick Reason",
+          "voteStartedMessage": "Vote Started Message",
+          "votePassedMessage": "Vote Passed Message",
+          "voteFailedMessage": "Vote Failed Message",
+          "voteProgressMessage": "Vote Progress Message",
+          "alreadyVotedMessage": "Already Voted Message",
+          "cooldownMessage": "Cooldown Message",
+          "cannotKickAdminMessage": "Cannot Kick Admin Message",
+          "targetNotFoundMessage": "Target Not Found Message",
+          "targetAlreadyGoneMessage": "Target Already Gone Message",
+          "alreadyActiveMessage": "Vote Already Active Message",
+          "usageTipMessage": "Usage Tip Message",
+          "notEnoughPlayersMessage": "Not Enough Players Message"
+        },
+        "tooltips": {
+          "commandAliases": "Comma-separated list of alternative command names (e.g. vk, kick-vote).",
+          "minOnlinePlayers": "Minimum number of online players required to start a kick vote.",
+          "passThresholdPercent": "Percentage of yes-votes required for the vote to pass (1–100).",
+          "targetImmunitySeconds": "Seconds a recently-kicked player is immune from being targeted again.",
+          "kickReason": "Reason shown to the kicked player in the disconnect message.",
+          "voteStartedMessage": "Supports {Initiator}, {Target}, {Duration}, {Command}.",
+          "voteProgressMessage": "Supports {Yes}, {No}, {Total}, {Threshold}.",
+          "cooldownMessage": "Supports {RemainingSeconds} for time remaining.",
+          "usageTipMessage": "Shown when the command is used without a target name.",
+          "notEnoughPlayersMessage": "Supports {MinPlayers}, {CurrentPlayers}."
+        },
+        "actions": {
+          "save": "Save Settings",
+          "reset": "Reset to Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Vote kick settings saved.",
+          "resetSuccess": "Vote kick settings have been reset to defaults.",
           "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       }

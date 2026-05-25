@@ -256,6 +256,48 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'VoteRestart',
+        path: 'vote-restart',
+        component: () => import('../views/VoteRestart/index.vue'),
+        redirect: { name: 'VoteRestartSettings' },
+        meta: {
+          title: () => t('menus.voteRestart'),
+          icon: markIcon(() => import('~icons/mdi/vote')),
+        },
+        children: [
+          {
+            name: 'VoteRestartSettings',
+            path: 'settings',
+            component: () => import('../views/VoteRestart/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.voteRestartSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
+        name: 'VoteKick',
+        path: 'vote-kick',
+        component: () => import('../views/VoteKick/index.vue'),
+        redirect: { name: 'VoteKickSettings' },
+        meta: {
+          title: () => t('menus.voteKick'),
+          icon: markIcon(() => import('~icons/mdi/account-remove')),
+        },
+        children: [
+          {
+            name: 'VoteKickSettings',
+            path: 'settings',
+            component: () => import('../views/VoteKick/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.voteKickSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),
