@@ -12,6 +12,8 @@ interface Props {
    * - 500: service error
    */
   type: ExceptionType;
+  /** Optional detail message shown below the icon, e.g. the reason from a Steam OAuth rejection. */
+  message?: string;
 }
 </script>
 
@@ -22,6 +24,9 @@ interface Props {
       <icon-custom-not-found v-else-if="type === 404" />
       <icon-custom-service-error v-else-if="type === 500" />
     </el-icon>
+    <p v-if="message" class="text-base text-gray-600 px-4 text-center max-w-lg dark:text-gray-400">
+      {{ message }}
+    </p>
     <router-link to="/">
       <el-button type="primary" size="large">
         {{ $t('common.backToHome') }}

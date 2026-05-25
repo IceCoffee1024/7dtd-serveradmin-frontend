@@ -35,10 +35,22 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '500', hidden: true, requiresAuth: false },
       },
       {
+        path: 'error',
+        name: 'Error',
+        component: () => import('../views/error.vue'),
+        meta: { hidden: true, requiresAuth: false },
+      },
+      {
         path: 'login',
         name: 'Login',
         component: () => import('../views/Login/index.vue'),
         meta: { title: () => t('menus.login'), hidden: true, requiresAuth: false },
+      },
+      {
+        path: 'login/fromSteam',
+        name: 'LoginFromSteam',
+        component: () => import('../views/Login/FromSteam.vue'),
+        meta: { hidden: true, requiresAuth: false },
       },
     ],
   },

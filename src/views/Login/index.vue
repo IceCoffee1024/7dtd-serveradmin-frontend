@@ -1,6 +1,7 @@
 <script setup  lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import { usePopup } from '~/composables/usePopup.ts';
 import { disposeAllStores } from '~/plugins/pinia';
 import v from '~/plugins/valibot';
@@ -15,6 +16,14 @@ const userInfoStore = useUserInfoStore();
 
 const { t } = useI18n();
 const { toast } = usePopup();
+const route = useRoute();
+
+const steamLoginUrl = computed(() => {
+  const redirect = route.query.redirect?.toString() ?? '/';
+  const returnTo = `${window.location.origin}/api/oauth/steam/return?redirect=${encodeURIComponent(redirect)}`;
+  const encoded = encodeURIComponent(returnTo);
+  return `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encoded}&openid.realm=${encoded}&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
+});
 
 const appTitle = computed(() => {
   return `${t('common.projectName')} ${import.meta.env.VITE_APP_VERSION}`;
@@ -99,10 +108,13 @@ async function handleLogin() {
             <span class="border-b border-gray-200 w-1/5 dark:border-gray-400 md:w-1/4" />
           </div>
           <div>
-            <el-button size="large" plain class="text-base text-gray-700 text-white font-semibold mt-4 px-20 text-center rounded-lg flex w-full cursor-pointer shadow-md transition duration-200 ease-in items-center justify-center from-[#72A233] to-[#599342] bg-gradient-to-r hover:text-white focus:outline-none hover:bg-green-200 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200">
-              <img class="w-10" src="../../assets/images/steam-svgrepo-com.svg">
-              <span class="ml-2">Sign in with Steam</span>
-            </el-button>
+            <a
+              :href="steamLoginUrl"
+              class="text-white font-semibold mt-4 rounded-lg border-none no-underline flex h-11 w-full cursor-pointer shadow-md transition duration-200 ease-in items-center justify-center from-[#72A233] to-[#599342] bg-gradient-to-r hover:opacity-90"
+            >
+              <img class="w-8" src="../../assets/images/steam-svgrepo-com.svg">
+              <span class="text-base ml-2">Sign in with Steam</span>
+            </a>
           </div>
         </el-form>
       </div>
