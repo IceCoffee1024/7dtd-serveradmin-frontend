@@ -33,8 +33,11 @@ declare namespace API {
       moneyTopCommandName: string;
       moneyTopCommandAliases: string[];
       shopCommandName: string;
+      shopCommandAliases: string[];
       buyCommandName: string;
+      buyCommandAliases: string[];
       redeemCommandName: string;
+      redeemCommandAliases: string[];
       balanceTip: string | null;
       paySuccessTip: string | null;
       payUsageTip: string | null;

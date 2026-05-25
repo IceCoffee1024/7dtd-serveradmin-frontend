@@ -40,8 +40,11 @@ interface FormModel {
   moneyTopCommandName: string;
   moneyTopCommandAliases: string;
   shopCommandName: string;
+  shopCommandAliases: string;
   buyCommandName: string;
+  buyCommandAliases: string;
   redeemCommandName: string;
+  redeemCommandAliases: string;
   balanceTip: string;
   paySuccessTip: string;
   payUsageTip: string;
@@ -97,8 +100,11 @@ function buildDefaults(): FormModel {
     moneyTopCommandName: 'moneytop',
     moneyTopCommandAliases: 'baltop, ecotop',
     shopCommandName: 'shop',
+    shopCommandAliases: '',
     buyCommandName: 'buy',
+    buyCommandAliases: '',
     redeemCommandName: 'redeem',
+    redeemCommandAliases: '',
     balanceTip: '',
     paySuccessTip: '',
     payUsageTip: '',
@@ -140,8 +146,11 @@ const schema = v.object({
   moneyTopCommandName: v.pipe(v.string(), v.minLength(1)),
   moneyTopCommandAliases: v.string(),
   shopCommandName: v.pipe(v.string(), v.minLength(1)),
+  shopCommandAliases: v.string(),
   buyCommandName: v.pipe(v.string(), v.minLength(1)),
+  buyCommandAliases: v.string(),
   redeemCommandName: v.pipe(v.string(), v.minLength(1)),
+  redeemCommandAliases: v.string(),
   playerConnectedRewardEnabled: v.boolean(),
   playerConnectedRewardAmount: v.pipe(v.number(), v.minValue(0)),
   playerDiedPenaltyEnabled: v.boolean(),
@@ -459,15 +468,36 @@ const commandFields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24 },
   },
   {
+    prop: 'shopCommandAliases',
+    label: t('views.economy.settings.commands.fields.shopCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
+    span: { xs: 24 },
+  },
+  {
     prop: 'buyCommandName',
     label: t('views.economy.settings.commands.fields.buyCommandName'),
     el: 'el-input',
     span: { xs: 24 },
   },
   {
+    prop: 'buyCommandAliases',
+    label: t('views.economy.settings.commands.fields.buyCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
+    span: { xs: 24 },
+  },
+  {
     prop: 'redeemCommandName',
     label: t('views.economy.settings.commands.fields.redeemCommandName'),
     el: 'el-input',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'redeemCommandAliases',
+    label: t('views.economy.settings.commands.fields.redeemCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
     span: { xs: 24 },
   },
 ]);
@@ -547,8 +577,11 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     moneyTopCommandName: source.moneyTopCommandName || 'moneytop',
     moneyTopCommandAliases: parseAliases(source.moneyTopCommandAliases),
     shopCommandName: source.shopCommandName || 'shop',
+    shopCommandAliases: parseAliases(source.shopCommandAliases),
     buyCommandName: source.buyCommandName || 'buy',
+    buyCommandAliases: parseAliases(source.buyCommandAliases),
     redeemCommandName: source.redeemCommandName || 'redeem',
+    redeemCommandAliases: parseAliases(source.redeemCommandAliases),
     balanceTip: source.balanceTip ?? '',
     paySuccessTip: source.paySuccessTip ?? '',
     payUsageTip: source.payUsageTip ?? '',
@@ -591,8 +624,11 @@ function applyFormValues(values: FormModel): void {
   form.moneyTopCommandName = values.moneyTopCommandName;
   form.moneyTopCommandAliases = values.moneyTopCommandAliases;
   form.shopCommandName = values.shopCommandName;
+  form.shopCommandAliases = values.shopCommandAliases;
   form.buyCommandName = values.buyCommandName;
+  form.buyCommandAliases = values.buyCommandAliases;
   form.redeemCommandName = values.redeemCommandName;
+  form.redeemCommandAliases = values.redeemCommandAliases;
   form.balanceTip = values.balanceTip;
   form.paySuccessTip = values.paySuccessTip;
   form.payUsageTip = values.payUsageTip;
@@ -679,8 +715,11 @@ function toPayload(values: FormModel): API.Economy.Settings {
     moneyTopCommandName: values.moneyTopCommandName,
     moneyTopCommandAliases: parseAliases(values.moneyTopCommandAliases),
     shopCommandName: values.shopCommandName,
+    shopCommandAliases: parseAliases(values.shopCommandAliases),
     buyCommandName: values.buyCommandName,
+    buyCommandAliases: parseAliases(values.buyCommandAliases),
     redeemCommandName: values.redeemCommandName,
+    redeemCommandAliases: parseAliases(values.redeemCommandAliases),
     balanceTip: values.balanceTip.trim() || null,
     paySuccessTip: values.paySuccessTip.trim() || null,
     payUsageTip: values.payUsageTip.trim() || null,
@@ -764,7 +803,7 @@ onMounted(() => {
       <!-- All setting cards: disabled when economy is off -->
       <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }" class="mt-4 space-y-4">
         <!-- Row 1: Basic currency + Transfers -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
           <el-card shadow="never">
             <template #header>
               <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.basic') }}</span>
@@ -797,7 +836,7 @@ onMounted(() => {
         </div>
 
         <!-- Row 2: Daily rewards + Bonus rewards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
           <el-card shadow="never">
             <template #header>
               <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.dailyReward') }}</span>
@@ -827,7 +866,7 @@ onMounted(() => {
         </div>
 
         <!-- Row 3: Shop + Commands -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
           <el-card shadow="never">
             <template #header>
               <span class="text-sm font-semibold">{{ t('views.economy.settings.sections.shop') }}</span>

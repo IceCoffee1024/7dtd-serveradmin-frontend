@@ -1217,8 +1217,11 @@
             "moneyTopCommandName": "Leaderboard Command",
             "moneyTopCommandAliases": "Leaderboard Aliases",
             "shopCommandName": "Shop Command",
+            "shopCommandAliases": "Shop Aliases",
             "buyCommandName": "Buy Command",
-            "redeemCommandName": "Redeem Command"
+            "buyCommandAliases": "Buy Aliases",
+            "redeemCommandName": "Redeem Command",
+            "redeemCommandAliases": "Redeem Aliases"
           }
         },
         "tips": {

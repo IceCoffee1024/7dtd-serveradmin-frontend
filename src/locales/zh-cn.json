@@ -730,8 +730,11 @@
             "moneyTopCommandName": "排行榜指令",
             "moneyTopCommandAliases": "排行榜别名",
             "shopCommandName": "商店指令",
+            "shopCommandAliases": "商店别名",
             "buyCommandName": "购买指令",
-            "redeemCommandName": "兑换指令"
+            "buyCommandAliases": "购买别名",
+            "redeemCommandName": "兑换指令",
+            "redeemCommandAliases": "兑换别名"
           }
         },
         "tips": {
