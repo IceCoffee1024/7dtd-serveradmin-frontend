@@ -90,6 +90,8 @@
     "achievementDefinitions": "Definitions",
     "achievementRecords": "Records",
     "achievementSettings": "Settings",
+    "onlineReward": "Online Reward",
+    "onlineRewardSettings": "Settings",
     "gameEventLogs": "Game Event Logs"
   },
   "components": {
@@ -1811,6 +1813,27 @@
         "messages": {
           "saveSuccess": "Vote kick settings saved.",
           "resetSuccess": "Vote kick settings have been reset to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+        }
+      }
+    },
+    "onlineReward": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Enable Online Reward",
+          "rewardIntervalMinutes": "Reward Interval (minutes)",
+          "rewardAmount": "Reward Amount",
+          "rewardPartialPeriod": "Reward Partial Period",
+          "playerMessage": "Player Message",
+          "playerMessageHint": "Optional private message sent to the player after receiving a reward. Supports {amount}, {currency}, {totalMinutes}."
+        },
+        "actions": {
+          "save": "Save Settings",
+          "reset": "Reset to Defaults"
+        },
+        "messages": {
+          "saveSuccess": "Online reward settings saved.",
+          "resetSuccess": "Online reward settings have been reset to defaults.",
           "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       }

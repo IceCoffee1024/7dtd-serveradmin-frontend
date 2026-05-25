@@ -349,6 +349,27 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'OnlineReward',
+        path: 'online-reward',
+        component: () => import('../views/OnlineReward/index.vue'),
+        redirect: { name: 'OnlineRewardSettings' },
+        meta: {
+          title: () => t('menus.onlineReward'),
+          icon: markIcon(() => import('~icons/mdi/clock-check-outline')),
+        },
+        children: [
+          {
+            name: 'OnlineRewardSettings',
+            path: 'settings',
+            component: () => import('../views/OnlineReward/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.onlineRewardSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),

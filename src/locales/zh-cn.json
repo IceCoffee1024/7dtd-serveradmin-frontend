@@ -90,6 +90,8 @@
     "achievementDefinitions": "成就定义",
     "achievementRecords": "获得记录",
     "achievementSettings": "设置",
+    "onlineReward": "在线时长奖励",
+    "onlineRewardSettings": "设置",
     "gameEventLogs": "游戏事件日志"
   },
   "components": {
@@ -1324,6 +1326,27 @@
         "messages": {
           "saveSuccess": "投票踢人设置已保存。",
           "resetSuccess": "投票踢人设置已恢复为默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
+        }
+      }
+    },
+    "onlineReward": {
+      "settings": {
+        "fields": {
+          "isEnabled": "启用在线时长奖励",
+          "rewardIntervalMinutes": "奖励间隔（分钟）",
+          "rewardAmount": "奖励数量",
+          "rewardPartialPeriod": "补发部分周期奖励",
+          "playerMessage": "玩家提示消息",
+          "playerMessageHint": "可选。玩家每次领取奖励后收到的私信提示。支持占位符：{amount}、{currency}、{totalMinutes}。"
+        },
+        "actions": {
+          "save": "保存设置",
+          "reset": "恢复默认设置"
+        },
+        "messages": {
+          "saveSuccess": "在线时长奖励设置已保存。",
+          "resetSuccess": "在线时长奖励设置已恢复为默认值。",
           "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       }
