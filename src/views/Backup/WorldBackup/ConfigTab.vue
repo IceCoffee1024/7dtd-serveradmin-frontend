@@ -201,8 +201,7 @@ onMounted(() => {
       v-model="form"
       :fields="policyFields"
       :rules="rules"
-      label-position="left"
-      label-width="140px"
+      label-position="top"
       :gutter="16"
     />
 
@@ -213,8 +212,7 @@ onMounted(() => {
         v-model="form"
         :fields="settingsFields"
         :rules="rules"
-        label-position="left"
-        label-width="140px"
+        label-position="top"
         :gutter="16"
         @submit.prevent="onSubmit"
       />

@@ -90,7 +90,7 @@ const restartModeOptions = computed(() => [
   { label: t('views.restart.settings.restartModes.force'), value: 'Force' },
 ]);
 
-const fields = computed<MyFormField<FormModel>[]>(() => [
+const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.restart.settings.fields.isEnabled'),
@@ -98,6 +98,9 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     options: booleanOptions.value,
     span: { xs: 24, md: 12 },
   },
+]);
+
+const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'cronExpression',
     label: t('views.restart.settings.fields.cronExpression'),
@@ -282,18 +285,26 @@ async function onCancelRestart() {
     </div>
     <template v-else>
       <MyForm
-        id="restartSettingsForm"
-        ref="formRef"
         v-model="form"
-        :fields="fields"
+        :fields="policyFields"
         :rules="rules"
-        label-position="left"
-        label-width="140px"
+        label-position="top"
         :gutter="16"
-        @submit.prevent="onSubmit"
       />
 
-      <div class="mt-4">
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+        <MyForm
+          id="restartSettingsForm"
+          ref="formRef"
+          v-model="form"
+          :fields="settingsFields"
+          :rules="rules"
+          label-position="top"
+          :gutter="16"
+          @submit.prevent="onSubmit"
+        />
+
+        <div class="mt-4">
         <div class="flex items-center justify-between mb-2">
           <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
             {{ t('views.restart.settings.warningStages.sectionTitle') }}
@@ -322,6 +333,7 @@ async function onCancelRestart() {
             </el-button>
           </el-form-item>
         </div>
+      </div>
       </div>
 
       <div class="mt-4 flex gap-2 justify-end">

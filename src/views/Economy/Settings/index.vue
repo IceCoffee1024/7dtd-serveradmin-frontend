@@ -796,8 +796,7 @@ onMounted(() => {
         v-model="form"
         :fields="policyFields"
         :rules="rules"
-        label-position="left"
-        label-width="140px"
+        label-position="top"
         :gutter="16"
       />
 
@@ -815,8 +814,7 @@ onMounted(() => {
               v-model="form"
               :fields="basicFields"
               :rules="rules"
-              label-position="left"
-              label-width="120px"
+              label-position="top"
               :gutter="16"
               @submit.prevent="onSubmit"
             />
@@ -829,8 +827,7 @@ onMounted(() => {
               v-model="form"
               :fields="transferFields"
               :rules="rules"
-              label-position="left"
-              label-width="120px"
+              label-position="top"
               :gutter="16"
             />
           </el-card>
@@ -846,8 +843,7 @@ onMounted(() => {
               v-model="form"
               :fields="dailyRewardFields"
               :rules="rules"
-              label-position="left"
-              label-width="120px"
+              label-position="top"
               :gutter="16"
             />
           </el-card>
@@ -859,8 +855,7 @@ onMounted(() => {
               v-model="form"
               :fields="bonusFields"
               :rules="rules"
-              label-position="left"
-              label-width="120px"
+              label-position="top"
               :gutter="16"
             />
           </el-card>
@@ -876,8 +871,7 @@ onMounted(() => {
               v-model="form"
               :fields="shopFields"
               :rules="rules"
-              label-position="left"
-              label-width="120px"
+              label-position="top"
               :gutter="16"
             />
           </el-card>
@@ -890,8 +884,7 @@ onMounted(() => {
               v-model="form"
               :fields="commandFields"
               :rules="rules"
-              label-position="left"
-              label-width="120px"
+              label-position="top"
               :gutter="16"
             />
           </el-card>
@@ -909,8 +902,7 @@ onMounted(() => {
             v-model="form"
             :fields="tipsFields"
             :rules="rules"
-            label-position="left"
-            label-width="140px"
+            label-position="top"
             :gutter="16"
           />
         </el-card>

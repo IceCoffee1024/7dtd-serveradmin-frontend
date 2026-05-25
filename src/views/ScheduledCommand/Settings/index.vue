@@ -243,8 +243,7 @@ onMounted(() => {
         v-model="form"
         :fields="fields"
         :rules="rules"
-        label-position="left"
-        label-width="140px"
+        label-position="top"
         :gutter="16"
         @submit.prevent="onSubmit"
       />

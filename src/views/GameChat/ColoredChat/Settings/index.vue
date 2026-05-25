@@ -313,8 +313,7 @@ onMounted(() => {
         v-model="form"
         :fields="policyFields"
         :rules="rules"
-        label-position="left"
-        label-width="140px"
+        label-position="top"
         :gutter="16"
       />
 
@@ -343,8 +342,7 @@ onMounted(() => {
           v-model="form"
           :fields="playerColorFields"
           :rules="rules"
-          label-position="left"
-          label-width="140px"
+          label-position="top"
           :gutter="16"
         />
 
@@ -356,8 +354,7 @@ onMounted(() => {
           v-model="form"
           :fields="systemColorFields"
           :rules="rules"
-          label-position="left"
-          label-width="140px"
+          label-position="top"
           :gutter="16"
         />
       </div>

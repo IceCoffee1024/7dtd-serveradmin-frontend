@@ -109,7 +109,7 @@ const booleanOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
-const fields = computed<MyFormField<FormModel>[]>(() => [
+const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.voteKick.settings.fields.isEnabled'),
@@ -117,6 +117,9 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     options: booleanOptions.value,
     span: { xs: 24, md: 12 },
   },
+]);
+
+const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'commandName',
     label: t('views.voteKick.settings.fields.commandName'),
@@ -423,16 +426,25 @@ onMounted(() => {
     </div>
     <template v-else>
       <MyForm
-        id="voteKickSettingsForm"
-        ref="formRef"
         v-model="form"
-        :fields="fields"
+        :fields="policyFields"
         :rules="rules"
         label-position="top"
-        label-width="auto"
         :gutter="16"
-        @submit.prevent="onSubmit"
       />
+
+      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+        <MyForm
+          id="voteKickSettingsForm"
+          ref="formRef"
+          v-model="form"
+          :fields="settingsFields"
+          :rules="rules"
+          label-position="top"
+          :gutter="16"
+          @submit.prevent="onSubmit"
+        />
+      </div>
 
       <div class="mt-4 flex gap-2 justify-end">
         <el-button :disabled="isSubmitting" @click="onReset">
