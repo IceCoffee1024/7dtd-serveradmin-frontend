@@ -151,3 +151,18 @@ export function deleteRedeemCode(id: number) {
 export function getCodeRedemptions(id: number) {
   return http.get<API.Economy.CodeRedemption[]>(`EconomyRedeemCodes/${id}/Redemptions`).json();
 }
+
+/**
+ * Retrieves aggregated operational metrics for the economy overview dashboard.
+ */
+export function getOverview() {
+  return http.get<API.Economy.Overview>('Economy/Overview').json();
+}
+
+/**
+ * Downloads all economy transactions matching the given filters as a CSV Blob.
+ * Pagination, sort, and order fields are intentionally ignored by the backend export endpoint.
+ */
+export function exportTransactions(params: Omit<API.Economy.TransactionQuery, 'pageNumber' | 'pageSize' | 'order' | 'desc'> = {}) {
+  return http.get('EconomyTransactions/Export', { searchParams: { ...params } }).blob();
+}

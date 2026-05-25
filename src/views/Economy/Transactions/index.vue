@@ -2,6 +2,7 @@
 import dayjs from 'dayjs';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import { useI18n } from 'vue-i18n';
+import { usePopup } from '~/composables/usePopup';
 import * as api from '~/api/economy';
 import DetailDialog from './DetailDialog.vue';
 
@@ -10,8 +11,13 @@ defineOptions({ name: 'EconomyTransactionsPage' });
 type TransactionRow = API.Economy.Transaction;
 
 const { t } = useI18n();
+const { toast } = usePopup();
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const detailRow = ref<TransactionRow | null>(null);
+
+/** Mirrors the most-recently applied search filters so the export button can use the same criteria. */
+const currentFilters = ref<Omit<API.Economy.TransactionQuery, 'pageNumber' | 'pageSize' | 'order' | 'desc'>>({});
+const exporting = ref(false);
 
 const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
   {
@@ -58,6 +64,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
         { label: t('views.economy.transactions.typeOptions.transferOut'), value: 'TransferOut' },
         { label: t('views.economy.transactions.typeOptions.transferIn'), value: 'TransferIn' },
         { label: t('views.economy.transactions.typeOptions.dailyReward'), value: 'DailyReward' },
+        { label: t('views.economy.transactions.typeOptions.tax'), value: 'Tax' },
       ],
       props: { clearable: true },
       order: 3,
@@ -105,16 +112,21 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<TransactionRow>> {
-  const response = await api.getTransactions({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
+  // Snapshot current filters for the CSV export action.
+  currentFilters.value = {
     keyword: params.search?.keyword?.trim() || undefined,
     playerId: toOptionalString(params.search?.playerId),
     playerName: toOptionalString(params.search?.playerName),
-    type: toOptionalString(params.search?.type),
+    type: toOptionalString(params.search?.type) as API.Economy.TransactionType | undefined,
     source: toOptionalString(params.search?.source),
     startTime: toOptionalString(params.search?.startTime),
     endTime: toOptionalString(params.search?.endTime),
+  };
+
+  const response = await api.getTransactions({
+    ...currentFilters.value,
+    pageNumber: params.pageNumber,
+    pageSize: params.pageSize,
     order: toOrder(params.sortField),
     desc: params.sortOrder === 'descending',
   });
@@ -123,6 +135,26 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     list: response.items,
     total: response.total,
   };
+}
+
+async function onExport() {
+  exporting.value = true;
+  try {
+    const blob = await api.exportTransactions(currentFilters.value);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `transactions_${dayjs().format('YYYYMMDD_HHmmss')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ type: 'success', text: t('views.economy.transactions.messages.exportSuccess') });
+  }
+  catch {
+    toast({ type: 'error', text: t('views.economy.transactions.messages.exportError') });
+  }
+  finally {
+    exporting.value = false;
+  }
 }
 
 function toOptionalString(value: unknown): string | undefined {
@@ -186,6 +218,18 @@ async function onView(row: TransactionRow) {
 
       <template #occurredAt="{ row }">
         <span class="text-xs font-mono text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.occurredAt) }}</span>
+      </template>
+
+      <template #toolbar-right>
+        <IconButton
+          :tooltip-content="t('views.economy.transactions.exportCsv')"
+          :loading="exporting"
+          button-size="small"
+          plain
+          @click="onExport"
+        >
+          <icon-mdi-download />
+        </IconButton>
       </template>
 
       <template #operation="{ row }">

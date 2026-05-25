@@ -138,12 +138,21 @@ const routes: RouteRecordRaw[] = [
         name: 'Economy',
         path: 'economy',
         component: () => import('../views/Economy/index.vue'),
-        redirect: { name: 'EconomyAccounts' },
+        redirect: { name: 'EconomyOverview' },
         meta: {
           title: () => t('menus.economy'),
           icon: markIcon(() => import('~icons/mdi/cash-multiple')),
         },
         children: [
+          {
+            name: 'EconomyOverview',
+            path: 'overview',
+            component: () => import('../views/Economy/Overview/index.vue'),
+            meta: {
+              title: () => t('menus.economyOverview'),
+              icon: markIcon(() => import('~icons/mdi/chart-bar')),
+            },
+          },
           {
             name: 'EconomyAccounts',
             path: 'accounts',

@@ -67,6 +67,7 @@
     },
     "restartSettings": "Settings",
     "restartRun": "Manual Restart",
+    "economyOverview": "Overview",
     "economyAccounts": "Accounts",
     "economyTransactions": "Transactions",
     "economySettings": "Settings",
@@ -1183,6 +1184,19 @@
       }
     },
     "economy": {
+      "overview": {
+        "totalAccounts": "Total Accounts",
+        "todayNewAccounts": "New Accounts Today",
+        "totalCirculation": "Total Circulation",
+        "todayTransactionCount": "Transactions Today",
+        "todayRewardsAmount": "Rewards Dispensed Today",
+        "todayDailyClaimCount": "Daily Claims Today",
+        "todayTaxCollected": "Tax Collected Today",
+        "leaderboard": "Wealth Leaderboard",
+        "leaderboardRank": "Rank",
+        "loading": "Loading...",
+        "empty": "No data available"
+      },
       "tabs": {
         "accounts": "Accounts",
         "transactions": "Transactions",
@@ -1378,7 +1392,8 @@
           "adminDeduct": "Admin Deduct",
           "transferOut": "Transfer Out",
           "transferIn": "Transfer In",
-          "dailyReward": "Daily Reward"
+          "dailyReward": "Daily Reward",
+          "tax": "Tax"
         },
         "detailDialog": {
           "title": "Transaction Details",
@@ -1386,6 +1401,11 @@
             "primary": "Primary",
             "metadata": "Metadata"
           }
+        },
+        "exportCsv": "Export CSV",
+        "messages": {
+          "exportSuccess": "CSV exported successfully",
+          "exportError": "Failed to export CSV"
         }
       },
       "shop": {

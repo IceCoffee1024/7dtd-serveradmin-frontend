@@ -67,6 +67,7 @@
     },
     "restartSettings": "重启设置",
     "restartRun": "手动重启",
+    "economyOverview": "运营概览",
     "economyAccounts": "账户管理",
     "economyTransactions": "流水记录",
     "economySettings": "经济设置",
@@ -695,6 +696,19 @@
       }
     },
     "economy": {
+      "overview": {
+        "totalAccounts": "总账户数",
+        "todayNewAccounts": "今日新增账户",
+        "totalCirculation": "流通总货币量",
+        "todayTransactionCount": "今日流水笔数",
+        "todayRewardsAmount": "今日发放奖励金额",
+        "todayDailyClaimCount": "今日签到人数",
+        "todayTaxCollected": "今日税收金额",
+        "leaderboard": "财富排行榜",
+        "leaderboardRank": "排名",
+        "loading": "加载中...",
+        "empty": "暂无数据"
+      },
       "tabs": {
         "accounts": "账户管理",
         "transactions": "流水记录",
@@ -891,7 +905,8 @@
           "adminDeduct": "管理员扣除",
           "transferOut": "转出",
           "transferIn": "转入",
-          "dailyReward": "每日签到奖励"
+          "dailyReward": "每日签到奖励",
+          "tax": "税费"
         },
         "detailDialog": {
           "title": "流水详情",
@@ -899,6 +914,11 @@
             "primary": "主信息",
             "metadata": "附加信息"
           }
+        },
+        "exportCsv": "导出 CSV",
+        "messages": {
+          "exportSuccess": "CSV 导出成功",
+          "exportError": "CSV 导出失败"
         }
       },
       "shop": {

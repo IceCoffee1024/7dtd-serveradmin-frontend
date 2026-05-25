@@ -88,7 +88,7 @@ declare namespace API {
       occurredAt: string;
     }
 
-    type TransactionType = 'AdminGrant' | 'AdminDeduct' | 'TransferOut' | 'TransferIn' | 'DailyReward';
+    type TransactionType = 'AdminGrant' | 'AdminDeduct' | 'TransferOut' | 'TransferIn' | 'DailyReward' | 'Tax';
     type TransactionDirection = 'Income' | 'Expense';
 
     type AccountQueryOrder = 'CreatedAt' | 'PlayerId' | 'PlayerName' | 'Balance' | 'LastTransactionAt';
@@ -229,6 +229,19 @@ declare namespace API {
     interface BatchAdjustResult {
       succeeded: number;
       failed: string[];
+    }
+
+    // ─── Overview ──────────────────────────────────────────────────────────────
+
+    interface Overview {
+      totalAccounts: number;
+      todayNewAccounts: number;
+      totalCirculation: number;
+      todayTransactionCount: number;
+      todayRewardsAmount: number;
+      todayDailyClaimCount: number;
+      todayTaxCollected: number;
+      leaderboard: LeaderboardItem[];
     }
   }
 }
