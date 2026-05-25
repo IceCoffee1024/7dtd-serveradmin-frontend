@@ -446,7 +446,7 @@ export function addAdminUser(data: API.GameServer.AdminUser) {
  * @returns Deletion confirmation.
  */
 export function deleteAdminUsers(playerIds: string[]) {
-  return http.delete<API.GameServer.CommandExecutionResult>('GameServer/AdminUsers', { json: { playerIds } }).json();
+  return http.delete<API.GameServer.CommandExecutionResult>('GameServer/AdminUsers', { json: playerIds }).json();
 }
 
 /**
