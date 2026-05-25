@@ -9,7 +9,7 @@
       target="_blank"
       rel="noopener noreferrer"
     >
-      Copyright MIT © 2025 IceCoffee1024
+      Copyright MIT © 2026 IceCoffee1024
     </a>
   </div>
 </template>
