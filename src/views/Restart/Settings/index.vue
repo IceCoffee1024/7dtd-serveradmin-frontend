@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import { cancelRestart, getSettings, updateSettings } from '~/api/restart';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -33,7 +35,7 @@ interface FormExpose {
 }
 
 const { t } = useI18n();
-const { toast } = usePopup();
+const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
 const isLoading = ref(false);
@@ -57,6 +59,12 @@ function buildDefaults(): FormModel {
 }
 
 const form = reactive<FormModel>(buildDefaults());
+const savedForm = ref<FormModel>(buildDefaults());
+const savedWarningStages = ref<WarningStageRow[]>([]);
+const isDirty = computed(() =>
+  !isEqual(form, savedForm.value)
+  || !isEqual(warningStages.value, savedWarningStages.value),
+);
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -114,6 +122,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'warningMessage',
     label: t('views.restart.settings.fields.warningMessage'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.restart.settings.tooltips.warningMessage'),
     span: { xs: 24 },
   },
@@ -174,6 +183,8 @@ async function loadSettings() {
   try {
     settings.value = await getSettings();
     applyValues(settings.value);
+    savedForm.value = cloneDeep(form);
+    savedWarningStages.value = cloneDeep(warningStages.value);
     await nextTick();
     formRef.value?.clearValidate();
   }
@@ -214,6 +225,8 @@ async function onSubmit() {
     };
     await updateSettings(payload);
     settings.value = { ...payload };
+    savedForm.value = cloneDeep(form);
+    savedWarningStages.value = cloneDeep(warningStages.value);
     toast({ type: 'success', text: t('views.restart.settings.messages.saveSuccess') });
   }
   catch (error) {
@@ -223,6 +236,16 @@ async function onSubmit() {
     isSubmitting.value = false;
   }
 }
+
+onBeforeRouteLeave(async () => {
+  if (!isDirty.value) {
+    return true;
+  }
+  return await confirm({
+    type: 'warning',
+    text: t('views.restart.settings.messages.unsavedChanges'),
+  });
+});
 
 onMounted(() => {
   loadSettings();
@@ -306,7 +329,7 @@ async function onCancelRestart() {
           <el-icon><icon-mdi-cancel /></el-icon>
           {{ t('views.restart.settings.actions.cancelPending') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.restart.settings.actions.save') }}
         </el-button>

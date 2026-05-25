@@ -1,7 +1,9 @@
 ﻿<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import { getSettings, resetSettings, updateSettings } from '~/api/scheduledCommand';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -25,7 +27,7 @@ interface FormExpose {
 }
 
 const { t } = useI18n();
-const { toast } = usePopup();
+const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
 const isLoading = ref(false);
@@ -44,6 +46,7 @@ function buildDefaults(): FormModel {
 
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
+const isDirty = computed(() => !isEqual(form, initialValues.value));
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -102,6 +105,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'failureNotifyMessage',
     label: t('views.scheduler.settings.fields.failureNotifyMessage'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.scheduler.settings.tooltips.failureNotifyMessage'),
     span: { xs: 24 },
   },
@@ -208,6 +212,16 @@ async function onSubmit() {
   }
 }
 
+onBeforeRouteLeave(async () => {
+  if (!isDirty.value) {
+    return true;
+  }
+  return await confirm({
+    type: 'warning',
+    text: t('views.scheduler.settings.messages.unsavedChanges'),
+  });
+});
+
 onMounted(() => {
   loadSettings();
 });
@@ -240,7 +254,7 @@ onMounted(() => {
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.scheduler.settings.actions.reset') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.scheduler.settings.actions.save') }}
         </el-button>

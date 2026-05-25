@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import { getSettings, resetSettings, updateSettings } from '~/api/economy';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -59,7 +61,7 @@ interface FormExpose {
 }
 
 const { t } = useI18n();
-const { toast } = usePopup();
+const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
 const commandFormRef = useTemplateRef<FormExpose>('commandFormRef');
@@ -113,6 +115,7 @@ function buildDefaults(): FormModel {
 
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
+const isDirty = computed(() => !isEqual(form, initialValues.value));
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -320,6 +323,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'balanceTip',
     label: t('views.economy.settings.tips.fields.balanceTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.balanceTip'),
     span: { xs: 24, md: 12 },
   },
@@ -327,6 +331,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'payUsageTip',
     label: t('views.economy.settings.tips.fields.payUsageTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.payUsageTip'),
     span: { xs: 24, md: 12 },
   },
@@ -334,12 +339,14 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'payTargetNotFoundTip',
     label: t('views.economy.settings.tips.fields.payTargetNotFoundTip'),
     el: 'el-input',
+    props: { clearable: true },
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'paySuccessTip',
     label: t('views.economy.settings.tips.fields.paySuccessTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.paySuccessTip'),
     span: { xs: 24, md: 12 },
   },
@@ -347,6 +354,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'dailySuccessTip',
     label: t('views.economy.settings.tips.fields.dailySuccessTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.dailySuccessTip'),
     span: { xs: 24, md: 12 },
   },
@@ -354,18 +362,21 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'dailyAlreadyClaimedTip',
     label: t('views.economy.settings.tips.fields.dailyAlreadyClaimedTip'),
     el: 'el-input',
+    props: { clearable: true },
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'shopEmptyTip',
     label: t('views.economy.settings.tips.fields.shopEmptyTip'),
     el: 'el-input',
+    props: { clearable: true },
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'buyUsageTip',
     label: t('views.economy.settings.tips.fields.buyUsageTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.buyUsageTip'),
     span: { xs: 24, md: 12 },
   },
@@ -373,6 +384,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'buySuccessTip',
     label: t('views.economy.settings.tips.fields.buySuccessTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.buySuccessTip'),
     span: { xs: 24, md: 12 },
   },
@@ -380,12 +392,14 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'redeemUsageTip',
     label: t('views.economy.settings.tips.fields.redeemUsageTip'),
     el: 'el-input',
+    props: { clearable: true },
     span: { xs: 24, md: 12 },
   },
   {
     prop: 'redeemSuccessTip',
     label: t('views.economy.settings.tips.fields.redeemSuccessTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.redeemSuccessTip'),
     span: { xs: 24, md: 12 },
   },
@@ -393,6 +407,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'playerDiedPenaltyTip',
     label: t('views.economy.settings.tips.fields.playerDiedPenaltyTip'),
     el: 'el-input',
+    props: { clearable: true },
     tooltip: t('views.economy.settings.tips.tooltips.playerDiedPenaltyTip'),
     span: { xs: 24, md: 12 },
   },
@@ -711,6 +726,16 @@ async function onSubmit() {
   }
 }
 
+onBeforeRouteLeave(async () => {
+  if (!isDirty.value) {
+    return true;
+  }
+  return await confirm({
+    type: 'warning',
+    text: t('views.economy.settings.messages.unsavedChanges'),
+  });
+});
+
 onMounted(() => {
   loadSettings();
 });
@@ -869,7 +894,7 @@ onMounted(() => {
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.economy.settings.actions.reset') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.economy.settings.actions.save') }}
         </el-button>

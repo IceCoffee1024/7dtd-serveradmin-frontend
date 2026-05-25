@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import { getSettings, resetSettings, updateSettings } from '~/api/backup';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -22,7 +24,7 @@ interface FormExpose {
 }
 
 const { t } = useI18n();
-const { toast } = usePopup();
+const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
 const isLoading = ref(false);
@@ -34,6 +36,8 @@ function buildDefaults(): FormModel {
 }
 
 const form = reactive<FormModel>(buildDefaults());
+const savedForm = ref<FormModel>(buildDefaults());
+const isDirty = computed(() => !isEqual(form, savedForm.value));
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -87,6 +91,7 @@ async function loadSettings() {
   try {
     settings.value = await getSettings();
     applyValues(settings.value);
+    savedForm.value = cloneDeep(form);
     await nextTick();
     formRef.value?.clearValidate();
   }
@@ -103,6 +108,7 @@ async function onReset() {
   try {
     settings.value = await resetSettings();
     applyValues(settings.value);
+    savedForm.value = cloneDeep(form);
     await nextTick();
     formRef.value?.clearValidate();
     toast({ type: 'success', text: t('views.backup.settings.messages.resetSuccess') });
@@ -144,6 +150,16 @@ async function onSubmit() {
     isSubmitting.value = false;
   }
 }
+
+onBeforeRouteLeave(async () => {
+  if (!isDirty.value) {
+    return true;
+  }
+  return await confirm({
+    type: 'warning',
+    text: t('views.backup.settings.messages.unsavedChanges'),
+  });
+});
 
 onMounted(() => {
   loadSettings();
@@ -188,7 +204,7 @@ onMounted(() => {
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.backup.settings.actions.reset') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.backup.settings.actions.save') }}
         </el-button>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import { getSettings, resetSettings, updateSettings } from '~/api/gameNotice';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -44,6 +46,14 @@ function buildDefaults(): FormModel {
 }
 
 const form = reactive<FormModel>(buildDefaults());
+const savedForm = ref<FormModel>(buildDefaults());
+const savedRotatingNotices = ref<string[]>([]);
+const savedWelcomeNotices = ref<string[]>([]);
+const isDirty = computed(() =>
+  !isEqual(form, savedForm.value)
+  || !isEqual(rotatingNotices.value, savedRotatingNotices.value)
+  || !isEqual(welcomeNotices.value, savedWelcomeNotices.value),
+);
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -80,7 +90,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'bloodMoonNotice1',
     label: t('views.gameNotice.settings.fields.bloodMoonNotice1'),
     el: 'el-input',
-    props: { type: 'textarea', rows: 2 },
+    props: { type: 'textarea', rows: 2, clearable: true },
     tooltip: t('views.gameNotice.settings.tooltips.bloodMoonNotices'),
     span: { xs: 24 },
   },
@@ -88,14 +98,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     prop: 'bloodMoonNotice2',
     label: t('views.gameNotice.settings.fields.bloodMoonNotice2'),
     el: 'el-input',
-    props: { type: 'textarea', rows: 2 },
+    props: { type: 'textarea', rows: 2, clearable: true },
     span: { xs: 24 },
   },
   {
     prop: 'bloodMoonNotice3',
     label: t('views.gameNotice.settings.fields.bloodMoonNotice3'),
     el: 'el-input',
-    props: { type: 'textarea', rows: 2 },
+    props: { type: 'textarea', rows: 2, clearable: true },
     span: { xs: 24 },
   },
 ]);
@@ -108,6 +118,9 @@ function applyValues(source: API.GameNotice.Settings) {
   form.bloodMoonNotice3 = source.bloodMoonNotice3 ?? '';
   welcomeNotices.value = source.welcomeNotices ? [...source.welcomeNotices] : [];
   rotatingNotices.value = source.rotatingNotices ? [...source.rotatingNotices] : [];
+  savedForm.value = cloneDeep(form);
+  savedRotatingNotices.value = [...rotatingNotices.value];
+  savedWelcomeNotices.value = [...welcomeNotices.value];
 }
 
 async function loadSettings() {
@@ -168,6 +181,9 @@ async function onSubmit() {
     };
     await updateSettings(payload);
     settings.value = { ...payload };
+    savedForm.value = cloneDeep(form);
+    savedRotatingNotices.value = [...rotatingNotices.value];
+    savedWelcomeNotices.value = [...welcomeNotices.value];
     toast({ type: 'success', text: t('views.gameNotice.settings.messages.saveSuccess') });
   }
   catch (error) {
@@ -202,6 +218,16 @@ async function onReset() {
     isSubmitting.value = false;
   }
 }
+
+onBeforeRouteLeave(async () => {
+  if (!isDirty.value) {
+    return true;
+  }
+  return await confirm({
+    type: 'warning',
+    text: t('views.gameNotice.settings.messages.unsavedChanges'),
+  });
+});
 
 onMounted(() => {
   loadSettings();
@@ -307,7 +333,7 @@ onMounted(() => {
           <el-icon><icon-mdi-restore /></el-icon>
           {{ t('views.gameNotice.settings.actions.resetToDefaults') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.gameNotice.settings.actions.save') }}
         </el-button>

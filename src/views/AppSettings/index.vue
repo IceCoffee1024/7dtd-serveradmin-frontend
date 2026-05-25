@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import { getAppSettings, updateAppSettings } from '~/api/gameServer';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -11,7 +13,7 @@ import { generateElementRules } from '~/utils';
 defineOptions({ name: 'AppSettings' });
 
 const { t } = useI18n();
-const { toast } = usePopup();
+const { toast, confirm } = usePopup();
 
 interface FormModel {
   webUrl: string;
@@ -44,6 +46,7 @@ function buildDefaults(): FormModel {
 
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
+const isDirty = computed(() => !isEqual(form, initialValues.value));
 
 const AppSettingsSchema = v.object({
   webUrl: v.pipe(v.string(), v.minLength(1), v.url()),
@@ -194,6 +197,16 @@ async function onSubmit() {
   }
 }
 
+onBeforeRouteLeave(async () => {
+  if (!isDirty.value) {
+    return true;
+  }
+  return await confirm({
+    type: 'warning',
+    text: t('views.appSettings.messages.unsavedChanges'),
+  });
+});
+
 onMounted(() => {
   loadSettings();
 });
@@ -227,7 +240,7 @@ onMounted(() => {
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.appSettings.actions.reset') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.appSettings.actions.save') }}
         </el-button>

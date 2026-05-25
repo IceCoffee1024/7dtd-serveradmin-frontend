@@ -1036,7 +1036,8 @@
         "reset": "Reset"
       },
       "messages": {
-        "saveSuccess": "Application settings updated."
+        "saveSuccess": "Application settings updated.",
+        "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
       }
     },
     "chatSettings": {
@@ -1066,7 +1067,8 @@
       },
       "messages": {
         "resetSuccess": "Backend default settings have been restored.",
-        "saveSuccess": "Chat settings have been updated."
+        "saveSuccess": "Chat settings have been updated.",
+        "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
       },
       "preview": {
         "title": "Effect Preview",
@@ -1134,7 +1136,8 @@
         },
         "messages": {
           "resetSuccess": "Backend default settings have been restored.",
-          "saveSuccess": "Colored chat settings have been updated."
+          "saveSuccess": "Colored chat settings have been updated.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       },
       "profiles": {
@@ -1252,7 +1255,8 @@
         },
         "messages": {
           "saveSuccess": "Economy settings saved successfully.",
-          "resetSuccess": "Economy settings were reset to defaults."
+          "resetSuccess": "Economy settings were reset to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         },
         "preview": {
           "title": "Effect Preview",
@@ -1503,6 +1507,7 @@
           "back": "Back Teleport"
         },
         "sections": {
+          "basic": "Basic Settings",
           "commands": "Commands",
           "tips": "Tip Messages"
         },
@@ -1583,7 +1588,8 @@
         },
         "messages": {
           "saveSuccess": "Settings saved successfully.",
-          "resetSuccess": "Settings have been reset to defaults."
+          "resetSuccess": "Settings have been reset to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       },
       "cities": {
@@ -1702,7 +1708,8 @@
           "resetConfirm": "Reset all game notice settings to their defaults? This cannot be undone.",
           "resetSuccess": "Game notice settings have been reset to defaults.",
           "noRotatingNotices": "No rotating notices configured. Click \"Add Notice\" to add one.",
-          "noWelcomeNotices": "No welcome notices configured. Click \"Add Notice\" to add one."
+          "noWelcomeNotices": "No welcome notices configured. Click \"Add Notice\" to add one.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       }
     },
@@ -1726,7 +1733,8 @@
         },
         "messages": {
           "saveSuccess": "Backup settings saved.",
-          "resetSuccess": "Backup settings restored to defaults."
+          "resetSuccess": "Backup settings restored to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       },
       "tooltips": {
@@ -1832,7 +1840,8 @@
         },
         "messages": {
           "saveSuccess": "Scheduler settings saved successfully.",
-          "resetSuccess": "Scheduler settings were reset to defaults."
+          "resetSuccess": "Scheduler settings were reset to defaults.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       },
       "tasks": {
@@ -1981,7 +1990,8 @@
         "messages": {
           "saveSuccess": "Restart settings saved.",
           "cancelSuccess": "Pending restart has been cancelled.",
-          "cancelNoActive": "No active restart to cancel."
+          "cancelNoActive": "No active restart to cancel.",
+          "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
         }
       },
       "run": {

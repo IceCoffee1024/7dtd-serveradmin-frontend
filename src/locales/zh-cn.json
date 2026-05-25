@@ -523,7 +523,8 @@
         "reset": "重置"
       },
       "messages": {
-        "saveSuccess": "应用设置已更新。"
+        "saveSuccess": "应用设置已更新。",
+        "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
       }
     },
     "chatSettings": {
@@ -553,7 +554,8 @@
       },
       "messages": {
         "resetSuccess": "已恢复后端默认配置。",
-        "saveSuccess": "聊天配置已更新。"
+        "saveSuccess": "聊天配置已更新。",
+        "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
       },
       "preview": {
         "title": "效果预览",
@@ -646,7 +648,8 @@
         },
         "messages": {
           "resetSuccess": "已恢复后端默认配置。",
-          "saveSuccess": "彩色聊天配置已更新。"
+          "saveSuccess": "彩色聊天配置已更新。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       },
       "profiles": {
@@ -765,7 +768,8 @@
         },
         "messages": {
           "saveSuccess": "经济设置保存成功。",
-          "resetSuccess": "经济设置已恢复默认值。"
+          "resetSuccess": "经济设置已恢复默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         },
         "preview": {
           "title": "效果预览",
@@ -1016,6 +1020,7 @@
           "back": "返回传送"
         },
         "sections": {
+          "basic": "基础设置",
           "commands": "指令配置",
           "tips": "提示消息"
         },
@@ -1096,7 +1101,8 @@
         },
         "messages": {
           "saveSuccess": "设置已保存。",
-          "resetSuccess": "设置已重置为默认值。"
+          "resetSuccess": "设置已重置为默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       },
       "cities": {
@@ -1215,7 +1221,8 @@
           "resetConfirm": "确定要将所有游戏公告设置恢复为默认值吗？此操作不可撤销。",
           "resetSuccess": "游戏公告设置已恢复为默认值。",
           "noRotatingNotices": "暂无轮播公告，点击「添加公告」以添加。",
-          "noWelcomeNotices": "暂无欢迎公告，点击「添加公告」以添加。"
+          "noWelcomeNotices": "暂无欢迎公告，点击「添加公告」以添加。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       }
     },
@@ -1239,7 +1246,8 @@
         },
         "messages": {
           "saveSuccess": "备份设置已保存。",
-          "resetSuccess": "备份设置已恢复为默认值。"
+          "resetSuccess": "备份设置已恢复为默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       },
       "tooltips": {
@@ -1345,7 +1353,8 @@
         },
         "messages": {
           "saveSuccess": "调度器设置已保存。",
-          "resetSuccess": "调度器设置已恢复为默认值。"
+          "resetSuccess": "调度器设置已恢复为默认值。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       },
       "tasks": {
@@ -1494,7 +1503,8 @@
         "messages": {
           "saveSuccess": "重启设置已保存。",
           "cancelSuccess": "待执行的重启已成功取消。",
-          "cancelNoActive": "当前没有待执行的重启任务。"
+          "cancelNoActive": "当前没有待执行的重启任务。",
+          "unsavedChanges": "您有未保存的更改，确认离开此页面吗？"
         }
       },
       "run": {

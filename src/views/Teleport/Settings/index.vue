@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave } from 'vue-router';
 import * as api from '~/api/teleport';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -83,11 +85,12 @@ interface FormExpose {
 }
 
 const { t } = useI18n();
-const { toast } = usePopup();
+const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
 const isLoading = ref(false);
 const isSubmitting = ref(false);
+const savedForm = ref<FormModel>(buildDefaults());
 
 function buildDefaults(): FormModel {
   return {
@@ -154,6 +157,7 @@ function buildDefaults(): FormModel {
 }
 
 const form = reactive<FormModel>(buildDefaults());
+const isDirty = computed(() => !isEqual(form, savedForm.value));
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -289,17 +293,17 @@ const homeCommandFields = computed<MyFormField<FormModel>[]>(() => [
 ]);
 
 const homeTipFields = computed<MyFormField<FormModel>[]>(() => [
-  { prop: 'homeNoHomeTip', label: t('views.teleport.settings.fields.home.noHomeTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeSetLimitTip', label: t('views.teleport.settings.fields.home.setLimitTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeSetSuccessTip', label: t('views.teleport.settings.fields.home.setSuccessTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeOverwriteTip', label: t('views.teleport.settings.fields.home.overwriteTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeDeleteSuccessTip', label: t('views.teleport.settings.fields.home.deleteSuccessTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeHomeNotFoundTip', label: t('views.teleport.settings.fields.home.homeNotFoundTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeCoolingTip', label: t('views.teleport.settings.fields.home.coolingTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeTeleSuccessTip', label: t('views.teleport.settings.fields.home.teleSuccessTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeSetCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.home.setCurrencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeTeleCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.home.teleCurrencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'homeBloodMoonBlockedTip', label: t('views.teleport.settings.fields.home.bloodMoonBlockedTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'homeNoHomeTip', label: t('views.teleport.settings.fields.home.noHomeTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeSetLimitTip', label: t('views.teleport.settings.fields.home.setLimitTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeSetSuccessTip', label: t('views.teleport.settings.fields.home.setSuccessTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeOverwriteTip', label: t('views.teleport.settings.fields.home.overwriteTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeDeleteSuccessTip', label: t('views.teleport.settings.fields.home.deleteSuccessTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeHomeNotFoundTip', label: t('views.teleport.settings.fields.home.homeNotFoundTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeCoolingTip', label: t('views.teleport.settings.fields.home.coolingTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeTeleSuccessTip', label: t('views.teleport.settings.fields.home.teleSuccessTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeSetCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.home.setCurrencyNotEnoughTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeTeleCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.home.teleCurrencyNotEnoughTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'homeBloodMoonBlockedTip', label: t('views.teleport.settings.fields.home.bloodMoonBlockedTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
 ]);
 
 // ---- City fields ----
@@ -326,11 +330,11 @@ const cityCommandFields = computed<MyFormField<FormModel>[]>(() => [
 ]);
 
 const cityTipFields = computed<MyFormField<FormModel>[]>(() => [
-  { prop: 'cityNoCitiesTip', label: t('views.teleport.settings.fields.city.noCitiesTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'cityCityNotFoundTip', label: t('views.teleport.settings.fields.city.cityNotFoundTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'cityCoolingTip', label: t('views.teleport.settings.fields.city.coolingTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'cityTeleSuccessTip', label: t('views.teleport.settings.fields.city.teleSuccessTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'cityCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.city.currencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'cityNoCitiesTip', label: t('views.teleport.settings.fields.city.noCitiesTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'cityCityNotFoundTip', label: t('views.teleport.settings.fields.city.cityNotFoundTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'cityCoolingTip', label: t('views.teleport.settings.fields.city.coolingTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'cityTeleSuccessTip', label: t('views.teleport.settings.fields.city.teleSuccessTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'cityCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.city.currencyNotEnoughTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
 ]);
 
 // ---- Friend fields ----
@@ -379,16 +383,16 @@ const friendCommandFields = computed<MyFormField<FormModel>[]>(() => [
 ]);
 
 const friendTipFields = computed<MyFormField<FormModel>[]>(() => [
-  { prop: 'friendTargetNotFoundTip', label: t('views.teleport.settings.fields.friend.targetNotFoundTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendRequestSentTip', label: t('views.teleport.settings.fields.friend.requestSentTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendRequestReceivedTip', label: t('views.teleport.settings.fields.friend.requestReceivedTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendAcceptedTip', label: t('views.teleport.settings.fields.friend.acceptedTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendRejectedTip', label: t('views.teleport.settings.fields.friend.rejectedTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendTargetRejectedTip', label: t('views.teleport.settings.fields.friend.targetRejectedTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendNoRequestTip', label: t('views.teleport.settings.fields.friend.noRequestTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendCoolingTip', label: t('views.teleport.settings.fields.friend.coolingTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendTeleSuccessTip', label: t('views.teleport.settings.fields.friend.teleSuccessTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'friendCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.friend.currencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'friendTargetNotFoundTip', label: t('views.teleport.settings.fields.friend.targetNotFoundTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendRequestSentTip', label: t('views.teleport.settings.fields.friend.requestSentTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendRequestReceivedTip', label: t('views.teleport.settings.fields.friend.requestReceivedTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendAcceptedTip', label: t('views.teleport.settings.fields.friend.acceptedTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendRejectedTip', label: t('views.teleport.settings.fields.friend.rejectedTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendTargetRejectedTip', label: t('views.teleport.settings.fields.friend.targetRejectedTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendNoRequestTip', label: t('views.teleport.settings.fields.friend.noRequestTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendCoolingTip', label: t('views.teleport.settings.fields.friend.coolingTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendTeleSuccessTip', label: t('views.teleport.settings.fields.friend.teleSuccessTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'friendCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.friend.currencyNotEnoughTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
 ]);
 
 // ---- Global Cooldown fields ----
@@ -439,10 +443,10 @@ const backCommandFields = computed<MyFormField<FormModel>[]>(() => [
 ]);
 
 const backTipFields = computed<MyFormField<FormModel>[]>(() => [
-  { prop: 'backNoPositionTip', label: t('views.teleport.settings.fields.back.noPositionTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'backCoolingTip', label: t('views.teleport.settings.fields.back.coolingTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'backTeleSuccessTip', label: t('views.teleport.settings.fields.back.teleSuccessTip'), el: 'el-input', span: { xs: 24 } },
-  { prop: 'backCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.back.currencyNotEnoughTip'), el: 'el-input', span: { xs: 24 } },
+  { prop: 'backNoPositionTip', label: t('views.teleport.settings.fields.back.noPositionTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'backCoolingTip', label: t('views.teleport.settings.fields.back.coolingTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'backTeleSuccessTip', label: t('views.teleport.settings.fields.back.teleSuccessTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
+  { prop: 'backCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.back.currencyNotEnoughTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
 ]);
 
 // ---- Data mapping ----
@@ -595,6 +599,7 @@ async function loadSettings() {
   try {
     const data = await api.getSettings();
     Object.assign(form, mapSettings(data));
+    savedForm.value = cloneDeep(form);
     await nextTick();
     formRef.value?.clearValidate();
   }
@@ -611,6 +616,7 @@ async function onReset() {
   try {
     const data = await api.resetSettings();
     Object.assign(form, mapSettings(data));
+    savedForm.value = cloneDeep(form);
     await nextTick();
     formRef.value?.clearValidate();
     toast({ type: 'success', text: t('views.teleport.settings.messages.resetSuccess') });
@@ -632,6 +638,7 @@ async function onSubmit() {
   isSubmitting.value = true;
   try {
     await api.updateSettings(buildPayload());
+    savedForm.value = cloneDeep(form);
     toast({ type: 'success', text: t('views.teleport.settings.messages.saveSuccess') });
     await loadSettings();
   }
@@ -642,6 +649,15 @@ async function onSubmit() {
     isSubmitting.value = false;
   }
 }
+
+onBeforeRouteLeave(async (_to, _from, next) => {
+  if (isDirty.value === false) {
+    next();
+    return;
+  }
+  const confirmed = await confirm({ text: t('views.teleport.settings.messages.unsavedChanges'), type: 'warning' });
+  next(confirmed);
+});
 
 onMounted(() => loadSettings());
 </script>
@@ -656,183 +672,222 @@ onMounted(() => loadSettings());
       </el-skeleton>
     </div>
     <template v-else>
-      <MyForm
-        ref="formRef"
-        v-model="form"
-        :fields="masterFields"
-        :rules="rules"
-        label-position="left"
-        label-width="140px"
-        :gutter="16"
-      />
+      <el-card shadow="never" class="mb-4">
+        <MyForm
+          ref="formRef"
+          v-model="form"
+          :fields="masterFields"
+          :rules="rules"
+          label-position="left"
+          label-width="140px"
+          :gutter="16"
+        />
+      </el-card>
 
       <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
-        <el-tabs class="mt-2">
+        <el-tabs type="border-card">
           <!-- ==================== Home Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.home')">
-            <MyForm
-              v-model="form"
-              :fields="homeBasicFields"
-              :rules="rules"
-              label-position="left"
-              label-width="140px"
-              :gutter="16"
-            />
+            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="homeBasicFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
 
-            <div :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
-              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
-                {{ t('views.teleport.settings.sections.commands') }}
-              </h3>
-              <MyForm
-                v-model="form"
-                :fields="homeCommandFields"
-                :rules="rules"
-                label-position="left"
-                label-width="140px"
-                :gutter="16"
-              />
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="homeCommandFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
 
-              <el-collapse class="mt-2">
-                <el-collapse-item :title="t('views.teleport.settings.sections.tips')">
-                  <MyForm
-                    v-model="form"
-                    :fields="homeTipFields"
-                    :rules="rules"
-                    label-position="left"
-                    label-width="140px"
-                    :gutter="16"
-                  />
-                </el-collapse-item>
-              </el-collapse>
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="homeTipFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
             </div>
           </el-tab-pane>
 
           <!-- ==================== City Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.city')">
-            <MyForm
-              v-model="form"
-              :fields="cityBasicFields"
-              :rules="rules"
-              label-position="left"
-              label-width="140px"
-              :gutter="16"
-            />
+            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="cityBasicFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
 
-            <div :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
-              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
-                {{ t('views.teleport.settings.sections.commands') }}
-              </h3>
-              <MyForm
-                v-model="form"
-                :fields="cityCommandFields"
-                :rules="rules"
-                label-position="left"
-                label-width="140px"
-                :gutter="16"
-              />
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="cityCommandFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
 
-              <el-collapse class="mt-2">
-                <el-collapse-item :title="t('views.teleport.settings.sections.tips')">
-                  <MyForm
-                    v-model="form"
-                    :fields="cityTipFields"
-                    :rules="rules"
-                    label-position="left"
-                    label-width="140px"
-                    :gutter="16"
-                  />
-                </el-collapse-item>
-              </el-collapse>
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="cityTipFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
             </div>
           </el-tab-pane>
 
           <!-- ==================== Friend Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.friend')">
-            <MyForm
-              v-model="form"
-              :fields="friendBasicFields"
-              :rules="rules"
-              label-position="left"
-              label-width="140px"
-              :gutter="16"
-            />
+            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="friendBasicFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
 
-            <div :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
-              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
-                {{ t('views.teleport.settings.sections.commands') }}
-              </h3>
-              <MyForm
-                v-model="form"
-                :fields="friendCommandFields"
-                :rules="rules"
-                label-position="left"
-                label-width="140px"
-                :gutter="16"
-              />
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="friendCommandFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
 
-              <el-collapse class="mt-2">
-                <el-collapse-item :title="t('views.teleport.settings.sections.tips')">
-                  <MyForm
-                    v-model="form"
-                    :fields="friendTipFields"
-                    :rules="rules"
-                    label-position="left"
-                    label-width="140px"
-                    :gutter="16"
-                  />
-                </el-collapse-item>
-              </el-collapse>
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="friendTipFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
             </div>
           </el-tab-pane>
 
           <!-- ==================== Global Cooldown Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.globalCooldown')">
-            <MyForm
-              v-model="form"
-              :fields="globalCooldownFields"
-              :rules="rules"
-              label-position="left"
-              label-width="140px"
-              :gutter="16"
-            />
-          </el-tab-pane>
-
-          <!-- ==================== Back Tab ==================== -->
-          <el-tab-pane :label="t('views.teleport.settings.tabs.back')">
-            <MyForm
-              v-model="form"
-              :fields="backBasicFields"
-              :rules="rules"
-              label-position="left"
-              label-width="140px"
-              :gutter="16"
-            />
-
-            <div :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
-              <h3 class="text-sm text-gray-900 font-semibold mb-2 mt-4 dark:text-gray-100">
-                {{ t('views.teleport.settings.sections.commands') }}
-              </h3>
+            <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+              <template #header>
+                <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
+              </template>
               <MyForm
                 v-model="form"
-                :fields="backCommandFields"
+                :fields="globalCooldownFields"
                 :rules="rules"
                 label-position="left"
                 label-width="140px"
                 :gutter="16"
               />
+            </el-card>
+          </el-tab-pane>
 
-              <el-collapse class="mt-2">
-                <el-collapse-item :title="t('views.teleport.settings.sections.tips')">
-                  <MyForm
-                    v-model="form"
-                    :fields="backTipFields"
-                    :rules="rules"
-                    label-position="left"
-                    label-width="140px"
-                    :gutter="16"
-                  />
-                </el-collapse-item>
-              </el-collapse>
+          <!-- ==================== Back Tab ==================== -->
+          <el-tab-pane :label="t('views.teleport.settings.tabs.back')">
+            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="backBasicFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
+
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="backCommandFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
+
+              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
+                <template #header>
+                  <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
+                </template>
+                <MyForm
+                  v-model="form"
+                  :fields="backTipFields"
+                  :rules="rules"
+                  label-position="left"
+                  label-width="140px"
+                  :gutter="16"
+                />
+              </el-card>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -843,7 +898,7 @@ onMounted(() => loadSettings());
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.teleport.settings.actions.reset') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.teleport.settings.actions.save') }}
         </el-button>
