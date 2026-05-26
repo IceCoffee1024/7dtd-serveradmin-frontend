@@ -27,3 +27,25 @@ export function resetChatSettings() {
 export function getChatMessages(params: API.Chat.ChatMessageQuery) {
   return http.get<API.Chat.Paged<API.Chat.ChatMessage>>('ChatMessages', { searchParams: { ...params } }).json();
 }
+
+/**
+ * Returns all mute records (including expired temporary ones) for the management UI.
+ */
+export function getMutes() {
+  return http.get<API.Chat.MuteEntry[]>('Chat/Mutes').json();
+}
+
+/**
+ * Creates or replaces the mute entry for the given player.
+ * Pass a `null` mutedUntil to create a permanent mute.
+ */
+export function addMute(payload: API.Chat.MuteEntryUpsert) {
+  return http.post('Chat/Mutes', { json: payload }).then(() => undefined);
+}
+
+/**
+ * Removes mute records for the specified player IDs, effectively un-muting them.
+ */
+export function removeMutes(playerIds: string[]) {
+  return http.delete('Chat/Mutes', { json: playerIds }).then(() => undefined);
+}

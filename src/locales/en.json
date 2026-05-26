@@ -479,7 +479,10 @@
       "kickReason": "Kick Reason (Optional)",
       "ban": "Ban Player",
       "banDuration": "Ban Duration (Minutes)",
-      "banReason": "Ban Reason (Optional)"
+      "banReason": "Ban Reason (Optional)",
+      "mute": "Mute Player",
+      "muteDuration": "Mute Duration (Minutes, 0 or empty for permanent)",
+      "muteReason": "Mute Reason (Optional)"
     },
     "map": {
       "region": "Region File",
@@ -1060,7 +1063,8 @@
         "allowNoPrefix": "Allow Prefixless Commands",
         "chatCommandSeparators": "Command Separators",
         "historyRetentionDays": "History Retention Days",
-        "excludeCommandsFromHistory": "Exclude Commands from History"
+        "excludeCommandsFromHistory": "Exclude Commands from History",
+        "muteNotifyMessage": "Mute Notify Message"
       },
       "tooltips": {
         "isEnabled": "Chat is a core service required by all features that register chat commands. It cannot be disabled.",
@@ -1070,7 +1074,8 @@
         "allowNoPrefix": "When enabled, plain global chat lines may be interpreted as commands.",
         "chatCommandSeparators": "Separate multiple delimiters with commas. A single space is the usual default.",
         "historyRetentionDays": "Number of days to keep chat history. Set to 0 to keep forever.",
-        "excludeCommandsFromHistory": "When enabled, chat messages that begin with a command prefix will not be saved in history."
+        "excludeCommandsFromHistory": "When enabled, chat messages that begin with a command prefix will not be saved in history.",
+        "muteNotifyMessage": "A whisper sent back to a muted player when they attempt to chat. Leave empty to send no notification."
       },
       "actions": {
         "save": "Save Chat Settings",
@@ -2289,19 +2294,28 @@
     "banWhitelist": {
       "ban": "Ban",
       "whitelist": "Whitelist",
+      "mute": "Mute",
       "playerId": "Player ID",
       "displayName": "Display Name",
+      "playerName": "Player Name",
       "bannedUntil": "Banned Until",
+      "mutedUntil": "Muted Until",
+      "permanent": "Permanent",
       "reason": "Reason",
+      "muteReason": "Mute Reason",
       "addBan": "Add Ban",
       "editBan": "Edit Ban",
       "addWhitelist": "Add Whitelist",
       "editWhitelist": "Edit Whitelist",
+      "addMute": "Add Mute",
+      "editMute": "Edit Mute",
+      "createdAt": "Created At",
       "tooltips": {
         "playerId": "Unique player identifier, usually a SteamID64.",
         "displayName": "The name shown in the list so operators can identify the target quickly.",
         "bannedUntil": "Leave this empty for a permanent ban; otherwise set the expiry time.",
-        "reason": "Record why the player was banned or removed for later audit and troubleshooting."
+        "reason": "Record why the player was banned or removed for later audit and troubleshooting.",
+        "mutedUntil": "Leave empty for a permanent mute; set a date for a temporary mute."
       }
     },
     "permission": {

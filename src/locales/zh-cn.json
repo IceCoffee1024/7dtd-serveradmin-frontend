@@ -479,7 +479,10 @@
       "kickReason": "踢出原因（可选）",
       "ban": "封禁玩家",
       "banDuration": "封禁时长（分钟）",
-      "banReason": "封禁原因（可选）"
+      "banReason": "封禁原因（可选）",
+      "mute": "禁言玩家",
+      "muteDuration": "禁言时长（分钟，0 或留空为永久）",
+      "muteReason": "禁言原因（可选）"
     },
     "map": {
       "region": "区域文件",
@@ -547,7 +550,8 @@
         "allowNoPrefix": "允许无前缀命令",
         "chatCommandSeparators": "命令参数分隔符",
         "historyRetentionDays": "聊天记录保留天数",
-        "excludeCommandsFromHistory": "排除命令消息"
+        "excludeCommandsFromHistory": "排除命令消息",
+        "muteNotifyMessage": "禁言提示消息"
       },
       "tooltips": {
         "isEnabled": "聊天功能是系统核心服务，所有依赖聊天命令的功能均通过它注册和分发命令，不可禁用。",
@@ -557,7 +561,8 @@
         "allowNoPrefix": "启用后，普通全局聊天也可以被解析为命令。",
         "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。",
         "historyRetentionDays": "聊天记录保留天数，0 表示永久保留。",
-        "excludeCommandsFromHistory": "启用后，以命令前缀开头的消息不会被保存到历史记录中。"
+        "excludeCommandsFromHistory": "启用后，以命令前缀开头的消息不会被保存到历史记录中。",
+        "muteNotifyMessage": "被禁言玩家尝试发送聊天时收到的私聊提示，为空则不发送任何提示。"
       },
       "actions": {
         "save": "保存聊天配置",
@@ -2290,19 +2295,28 @@
     "banWhitelist": {
       "ban": "黑名单",
       "whitelist": "白名单",
+      "mute": "禁言",
       "playerId": "玩家 ID",
       "displayName": "显示名称",
+      "playerName": "玩家名称",
       "bannedUntil": "封禁至",
+      "mutedUntil": "禁言至",
+      "permanent": "永久",
       "reason": "封禁原因",
+      "muteReason": "禁言原因",
       "addBan": "添加黑名单",
       "editBan": "编辑黑名单",
       "addWhitelist": "添加白名单",
       "editWhitelist": "编辑白名单",
+      "addMute": "添加禁言",
+      "editMute": "编辑禁言",
+      "createdAt": "创建时间",
       "tooltips": {
         "playerId": "玩家的唯一标识，通常填写 SteamID64。",
         "displayName": "在名单中显示的名称，便于识别目标玩家。",
         "bannedUntil": "暂时封禁时填写到期时间；永久封禁请保持为空。",
-        "reason": "记录封禁或移除原因，方便后续审计和排查。"
+        "reason": "记录封禁或移除原因，方便后续审计和排查。",
+        "mutedUntil": "临时禁言填写到期时间；永久禁言请保持为空。"
       }
     },
     "permission": {

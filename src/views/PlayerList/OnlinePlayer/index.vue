@@ -3,6 +3,7 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import type { ContextMenuOption } from '~/plugins/contextMenu';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { addMute } from '~/api/chat';
 import { banPlayer, getOnlinePlayers, kickPlayer } from '~/api/gameServer';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { usePopup } from '~/composables/usePopup';
@@ -137,6 +138,28 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
         const bannedUntil = dayjs().add(Number(minutesStr), 'minute').toISOString();
         await banPlayer(row.playerId, bannedUntil, row.playerName, reason || null);
         toast({ type: 'success', title: t('views.playerList.ban') });
+      }
+      catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  {
+    label: t('views.playerList.mute'),
+    command: async (row) => {
+      if (!row)
+        return;
+      const minutesStr = await prompt({ text: t('views.playerList.muteDuration') });
+      if (minutesStr === undefined)
+        return;
+      const reason = await prompt({ text: t('views.playerList.muteReason') });
+      if (reason === undefined)
+        return;
+      try {
+        const minutes = Number(minutesStr);
+        const mutedUntil = minutes > 0 ? dayjs().add(minutes, 'minute').toISOString() : null;
+        await addMute({ playerId: row.playerId, playerName: row.playerName, mutedUntil, reason: reason || null });
+        toast({ type: 'success', title: t('views.playerList.mute') });
       }
       catch (error) {
         console.error(error);

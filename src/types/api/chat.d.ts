@@ -13,6 +13,7 @@ declare namespace API {
       chatCommandSeparators: string[] | null;
       historyRetentionDays: number;
       excludeCommandsFromHistory: boolean;
+      muteNotifyMessage: string | null;
     }
 
     interface ChatMessage {
@@ -38,6 +39,22 @@ declare namespace API {
       endTime?: string;
       order?: ChatMessageQueryOrder;
       desc?: boolean;
+    }
+
+    interface MuteEntry {
+      id: number;
+      createdAt: string;
+      playerId: string;
+      playerName: string;
+      mutedUntil: string | null;
+      reason: string | null;
+    }
+
+    interface MuteEntryUpsert {
+      playerId: string;
+      playerName: string;
+      mutedUntil: string | null;
+      reason: string | null;
     }
   }
 }

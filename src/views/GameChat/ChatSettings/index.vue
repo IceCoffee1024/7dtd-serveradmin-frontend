@@ -21,6 +21,7 @@ interface FormModel {
   chatCommandSeparators: string;
   historyRetentionDays: number;
   excludeCommandsFromHistory: boolean;
+  muteNotifyMessage: string;
 }
 
 interface FormExpose {
@@ -45,6 +46,7 @@ function buildDefaults(): FormModel {
     chatCommandSeparators: ' ',
     historyRetentionDays: 0,
     excludeCommandsFromHistory: false,
+    muteNotifyMessage: '',
   };
 }
 
@@ -61,6 +63,7 @@ const schema = v.object({
   chatCommandSeparators: v.pipe(v.string(), v.minLength(1)),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
   excludeCommandsFromHistory: v.boolean(),
+  muteNotifyMessage: v.optional(v.string()),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -132,6 +135,13 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     tooltip: t('views.chatSettings.tooltips.excludeCommandsFromHistory'),
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'muteNotifyMessage',
+    label: t('views.chatSettings.fields.muteNotifyMessage'),
+    el: 'el-input',
+    tooltip: t('views.chatSettings.tooltips.muteNotifyMessage'),
+    span: { xs: 24, md: 12 },
+  },
 ]);
 
 const previewChannels = computed(() => [
@@ -164,6 +174,7 @@ function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel 
     chatCommandSeparators: (source.chatCommandSeparators ?? [' ']).join(','),
     historyRetentionDays: source.historyRetentionDays ?? 0,
     excludeCommandsFromHistory: source.excludeCommandsFromHistory ?? false,
+    muteNotifyMessage: source.muteNotifyMessage ?? '',
   };
 }
 
@@ -176,6 +187,7 @@ function applyFormValues(values: FormModel): void {
   form.chatCommandSeparators = values.chatCommandSeparators;
   form.historyRetentionDays = values.historyRetentionDays;
   form.excludeCommandsFromHistory = values.excludeCommandsFromHistory;
+  form.muteNotifyMessage = values.muteNotifyMessage;
 }
 
 function splitCommaSeparated(value: string, trimItems: boolean = true): string[] {
@@ -235,6 +247,7 @@ function toPayload(values: FormModel): API.Chat.ChatSettings {
     chatCommandSeparators: splitCommaSeparated(values.chatCommandSeparators, false),
     historyRetentionDays: Number(values.historyRetentionDays ?? 0),
     excludeCommandsFromHistory: values.excludeCommandsFromHistory,
+    muteNotifyMessage: values.muteNotifyMessage || null,
   };
 }
 

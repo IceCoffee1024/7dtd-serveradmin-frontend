@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Ban from './Ban/index.vue';
+import Mute from './Mute/index.vue';
 import Whitelist from './Whitelist/index.vue';
 
 defineOptions({
@@ -17,6 +18,9 @@ const activeTab = ref('ban');
       </el-tab-pane>
       <el-tab-pane :label="$t('views.banWhitelist.whitelist')" name="whitelist">
         <Whitelist />
+      </el-tab-pane>
+      <el-tab-pane :label="$t('views.banWhitelist.mute')" name="mute">
+        <Mute />
       </el-tab-pane>
     </el-tabs>
   </el-card>
