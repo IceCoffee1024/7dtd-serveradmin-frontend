@@ -29,7 +29,9 @@ declare namespace API {
       balCommandName: string;
       balCommandAliases: string[];
       payCommandName: string;
+      payCommandAliases: string[];
       dailyCommandName: string;
+      dailyCommandAliases: string[];
       moneyTopCommandName: string;
       moneyTopCommandAliases: string[];
       shopCommandName: string;

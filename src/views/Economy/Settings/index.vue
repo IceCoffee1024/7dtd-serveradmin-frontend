@@ -36,7 +36,9 @@ interface FormModel {
   balCommandName: string;
   balCommandAliases: string;
   payCommandName: string;
+  payCommandAliases: string;
   dailyCommandName: string;
+  dailyCommandAliases: string;
   moneyTopCommandName: string;
   moneyTopCommandAliases: string;
   shopCommandName: string;
@@ -96,7 +98,9 @@ function buildDefaults(): FormModel {
     balCommandName: 'bal',
     balCommandAliases: 'balance, money',
     payCommandName: 'pay',
+    payCommandAliases: 'transfer, send',
     dailyCommandName: 'daily',
+    dailyCommandAliases: 'claim',
     moneyTopCommandName: 'moneytop',
     moneyTopCommandAliases: 'baltop, ecotop',
     shopCommandName: 'shop',
@@ -142,7 +146,9 @@ const schema = v.object({
   balCommandName: v.pipe(v.string(), v.minLength(1)),
   balCommandAliases: v.string(),
   payCommandName: v.pipe(v.string(), v.minLength(1)),
+  payCommandAliases: v.string(),
   dailyCommandName: v.pipe(v.string(), v.minLength(1)),
+  dailyCommandAliases: v.string(),
   moneyTopCommandName: v.pipe(v.string(), v.minLength(1)),
   moneyTopCommandAliases: v.string(),
   shopCommandName: v.pipe(v.string(), v.minLength(1)),
@@ -443,9 +449,23 @@ const commandFields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24 },
   },
   {
+    prop: 'payCommandAliases',
+    label: t('views.economy.settings.commands.fields.payCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
+    span: { xs: 24 },
+  },
+  {
     prop: 'dailyCommandName',
     label: t('views.economy.settings.commands.fields.dailyCommandName'),
     el: 'el-input',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'dailyCommandAliases',
+    label: t('views.economy.settings.commands.fields.dailyCommandAliases'),
+    el: 'el-input',
+    tooltip: aliasesHelp.value,
     span: { xs: 24 },
   },
   {
@@ -574,7 +594,9 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     balCommandName: data.balCommandName || 'bal',
     balCommandAliases: parseAliases(data.balCommandAliases),
     payCommandName: data.payCommandName || 'pay',
+    payCommandAliases: parseAliases(data.payCommandAliases),
     dailyCommandName: data.dailyCommandName || 'daily',
+    dailyCommandAliases: parseAliases(data.dailyCommandAliases),
     moneyTopCommandName: data.moneyTopCommandName || 'moneytop',
     moneyTopCommandAliases: parseAliases(data.moneyTopCommandAliases),
     shopCommandName: data.shopCommandName || 'shop',
@@ -621,7 +643,9 @@ function applyFormValues(values: FormModel): void {
   form.balCommandName = values.balCommandName;
   form.balCommandAliases = values.balCommandAliases;
   form.payCommandName = values.payCommandName;
+  form.payCommandAliases = values.payCommandAliases;
   form.dailyCommandName = values.dailyCommandName;
+  form.dailyCommandAliases = values.dailyCommandAliases;
   form.moneyTopCommandName = values.moneyTopCommandName;
   form.moneyTopCommandAliases = values.moneyTopCommandAliases;
   form.shopCommandName = values.shopCommandName;
@@ -712,7 +736,9 @@ function toPayload(values: FormModel): API.Economy.Settings {
     balCommandName: values.balCommandName,
     balCommandAliases: parseAliases(values.balCommandAliases),
     payCommandName: values.payCommandName,
+    payCommandAliases: parseAliases(values.payCommandAliases),
     dailyCommandName: values.dailyCommandName,
+    dailyCommandAliases: parseAliases(values.dailyCommandAliases),
     moneyTopCommandName: values.moneyTopCommandName,
     moneyTopCommandAliases: parseAliases(values.moneyTopCommandAliases),
     shopCommandName: values.shopCommandName,
