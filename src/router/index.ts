@@ -201,6 +201,15 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'GameItems',
+        path: 'game-items',
+        component: () => import('../views/GameItems/index.vue'),
+        meta: {
+          title: () => t('menus.gameItems'),
+          icon: markIcon(() => import('~icons/mdi/package-variant')),
+        },
+      },
+      {
         name: 'ServerConfig',
         path: 'server-config',
         component: () => import('../views/ServerConfig/index.vue'),

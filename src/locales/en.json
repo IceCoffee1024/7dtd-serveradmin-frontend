@@ -93,7 +93,8 @@
     "achievementSettings": "Settings",
     "onlineReward": "Online Reward",
     "onlineRewardSettings": "Settings",
-    "gameEventLogs": "Game Event Logs"
+    "gameEventLogs": "Game Event Logs",
+    "gameItems": "Items & Blocks"
   },
   "components": {
     "myTable": {
@@ -2359,6 +2360,19 @@
         "allEventTypes": "All Events",
         "timeRange": "Select time range"
       }
+    },
+    "gameItems": {
+      "searchPlaceholder": "Search by name...",
+      "all": "All",
+      "items": "Items",
+      "blocks": "Blocks",
+      "itemTag": "Item",
+      "blockTag": "Block",
+      "totalCount": "{0} entries",
+      "stackValue": "×{0}",
+      "showUserHidden": "Show Hidden",
+      "copyName": "Copy Name",
+      "copyLocalizedName": "Copy Localized Name"
     }
   }
 }

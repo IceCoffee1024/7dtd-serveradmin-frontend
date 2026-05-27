@@ -482,8 +482,8 @@ export function deleteCommandPermissions(commands: string[]) {
  * Results are cached on the backend for 1 hour.
  * @param {boolean} [showUserHidden] Include engine-internal hidden items.
  */
-export function getGameItems(showUserHidden = false) {
-  return http.get<API.GameServer.GameItem[]>('GameServer/GameItems', { searchParams: { showUserHidden } }).json();
+export function getGameItems(showUserHidden = false, includeBlocks = false) {
+  return http.get<API.GameServer.GameItem[]>('GameServer/GameItems', { searchParams: { showUserHidden, includeBlocks } }).json();
 }
 // #endregion
 // #endregion

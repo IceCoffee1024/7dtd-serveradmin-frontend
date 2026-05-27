@@ -93,7 +93,8 @@
     "achievementSettings": "设置",
     "onlineReward": "在线时长奖励",
     "onlineRewardSettings": "设置",
-    "gameEventLogs": "游戏事件日志"
+    "gameEventLogs": "游戏事件日志",
+    "gameItems": "物品/方块"
   },
   "components": {
     "myTable": {
@@ -2360,6 +2361,19 @@
         "allEventTypes": "全部事件",
         "timeRange": "选择时间范围"
       }
+    },
+    "gameItems": {
+      "searchPlaceholder": "搜索物品/方块名称...",
+      "all": "全部",
+      "items": "物品",
+      "blocks": "方块",
+      "itemTag": "物品",
+      "blockTag": "方块",
+      "totalCount": "共 {0} 个",
+      "stackValue": "×{0}",
+      "showUserHidden": "显示隐藏物品",
+      "copyName": "复制物品名",
+      "copyLocalizedName": "复制本地化名"
     }
   }
 }

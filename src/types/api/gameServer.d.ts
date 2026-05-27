@@ -316,6 +316,9 @@ declare namespace API {
       name: string;
       localizedName: string | null;
       iconName: string | null;
+      iconTintColor: string | null;
+      maxStackAllowed: number;
+      isBlock: boolean;
     }
 
     interface MapInfo {
