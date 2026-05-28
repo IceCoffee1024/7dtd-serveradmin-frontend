@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { useI18n } from 'vue-i18n';
@@ -13,11 +13,6 @@ interface Props {
   editData?: API.ScheduledCommand.Task | null;
   defaultTimeZoneId?: string | null;
   defaultAllowConcurrentExecution?: boolean;
-}
-
-interface DialogExpose {
-  show: () => Promise<void> | void;
-  close: () => void;
 }
 
 interface FormExpose {

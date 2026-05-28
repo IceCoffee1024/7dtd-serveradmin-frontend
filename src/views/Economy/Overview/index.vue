@@ -117,7 +117,7 @@ const leaderboardWithRank = computed(() =>
         >
           <template #default="{ row }">
             <el-tag
-              :type="row.rank === 1 ? 'warning' : row.rank === 2 ? 'info' : row.rank === 3 ? 'danger' : ''"
+              :type="row.rank === 1 ? 'warning' : row.rank === 2 ? 'info' : row.rank === 3 ? 'danger' : undefined"
               size="small"
               effect="plain"
             >

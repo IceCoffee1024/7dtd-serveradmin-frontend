@@ -1,4 +1,4 @@
-import type { BatchActionItem, MyTableColumn, MyTableFetchParams, MyTableFetchResult, UseMyTableOptions } from './types';
+import type { BatchActionItem, UseMyTableOptions } from './types';
 import { useTableData } from './useTableData';
 import { useTableQuery } from './useTableQuery';
 

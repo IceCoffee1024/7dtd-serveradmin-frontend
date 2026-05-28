@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
@@ -110,10 +110,6 @@ function toOrder(sortField: string | undefined): API.ScheduledCommand.TaskQueryO
 
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
-}
-
-function formatDuration(value: number | null | undefined): string {
-  return value == null ? '--' : `${value} ms`;
 }
 
 function resolveStatusType(status: string | null | undefined): 'success' | 'warning' | 'danger' | 'info' {

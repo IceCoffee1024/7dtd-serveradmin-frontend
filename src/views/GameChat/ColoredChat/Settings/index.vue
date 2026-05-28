@@ -335,7 +335,7 @@ onMounted(() => {
       <!-- Color fields: disabled overlay when feature is off (#1) -->
       <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
         <!-- Player channels group (#4) -->
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3 dark:text-gray-500">
+        <p class="text-xs text-gray-400 tracking-wide font-semibold mb-3 uppercase dark:text-gray-500">
           {{ t('views.coloredChat.settings.sections.playerChannels') }}
         </p>
         <MyForm
@@ -347,7 +347,7 @@ onMounted(() => {
         />
 
         <!-- System channels group (#4) -->
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 mt-5 mb-3 dark:text-gray-500">
+        <p class="text-xs text-gray-400 tracking-wide font-semibold mb-3 mt-5 uppercase dark:text-gray-500">
           {{ t('views.coloredChat.settings.sections.systemChannels') }}
         </p>
         <MyForm
@@ -364,7 +364,7 @@ onMounted(() => {
         <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
           {{ t('views.coloredChat.settings.preview.title') }}
         </h3>
-        <div class="rounded-3 bg-gray-950 px-4 py-3 font-mono text-sm flex flex-col gap-1 leading-6">
+        <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
           <span
             v-for="ch in previewChannels"
             :key="ch.key"

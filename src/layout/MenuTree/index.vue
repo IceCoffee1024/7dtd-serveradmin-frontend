@@ -54,7 +54,7 @@ const defaultActive = computed(() => route.name as string);
     <template v-for="(group, i) in groupedMenus" :key="i">
       <div
         v-if="group.label && !collapse"
-        class="px-3 pt-5 pb-1 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider select-none"
+        class="text-xs text-gray-400 tracking-wider font-semibold px-3 pb-1 pt-5 select-none uppercase dark:text-gray-500"
       >
         {{ group.label }}
       </div>

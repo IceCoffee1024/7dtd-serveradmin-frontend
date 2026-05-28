@@ -339,10 +339,10 @@ async function onViewRedemptions(row: API.Economy.RedeemCode) {
       <div class="mt-4 px-1">
         <div class="mb-2 flex items-center justify-between">
           <div>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
               {{ t('views.economy.redeemCodes.form.fields.commandRewards') }}
             </span>
-            <div class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+            <div class="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
               {{ t('views.economy.redeemCodes.form.hints.commandRewards') }}
             </div>
           </div>
@@ -352,12 +352,12 @@ async function onViewRedemptions(row: API.Economy.RedeemCode) {
           </el-button>
         </div>
         <div v-auto-animate class="flex flex-col gap-2">
-          <div v-for="(_, index) in commandRewards" :key="index" class="flex items-center gap-2">
-            <span class="w-6 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">{{ index + 1 }}</span>
+          <div v-for="(_, index) in commandRewards" :key="index" class="flex gap-2 items-center">
+            <span class="text-xs text-gray-400 text-right shrink-0 w-6 dark:text-gray-500">{{ index + 1 }}</span>
             <el-input
               v-model="commandRewards[index]"
               :placeholder="t('views.economy.redeemCodes.form.placeholders.commandReward')"
-              class="flex-1 font-mono"
+              class="font-mono flex-1"
               clearable
             />
             <IconButton
@@ -382,10 +382,12 @@ async function onViewRedemptions(row: API.Economy.RedeemCode) {
       :show-footer="false"
     >
       <div v-if="isLoadingRedemptions" class="py-8 flex justify-center">
-        <el-icon class="animate-spin text-2xl"><icon-mdi-loading /></el-icon>
+        <el-icon class="text-2xl animate-spin">
+          <icon-mdi-loading />
+        </el-icon>
       </div>
       <template v-else>
-        <div v-if="redemptions.length === 0" class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div v-if="redemptions.length === 0" class="text-sm text-gray-500 py-6 text-center dark:text-gray-400">
           {{ t('views.economy.redeemCodes.redemptionsDialog.empty') }}
         </div>
         <el-table v-else :data="redemptions" size="small" stripe>

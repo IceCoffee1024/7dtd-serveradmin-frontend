@@ -344,35 +344,35 @@ async function onCancelRestart() {
         />
 
         <div class="mt-4">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {{ t('views.restart.settings.warningStages.sectionTitle') }}
-          </h3>
-          <el-button size="small" @click="addWarningStage">
-            <el-icon><icon-mdi-plus /></el-icon>
-            {{ t('views.restart.settings.warningStages.add') }}
-          </el-button>
-        </div>
-        <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
-          {{ t('views.restart.settings.warningStages.description') }}
-        </p>
-        <div v-if="warningStages.length === 0" class="text-xs text-gray-400 dark:text-gray-500 mb-2">
-          {{ t('views.restart.settings.warningStages.empty') }}
-        </div>
-        <div v-for="(stage, idx) in warningStages" :key="idx" class="flex gap-2 items-end mb-2">
-          <el-form-item :label="t('views.restart.settings.warningStages.leadSeconds')" class="flex-none w-48">
-            <el-input-number v-model="stage.leadSeconds" :min="1" :precision="0" class="w-full" />
-          </el-form-item>
-          <el-form-item :label="t('views.restart.settings.warningStages.message')" class="flex-1">
-            <el-input v-model="stage.message" :placeholder="t('views.restart.settings.warningStages.messagePlaceholder')" />
-          </el-form-item>
-          <el-form-item class="flex-none">
-            <el-button type="danger" plain size="small" @click="removeWarningStage(idx)">
-              <el-icon><icon-mdi-trash-can-outline /></el-icon>
+          <div class="mb-2 flex items-center justify-between">
+            <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
+              {{ t('views.restart.settings.warningStages.sectionTitle') }}
+            </h3>
+            <el-button size="small" @click="addWarningStage">
+              <el-icon><icon-mdi-plus /></el-icon>
+              {{ t('views.restart.settings.warningStages.add') }}
             </el-button>
-          </el-form-item>
+          </div>
+          <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
+            {{ t('views.restart.settings.warningStages.description') }}
+          </p>
+          <div v-if="warningStages.length === 0" class="text-xs text-gray-400 mb-2 dark:text-gray-500">
+            {{ t('views.restart.settings.warningStages.empty') }}
+          </div>
+          <div v-for="(stage, idx) in warningStages" :key="idx" class="mb-2 flex gap-2 items-end">
+            <el-form-item :label="t('views.restart.settings.warningStages.leadSeconds')" class="flex-none w-48">
+              <el-input-number v-model="stage.leadSeconds" :min="1" :precision="0" class="w-full" />
+            </el-form-item>
+            <el-form-item :label="t('views.restart.settings.warningStages.message')" class="flex-1">
+              <el-input v-model="stage.message" :placeholder="t('views.restart.settings.warningStages.messagePlaceholder')" />
+            </el-form-item>
+            <el-form-item class="flex-none">
+              <el-button type="danger" plain size="small" @click="removeWarningStage(idx)">
+                <el-icon><icon-mdi-trash-can-outline /></el-icon>
+              </el-button>
+            </el-form-item>
+          </div>
         </div>
-      </div>
       </div>
 
       <div class="mt-4 flex gap-2 justify-end">

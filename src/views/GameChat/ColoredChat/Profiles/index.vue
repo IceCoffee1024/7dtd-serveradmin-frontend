@@ -244,7 +244,7 @@ function getColorSwatch(value: string | null | undefined): string | undefined {
             :style="{ backgroundColor: getColorSwatch(row.nameColor) ?? 'transparent' }"
           />
           <span
-            class="truncate font-medium"
+            class="font-medium truncate"
             :style="{ color: getColorSwatch(row.nameColor) }"
           >{{ row.customName || row.playerId }}</span>
         </div>

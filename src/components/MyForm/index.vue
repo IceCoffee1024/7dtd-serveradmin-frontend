@@ -4,13 +4,14 @@
  * It owns validation rules, visibility and dependency links, form-wide disable
  * state, and responsive grid layout.
  */
-import type { ElForm, FormInstance, FormRules } from 'element-plus';
+import type { ElForm, ElTooltip, FormInstance, FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FieldRenderer from '~/components/FieldRenderer/index.vue';
 
 type ElFormProps = InstanceType<typeof ElForm>['$props'];
+type ElTooltipProps = InstanceType<typeof ElTooltip>['$props'];
 
 interface Props extends /* @vue-ignore */ ElFormProps {
   fields: MyFormField<T>[];
@@ -59,7 +60,7 @@ function getTooltipContent(field: MyFormField<T>): string {
   return typeof field.tooltip === 'string' ? field.tooltip : field.tooltip.content;
 }
 
-function getTooltipPlacement(field: MyFormField<T>): string {
+function getTooltipPlacement(field: MyFormField<T>): ElTooltipProps['placement'] {
   if (!field.tooltip || typeof field.tooltip === 'string')
     return 'top';
   return field.tooltip.placement ?? 'top';

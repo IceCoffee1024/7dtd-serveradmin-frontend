@@ -158,19 +158,22 @@ const previewChannels = computed(() => [
 ]);
 
 function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel {
-  const source = data ?? {
+  const source: Partial<API.Chat.ChatSettings> = data ?? {
     globalServerName: null,
     whisperServerName: null,
     chatCommandPrefixes: ['/'],
     allowNoPrefix: false,
     chatCommandSeparators: [' '],
+    historyRetentionDays: 0,
+    excludeCommandsFromHistory: false,
+    muteNotifyMessage: null,
   };
   return {
     isEnabled: true,
     globalServerName: source.globalServerName ?? '',
     whisperServerName: source.whisperServerName ?? '',
     chatCommandPrefixes: (source.chatCommandPrefixes ?? ['/']).join(','),
-    allowNoPrefix: source.allowNoPrefix,
+    allowNoPrefix: source.allowNoPrefix ?? false,
     chatCommandSeparators: (source.chatCommandSeparators ?? [' ']).join(','),
     historyRetentionDays: source.historyRetentionDays ?? 0,
     excludeCommandsFromHistory: source.excludeCommandsFromHistory ?? false,
@@ -320,7 +323,7 @@ onMounted(() => {
         <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
           {{ t('views.chatSettings.preview.title') }}
         </h3>
-        <div class="rounded-3 bg-gray-950 px-4 py-3 font-mono text-sm flex flex-col gap-1 leading-6">
+        <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
           <span v-for="ch in previewChannels" :key="ch.key">
             <span class="text-gray-500">[{{ ch.label }}]</span>
             <span class="text-yellow-400"> {{ ch.sender }}</span>

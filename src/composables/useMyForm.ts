@@ -1,4 +1,4 @@
-import type { FormInstance } from 'element-plus';
+import type { ElTooltip, FormInstance } from 'element-plus';
 import type { MaybeRef } from 'vue';
 import type { FormElPropsMap, FormElType } from '~/components/FieldRenderer/controlRegistry';
 import { cloneDeep } from 'es-toolkit';
@@ -34,6 +34,8 @@ export type ResponsiveSpan = number | {
   xl?: number;
 };
 
+type TooltipPlacement = InstanceType<typeof ElTooltip>['$props']['placement'];
+
 /**
  * Help tooltip shown next to a form field label.
  * The content should explain why the value matters or how it is used.
@@ -42,7 +44,7 @@ export interface MyFormFieldTooltip {
   /** Tooltip text shown on hover. */
   content: string;
   /** Optional placement for the hover bubble. */
-  placement?: string;
+  placement?: TooltipPlacement;
 }
 
 export interface MyFormField<

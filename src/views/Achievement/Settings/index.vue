@@ -13,12 +13,12 @@ import { generateElementRules } from '~/utils';
 defineOptions({ name: 'AchievementSettingsPage' });
 
 interface FormModel {
-  isEnabled: boolean
+  isEnabled: boolean;
 }
 
 interface FormExpose {
-  validate: () => Promise<boolean | undefined>
-  clearValidate: (props?: string | string[]) => void
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
 }
 
 const { t } = useI18n();

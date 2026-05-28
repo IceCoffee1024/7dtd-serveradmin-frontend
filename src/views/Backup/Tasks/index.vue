@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import FilesTable from '../components/FilesTable.vue';
 import DatabaseConfigTab from '../DatabaseBackup/ConfigTab.vue';
 import ServerConfigConfigTab from '../ServerConfigBackup/ConfigTab.vue';
 import WorldConfigTab from '../WorldBackup/ConfigTab.vue';
-import FilesTable from '../components/FilesTable.vue';
 
 defineOptions({ name: 'BackupTasksPage' });
 

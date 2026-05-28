@@ -15,21 +15,21 @@ defineOptions({ name: 'AchievementDefinitionsPage' });
 type DefinitionRow = API.Achievement.DefinitionDto;
 
 interface FormModel {
-  name: string
-  description: string
-  isEnabled: boolean
-  triggerType: string
-  threshold: number
-  economyReward: number
-  consoleCommands: string
-  playerMessage: string
-  broadcastMessage: string
-  sortOrder: number
+  name: string;
+  description: string;
+  isEnabled: boolean;
+  triggerType: string;
+  threshold: number;
+  economyReward: number;
+  consoleCommands: string;
+  playerMessage: string;
+  broadcastMessage: string;
+  sortOrder: number;
 }
 
 interface FormExpose {
-  validate: () => Promise<boolean | undefined>
-  clearValidate: (props?: string | string[]) => void
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
 }
 
 const { t } = useI18n();
@@ -370,7 +370,9 @@ function triggerTypeLabel(value: string): string {
       @add="openAdd"
     >
       <template #triggerType="{ row }">
-        <el-tag type="info">{{ triggerTypeLabel(row.triggerType) }}</el-tag>
+        <el-tag type="info">
+          {{ triggerTypeLabel(row.triggerType) }}
+        </el-tag>
       </template>
 
       <template #economyReward="{ row }">

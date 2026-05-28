@@ -169,7 +169,7 @@ async function onDelete(row: AccountRow) {
     type: 'warning',
     text: t('views.economy.accounts.deleteConfirm', { playerName: row.playerName }),
   });
-  if (ok == false) {
+  if (!ok) {
     return;
   }
 
@@ -274,7 +274,7 @@ onMounted(() => {
           {{ t('views.economy.accounts.leaderboard.empty') }}
         </div>
         <div v-else class="flex flex-col gap-3">
-          <div v-for="(item, index) in leaderboard" :key="item.playerId" class="px-3 py-2 rounded-3 bg-gray-50 flex gap-3 items-center justify-between dark:bg-gray-800/70">
+          <div v-for="item in leaderboard" :key="item.playerId" class="px-3 py-2 rounded-3 bg-gray-50 flex gap-3 items-center justify-between dark:bg-gray-800/70">
             <div class="min-w-0">
               <div class="text-xs text-gray-400 tracking-[0.16em] uppercase">
                 #{{ item.rank }}

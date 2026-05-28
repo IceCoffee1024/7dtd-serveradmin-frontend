@@ -99,7 +99,9 @@ function onSaved() {
     >
       <template #mutedUntil="{ row }">
         <span v-if="row.mutedUntil">{{ dayjs(row.mutedUntil).format('YYYY-MM-DD HH:mm:ss') }}</span>
-        <el-tag v-else type="danger" size="small">{{ $t('views.banWhitelist.permanent') }}</el-tag>
+        <el-tag v-else type="danger" size="small">
+          {{ $t('views.banWhitelist.permanent') }}
+        </el-tag>
       </template>
       <template #createdAt="{ row }">
         {{ dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') }}

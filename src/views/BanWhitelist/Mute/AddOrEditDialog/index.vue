@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { MyFormField } from '~/composables/useMyForm';
 import type { FormRules } from 'element-plus';
+import type { MyFormField } from '~/composables/useMyForm';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { addMute } from '~/api/chat';

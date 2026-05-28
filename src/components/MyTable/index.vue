@@ -1,4 +1,4 @@
-﻿<script setup lang="ts" generic="T extends Record<string, any>">
+<script setup lang="ts" generic="T extends Record<string, any>">
 /**
  * MyTable is a generic table wrapper built on top of Element Plus.
  *

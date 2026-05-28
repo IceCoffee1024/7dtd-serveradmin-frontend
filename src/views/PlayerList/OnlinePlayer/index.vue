@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
 import dayjs from 'dayjs';

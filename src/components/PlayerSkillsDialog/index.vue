@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { getPlayerSkills } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ConfigTab from './ConfigTab.vue';
 import FilesTable from '../components/FilesTable.vue';
+import ConfigTab from './ConfigTab.vue';
 
 defineOptions({ name: 'WorldBackupPage' });
 

@@ -12,20 +12,20 @@ import { generateElementRules } from '~/utils';
 defineOptions({ name: 'TeleportCitiesPage' });
 
 interface FormModel {
-  name: string
-  description: string
-  x: number
-  y: number
-  z: number
-  yawAngle: number
-  currencyRequired: number
-  isEnabled: boolean
-  sortOrder: number
+  name: string;
+  description: string;
+  x: number;
+  y: number;
+  z: number;
+  yawAngle: number;
+  currencyRequired: number;
+  isEnabled: boolean;
+  sortOrder: number;
 }
 
 interface FormExpose {
-  validate: () => Promise<boolean | undefined>
-  clearValidate: (props?: string | string[]) => void
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
 }
 
 const { t } = useI18n();

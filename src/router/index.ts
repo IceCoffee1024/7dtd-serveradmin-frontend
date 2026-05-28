@@ -1,4 +1,4 @@
-﻿import type { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Layout from '~/layout/index.vue';
 import { i18n, isSupportedLocale } from '~/plugins/i18n';

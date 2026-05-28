@@ -1,4 +1,4 @@
-﻿import ky, { isHTTPError } from 'ky';
+import ky, { isHTTPError } from 'ky';
 import { AUTH_PATH } from '~/api/auth';
 import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';

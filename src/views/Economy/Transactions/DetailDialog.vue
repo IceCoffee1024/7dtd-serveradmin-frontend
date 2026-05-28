@@ -3,11 +3,11 @@ import dayjs from 'dayjs';
 
 defineOptions({ name: 'EconomyTransactionDetailDialog' });
 
+defineProps<Props>();
+
 interface Props {
   transaction: API.Economy.Transaction | null;
 }
-
-defineProps<Props>();
 
 const dialogRef = useTemplateRef('dialogRef');
 
@@ -24,20 +24,20 @@ defineExpose({ show });
 
 <template>
   <MyDialog ref="dialogRef" :title="$t('views.economy.transactions.detailDialog.title')" :show-footer="false" width="min(960px, 92vw)">
-    <div class="grid gap-4 md:grid-cols-2">
-      <div class="rounded-xl bg-gray-50 p-4 dark:bg-gray-900/60">
-        <div class="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
+    <div class="gap-4 grid md:grid-cols-2">
+      <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/60">
+        <div class="text-sm text-gray-900 font-semibold mb-3 dark:text-gray-100">
           {{ $t('views.economy.transactions.detailDialog.sections.primary') }}
         </div>
-        <div class="grid gap-3 text-sm md:grid-cols-[120px_minmax(0,1fr)]">
+        <div class="text-sm gap-3 grid md:grid-cols-[120px_minmax(0,1fr)]">
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.occurredAt') }}</span>
-          <span class="font-mono text-gray-800 dark:text-gray-100">{{ formatTimestamp(transaction?.occurredAt) }}</span>
+          <span class="text-gray-800 font-mono dark:text-gray-100">{{ formatTimestamp(transaction?.occurredAt) }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.playerName') }}</span>
           <span class="text-gray-800 dark:text-gray-100">{{ transaction?.playerName || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.playerId') }}</span>
-          <span class="font-mono text-gray-800 dark:text-gray-100">{{ transaction?.playerId || '--' }}</span>
+          <span class="text-gray-800 font-mono dark:text-gray-100">{{ transaction?.playerId || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.type') }}</span>
           <span class="text-gray-800 dark:text-gray-100">{{ transaction?.type || '--' }}</span>
@@ -55,22 +55,22 @@ defineExpose({ show });
         </div>
       </div>
 
-      <div class="rounded-xl bg-gray-50 p-4 dark:bg-gray-900/60">
-        <div class="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
+      <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900/60">
+        <div class="text-sm text-gray-900 font-semibold mb-3 dark:text-gray-100">
           {{ $t('views.economy.transactions.detailDialog.sections.metadata') }}
         </div>
-        <div class="grid gap-3 text-sm md:grid-cols-[120px_minmax(0,1fr)]">
+        <div class="text-sm gap-3 grid md:grid-cols-[120px_minmax(0,1fr)]">
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.source') }}</span>
           <span class="text-gray-800 dark:text-gray-100">{{ transaction?.source || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.referenceId') }}</span>
-          <span class="font-mono text-gray-800 dark:text-gray-100">{{ transaction?.referenceId || '--' }}</span>
+          <span class="text-gray-800 font-mono dark:text-gray-100">{{ transaction?.referenceId || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.operatorName') }}</span>
           <span class="text-gray-800 dark:text-gray-100">{{ transaction?.operatorName || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.operatorId') }}</span>
-          <span class="font-mono text-gray-800 dark:text-gray-100">{{ transaction?.operatorId || '--' }}</span>
+          <span class="text-gray-800 font-mono dark:text-gray-100">{{ transaction?.operatorId || '--' }}</span>
 
           <span class="text-gray-500 dark:text-gray-400">{{ $t('views.economy.transactions.columns.balanceBefore') }}</span>
           <span class="text-gray-800 dark:text-gray-100">{{ transaction?.balanceBefore ?? '--' }}</span>
@@ -81,11 +81,11 @@ defineExpose({ show });
       </div>
     </div>
 
-    <div class="mt-4 rounded-xl bg-gray-50 p-4 text-sm dark:bg-gray-900/60">
-      <div class="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
+    <div class="text-sm mt-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-900/60">
+      <div class="text-sm text-gray-900 font-semibold mb-2 dark:text-gray-100">
         {{ $t('views.economy.transactions.columns.reason') }}
       </div>
-      <div class="leading-6 text-gray-800 dark:text-gray-100">
+      <div class="text-gray-800 leading-6 dark:text-gray-100">
         {{ transaction?.reason || '--' }}
       </div>
     </div>

@@ -4,6 +4,7 @@ declare module 'vue-router' {
   // Extend the RouteMeta interface to include custom properties
   interface RouteMeta {
     title?: string | (() => string);
+    groupLabel?: string | (() => string);
     icon?: Icon;
     requiresAuth?: boolean;
     roles?: string[];

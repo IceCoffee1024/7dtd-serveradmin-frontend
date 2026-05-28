@@ -25,7 +25,7 @@ const restartModeOptions = computed(() => [
 
 async function onRunNow() {
   const ok = await confirm({ text: t('views.restart.run.messages.runConfirm'), type: 'warning' });
-  if (ok == false) {
+  if (!ok) {
     return;
   }
 

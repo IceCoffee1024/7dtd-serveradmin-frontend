@@ -90,7 +90,6 @@ export function useTableData<T extends Record<string, any>>(options: UseTableDat
     function escapeCsvCell(val: unknown): string {
       const str = String(val ?? '');
       if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
-        // eslint-disable-next-line e18e/prefer-static-regex
         return `"${str.replace(/"/g, '""')}"`;
       }
       return str;

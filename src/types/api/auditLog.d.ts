@@ -7,35 +7,35 @@ declare namespace API {
 
     type Source = 'Api' | 'ChatCommand' | 'ConsoleCommand' | 'Scheduler' | 'System' | 'GameEvent';
 
-    type ActionType =
-      | 'Create'
-      | 'Update'
-      | 'Delete'
-      | 'Enable'
-      | 'Disable'
-      | 'Execute'
-      | 'Send'
-      | 'Kick'
-      | 'Ban'
-      | 'Unban'
-      | 'Restart'
-      | 'Reload'
-      | 'Import'
-      | 'Export'
-      | 'Grant'
-      | 'Revoke'
-      | 'Reset'
-      | 'Other';
+    type ActionType
+      = | 'Create'
+        | 'Update'
+        | 'Delete'
+        | 'Enable'
+        | 'Disable'
+        | 'Execute'
+        | 'Send'
+        | 'Kick'
+        | 'Ban'
+        | 'Unban'
+        | 'Restart'
+        | 'Reload'
+        | 'Import'
+        | 'Export'
+        | 'Grant'
+        | 'Revoke'
+        | 'Reset'
+        | 'Other';
 
-    type QueryOrder =
-      | 'CreatedAt'
-      | 'Source'
-      | 'OperatorId'
-      | 'OperatorName'
-      | 'ActionType'
-      | 'ResourceType'
-      | 'ResourceId'
-      | 'Succeeded';
+    type QueryOrder
+      = | 'CreatedAt'
+        | 'Source'
+        | 'OperatorId'
+        | 'OperatorName'
+        | 'ActionType'
+        | 'ResourceType'
+        | 'ResourceId'
+        | 'Succeeded';
 
     interface Item {
       id: number;

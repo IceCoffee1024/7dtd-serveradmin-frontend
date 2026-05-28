@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ElButton } from 'element-plus';
+import type { ElButton, ElTooltip } from 'element-plus';
 
 defineOptions({
   inheritAttrs: false,
@@ -12,11 +12,12 @@ withDefaults(defineProps<Props>(), {
   border: false,
 });
 type ElButtonProps = InstanceType<typeof ElButton>['$props'];
+type ElTooltipProps = InstanceType<typeof ElTooltip>['$props'];
 interface Props extends /* @vue-ignore */ Omit<ElButtonProps, 'size'> {
   /** Tooltip content */
   tooltipContent?: string;
   /** Tooltip placement */
-  tooltipPlacement?: string;
+  tooltipPlacement?: ElTooltipProps['placement'];
   aTag?: boolean;
   color?: string;
   /** Button size forwarded to the underlying el-button. */

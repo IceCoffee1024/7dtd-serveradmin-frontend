@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePopup } from '~/composables/usePopup';
 import * as api from '~/api/economy';
+import { usePopup } from '~/composables/usePopup';
 import DetailDialog from './DetailDialog.vue';
 
 defineOptions({ name: 'EconomyTransactionsPage' });
@@ -196,7 +196,7 @@ async function onView(row: TransactionRow) {
 </script>
 
 <template>
-  <div class="flex h-full min-h-0 flex-col gap-4">
+  <div class="flex flex-col gap-4 h-full min-h-0">
     <MyTable
       row-key="id"
       :columns="columns"
@@ -217,7 +217,7 @@ async function onView(row: TransactionRow) {
       </template>
 
       <template #occurredAt="{ row }">
-        <span class="text-xs font-mono text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.occurredAt) }}</span>
+        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.occurredAt) }}</span>
       </template>
 
       <template #toolbar-right>
