@@ -21,6 +21,9 @@ interface FormModel {
   saveWorldBeforeRestart: boolean;
   restartMode: string;
   restartCommand: string;
+  deferScheduledRestartDuringBloodMoonWindow: boolean;
+  bloodMoonPreDuskProtectionHours: number;
+  bloodMoonDeferMinutes: number;
   historyRetentionDays: number;
 }
 
@@ -54,6 +57,9 @@ function buildDefaults(): FormModel {
     saveWorldBeforeRestart: true,
     restartMode: 'Graceful',
     restartCommand: '',
+    deferScheduledRestartDuringBloodMoonWindow: false,
+    bloodMoonPreDuskProtectionHours: 2,
+    bloodMoonDeferMinutes: 30,
     historyRetentionDays: 30,
   };
 }
@@ -75,6 +81,9 @@ const schema = v.object({
   saveWorldBeforeRestart: v.boolean(),
   restartMode: v.pipe(v.string(), v.minLength(1)),
   restartCommand: v.string(),
+  deferScheduledRestartDuringBloodMoonWindow: v.boolean(),
+  bloodMoonPreDuskProtectionHours: v.pipe(v.number(), v.minValue(0)),
+  bloodMoonDeferMinutes: v.pipe(v.number(), v.minValue(1)),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
 });
 
@@ -152,6 +161,30 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24 },
   },
   {
+    prop: 'deferScheduledRestartDuringBloodMoonWindow',
+    label: t('views.restart.settings.fields.deferScheduledRestartDuringBloodMoonWindow'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    tooltip: t('views.restart.settings.tooltips.deferScheduledRestartDuringBloodMoonWindow'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'bloodMoonPreDuskProtectionHours',
+    label: t('views.restart.settings.fields.bloodMoonPreDuskProtectionHours'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 0, class: 'w-full' },
+    tooltip: t('views.restart.settings.tooltips.bloodMoonPreDuskProtectionHours'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'bloodMoonDeferMinutes',
+    label: t('views.restart.settings.fields.bloodMoonDeferMinutes'),
+    el: 'el-input-number',
+    props: { min: 1, precision: 0, class: 'w-full' },
+    tooltip: t('views.restart.settings.tooltips.bloodMoonDeferMinutes'),
+    span: { xs: 24, md: 12 },
+  },
+  {
     prop: 'historyRetentionDays',
     label: t('views.restart.settings.fields.historyRetentionDays'),
     el: 'el-input-number',
@@ -169,6 +202,9 @@ function applyValues(source: API.Restart.Settings) {
   form.saveWorldBeforeRestart = source.saveWorldBeforeRestart;
   form.restartMode = source.restartMode ?? 'Graceful';
   form.restartCommand = source.restartCommand ?? '';
+  form.deferScheduledRestartDuringBloodMoonWindow = source.deferScheduledRestartDuringBloodMoonWindow ?? false;
+  form.bloodMoonPreDuskProtectionHours = source.bloodMoonPreDuskProtectionHours ?? 2;
+  form.bloodMoonDeferMinutes = source.bloodMoonDeferMinutes ?? 30;
   form.historyRetentionDays = source.historyRetentionDays ?? 30;
   warningStages.value = (source.warningStages ?? []).map(s => ({ leadSeconds: s.leadSeconds, message: s.message }));
 }
@@ -224,6 +260,9 @@ async function onSubmit() {
       saveWorldBeforeRestart: form.saveWorldBeforeRestart,
       restartMode: form.restartMode,
       restartCommand: form.restartCommand.trim() || null,
+      deferScheduledRestartDuringBloodMoonWindow: form.deferScheduledRestartDuringBloodMoonWindow,
+      bloodMoonPreDuskProtectionHours: Number(form.bloodMoonPreDuskProtectionHours ?? 0),
+      bloodMoonDeferMinutes: Number(form.bloodMoonDeferMinutes ?? 30),
       historyRetentionDays: Number(form.historyRetentionDays ?? 0),
     };
     await updateSettings(payload);

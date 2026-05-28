@@ -17,6 +17,9 @@ declare namespace API {
       saveWorldBeforeRestart: boolean;
       restartMode: string;
       restartCommand: string | null;
+      deferScheduledRestartDuringBloodMoonWindow: boolean;
+      bloodMoonPreDuskProtectionHours: number;
+      bloodMoonDeferMinutes: number;
       historyRetentionDays: number;
       /** UTC timestamp of the next scheduled restart run; null when scheduling is disabled. */
       nextRunAt: string | null;

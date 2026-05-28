@@ -1706,13 +1706,19 @@
           "saveWorldBeforeRestart": "重启前保存世界",
           "restartMode": "重启模式",
           "restartCommand": "自定义重启命令",
+          "deferScheduledRestartDuringBloodMoonWindow": "血月窗口内延期计划重启",
+          "bloodMoonPreDuskProtectionHours": "血月日黄昏前保护小时数",
+          "bloodMoonDeferMinutes": "每次延期分钟数",
           "historyRetentionDays": "历史保留天数"
         },
         "tooltips": {
           "timeZoneId": "可以填写 UTC、Asia/Shanghai 等平台时区 ID。",
           "warningMessage": "支持 {minutes} 占位符，将被替换为剩余等待时间（分钟）。",
           "restartCommand": "可选的控制台命令，用于发起重启。设置后将跳过内置重启流程。",
-          "restartMode": "Graceful：等待服务器优雅关闭；Force：立即强制关机。"
+          "restartMode": "Graceful：等待服务器优雅关闭；Force：立即强制关机。",
+          "deferScheduledRestartDuringBloodMoonWindow": "启用后，Cron 触发的计划重启在血月进行中或血月日黄昏前保护窗口内会自动延期。",
+          "bloodMoonPreDuskProtectionHours": "血月日黄昏前按小时计算的保护窗口，设为 0 表示不启用黄昏前保护。",
+          "bloodMoonDeferMinutes": "每次命中保护窗口时延期的现实分钟数。"
         },
         "restartModes": {
           "graceful": "优雅",

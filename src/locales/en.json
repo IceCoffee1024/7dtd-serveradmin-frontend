@@ -2193,13 +2193,19 @@
           "saveWorldBeforeRestart": "Save World Before Restart",
           "restartMode": "Restart Mode",
           "restartCommand": "Custom Restart Command",
+          "deferScheduledRestartDuringBloodMoonWindow": "Defer Scheduled Restart During Blood Moon Window",
+          "bloodMoonPreDuskProtectionHours": "Blood Moon Pre-Dusk Protection Hours",
+          "bloodMoonDeferMinutes": "Deferral Minutes Per Attempt",
           "historyRetentionDays": "History Retention Days"
         },
         "tooltips": {
           "timeZoneId": "Use a platform time zone ID such as UTC or Asia/Shanghai.",
           "warningMessage": "Supports the {minutes} placeholder, replaced with the remaining wait time in minutes.",
           "restartCommand": "Optional console command to initiate the restart. Overrides the built-in restart pipeline when set.",
-          "restartMode": "Graceful: flush pending operations before shutting down. Force: immediate shutdown."
+          "restartMode": "Graceful: flush pending operations before shutting down. Force: immediate shutdown.",
+          "deferScheduledRestartDuringBloodMoonWindow": "When enabled, cron-triggered restarts are postponed while blood moon is active or within the pre-dusk protection window on blood moon day.",
+          "bloodMoonPreDuskProtectionHours": "In-game hours before dusk on blood moon day treated as protected window. Set to 0 to disable pre-dusk protection.",
+          "bloodMoonDeferMinutes": "Real minutes to postpone each deferred cron restart attempt."
         },
         "restartModes": {
           "graceful": "Graceful",
