@@ -15,7 +15,7 @@ A Vue 3 + Vite + Element Plus admin frontend for 7 Days to Die server operations
 - Routing: hash mode routes are wrapped by `Layout`, support localized entry points like `/:locale/dashboard`, and include 403/404/500 pages plus multi-level menu demos.
 - State: Pinia stores manage `locale`, `nav-tab`, `keep-alive` behaviors while `composables/usePopup`, `useMenus`, and `useTheme` encapsulate UI concerns.
 - Internationalization: `vue-i18n` with `@intlify/unplugin-vue-i18n`, browser language detection, persisted preference, and runtime loading of `locales/en.json` and `locales/zh-cn.json`.
-- Plugin suite: auto-animate, nprogress, mitt, dayjs, valibot, sweetalert2, and @imengyu/vue3-context-menu provide a production-ready toolbox.
+- Plugin suite: auto-animate, nprogress, mitt, dayjs, valibot, @pinia/colada, generated Hey API request code, sweetalert2, and @imengyu/vue3-context-menu provide a production-ready toolbox.
 - UnoCSS + Sass: `virtual:uno.css` plus `src/styles/index.scss` cover atomic utilities, dark css vars, and Element Plus theme overrides.
 
 ## Quick Start
@@ -38,11 +38,10 @@ pnpm typecheck
 
 The project reads Vite env variables from `.env`, `.env.development`, and `.env.production`.
 
-Core API variables (`.env`):
+Runtime variables (`.env`):
 
 ```dotenv
-VITE_API_BASE_URL=/api/
-VITE_API_TIMEOUT=30000
+VITE_OPENAPI_BASE_URL=
 
 VITE_APP_PUBLIC_BASE_PATH=/
 VITE_APP_VERSION=v1.0
@@ -51,16 +50,15 @@ VITE_APP_VERSION=v1.0
 Development variables (`.env.development`):
 
 ```dotenv
-VITE_DEV_BROWSER=chrome
-VITE_DEV_OPEN_BROWSER=true
+OPENAPI_INPUT=http://7dtdserver.local:8088/swagger/v1/swagger.json
 VITE_DEV_API_PROXY_TARGET=http://7dtdserver.local:8088
 ```
 
 Notes:
 
-- `VITE_API_BASE_URL` and `VITE_API_TIMEOUT` are consumed by `src/utils/http.ts`.
+- `VITE_OPENAPI_BASE_URL` is the runtime backend origin. Keep it empty for same-origin deployments or set it for cross-origin deployments.
+- `OPENAPI_INPUT` is read by `pnpm api:gen` to generate API code from the Swagger/OpenAPI document.
 - `VITE_DEV_API_PROXY_TARGET` is consumed by the Vite proxy in `vite.config.ts` for `/api` forwarding.
-- `VITE_DEV_OPEN_BROWSER` controls whether `pnpm dev` auto-opens a browser.
 
 ## Project Structure
 
@@ -68,17 +66,19 @@ Notes:
 .
 ├─ public/                     # static assets
 ├─ src/
-│  ├─ api/                     # request modules: auth/devices/gameServer
+│  ├─ api/                     # global generated API client configuration
 │  ├─ assets/                  # images and SVG assets
 │  ├─ components/              # reusable components and demos
 │  ├─ composables/             # `useMenus`, `usePopup`, `useTheme`
 │  ├─ layout/                  # Header/Sidebar/Main/NavTab/MenuTree
 │  ├─ locales/                 # i18n resources: constant.ts + en/zh-cn
+│  ├─ generated/api/           # Hey API generated SDK, types, Valibot schemas, and Pinia Colada options
 │  ├─ plugins/                 # auto-animate, dayjs, element-plus, i18n, mitt, nprogress, pinia, valibot
+│  ├─ queries/                 # Pinia Colada invalidation, paged fetch helpers, and business normalization
 │  ├─ router/                  # route definitions and navigation guards
 │  ├─ stores/                  # app, keepAlive, locale, navTab, recentActivity, userInfo
 │  ├─ styles/                  # global styles and Element Plus theme overrides
-│  ├─ types/                   # global.d.ts, app.d.ts, api response typings
+│  ├─ types/                   # global.d.ts, app.d.ts, env.d.ts
 │  ├─ utils/                   # helpers like `markIcon`
 │  ├─ views/                   # 403/404/500, Dashboard, BanWhitelist, Login, MultiLevelMenu
 │  ├─ App.vue
@@ -107,7 +107,8 @@ Routes are defined in `src/router/index.ts` and wrapped by `Layout` to generate 
 - `nprogress`: loading progress bar hooked into navigation guards.
 - `mitt`: global event bus (`plugins/mitt.ts`).
 - `dayjs`: centralized plugin mixins and locale extensions in `plugins/dayjs.ts`.
-- `ky`: request helpers used by API modules in `src/api` and the shared HTTP wrapper in `src/utils/http.ts`.
+- `@hey-api/openapi-ts`: generates API types, SDK functions, Valibot schemas, and Pinia Colada options from Swagger/OpenAPI.
+- `@pinia/colada`: manages API queries, mutations, cache, and invalidation.
 - `sweetalert2`: high-quality modal examples in `components/MessageBoxDemo.vue`.
 - `UnoCSS`: typography, color, and animation presets declared via `uno.config.ts`.
 - `@imengyu/vue3-context-menu`: context menu support across views (global styles already imported).

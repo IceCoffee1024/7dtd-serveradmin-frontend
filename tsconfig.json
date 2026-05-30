@@ -4,7 +4,8 @@
     "jsx": "preserve", // Keep JSX for Vue compiler
     "lib": [
       "esnext", // Modern JS APIs (Promise, Map, Set, async/await, etc.)
-      "dom" // Browser APIs (Document, fetch, etc.)
+      "dom", // Browser APIs (Document, fetch, etc.)
+      "dom.iterable" // Iterable DOM APIs used by generated OpenAPI helpers
     ],
     "useDefineForClassFields": true, // Standard class field semantics
     "baseUrl": "./", // Module resolution base

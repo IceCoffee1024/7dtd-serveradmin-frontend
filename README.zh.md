@@ -19,7 +19,7 @@
 - 路由：hash 路由配合 `Layout` 包裹，主入口支持本地化路径（如 `/:locale/dashboard`），内置 403/404/500 页面与多级菜单样例。
 - 状态管理：Pinia 负责 `locale`、`nav-tab`、`keep-alive` 等中台行为，`composables/usePopup` / `useMenus` / `useTheme` 封装常用交互。
 - 国际化：内置 `vue-i18n` + `@intlify/unplugin-vue-i18n`，支持本地推荐、浏览器语言检测与动态加载语言包。
-- 插件链：包含 `@formkit/auto-animate`、`nprogress`、`mitt`、`dayjs`、`valibot` 等，配合 `ky`、`sweetalert2` 与 `@imengyu/vue3-context-menu` 构建实用工具。
+- 插件链：包含 `@formkit/auto-animate`、`nprogress`、`mitt`、`dayjs`、`valibot`、`@pinia/colada` 等，配合 Hey API 生成的请求代码、`sweetalert2` 与 `@imengyu/vue3-context-menu` 构建实用工具。
 - UnoCSS + Sass：`virtual:uno.css` + 自定义 `styles/index.scss` 实现原子类、暗黑 css-vars 与 Element Plus 主题的统一。
 
 ## 快速开始
@@ -42,11 +42,10 @@ pnpm typecheck
 
 项目会读取 `.env`、`.env.development`、`.env.production` 中的 Vite 环境变量。
 
-核心 API 变量（`.env`）：
+运行时变量（`.env`）：
 
 ```dotenv
-VITE_API_BASE_URL=/api/
-VITE_API_TIMEOUT=30000
+VITE_OPENAPI_BASE_URL=
 
 VITE_APP_PUBLIC_BASE_PATH=/
 VITE_APP_VERSION=v1.0
@@ -55,16 +54,15 @@ VITE_APP_VERSION=v1.0
 开发环境变量（`.env.development`）：
 
 ```dotenv
-VITE_DEV_BROWSER=chrome
-VITE_DEV_OPEN_BROWSER=true
+OPENAPI_INPUT=http://7dtdserver.local:8088/swagger/v1/swagger.json
 VITE_DEV_API_PROXY_TARGET=http://7dtdserver.local:8088
 ```
 
 说明：
 
-- `VITE_API_BASE_URL` 与 `VITE_API_TIMEOUT` 由 `src/utils/http.ts` 使用。
+- `VITE_OPENAPI_BASE_URL` 是运行时后端 origin；同源部署保持为空，跨域部署填写后端地址。
+- `OPENAPI_INPUT` 由 `pnpm api:gen` 读取，用于从 Swagger/OpenAPI 文档生成接口代码。
 - `VITE_DEV_API_PROXY_TARGET` 由 `vite.config.ts` 中的 `/api` 代理使用。
-- `VITE_DEV_OPEN_BROWSER` 控制 `pnpm dev` 时是否自动打开浏览器。
 
 ## 项目结构
 
@@ -72,17 +70,19 @@ VITE_DEV_API_PROXY_TARGET=http://7dtdserver.local:8088
 .
 ├─ public/                     # 公共静态资源
 ├─ src/
-│  ├─ api/                     # 请求模块：auth/devices/gameServer
+│  ├─ api/                     # 生成 API client 的全局配置
 │  ├─ assets/                  # 图片和 SVG 资源
 │  ├─ components/              # 可复用组件
 │  ├─ composables/             # `useMenus`、`usePopup`、`useTheme`
 │  ├─ layout/                  # Header/Sidebar/Main/NavTab/MenuTree
 │  ├─ locales/                 # i18n 资源：constant.ts + en/zh-cn
+│  ├─ generated/api/           # Hey API 自动生成的 SDK、类型、Valibot schema 与 Pinia Colada options
 │  ├─ plugins/                 # auto-animate、dayjs、element-plus、i18n、mitt、nprogress、pinia、valibot
+│  ├─ queries/                 # Pinia Colada 缓存失效、分页获取与业务 normalize 辅助
 │  ├─ router/                  # 路由定义与导航守卫
 │  ├─ stores/                  # app、keepAlive、locale、navTab、recentActivity、userInfo
 │  ├─ styles/                  # 全局样式与 Element Plus 主题覆盖
-│  ├─ types/                   # global.d.ts、app.d.ts、api 响应类型
+│  ├─ types/                   # global.d.ts、app.d.ts、env.d.ts
 │  ├─ utils/                   # `markIcon` 等工具
 │  ├─ views/                   # 403/404/500、Dashboard、BanWhitelist、Login、MultiLevelMenu
 │  ├─ App.vue
@@ -111,7 +111,8 @@ VITE_DEV_API_PROXY_TARGET=http://7dtdserver.local:8088
 - `nprogress`：路由守卫搭配 `router.beforeEach` 与 `afterEach` 控制页面加载进度条。
 - `mitt`：全局事件总线（`plugins/mitt.ts`）便于跨组件通信。
 - `dayjs`：在 `plugins/dayjs.ts` 中统一扩展插件与 locale 设置。
-- `ky`：请求工具，配合 `src/api` 模块与 `src/utils/http.ts` 的封装统一处理接口调用。
+- `@hey-api/openapi-ts`：根据 Swagger/OpenAPI 生成类型、SDK、Valibot schema 与 Pinia Colada options。
+- `@pinia/colada`：统一管理接口查询、变更、缓存与失效。
 - `sweetalert2`：高颜值弹窗示例存在于 `components/MessageBoxDemo.vue`。
 - `UnoCSS`：通过 `uno.config.ts` 声明 typography preset、主题色、动画效果。
 - `@imengyu/vue3-context-menu`：在视图中提供右键菜单支持（全局样式已引入）。
