@@ -89,7 +89,7 @@ watch(
 </script>
 
 <template>
-  <div class="gap-4 grid grid-cols-5">
+  <div class="status-grid">
     <Doughnut
       :title="$t('views.dashboard.status.players')"
       :used="playerStatus.used"
@@ -129,3 +129,29 @@ watch(
     />
   </div>
 </template>
+
+<style scoped lang="scss">
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 1400px) {
+  .status-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

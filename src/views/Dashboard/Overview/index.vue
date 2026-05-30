@@ -43,96 +43,134 @@ function formatGameDifficulty(gameDifficulty: number | null | undefined) {
 </script>
 
 <template>
-  <div class="gap-4 grid grid-cols-12 min-w-800px">
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.serverName')">
-        <p class="content">
-          {{ model?.serverName || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+  <div class="overview-grid">
+    <div class="overview-item overview-item--featured">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.serverName') }}</span>
+      <p class="overview-item__value">
+        {{ model?.serverName || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.serverIp')">
-        <p class="content">
-          {{ model?.serverIp || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.serverIp') }}</span>
+      <p class="overview-item__value">
+        {{ model?.serverIp || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.serverPort')">
-        <p class="content">
-          {{ model?.serverPort || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.serverPort') }}</span>
+      <p class="overview-item__value">
+        {{ model?.serverPort || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.region')">
-        <p class="content">
-          {{ model?.region || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.region') }}</span>
+      <p class="overview-item__value">
+        {{ model?.region || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.language')">
-        <p class="content">
-          {{ model?.language || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.language') }}</span>
+      <p class="overview-item__value">
+        {{ model?.language || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.serverVersion')">
-        <p class="content">
-          {{ model?.serverVersion || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.serverVersion') }}</span>
+      <p class="overview-item__value">
+        {{ model?.serverVersion || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.uptime')">
-        <p class="content">
-          {{ model ? formatUptime(model.uptime) : $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.uptime') }}</span>
+      <p class="overview-item__value">
+        {{ model ? formatUptime(model.uptime) : $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.gameTime')">
-        <p class="content">
-          {{ model ? formatGameTime(model.gameTime) : $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.gameTime') }}</span>
+      <p class="overview-item__value">
+        {{ model ? formatGameTime(model.gameTime) : $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.gameName')">
-        <p class="content">
-          {{ model?.gameName || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.gameName') }}</span>
+      <p class="overview-item__value">
+        {{ model?.gameName || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.gameMode')">
-        <p class="content">
-          {{ model?.gameMode || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.gameMode') }}</span>
+      <p class="overview-item__value">
+        {{ model?.gameMode || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.gameWorld')">
-        <p class="content">
-          {{ model?.gameWorld || $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.gameWorld') }}</span>
+      <p class="overview-item__value">
+        {{ model?.gameWorld || $t('common.unknown') }}
+      </p>
     </div>
-    <div class="col-span-4 2xl:col-span-3">
-      <OutlineItem :legend="$t('views.dashboard.overview.gameDifficulty')">
-        <p class="content">
-          {{ model ? formatGameDifficulty(model.gameDifficulty) : $t('common.unknown') }}
-        </p>
-      </OutlineItem>
+    <div class="overview-item">
+      <span class="overview-item__label">{{ $t('views.dashboard.overview.gameDifficulty') }}</span>
+      <p class="overview-item__value">
+        {{ model ? formatGameDifficulty(model.gameDifficulty) : $t('common.unknown') }}
+      </p>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.content {
-  @apply: ms-3 text-primary 3xl:whitespace-nowrap;
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.overview-item {
+  padding: 1rem 1.05rem;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 96%, white 4%), var(--el-bg-color)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 42%);
+}
+
+.overview-item--featured {
+  grid-column: span 2;
+}
+
+.overview-item__label {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 0.82rem;
+}
+
+.overview-item__value {
+  margin: 0.45rem 0 0;
+  color: var(--el-text-color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+@media (max-width: 1024px) {
+  .overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .overview-item--featured {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .overview-item--featured {
+    grid-column: span 1;
+  }
 }
 </style>

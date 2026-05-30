@@ -25,7 +25,10 @@ body {
   // text-el-primary, text-el-regular, text-el-secondary, text-el-placeholder
   color: var(--el-text-color-primary);
 
-  @apply: bg-base;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--colors-primary) 10%, transparent), transparent 26%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--el-color-info) 10%, transparent), transparent 22%),
+    linear-gradient(180deg, color-mix(in srgb, var(--colors-surface-50) 92%, white 8%), var(--colors-surface-100));
 
   .el-card {
     @apply: bg-card;
@@ -45,7 +48,15 @@ body {
     --el-bg-color: var(--colors-surface-950);
     --el-border-color: #58595c;
     --el-border-color-light: #4e4f52;
+    background:
+      radial-gradient(circle at top left, color-mix(in srgb, var(--colors-primary) 14%, transparent), transparent 28%),
+      radial-gradient(circle at top right, color-mix(in srgb, var(--el-color-info) 14%, transparent), transparent 24%),
+      linear-gradient(180deg, color-mix(in srgb, var(--colors-surface-950) 92%, black 8%), var(--colors-surface-900));
   }
+}
+
+#app {
+  background: transparent;
 }
 
 code {

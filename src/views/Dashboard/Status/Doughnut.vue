@@ -31,7 +31,7 @@ const centerTextPlugin: Plugin<'doughnut'> = {
     // Configure text style
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '24px Arial'; // Adjust font and size as needed
+    ctx.font = '600 22px Inter var, system-ui, sans-serif';
     ctx.fillStyle = documentStyle.getPropertyValue('--colors-primary'); // Text color
 
     // Draw text at chart center
@@ -40,14 +40,15 @@ const centerTextPlugin: Plugin<'doughnut'> = {
 };
 
 const chartData: ComputedRef<ChartData<'doughnut'>> = computed(() => {
+  const documentStyle = getComputedStyle(document.documentElement);
   return {
     labels: props.legendLabels,
     datasets: [
       {
         data: [props.used, props.free],
         backgroundColor: [
-          '#D94F00', // Your color (orange)
-          '#E5E5E5', // Remaining part color (gray)
+          documentStyle.getPropertyValue('--colors-primary').trim() || '#409EFF',
+          documentStyle.getPropertyValue('--el-border-color-light').trim() || '#E5E7EB',
         ],
         borderWidth: 0, // Remove border for smoother effect
       },
@@ -88,10 +89,35 @@ watch(currentTheme, async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center">
-    <div class="font-semibold">
+  <div class="doughnut-card">
+    <div class="doughnut-card__title">
       {{ title }}
     </div>
-    <DoughnutChart ref="chartRef" :data="chartData" :options="chartOptions" :plugins="[centerTextPlugin]" class="h-176px w-full" />
+    <DoughnutChart ref="chartRef" :data="chartData" :options="chartOptions" :plugins="[centerTextPlugin]" class="doughnut-card__chart" />
   </div>
 </template>
+
+<style scoped lang="scss">
+.doughnut-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 0.6rem 0;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--el-bg-color) 94%, white 6%);
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+}
+
+.doughnut-card__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--el-text-color-primary);
+}
+
+.doughnut-card__chart {
+  width: 100%;
+  height: 176px;
+}
+</style>
