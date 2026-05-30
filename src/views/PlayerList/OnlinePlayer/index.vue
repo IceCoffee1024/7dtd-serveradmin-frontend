@@ -1,18 +1,48 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  OnlinePlayerDto,
+  OnlinePlayerQueryOrder,
+  PositionDto,
+} from '~/generated/api/types.gen';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { addMute } from '~/api/chat';
-import { banPlayer, getOnlinePlayers, kickPlayer } from '~/api/gameServer';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { usePopup } from '~/composables/usePopup';
-import { formatPosition } from '~/utils';
+import {
+  chatAddOrUpdateMuteMutation,
+  gameServerCreateBanMutation,
+  gameServerGetOnlinePlayersQuery,
+  gameServerKickPlayerMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
+import { formatPosition, showCommandResult } from '~/utils';
 
-type OnlinePlayerRow = API.GameServer.OnlinePlayer;
+type OnlinePlayerRow = OnlinePlayerDto;
 
 const { t } = useI18n();
 const { confirm: confirmPopup, prompt, toast } = usePopup();
+const queryCache = useQueryCache();
+const kickPlayerMutation = useMutation({
+  ...gameServerKickPlayerMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
+const banPlayerMutation = useMutation({
+  ...gameServerCreateBanMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
+const addMuteMutation = useMutation({
+  ...chatAddOrUpdateMuteMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Chat');
+  },
+});
 
 const isAutoRefreshEnabled = ref(true);
 const autoRefreshInterval = ref(10);
@@ -41,7 +71,7 @@ const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
   { prop: 'deaths', label: t('views.playerList.deaths'), sortable: true },
   { prop: 'ip', label: t('views.playerList.ip') },
   { prop: 'ping', label: t('views.playerList.ping'), sortable: true },
-  { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as API.GameServer.Position | null | undefined) },
+  { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as PositionDto | null | undefined) },
   { prop: 'expToNextLevel', label: t('views.playerList.expToNextLevel') },
   { prop: 'skillPoints', label: t('views.playerList.skillPoints'), sortable: true },
   {
@@ -60,18 +90,45 @@ const playerSkillsDialogRef = useTemplateRef('playerSkillsDialogRef');
 const playerDetailsDialogRef = useTemplateRef('playerDetailsDialogRef');
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<OnlinePlayerRow>> {
-  const response = await getOnlinePlayers({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    order: params.sortField as API.GameServer.OnlinePlayerQuery['order'],
-    desc: !params.sortOrder ? undefined : params.sortOrder === 'descending',
+  const options = gameServerGetOnlinePlayersQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      order: toOrder(params.sortField),
+      desc: !params.sortOrder ? undefined : params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
+}
+
+function toOrder(sortField: string | undefined): OnlinePlayerQueryOrder | undefined {
+  switch (sortField) {
+    case 'entityId': return 'EntityId';
+    case 'playerName': return 'PlayerName';
+    case 'ping': return 'Ping';
+    case 'permissionLevel': return 'PermissionLevel';
+    case 'zombieKills': return 'ZombieKills';
+    case 'playerKills': return 'PlayerKills';
+    case 'deaths': return 'Deaths';
+    case 'level': return 'Level';
+    case 'expToNextLevel': return 'ExpToNextLevel';
+    case 'skillPoints': return 'SkillPoints';
+    case 'gameStage': return 'GameStage';
+    default: return undefined;
+  }
 }
 
 const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
@@ -109,8 +166,10 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       if (reason === undefined)
         return;
       try {
-        await kickPlayer(row.playerId, reason || null);
-        toast({ type: 'success', title: t('views.playerList.kick') });
+        const result = await kickPlayerMutation.mutateAsync({
+          body: { playerId: row.playerId, reason: reason || null },
+        });
+        showCommandResult(result ?? undefined, t('views.playerList.kick'));
       }
       catch (error) {
         console.error(error);
@@ -136,8 +195,15 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
         return;
       try {
         const bannedUntil = dayjs().add(Number(minutesStr), 'minute').toISOString();
-        await banPlayer(row.playerId, bannedUntil, row.playerName, reason || null);
-        toast({ type: 'success', title: t('views.playerList.ban') });
+        const result = await banPlayerMutation.mutateAsync({
+          body: {
+            playerId: row.playerId,
+            bannedUntil,
+            displayName: row.playerName,
+            reason: reason || null,
+          },
+        });
+        showCommandResult(result ?? undefined, t('views.playerList.ban'));
       }
       catch (error) {
         console.error(error);
@@ -158,7 +224,9 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       try {
         const minutes = Number(minutesStr);
         const mutedUntil = minutes > 0 ? dayjs().add(minutes, 'minute').toISOString() : null;
-        await addMute({ playerId: row.playerId, playerName: row.playerName, mutedUntil, reason: reason || null });
+        await addMuteMutation.mutateAsync({
+          body: { playerId: row.playerId, playerName: row.playerName, mutedUntil, reason: reason || null },
+        });
         toast({ type: 'success', title: t('views.playerList.mute') });
       }
       catch (error) {

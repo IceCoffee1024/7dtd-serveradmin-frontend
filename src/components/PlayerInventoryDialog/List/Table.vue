@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { InvItemDto } from '~/generated/api/types.gen';
 import GameIconEx from '../GameIconEx/index.vue';
 
 interface Props {
-  tableData?: API.GameServer.InvItem[];
+  tableData?: InvItemDto[];
 }
 
 withDefaults(defineProps<Props>(), {

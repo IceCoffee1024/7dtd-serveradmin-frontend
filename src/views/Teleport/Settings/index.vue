@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { TeleportFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import * as api from '~/api/teleport';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  teleportGetSettingsQuery,
+  teleportResetSettingsMutation,
+  teleportUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'TeleportSettingsPage' });
@@ -88,8 +95,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 const savedForm = ref<FormModel>(buildDefaults());
 
 function buildDefaults(): FormModel {
@@ -449,8 +454,24 @@ const backTipFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'backCurrencyNotEnoughTip', label: t('views.teleport.settings.fields.back.currencyNotEnoughTip'), el: 'el-input', props: { clearable: true }, span: { xs: 24 } },
 ]);
 
+const settingsQuery = useQuery(teleportGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...teleportUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Teleport');
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...teleportResetSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Teleport');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
 // ---- Data mapping ----
-function mapSettings(dto: API.Teleport.FeatureSettings | null | undefined): FormModel {
+function mapSettings(dto: TeleportFeatureSettingsDto | null | undefined): FormModel {
   const h = dto?.home;
   const c = dto?.city;
   const f = dto?.friend;
@@ -519,7 +540,7 @@ function mapSettings(dto: API.Teleport.FeatureSettings | null | undefined): Form
   };
 }
 
-function buildPayload(): API.Teleport.FeatureSettings {
+function buildPayload(): TeleportFeatureSettingsDto {
   const nullIfEmpty = (s: string) => s.trim() || null;
   return {
     isEnabled: form.isEnabled,
@@ -594,27 +615,47 @@ function buildPayload(): API.Teleport.FeatureSettings {
   };
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await api.getSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     Object.assign(form, mapSettings(data));
     savedForm.value = cloneDeep(form);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  Object.assign(form, mapSettings(state.data));
+  savedForm.value = cloneDeep(form);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await api.resetSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     Object.assign(form, mapSettings(data));
     savedForm.value = cloneDeep(form);
     await nextTick();
@@ -624,9 +665,6 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 async function onSubmit() {
@@ -635,18 +673,13 @@ async function onSubmit() {
   const valid = await formRef.value.validate().catch(() => false);
   if (!valid)
     return;
-  isSubmitting.value = true;
   try {
-    await api.updateSettings(buildPayload());
-    savedForm.value = cloneDeep(form);
+    await updateSettingsMutation.mutateAsync({ body: buildPayload() });
     toast({ type: 'success', text: t('views.teleport.settings.messages.saveSuccess') });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -658,8 +691,6 @@ onBeforeRouteLeave(async (_to, _from, next) => {
   const confirmed = await confirm({ text: t('views.teleport.settings.messages.unsavedChanges'), type: 'warning' });
   next(confirmed);
 });
-
-onMounted(() => loadSettings());
 </script>
 
 <template>

@@ -3,8 +3,8 @@ import type { SdtdMapInfo } from '../../types';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
 import TileGrid from 'ol/tilegrid/TileGrid';
-import { getMapTileUrl } from '~/api/gameServer';
 import { useUserInfoStore } from '~/stores/userInfo';
+import { getMapTileUrl } from '~/utils/gameServerAssets';
 import { LAYER_ID } from '../../constants';
 
 /**

@@ -2,13 +2,25 @@
 import type { FormRules } from 'element-plus';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { MyFormField } from '~/composables/useMyForm';
+import type {
+  EconomyShopItemDto,
+  EconomyShopItemQueryOrder,
+  EconomyUpsertShopItemRequestDto,
+} from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/economy';
-import * as gameServerApi from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  economyShopCreateItemMutation,
+  economyShopDeleteItemMutation,
+  economyShopGetItemsQuery,
+  economyShopUpdateItemMutation,
+  gameServerGetGameItemsQuery,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateEconomyShopQueries } from '~/queries/economy';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'EconomyShopPage' });
@@ -31,13 +43,32 @@ interface FormModel {
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
+const queryCache = useQueryCache();
 
 const tableRef = useTemplateRef('tableRef');
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 
-const isSubmitting = ref(false);
 const editingId = ref<number | null>(null);
+const createItemMutation = useMutation({
+  ...economyShopCreateItemMutation(),
+  async onSettled() {
+    await invalidateEconomyShopQueries();
+  },
+});
+const updateItemMutation = useMutation({
+  ...economyShopUpdateItemMutation(),
+  async onSettled() {
+    await invalidateEconomyShopQueries();
+  },
+});
+const deleteItemMutation = useMutation({
+  ...economyShopDeleteItemMutation(),
+  async onSettled() {
+    await invalidateEconomyShopQueries();
+  },
+});
+const isSubmitting = computed(() => createItemMutation.isLoading.value || updateItemMutation.isLoading.value);
 
 interface GameItemOption {
   value: string;
@@ -52,10 +83,18 @@ async function loadGameItems() {
     return;
   itemOptionsLoading.value = true;
   try {
-    const items = await gameServerApi.getGameItems();
-    gameItemOptions.value = items.map(i => ({
-      value: i.name,
-      label: i.localizedName ? `${i.localizedName}  (${i.name})` : i.name,
+    const options = gameServerGetGameItemsQuery();
+    const entry = queryCache.ensure(options);
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    const items = state.data ?? [];
+    gameItemOptions.value = items.map(item => ({
+      value: item.name,
+      label: item.localizedName ? `${item.localizedName}  (${item.name})` : item.name,
     }));
   }
   finally {
@@ -97,7 +136,7 @@ const booleanOptions = computed(() => [
 ]);
 
 const dialogTitle = computed(() =>
-  editingId.value
+  editingId.value != null
     ? t('views.economy.shop.form.editTitle')
     : t('views.economy.shop.form.addTitle'),
 );
@@ -159,9 +198,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-type ShopItemQueryOrder = API.Economy.ShopItemQueryOrder;
-
-const columns = computed<MyTableColumn<API.Economy.ShopItem>[]>(() => [
+const columns = computed<MyTableColumn<EconomyShopItemDto>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
@@ -223,7 +260,7 @@ const columns = computed<MyTableColumn<API.Economy.ShopItem>[]>(() => [
   },
 ]);
 
-function toOrder(sortField: string | undefined): ShopItemQueryOrder | undefined {
+function toOrder(sortField: string | undefined): EconomyShopItemQueryOrder | undefined {
   switch (sortField) {
     case 'name': return 'Name';
     case 'price': return 'Price';
@@ -233,16 +270,27 @@ function toOrder(sortField: string | undefined): ShopItemQueryOrder | undefined 
   }
 }
 
-async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<API.Economy.ShopItem>> {
-  const response = await api.getShopItems({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyShopItemDto>> {
+  const options = economyShopGetItemsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
-  return { list: response.items, total: response.total };
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
+
+  return { list: response?.items ?? [], total: response?.total ?? 0 };
 }
 
 function openAdd() {
@@ -253,17 +301,21 @@ function openAdd() {
   nextTick(() => formRef.value?.clearValidate());
 }
 
-function openEdit(row: API.Economy.ShopItem) {
+function openEdit(row: EconomyShopItemDto) {
+  if (row.id == null) {
+    return;
+  }
+
   loadGameItems();
   editingId.value = row.id;
   form.name = row.name;
   form.description = row.description ?? '';
   form.itemName = row.itemName;
-  form.itemCount = row.itemCount;
-  form.price = row.price;
-  form.isEnabled = row.isEnabled;
-  form.displayOrder = row.displayOrder;
-  form.stockLimit = row.stockLimit;
+  form.itemCount = row.itemCount ?? 1;
+  form.price = row.price ?? 0;
+  form.isEnabled = row.isEnabled ?? true;
+  form.displayOrder = row.displayOrder ?? 0;
+  form.stockLimit = row.stockLimit ?? 0;
   dialogRef.value?.open();
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -274,9 +326,8 @@ async function onConfirm(): Promise<boolean | void> {
     return false;
   }
 
-  isSubmitting.value = true;
   try {
-    const payload: API.Economy.UpsertShopItemRequest = {
+    const payload: EconomyUpsertShopItemRequestDto = {
       name: form.name.trim(),
       description: form.description.trim() || null,
       itemName: form.itemName.trim(),
@@ -287,12 +338,12 @@ async function onConfirm(): Promise<boolean | void> {
       stockLimit: Number(form.stockLimit),
     };
 
-    if (editingId.value) {
-      await api.updateShopItem(editingId.value, payload);
+    if (editingId.value != null) {
+      await updateItemMutation.mutateAsync({ path: { id: editingId.value }, body: payload });
       toast({ type: 'success', text: t('views.economy.shop.messages.updateSuccess') });
     }
     else {
-      await api.createShopItem(payload);
+      await createItemMutation.mutateAsync({ body: payload });
       toast({ type: 'success', text: t('views.economy.shop.messages.createSuccess') });
     }
     tableRef.value?.reload();
@@ -301,12 +352,13 @@ async function onConfirm(): Promise<boolean | void> {
     console.error(error);
     return false;
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-async function onDelete(row: API.Economy.ShopItem) {
+async function onDelete(row: EconomyShopItemDto) {
+  if (row.id == null) {
+    return;
+  }
+
   const confirmed = await confirm({
     text: t('views.economy.shop.actions.deleteConfirm'),
     type: 'warning',
@@ -316,7 +368,7 @@ async function onDelete(row: API.Economy.ShopItem) {
   }
 
   try {
-    await api.deleteShopItem(row.id);
+    await deleteItemMutation.mutateAsync({ path: { id: row.id } });
     toast({ type: 'success', text: t('views.economy.shop.messages.deleteSuccess') });
     tableRef.value?.reload();
   }

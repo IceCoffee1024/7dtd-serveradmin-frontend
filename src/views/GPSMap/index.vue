@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type Map from 'ol/Map';
-import { getMapInfo } from '~/api/gameServer';
+import type { SdtdMapInfo } from './types';
+import { useQueryCache } from '@pinia/colada';
+import { gameServerGetMapInfoQuery } from '~/generated/api/@pinia/colada.gen';
 import { initOpenLayers } from './openlayers/initOpenLayers';
 import { layerRegistry } from './openlayers/mapRegistry';
 import PopupContainer from './PopupContainer.vue';
@@ -11,17 +13,29 @@ defineOptions({ name: 'GPSMap' });
 const mapContainerRef = useTemplateRef('mapContainerRef');
 const popupContainerRef = useTemplateRef('popupContainerRef');
 const mapInstanceRef = shallowRef<Map>();
+const queryCache = useQueryCache();
+
+async function fetchMapInfo(): Promise<SdtdMapInfo> {
+  const entry = queryCache.ensure(gameServerGetMapInfoQuery());
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const data = state.data;
+  return {
+    tileSize: data?.blockSize ?? 128,
+    maxZoom: data?.maxZoom ?? 5,
+    chunkSize: data?.chunkSize ?? 16,
+    regionSize: data?.regionSize ?? 512,
+    worldSize: data?.worldSize ?? 8192,
+    extraZoom: 2,
+  };
+}
 
 onMounted(async () => {
-  const data = await getMapInfo();
-  const mapInfo = {
-    tileSize: data.blockSize, // Default to 128
-    maxZoom: data.maxZoom, // Default to 5
-    chunkSize: data.chunkSize, // Default to 16
-    regionSize: data.regionSize, // Default to 512
-    worldSize: data.worldSize, // Default to 8192
-    extraZoom: 2, // Additional zoom levels for better close-up view
-  };
+  const mapInfo = await fetchMapInfo();
 
   if (mapContainerRef.value && popupContainerRef.value) {
     mapInstanceRef.value = initOpenLayers(mapContainerRef.value, mapInfo, popupContainerRef.value);

@@ -2,17 +2,32 @@
 import type { FormRules } from 'element-plus';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { MyFormField } from '~/composables/useMyForm';
+import type {
+  AchievementDefinitionQueryOrder,
+  AchievementDefinitionUpsertDto,
+} from '~/generated/api/types.gen';
+import type { AchievementDefinitionRow } from '~/queries/achievement';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/achievement';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  achievementCreateDefinitionMutation,
+  achievementDeleteDefinitionMutation,
+  achievementGetDefinitionsQuery,
+  achievementUpdateDefinitionMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import {
+  invalidateAchievementQueries,
+  toAchievementDefinitionRow,
+} from '~/queries/achievement';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'AchievementDefinitionsPage' });
 
-type DefinitionRow = API.Achievement.DefinitionDto;
+type DefinitionRow = AchievementDefinitionRow;
 
 interface FormModel {
   name: string;
@@ -39,8 +54,27 @@ const tableRef = useTemplateRef('tableRef');
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 
-const isSubmitting = ref(false);
 const editingId = ref<number | null>(null);
+const queryCache = useQueryCache();
+const createDefinitionMutation = useMutation({
+  ...achievementCreateDefinitionMutation(),
+  async onSettled() {
+    await invalidateAchievementQueries();
+  },
+});
+const updateDefinitionMutation = useMutation({
+  ...achievementUpdateDefinitionMutation(),
+  async onSettled() {
+    await invalidateAchievementQueries();
+  },
+});
+const deleteDefinitionMutation = useMutation({
+  ...achievementDeleteDefinitionMutation(),
+  async onSettled() {
+    await invalidateAchievementQueries();
+  },
+});
+const isSubmitting = computed(() => createDefinitionMutation.isLoading.value || updateDefinitionMutation.isLoading.value);
 
 const triggerTypeOptions = computed(() => [
   { label: t('views.achievement.definitions.triggerTypes.level'), value: 'Level' },
@@ -212,7 +246,6 @@ const columns = computed<MyTableColumn<DefinitionRow>[]>(() => [
     prop: 'economyReward',
     label: t('views.achievement.definitions.columns.economyReward'),
     slot: 'economyReward',
-    sortable: true,
     width: 120,
     align: 'right',
   },
@@ -242,14 +275,11 @@ const columns = computed<MyTableColumn<DefinitionRow>[]>(() => [
   },
 ]);
 
-type DefinitionQueryOrder = 'Name' | 'TriggerType' | 'Threshold' | 'EconomyReward' | 'SortOrder' | 'CreatedAt';
-
-function toOrder(sortField: string | undefined): DefinitionQueryOrder | undefined {
+function toOrder(sortField: string | undefined): AchievementDefinitionQueryOrder | undefined {
   switch (sortField) {
     case 'name': return 'Name';
     case 'triggerType': return 'TriggerType';
     case 'threshold': return 'Threshold';
-    case 'economyReward': return 'EconomyReward';
     case 'sortOrder': return 'SortOrder';
     case 'createdAt': return 'CreatedAt';
     default: return undefined;
@@ -257,16 +287,31 @@ function toOrder(sortField: string | undefined): DefinitionQueryOrder | undefine
 }
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<DefinitionRow>> {
-  const response = await api.getDefinitions({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    triggerType: typeof params.search?.triggerType === 'string' ? params.search.triggerType || undefined : undefined,
-    isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = achievementGetDefinitionsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      triggerType: typeof params.search?.triggerType === 'string' ? params.search.triggerType || undefined : undefined,
+      isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
-  return { list: response.items, total: response.total };
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
+
+  if (response == null) {
+    return { list: [], total: 0 };
+  }
+
+  return { list: response.items.map(toAchievementDefinitionRow), total: response.total };
 }
 
 function openAdd() {
@@ -298,9 +343,8 @@ async function onConfirm(): Promise<boolean | void> {
     return false;
   }
 
-  isSubmitting.value = true;
   try {
-    const payload: API.Achievement.DefinitionUpsertDto = {
+    const payload: AchievementDefinitionUpsertDto = {
       name: form.name.trim(),
       description: form.description.trim() || null,
       isEnabled: form.isEnabled,
@@ -313,12 +357,12 @@ async function onConfirm(): Promise<boolean | void> {
       sortOrder: Number(form.sortOrder),
     };
 
-    if (editingId.value) {
-      await api.updateDefinition(editingId.value, payload);
+    if (editingId.value != null) {
+      await updateDefinitionMutation.mutateAsync({ path: { id: editingId.value }, body: payload });
       toast({ type: 'success', text: t('views.achievement.definitions.messages.updateSuccess') });
     }
     else {
-      await api.createDefinition(payload);
+      await createDefinitionMutation.mutateAsync({ body: payload });
       toast({ type: 'success', text: t('views.achievement.definitions.messages.createSuccess') });
     }
     tableRef.value?.reload();
@@ -326,9 +370,6 @@ async function onConfirm(): Promise<boolean | void> {
   catch (error) {
     console.error(error);
     return false;
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -342,7 +383,7 @@ async function onDelete(row: DefinitionRow) {
   }
 
   try {
-    await api.deleteDefinition(row.id);
+    await deleteDefinitionMutation.mutateAsync({ path: { id: row.id } });
     toast({ type: 'success', text: t('views.achievement.definitions.messages.deleteSuccess') });
     tableRef.value?.reload();
   }

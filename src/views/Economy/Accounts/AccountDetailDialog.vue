@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import type { EconomyAccountDetailDto, EconomyTransactionDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/economy';
 import { usePopup } from '~/composables';
+import {
+  economyFreezeAccountMutation,
+  economyGetAccountQuery,
+  economyTransactionsGetTransactionsQuery,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateEconomyAndTransactionsQueries } from '~/queries/economy';
 import AdjustBalanceDialog from './AdjustBalanceDialog.vue';
 
 defineOptions({ name: 'EconomyAccountDetailDialog' });
@@ -17,24 +24,40 @@ interface Props {
 
 const { t } = useI18n();
 const { toast } = usePopup();
+const queryCache = useQueryCache();
 
 const dialogRef = useTemplateRef('dialogRef');
 const adjustDialogRef = useTemplateRef('adjustDialogRef');
 const isLoading = ref(false);
-const isUpdating = ref(false);
-const detail = ref<API.Economy.AccountDetail | null>(null);
-const recentTransactions = ref<API.Economy.Transaction[]>([]);
+const freezeAccountMutation = useMutation({
+  ...economyFreezeAccountMutation(),
+  async onSettled() {
+    await invalidateEconomyAndTransactionsQueries();
+  },
+});
+const isUpdating = computed(() => freezeAccountMutation.isLoading.value);
+const detail = ref<EconomyAccountDetailDto | null>(null);
+const recentTransactions = ref<EconomyTransactionDto[]>([]);
 
 async function loadRecentTransactions(playerId: string) {
   try {
-    const response = await api.getTransactions({
-      pageNumber: 1,
-      pageSize: 5,
-      playerId,
-      order: 'OccurredAt',
-      desc: true,
+    const options = economyTransactionsGetTransactionsQuery({
+      query: {
+        pageNumber: 1,
+        pageSize: 5,
+        playerId,
+        order: 'OccurredAt',
+        desc: true,
+      },
     });
-    recentTransactions.value = response.items;
+    const entry = queryCache.ensure(options);
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    recentTransactions.value = state.data?.items ?? [];
   }
   catch (error) {
     console.error(error);
@@ -46,13 +69,29 @@ function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
 
+async function fetchAccount(playerId: string): Promise<EconomyAccountDetailDto> {
+  const options = economyGetAccountQuery({ path: { playerId } });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  if (state.data == null) {
+    throw new Error('Empty economy account response');
+  }
+
+  return state.data;
+}
+
 async function loadDetail(playerId: string) {
   isLoading.value = true;
   detail.value = null;
   recentTransactions.value = [];
   try {
     const [detailResponse] = await Promise.all([
-      api.getAccount(playerId),
+      fetchAccount(playerId),
       loadRecentTransactions(playerId),
     ]);
     detail.value = detailResponse;
@@ -75,9 +114,11 @@ async function onToggleFrozen() {
     return;
   }
 
-  isUpdating.value = true;
   try {
-    await api.setAccountFrozen(detail.value.playerId, !detail.value.isFrozen);
+    await freezeAccountMutation.mutateAsync({
+      path: { playerId: detail.value.playerId },
+      body: { isFrozen: !detail.value.isFrozen },
+    });
     await loadDetail(detail.value.playerId);
     emit('updated');
     toast({
@@ -87,9 +128,6 @@ async function onToggleFrozen() {
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isUpdating.value = false;
   }
 }
 
@@ -112,8 +150,8 @@ async function onAdjusted() {
   emit('updated');
 }
 
-function formatTransactionAmount(transaction: API.Economy.Transaction): string {
-  return `${transaction.direction === 'Income' ? '+' : '-'}${transaction.amount}`;
+function formatTransactionAmount(transaction: EconomyTransactionDto): string {
+  return `${transaction.direction === 'Income' ? '+' : '-'}${transaction.amount ?? 0}`;
 }
 
 defineExpose({ show });

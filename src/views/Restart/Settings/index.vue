@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { RestartFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { cancelRestart, getSettings, updateSettings } from '~/api/restart';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  restartCancelRestartMutation,
+  restartGetSettingsQuery,
+  restartUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'RestartSettingsPage' });
@@ -41,10 +48,7 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
-const isCancelling = ref(false);
-const settings = ref<API.Restart.Settings | null>(null);
+const settings = ref<RestartFeatureSettingsDto | null>(null);
 const warningStages = ref<WarningStageRow[]>([]);
 
 function buildDefaults(): FormModel {
@@ -193,20 +197,35 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function applyValues(source: API.Restart.Settings) {
-  form.isEnabled = source.isEnabled;
+const settingsQuery = useQuery(restartGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...restartUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Restart');
+  },
+});
+const cancelRestartMutation = useMutation(restartCancelRestartMutation());
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value);
+const isCancelling = computed(() => cancelRestartMutation.isLoading.value);
+
+function applyValues(source: RestartFeatureSettingsDto) {
+  form.isEnabled = source.isEnabled ?? false;
   form.cronExpression = source.cronExpression ?? '0 6 * * *';
   form.timeZoneId = source.timeZoneId ?? '';
   form.warningLeadSeconds = source.warningLeadSeconds ?? 300;
   form.warningMessage = source.warningMessage ?? '';
-  form.saveWorldBeforeRestart = source.saveWorldBeforeRestart;
+  form.saveWorldBeforeRestart = source.saveWorldBeforeRestart ?? true;
   form.restartMode = source.restartMode ?? 'Graceful';
   form.restartCommand = source.restartCommand ?? '';
   form.deferScheduledRestartDuringBloodMoonWindow = source.deferScheduledRestartDuringBloodMoonWindow ?? false;
   form.bloodMoonPreDuskProtectionHours = source.bloodMoonPreDuskProtectionHours ?? 2;
   form.bloodMoonDeferMinutes = source.bloodMoonDeferMinutes ?? 30;
   form.historyRetentionDays = source.historyRetentionDays ?? 30;
-  warningStages.value = (source.warningStages ?? []).map(s => ({ leadSeconds: s.leadSeconds, message: s.message }));
+  warningStages.value = (source.warningStages ?? []).map(s => ({
+    leadSeconds: s.leadSeconds ?? 0,
+    message: s.message ?? '',
+  }));
 }
 
 function addWarningStage() {
@@ -217,22 +236,46 @@ function removeWarningStage(index: number) {
   warningStages.value.splice(index, 1);
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    settings.value = await getSettings();
-    applyValues(settings.value);
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    settings.value = data;
+    applyValues(data);
     savedForm.value = cloneDeep(form);
     savedWarningStages.value = cloneDeep(warningStages.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  settings.value = state.data;
+  applyValues(state.data);
+  savedForm.value = cloneDeep(form);
+  savedWarningStages.value = cloneDeep(warningStages.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onSubmit() {
@@ -245,9 +288,8 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    const payload: API.Restart.Settings = {
+    const payload: RestartFeatureSettingsDto = {
       ...settings.value,
       isEnabled: form.isEnabled,
       cronExpression: form.cronExpression.trim(),
@@ -265,17 +307,12 @@ async function onSubmit() {
       bloodMoonDeferMinutes: Number(form.bloodMoonDeferMinutes ?? 30),
       historyRetentionDays: Number(form.historyRetentionDays ?? 0),
     };
-    await updateSettings(payload);
-    settings.value = { ...payload };
-    savedForm.value = cloneDeep(form);
-    savedWarningStages.value = cloneDeep(warningStages.value);
+    await updateSettingsMutation.mutateAsync({ body: payload });
     toast({ type: 'success', text: t('views.restart.settings.messages.saveSuccess') });
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -289,14 +326,9 @@ onBeforeRouteLeave(async () => {
   });
 });
 
-onMounted(() => {
-  loadSettings();
-});
-
 async function onCancelRestart() {
-  isCancelling.value = true;
   try {
-    const result = await cancelRestart();
+    const result = await cancelRestartMutation.mutateAsync({});
     toast({
       type: result.succeeded ? 'success' : 'warning',
       text: result.message || (result.succeeded
@@ -306,9 +338,6 @@ async function onCancelRestart() {
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isCancelling.value = false;
   }
 }
 </script>

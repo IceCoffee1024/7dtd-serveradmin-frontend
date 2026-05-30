@@ -2,6 +2,7 @@ import type { Coordinate } from 'ol/coordinate';
 import type Map from 'ol/Map';
 import type { Style } from 'ol/style';
 import type { LAYER_ID } from './constants';
+import type { EntityBasicInfoDto, EntityType, PositionDto } from '~/generated/api/types.gen';
 
 /**
  * Defines runtime map metadata required by 7DTD map rendering.
@@ -42,14 +43,14 @@ export interface LandClaimFeatureData {
   playerId: string;
   playerName: string;
   lastLogin: string;
-  claimPosition: API.GameServer.Position;
+  claimPosition: PositionDto;
   claimActive: boolean;
 }
 
 /**
  * Defines the structure of player information data stored in OpenLayers features, used for displaying player info in popups.
  */
-export interface EntityInfoFeatureData extends API.GameServer.EntityBasicInfo {
+export interface EntityInfoFeatureData extends EntityBasicInfoDto {
 }
 
 export type OverlayLayerId = (typeof LAYER_ID)[keyof typeof LAYER_ID];
@@ -73,7 +74,7 @@ export type MapPopupEvents = {
 export interface EntityLayerOptions {
   layerId: OverlayLayerId;
   layerTitle: string;
-  entityType: API.GameServer.EntityType;
+  entityType: EntityType;
   iconStyle: Style;
   clusterFillColor: string;
   zIndex: number;

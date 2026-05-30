@@ -2,7 +2,7 @@ import { useStorage } from '@vueuse/core';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
-import * as authApi from '~/api/auth';
+import * as authService from '~/services/auth';
 
 export const useUserInfoStore = defineStore('userInfo', () => {
   const keyPrefix = 'userInfo.';
@@ -73,7 +73,7 @@ export const useUserInfoStore = defineStore('userInfo', () => {
   const router = useRouter();
 
   const signIn = async (_username: string, _password: string) => {
-    const data = await authApi.signIn(_username, _password);
+    const data = await authService.signIn(_username, _password);
 
     // Update all authentication states at once.
     authData.value = {
@@ -102,7 +102,7 @@ export const useUserInfoStore = defineStore('userInfo', () => {
   async function refreshAccessToken(): Promise<void> {
     if (!refreshPromise) {
       refreshPromise = (async () => {
-        const data = await authApi.refreshToken(authData.value.refreshToken);
+        const data = await authService.refreshToken(authData.value.refreshToken);
         authData.value.accessToken = data.access_token;
         authData.value.expiresAt = dayjs().add(data.expires_in, 'second').toISOString();
         authData.value.refreshToken = data.refresh_token;

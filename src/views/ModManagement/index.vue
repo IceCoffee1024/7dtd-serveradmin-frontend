@@ -1,16 +1,30 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { ModInfoDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { getMods, toggleModStatus } from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import {
+  gameServerGetModsQuery,
+  gameServerToggleModStatusMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { orderByField, searchByKeyword } from '~/utils/index';
 
 const { t } = useI18n();
 const { toast } = usePopup();
+const queryCache = useQueryCache();
 
 const tableRef = useTemplateRef('tableRef');
 
-type ModItem = API.GameServer.ModInfo;
+type ModItem = ModInfoDto;
+
+const toggleStatusMutation = useMutation({
+  ...gameServerToggleModStatusMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const columns = computed<MyTableColumn<ModItem>[]>(() => [
   {
@@ -53,9 +67,17 @@ function setPending(id: string, value: boolean) {
 }
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<ModItem>> {
-  const response = await getMods();
+  const options = gameServerGetModsQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data ?? [];
   const keyword = params.search?.keyword?.trim() || '';
-  let data = searchByKeyword(response, keyword, ['displayName', 'name', 'author', 'folderName', 'description']);
+  let data = [...searchByKeyword(response, keyword, ['displayName', 'name', 'author', 'folderName', 'description'])];
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
   return {
     list: data.slice((params.pageNumber - 1) * params.pageSize, params.pageNumber * params.pageSize),
@@ -71,7 +93,7 @@ async function onToggleStatus(mod: ModItem) {
 
   setPending(key, true);
   try {
-    await toggleModStatus(key);
+    await toggleStatusMutation.mutateAsync({ query: { folderName: key } });
     toast({
       type: 'success',
       title: t('views.modManagement.toast.title'),

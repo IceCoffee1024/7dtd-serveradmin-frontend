@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { EconomyFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/economy';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  economyGetSettingsQuery,
+  economyResetSettingsMutation,
+  economyUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateEconomyQueries } from '~/queries/economy';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'EconomySettingsPage' });
@@ -36,9 +43,7 @@ interface FormModel {
   balCommandName: string;
   balCommandAliases: string;
   payCommandName: string;
-  payCommandAliases: string;
   dailyCommandName: string;
-  dailyCommandAliases: string;
   moneyTopCommandName: string;
   moneyTopCommandAliases: string;
   shopCommandName: string;
@@ -70,8 +75,6 @@ const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
 const commandFormRef = useTemplateRef<FormExpose>('commandFormRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -98,9 +101,7 @@ function buildDefaults(): FormModel {
     balCommandName: 'bal',
     balCommandAliases: 'balance, money',
     payCommandName: 'pay',
-    payCommandAliases: 'transfer, send',
     dailyCommandName: 'daily',
-    dailyCommandAliases: 'claim',
     moneyTopCommandName: 'moneytop',
     moneyTopCommandAliases: 'baltop, ecotop',
     shopCommandName: 'shop',
@@ -146,9 +147,7 @@ const schema = v.object({
   balCommandName: v.pipe(v.string(), v.minLength(1)),
   balCommandAliases: v.string(),
   payCommandName: v.pipe(v.string(), v.minLength(1)),
-  payCommandAliases: v.string(),
   dailyCommandName: v.pipe(v.string(), v.minLength(1)),
-  dailyCommandAliases: v.string(),
   moneyTopCommandName: v.pipe(v.string(), v.minLength(1)),
   moneyTopCommandAliases: v.string(),
   shopCommandName: v.pipe(v.string(), v.minLength(1)),
@@ -449,23 +448,9 @@ const commandFields = computed<MyFormField<FormModel>[]>(() => [
     span: { xs: 24 },
   },
   {
-    prop: 'payCommandAliases',
-    label: t('views.economy.settings.commands.fields.payCommandAliases'),
-    el: 'el-input',
-    tooltip: aliasesHelp.value,
-    span: { xs: 24 },
-  },
-  {
     prop: 'dailyCommandName',
     label: t('views.economy.settings.commands.fields.dailyCommandName'),
     el: 'el-input',
-    span: { xs: 24 },
-  },
-  {
-    prop: 'dailyCommandAliases',
-    label: t('views.economy.settings.commands.fields.dailyCommandAliases'),
-    el: 'el-input',
-    tooltip: aliasesHelp.value,
     span: { xs: 24 },
   },
   {
@@ -566,20 +551,36 @@ const previewItems = computed(() => {
   return items;
 });
 
-function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
+const settingsQuery = useQuery(economyGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...economyUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateEconomyQueries();
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...economyResetSettingsMutation(),
+  async onSettled() {
+    await invalidateEconomyQueries();
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function mapSettings(data: EconomyFeatureSettingsDto | null | undefined): FormModel {
   if (!data)
     return buildDefaults();
-  const parseAliases = (arr: string[]) => arr.join(', ');
+  const parseAliases = (arr?: Array<string> | null) => (arr ?? []).join(', ');
   return {
-    isEnabled: data.isEnabled,
+    isEnabled: data.isEnabled ?? false,
     currencyName: data.currencyName || 'Coin',
     currencySymbol: data.currencySymbol || 'C',
-    defaultBalance: data.defaultBalance,
-    allowTransfer: data.allowTransfer,
-    minTransferAmount: data.minTransferAmount,
-    transferTaxRate: data.transferTaxRate,
-    dailyRewardAmount: data.dailyRewardAmount,
-    leaderboardSize: data.leaderboardSize,
+    defaultBalance: data.defaultBalance ?? 0,
+    allowTransfer: data.allowTransfer ?? true,
+    minTransferAmount: data.minTransferAmount ?? 1,
+    transferTaxRate: data.transferTaxRate ?? 0,
+    dailyRewardAmount: data.dailyRewardAmount ?? 0,
+    leaderboardSize: data.leaderboardSize ?? 10,
     zombieKillRewardEnabled: data.zombieKillRewardEnabled ?? false,
     zombieKillRewardAmount: data.zombieKillRewardAmount ?? 0,
     dailyStreakEnabled: data.dailyStreakEnabled ?? false,
@@ -594,9 +595,7 @@ function mapSettings(data: API.Economy.Settings | null | undefined): FormModel {
     balCommandName: data.balCommandName || 'bal',
     balCommandAliases: parseAliases(data.balCommandAliases),
     payCommandName: data.payCommandName || 'pay',
-    payCommandAliases: parseAliases(data.payCommandAliases),
     dailyCommandName: data.dailyCommandName || 'daily',
-    dailyCommandAliases: parseAliases(data.dailyCommandAliases),
     moneyTopCommandName: data.moneyTopCommandName || 'moneytop',
     moneyTopCommandAliases: parseAliases(data.moneyTopCommandAliases),
     shopCommandName: data.shopCommandName || 'shop',
@@ -643,9 +642,7 @@ function applyFormValues(values: FormModel): void {
   form.balCommandName = values.balCommandName;
   form.balCommandAliases = values.balCommandAliases;
   form.payCommandName = values.payCommandName;
-  form.payCommandAliases = values.payCommandAliases;
   form.dailyCommandName = values.dailyCommandName;
-  form.dailyCommandAliases = values.dailyCommandAliases;
   form.moneyTopCommandName = values.moneyTopCommandName;
   form.moneyTopCommandAliases = values.moneyTopCommandAliases;
   form.shopCommandName = values.shopCommandName;
@@ -667,30 +664,51 @@ function applyFormValues(values: FormModel): void {
   form.redeemSuccessTip = values.redeemSuccessTip;
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
     commandFormRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
+  commandFormRef.value?.clearValidate();
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -705,12 +723,9 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-function toPayload(values: FormModel): API.Economy.Settings {
+function toPayload(values: FormModel): EconomyFeatureSettingsDto {
   const parseAliases = (s: string) => s.split(',').map(x => x.trim()).filter(Boolean);
   return {
     isEnabled: values.isEnabled,
@@ -736,9 +751,7 @@ function toPayload(values: FormModel): API.Economy.Settings {
     balCommandName: values.balCommandName,
     balCommandAliases: parseAliases(values.balCommandAliases),
     payCommandName: values.payCommandName,
-    payCommandAliases: parseAliases(values.payCommandAliases),
     dailyCommandName: values.dailyCommandName,
-    dailyCommandAliases: parseAliases(values.dailyCommandAliases),
     moneyTopCommandName: values.moneyTopCommandName,
     moneyTopCommandAliases: parseAliases(values.moneyTopCommandAliases),
     shopCommandName: values.shopCommandName,
@@ -774,21 +787,17 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.economy.settings.actions.save'),
       text: t('views.economy.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -800,10 +809,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.economy.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

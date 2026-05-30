@@ -99,7 +99,7 @@ export function setupAnimalsLayer(context: OpenLayersModuleContext) {
   //   const data = await getLocations('Animal');
 
   //   const localizedNames = await Promise.all(data.map(async (item) => {
-  //     const language = localeStore.languageEnglishName as API.GameServer.Language;
+  //     const language = localeStore.languageEnglishName as Language;
   //     const cacheKey = `${language}:${item.entityName}`;
   //     const cached = entityNameCache.get(cacheKey);
   //     if (cached) {

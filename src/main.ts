@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { setupGeneratedApiClient } from './api/generatedClient';
 import App from './App.vue';
 
 import { setupAuthEventHandler } from './plugins/authEventHandler';
@@ -17,6 +18,7 @@ const app = createApp(App);
 
 setupPinia(app);
 setupI18n(app);
+setupGeneratedApiClient();
 
 app.use(router);
 setupAuthEventHandler(router);

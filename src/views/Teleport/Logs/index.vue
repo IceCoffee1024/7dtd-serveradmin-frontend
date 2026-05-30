@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { TeleportLogDto } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getLogs } from '~/api/teleport';
+import { teleportGetLogsQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'TeleportLogsPage' });
 
-type LogRow = API.Teleport.TeleportLog;
+type LogRow = TeleportLogDto;
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const SUB_SYSTEM_TAG_MAP: Record<string, 'success' | 'danger' | 'warning' | 'info' | undefined> = {
   Home: 'success',
@@ -66,17 +69,27 @@ const columns = computed<MyTableColumn<LogRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<LogRow>> {
-  const response = await getLogs({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    playerId: toOptionalString(params.search?.playerId),
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
+  const options = teleportGetLogsQuery({
+    query: {
+      pageIndex: params.pageNumber,
+      pageSize: params.pageSize,
+      playerId: toOptionalString(params.search?.playerId),
+      from: toOptionalString(params.search?.startTime),
+      to: toOptionalString(params.search?.endTime),
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
 }
 
@@ -87,12 +100,12 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmed || undefined;
 }
 
-function resolveSubSystemTag(subSystem: string): 'success' | 'danger' | 'warning' | 'info' | undefined {
-  return SUB_SYSTEM_TAG_MAP[subSystem];
+function resolveSubSystemTag(subSystem: string | null | undefined): 'success' | 'danger' | 'warning' | 'info' | undefined {
+  return subSystem ? SUB_SYSTEM_TAG_MAP[subSystem] : undefined;
 }
 
-function formatTimestamp(value: string): string {
-  return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
 </script>
 

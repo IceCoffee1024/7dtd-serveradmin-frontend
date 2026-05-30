@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import type { InventoryDto } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { getPlayerInventory } from '~/api/gameServer';
 import { useLatestAsync } from '~/composables/useLatestAsync';
+import { gameServerGetPlayerInventoryQuery } from '~/generated/api/@pinia/colada.gen';
 import Grid from './Grid/index.vue';
 import List from './List/index.vue';
 
 type LayoutMode = 'list' | 'grid';
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const options = computed(() => [
   { label: t('components.playerInventoryDialog.list'), value: 'list' },
@@ -23,7 +26,19 @@ const {
   pending: loading,
   execute: executeLatest,
   reset,
-} = useLatestAsync<API.GameServer.Inventory>();
+} = useLatestAsync<InventoryDto>();
+
+async function fetchPlayerInventory(playerId: string): Promise<InventoryDto> {
+  const options = gameServerGetPlayerInventoryQuery({ path: { playerId } });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  return state.data ?? { bag: [], belt: [], equipment: [] };
+}
 
 function onDialogClosed(): void {
   reset();
@@ -34,7 +49,7 @@ async function open(playerId: string, playerName: string): Promise<void> {
   reset();
   dialogRef.value?.open();
 
-  await executeLatest(() => getPlayerInventory(playerId));
+  await executeLatest(() => fetchPlayerInventory(playerId));
 }
 
 defineExpose({

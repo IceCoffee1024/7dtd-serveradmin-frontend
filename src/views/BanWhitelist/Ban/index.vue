@@ -1,20 +1,33 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { BanEntryDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import {
+  gameServerGetBansQuery,
+  gameServerRemoveBansMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-type BanEntryRow = API.GameServer.BanEntry;
+type BanEntryRow = BanEntryDto;
 
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<BanEntryRow | null>(null);
+const queryCache = useQueryCache();
+const removeBansMutation = useMutation({
+  ...gameServerRemoveBansMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const columns = computed<MyTableColumn<BanEntryRow>[]>(() => [
   {
@@ -36,7 +49,15 @@ const columns = computed<MyTableColumn<BanEntryRow>[]>(() => [
 const selectedRows = ref<BanEntryRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<BanEntryRow>> {
-  let data = await api.getBannedPlayers(params);
+  const options = gameServerGetBansQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  let data = state.data ?? [];
   const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'displayName', 'reason']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
@@ -53,7 +74,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await api.unbanPlayers(selectedRows.value.map(row => row.playerId));
+        await removeBansMutation.mutateAsync({ body: selectedRows.value.map(row => row.playerId) });
         tableRef.value?.reload();
       }
     },
@@ -71,13 +92,17 @@ function onEdit(rowData: BanEntryRow) {
 }
 
 async function onDelete(rowData: BanEntryRow) {
-  await api.unbanPlayers([rowData.playerId]);
+  await removeBansMutation.mutateAsync({ body: [rowData.playerId] });
   tableRef.value?.reload();
 }
 
 function onSaved() {
   tableRef.value?.reload();
   editData.value = null;
+}
+
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
 </script>
 
@@ -97,7 +122,7 @@ function onSaved() {
       @delete="onDelete"
     >
       <template #bannedUntil="{ row }">
-        {{ dayjs(row.bannedUntil).format('YYYY-MM-DD HH:mm:ss') }}
+        {{ formatTimestamp(row.bannedUntil) }}
       </template>
     </MyTable>
     <AddOrEditDialog ref="addOrEditDialogRef" :edit-data="editData" @saved="onSaved" />

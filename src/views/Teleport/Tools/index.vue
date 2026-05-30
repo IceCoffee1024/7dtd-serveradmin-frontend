@@ -1,22 +1,42 @@
 <script setup lang="ts">
+import type { OnlinePlayerDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { getOnlinePlayers, teleportToPlayer, teleportToPosition } from '~/api/gameServer';
 import { usePopup } from '~/composables/usePopup';
+import {
+  gameServerGetOnlinePlayersQuery,
+  gameServerTeleportToPlayerMutation,
+  gameServerTeleportToPositionMutation,
+} from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'TeleportToolsPage' });
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
+const queryCache = useQueryCache();
 
 // ---- Online players ----
-const onlinePlayers = ref<API.GameServer.OnlinePlayer[]>([]);
+const onlinePlayers = ref<OnlinePlayerDto[]>([]);
 const loadingPlayers = ref(false);
+const teleportToPositionMutation = useMutation({
+  ...gameServerTeleportToPositionMutation(),
+});
+const teleportToPlayerMutation = useMutation({
+  ...gameServerTeleportToPlayerMutation(),
+});
 
 async function refreshPlayers() {
   loadingPlayers.value = true;
   try {
-    const result = await getOnlinePlayers({ pageSize: 100 });
-    onlinePlayers.value = result.items;
+    const options = gameServerGetOnlinePlayersQuery({ query: { pageSize: 100 } });
+    const entry = queryCache.ensure(options);
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    onlinePlayers.value = state.data?.items ?? [];
   }
   catch (error) {
     console.error(error);
@@ -52,7 +72,7 @@ async function submitToPosition() {
     return;
   toPositionLoading.value = true;
   try {
-    await teleportToPosition(entityId, x, y, z);
+    await teleportToPositionMutation.mutateAsync({ body: { entityId, x, y, z } });
     toast({ type: 'success', title: t('views.teleport.tools.messages.success') });
   }
   catch (error) {
@@ -84,7 +104,7 @@ async function submitToPlayer() {
     return;
   toPlayerLoading.value = true;
   try {
-    await teleportToPlayer(sourceEntityId, targetEntityId);
+    await teleportToPlayerMutation.mutateAsync({ body: { sourceEntityId, targetEntityId } });
     toast({ type: 'success', title: t('views.teleport.tools.messages.success') });
   }
   catch (error) {

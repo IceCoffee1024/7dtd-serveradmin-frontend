@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { VoteRestartFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/voteRestart';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  voteRestartGetSettingsQuery,
+  voteRestartResetSettingsMutation,
+  voteRestartUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'VoteRestartSettingsPage' });
@@ -42,8 +49,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -240,19 +245,35 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function mapSettings(data: API.VoteRestart.Settings | null | undefined): FormModel {
+const settingsQuery = useQuery(voteRestartGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...voteRestartUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('VoteRestart');
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...voteRestartResetSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('VoteRestart');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function mapSettings(data: VoteRestartFeatureSettingsDto | null | undefined): FormModel {
   if (!data)
     return buildDefaults();
   return {
-    isEnabled: data.isEnabled,
+    isEnabled: data.isEnabled ?? false,
     commandName: data.commandName ?? 'voterestart',
     commandAliases: (data.commandAliases ?? []).join(', '),
-    minOnlinePlayers: data.minOnlinePlayers,
-    voteDurationSeconds: data.voteDurationSeconds,
-    passThresholdPercent: data.passThresholdPercent,
-    initiatorCooldownSeconds: data.initiatorCooldownSeconds,
-    globalCooldownSeconds: data.globalCooldownSeconds,
-    warningLeadSeconds: data.warningLeadSeconds,
+    minOnlinePlayers: data.minOnlinePlayers ?? 2,
+    voteDurationSeconds: data.voteDurationSeconds ?? 60,
+    passThresholdPercent: data.passThresholdPercent ?? 60,
+    initiatorCooldownSeconds: data.initiatorCooldownSeconds ?? 300,
+    globalCooldownSeconds: data.globalCooldownSeconds ?? 600,
+    warningLeadSeconds: data.warningLeadSeconds ?? 30,
     voteStartedMessage: data.voteStartedMessage ?? '',
     votePassedMessage: data.votePassedMessage ?? '',
     voteFailedMessage: data.voteFailedMessage ?? '',
@@ -269,7 +290,7 @@ function applyFormValues(values: FormModel): void {
   Object.assign(form, values);
 }
 
-function toPayload(values: FormModel): API.VoteRestart.Settings {
+function toPayload(values: FormModel): VoteRestartFeatureSettingsDto {
   const parseAliases = (s: string) => s.split(',').map(x => x.trim()).filter(Boolean);
   return {
     isEnabled: values.isEnabled,
@@ -293,23 +314,44 @@ function toPayload(values: FormModel): API.VoteRestart.Settings {
   };
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onSubmit() {
@@ -322,28 +364,23 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.voteRestart.settings.actions.save'),
       text: t('views.voteRestart.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -357,9 +394,6 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 onBeforeRouteLeave(async () => {
@@ -370,10 +404,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.voteRestart.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

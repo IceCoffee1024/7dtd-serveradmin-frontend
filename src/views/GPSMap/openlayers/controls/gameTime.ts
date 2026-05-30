@@ -1,13 +1,15 @@
 import type Map from 'ol/Map';
+import type { GameTimeDto } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
 import Control from 'ol/control/Control';
-import { getStats } from '~/api/gameServer';
+import { gameServerGetStatisticsQuery } from '~/generated/api/@pinia/colada.gen';
 import { i18n } from '~/plugins/i18n';
 import { MapLifecycle } from '../../types';
 
 const REFRESH_INTERVAL_MS = 30000;
 
-function formatGameTime(gameTime?: API.GameServer.Stats['gameTime']): string {
+function formatGameTime(gameTime?: GameTimeDto | null): string {
   const { t } = i18n.global;
 
   if (!gameTime) {
@@ -29,6 +31,8 @@ function formatGameTime(gameTime?: API.GameServer.Stats['gameTime']): string {
  * @param map - OpenLayers map instance.
  */
 export function setupGameTimeControl(map: Map) {
+  const queryCache = useQueryCache();
+
   const element = document.createElement('div');
   element.className = 'ol-unselectable ol-control ol-game-time';
   element.textContent = formatGameTime();
@@ -44,8 +48,14 @@ export function setupGameTimeControl(map: Map) {
 
     isRefreshing = true;
     try {
-      const data = await getStats();
-      element.textContent = formatGameTime(data.gameTime);
+      const entry = queryCache.ensure(gameServerGetStatisticsQuery());
+      const state = await queryCache.fetch(entry);
+
+      if (state.status === 'error') {
+        throw state.error;
+      }
+
+      element.textContent = formatGameTime(state.data?.gameTime);
     }
     finally {
       isRefreshing = false;

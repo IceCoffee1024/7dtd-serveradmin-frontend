@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { MuteEntryDto, MuteEntryUpsertDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { addMute } from '~/api/chat';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
+import { chatAddOrUpdateMuteMutation } from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 interface FormModel {
@@ -17,7 +20,7 @@ interface FormModel {
 }
 
 interface Props {
-  editData?: API.Chat.MuteEntry | null;
+  editData?: MuteEntryDto | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,12 +31,19 @@ const emit = defineEmits(['saved']);
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef('formRef');
 const { t } = useI18n();
+const addOrUpdateMuteMutation = useMutation({
+  ...chatAddOrUpdateMuteMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Chat');
+  },
+});
 
 const isEdit = computed(() => !!props.editData);
 const dialogTitle = computed(() =>
   isEdit.value ? t('views.banWhitelist.editMute') : t('views.banWhitelist.addMute'),
 );
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+const isSubmitting = computed(() => addOrUpdateMuteMutation.isLoading.value);
 
 const form = reactive<FormModel>({
   playerId: '',
@@ -120,12 +130,13 @@ async function onSubmit() {
   }
 
   try {
-    await addMute({
+    const payload: MuteEntryUpsertDto = {
       playerId: form.playerId,
       playerName: form.playerName,
       mutedUntil: form.mutedUntil ? dayjs(form.mutedUntil).toISOString() : null,
       reason: form.reason || null,
-    });
+    };
+    await addOrUpdateMuteMutation.mutateAsync({ body: payload });
 
     emit('saved');
     dialogRef.value?.close();
@@ -150,6 +161,7 @@ defineExpose({ show });
     ref="dialogRef"
     :title="dialogTitle"
     width="50rem"
+    :loading="isSubmitting"
     :on-confirm="onSubmit"
     :confirm-text="confirmText"
     :cancel-text="t('common.cancel')"

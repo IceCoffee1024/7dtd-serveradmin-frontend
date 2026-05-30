@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { EconomyAdjustBalanceRequestDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { adjustBalance } from '~/api/economy';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import { economyAdjustBalanceMutation } from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateEconomyAndTransactionsQueries } from '~/queries/economy';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'EconomyAdjustBalanceDialog' });
@@ -35,7 +38,13 @@ const { toast } = usePopup();
 
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isSubmitting = ref(false);
+const adjustBalanceMutation = useMutation({
+  ...economyAdjustBalanceMutation(),
+  async onSettled() {
+    await invalidateEconomyAndTransactionsQueries();
+  },
+});
+const isSubmitting = computed(() => adjustBalanceMutation.isLoading.value);
 const form = reactive<FormModel>({ amount: 0, reason: '' });
 
 const schema = v.object({
@@ -79,12 +88,12 @@ async function onSubmit() {
     return false;
   }
 
-  isSubmitting.value = true;
   try {
-    await adjustBalance(props.playerId, {
+    const payload: EconomyAdjustBalanceRequestDto = {
       amount: Number(form.amount),
       reason: form.reason.trim() || null,
-    });
+    };
+    await adjustBalanceMutation.mutateAsync({ path: { playerId: props.playerId }, body: payload });
     toast({
       type: 'success',
       text: t('views.economy.accounts.adjustDialog.messages.saveSuccess'),
@@ -94,9 +103,6 @@ async function onSubmit() {
   }
   catch {
     return false;
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 

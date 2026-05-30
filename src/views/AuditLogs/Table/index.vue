@@ -1,17 +1,25 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  AuditActionType,
+  AuditLogDto,
+  AuditLogQueryOrder,
+  AuditLogSource,
+} from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getAuditLogs } from '~/api/auditLog';
+import { auditLogsGetQuery } from '~/generated/api/@pinia/colada.gen';
 import DetailDialog from './DetailDialog.vue';
 
 defineOptions({ name: 'AuditLogTable' });
 
-type AuditLogRow = API.AuditLog.Item;
+type AuditLogRow = AuditLogDto;
 
 const { t } = useI18n();
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const currentDetailLog = ref<AuditLogRow | null>(null);
+const queryCache = useQueryCache();
 
 const sourceOptions = computed(() => [
   { label: t('views.auditLogs.sources.api'), value: 'Api' },
@@ -190,26 +198,35 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
  * @returns Table-friendly paged data.
  */
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<AuditLogRow>> {
-  const query: API.AuditLog.Query = {
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: toOptionalString(params.search?.keyword),
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
-    source: toOptionalSource(params.search?.source),
-    operatorId: toOptionalString(params.search?.operatorId),
-    actionType: toOptionalActionType(params.search?.actionType),
-    resourceType: toOptionalString(params.search?.resourceType),
-    resourceId: toOptionalString(params.search?.resourceId),
-    succeeded: toOptionalBoolean(params.search?.succeeded),
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
-  };
+  const options = auditLogsGetQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: toOptionalString(params.search?.keyword),
+      startTime: toOptionalString(params.search?.startTime),
+      endTime: toOptionalString(params.search?.endTime),
+      source: toOptionalSource(params.search?.source),
+      operatorId: toOptionalString(params.search?.operatorId),
+      actionType: toOptionalActionType(params.search?.actionType),
+      resourceType: toOptionalString(params.search?.resourceType),
+      resourceId: toOptionalString(params.search?.resourceId),
+      succeeded: toOptionalBoolean(params.search?.succeeded),
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
+  });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
 
-  const response = await getAuditLogs(query);
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
+
   return {
-    total: response.total,
-    list: response.items,
+    total: response?.total ?? 0,
+    list: response?.items ?? [],
   };
 }
 
@@ -218,7 +235,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
  * @param sortField - Raw sort field emitted by Element Plus.
  * @returns Backend order value or undefined when remote sorting is unavailable.
  */
-function toOrder(sortField: string | undefined): API.AuditLog.QueryOrder | undefined {
+function toOrder(sortField: string | undefined): AuditLogQueryOrder | undefined {
   switch (sortField) {
     case 'createdAt':
       return 'CreatedAt';
@@ -260,7 +277,7 @@ function toOptionalString(value: unknown): string | undefined {
  * @param value - Raw search value.
  * @returns Source enum or undefined.
  */
-function toOptionalSource(value: unknown): API.AuditLog.Source | undefined {
+function toOptionalSource(value: unknown): AuditLogSource | undefined {
   switch (value) {
     case 'Api':
     case 'ChatCommand':
@@ -268,7 +285,7 @@ function toOptionalSource(value: unknown): API.AuditLog.Source | undefined {
     case 'Scheduler':
     case 'GameEvent':
     case 'System':
-      return value as API.AuditLog.Source;
+      return value;
     default:
       return undefined;
   }
@@ -279,7 +296,7 @@ function toOptionalSource(value: unknown): API.AuditLog.Source | undefined {
  * @param value - Raw search value.
  * @returns Action type enum or undefined.
  */
-function toOptionalActionType(value: unknown): API.AuditLog.ActionType | undefined {
+function toOptionalActionType(value: unknown): AuditActionType | undefined {
   switch (value) {
     case 'Create':
     case 'Update':
@@ -391,8 +408,8 @@ function getActionTypeLabel(actionType: string): string {
  * @param value - Backend ISO timestamp.
  * @returns Formatted local timestamp.
  */
-function formatTimestamp(value: string): string {
-  return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
 
 /**

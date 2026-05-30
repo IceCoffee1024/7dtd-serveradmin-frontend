@@ -1,3 +1,4 @@
+import type { Language } from '~/generated/api/types.gen';
 import type { LocaleType } from '~/locales/constant';
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
@@ -12,7 +13,7 @@ export const useLocaleStore = defineStore('locale', () => {
   let lastLoadedLocale: string = '';
 
   const languageEnglishName = computed(() => {
-    return LOCALE_CONFIGS[storedLocale.value].englishName as API.GameServer.Language;
+    return LOCALE_CONFIGS[storedLocale.value].englishName as Language;
   });
 
   const localeOptions = computed(() =>

@@ -1,15 +1,16 @@
 <script setup  lang="ts">
+import type { GameTimeDto, StatsDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
-  model?: API.GameServer.Stats;
+  model?: StatsDto;
 }
 defineProps<Props>();
 
 const { t } = useI18n();
 
-function formatUptime(time: number) {
+function formatUptime(time: number | null | undefined) {
   if (!time) {
     return '';
   }
@@ -23,7 +24,7 @@ function formatUptime(time: number) {
   return t('views.dashboard.overview.uptimeFormat', days + 1, { named: { days, hours, minutes, seconds } });
 }
 
-function formatGameTime(time: { days: number; hours: number; minutes: number }) {
+function formatGameTime(time: GameTimeDto | null | undefined) {
   if (!time) {
     return '';
   }
@@ -33,7 +34,7 @@ function formatGameTime(time: { days: number; hours: number; minutes: number }) 
   return t('views.dashboard.overview.gameTimeFormat', { days, hours, minutes });
 }
 
-function formatGameDifficulty(gameDifficulty: number) {
+function formatGameDifficulty(gameDifficulty: number | null | undefined) {
   if (gameDifficulty === undefined || gameDifficulty === null) {
     return '';
   }

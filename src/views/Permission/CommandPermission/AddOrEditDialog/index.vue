@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { MyFormField } from '~/composables/useMyForm';
+import type { CommandPermissionCreateDto, CommandPermissionDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { addCommandPermission } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
+import { gameServerCreateCommandPermissionMutation } from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
@@ -24,7 +27,7 @@ interface FormExpose {
 }
 
 interface Props {
-  editData?: Record<string, unknown> | null;
+  editData?: CommandPermissionDto | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -35,10 +38,17 @@ const emit = defineEmits(['saved']);
 const dialogRef = useTemplateRef<DialogExpose>('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 const { t } = useI18n();
+const createCommandPermissionMutation = useMutation({
+  ...gameServerCreateCommandPermissionMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const isEdit = computed(() => !!props.editData);
 const dialogTitle = computed(() => (isEdit.value ? t('views.permission.editCommandPermission') : t('views.permission.addCommandPermission')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+const isSubmitting = computed(() => createCommandPermissionMutation.isLoading.value);
 
 const form = reactive<FormModel>({
   command: '',
@@ -117,11 +127,12 @@ async function onSubmit() {
   }
 
   try {
-    const result = await addCommandPermission({
+    const payload: CommandPermissionCreateDto = {
       command: form.command,
       permissionLevel: form.permissionLevel,
-    });
-    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+    };
+    const result = await createCommandPermissionMutation.mutateAsync({ body: payload });
+    if (!showCommandResult(result ?? undefined, isEdit.value ? t('common.update') : t('common.save')))
       return false;
 
     emit('saved');
@@ -151,6 +162,7 @@ defineExpose({
     ref="dialogRef"
     :title="dialogTitle"
     width="50rem"
+    :loading="isSubmitting"
     :on-confirm="onSubmit"
     :confirm-text="confirmText"
     :cancel-text="t('common.cancel')"

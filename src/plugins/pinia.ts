@@ -1,5 +1,6 @@
 import type { Store } from 'pinia';
 import type { App } from 'vue';
+import { PiniaColada } from '@pinia/colada';
 import { createPinia } from 'pinia';
 
 const storeRegistry = new Map<string, Store>();
@@ -10,6 +11,12 @@ export function setupPinia(app: App) {
     storeRegistry.set(store.$id, store);
   });
   app.use(pinia);
+
+  app.use(PiniaColada, {
+    queryOptions: {
+      staleTime: 0,
+    },
+  });
 };
 
 export function resetAllStores() {

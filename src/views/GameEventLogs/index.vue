@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { GameEventLogDto, GameEventLogQueryOrder } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getGameEventLogs } from '~/api/gameEventLog';
+import { gameEventLogGetGameEventLogsQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'GameEventLogsPage' });
 
-type LogRow = API.GameEventLog.Log;
+type LogRow = GameEventLogDto;
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const EVENT_TYPES = ['PlayerJoined', 'PlayerLeft', 'PlayerDied', 'PlayerKilledZombie', 'PlayerKilledPlayer'] as const;
 
@@ -83,20 +86,30 @@ const columns = computed<MyTableColumn<LogRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<LogRow>> {
-  const response = await getGameEventLogs({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: toOptionalString(params.search?.keyword),
-    eventType: toOptionalString(params.search?.eventType),
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = gameEventLogGetGameEventLogsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: toOptionalString(params.search?.keyword),
+      eventType: toOptionalString(params.search?.eventType),
+      startTime: toOptionalString(params.search?.startTime),
+      endTime: toOptionalString(params.search?.endTime),
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
 }
 
@@ -107,7 +120,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmed || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.GameEventLog.Query['order'] {
+function toOrder(sortField: string | undefined): GameEventLogQueryOrder | undefined {
   switch (sortField) {
     case 'createdAt':
       return 'CreatedAt';
@@ -130,8 +143,8 @@ function resolveEventTypeTag(eventType: string): 'success' | 'danger' | 'warning
   return EVENT_TYPE_TAG_MAP[eventType];
 }
 
-function formatTimestamp(value: string): string {
-  return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
 </script>
 

@@ -1,30 +1,23 @@
 <script setup lang="ts">
+import type { EconomyFeatureSettingsDto, EconomyOverviewDto } from '~/generated/api/types.gen';
+import { useQuery } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/economy';
+import {
+  economyGetOverviewQuery,
+  economyGetSettingsQuery,
+} from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'EconomyOverviewPage' });
 
 const { t } = useI18n();
 
-const loading = ref(false);
-const settings = ref<API.Economy.Settings | null>(null);
-const overview = ref<API.Economy.Overview | null>(null);
+const settingsQuery = useQuery(economyGetSettingsQuery());
+const overviewQuery = useQuery(economyGetOverviewQuery());
 
+const loading = computed(() => settingsQuery.isPending.value || overviewQuery.isPending.value);
+const settings = computed<EconomyFeatureSettingsDto | null>(() => settingsQuery.data.value ?? null);
+const overview = computed<EconomyOverviewDto | null>(() => overviewQuery.data.value ?? null);
 const currencySymbol = computed(() => settings.value?.currencySymbol ?? '');
-
-async function fetchData() {
-  loading.value = true;
-  try {
-    const [s, o] = await Promise.all([api.getSettings(), api.getOverview()]);
-    settings.value = s;
-    overview.value = o;
-  }
-  finally {
-    loading.value = false;
-  }
-}
-
-onMounted(fetchData);
 
 const leaderboardWithRank = computed(() =>
   (overview.value?.leaderboard ?? []).map((item, index) => ({
@@ -143,7 +136,7 @@ const leaderboardWithRank = computed(() =>
           align="right"
         >
           <template #default="{ row }">
-            {{ currencySymbol }}{{ row.balance.toLocaleString() }}
+            {{ currencySymbol }}{{ (row.balance ?? 0).toLocaleString() }}
           </template>
         </el-table-column>
       </el-table>

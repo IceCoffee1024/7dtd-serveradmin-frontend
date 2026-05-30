@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { OnlineRewardFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/onlineReward';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  onlineRewardGetSettingsQuery,
+  onlineRewardResetSettingsMutation,
+  onlineRewardUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
 
@@ -29,8 +35,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -100,32 +104,59 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
+const settingsQuery = useQuery(onlineRewardGetSettingsQuery());
+const updateSettingsMutation = useMutation(onlineRewardUpdateSettingsMutation());
+const resetSettingsMutation = useMutation(onlineRewardResetSettingsMutation());
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
 function applyFormValues(values: FormModel): void {
   Object.assign(form, values);
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
-    initialValues.value = {
-      isEnabled: data.isEnabled,
-      rewardIntervalMinutes: data.rewardIntervalMinutes,
-      rewardAmount: data.rewardAmount,
-      rewardPartialPeriod: data.rewardPartialPeriod,
-      playerMessage: data.playerMessage ?? null,
-    };
+function toFormModel(data?: OnlineRewardFeatureSettingsDto): FormModel {
+  return {
+    isEnabled: data?.isEnabled ?? false,
+    rewardIntervalMinutes: data?.rewardIntervalMinutes ?? 60,
+    rewardAmount: data?.rewardAmount ?? 10,
+    rewardPartialPeriod: data?.rewardPartialPeriod ?? false,
+    playerMessage: data?.playerMessage ?? null,
+  };
+}
+
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    initialValues.value = toFormModel(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
-  }
-  finally {
-    isLoading.value = false;
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status === 'success') {
+    initialValues.value = toFormModel(state.data);
+    applyFormValues(initialValues.value);
   }
 }
 
@@ -139,35 +170,24 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings({ ...form });
+    await updateSettingsMutation.mutateAsync({ body: { ...form } });
     toast({
       type: 'success',
       title: t('views.onlineReward.settings.actions.save'),
       text: t('views.onlineReward.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
-    initialValues.value = {
-      isEnabled: data.isEnabled,
-      rewardIntervalMinutes: data.rewardIntervalMinutes,
-      rewardAmount: data.rewardAmount,
-      rewardPartialPeriod: data.rewardPartialPeriod,
-      playerMessage: data.playerMessage ?? null,
-    };
+    const data = await resetSettingsMutation.mutateAsync({});
+    initialValues.value = toFormModel(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
@@ -176,12 +196,10 @@ async function onReset() {
       title: t('views.onlineReward.settings.actions.reset'),
       text: t('views.onlineReward.settings.messages.resetSuccess'),
     });
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -193,10 +211,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.onlineReward.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

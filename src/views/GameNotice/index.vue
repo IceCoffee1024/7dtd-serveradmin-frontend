@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { GameNoticeFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/gameNotice';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  gameNoticeGetSettingsQuery,
+  gameNoticeResetSettingsMutation,
+  gameNoticeUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'GameNoticePage' });
@@ -29,9 +36,7 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
-const settings = ref<API.GameNotice.Settings | null>(null);
+const settings = ref<GameNoticeFeatureSettingsDto | null>(null);
 const rotatingNotices = ref<string[]>([]);
 const welcomeNotices = ref<string[]>([]);
 
@@ -110,9 +115,25 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function applyValues(source: API.GameNotice.Settings) {
-  form.isEnabled = source.isEnabled;
-  form.rotatingIntervalSeconds = source.rotatingIntervalSeconds;
+const settingsQuery = useQuery(gameNoticeGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...gameNoticeUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameNotice');
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...gameNoticeResetSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameNotice');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function applyValues(source: GameNoticeFeatureSettingsDto) {
+  form.isEnabled = source.isEnabled ?? false;
+  form.rotatingIntervalSeconds = source.rotatingIntervalSeconds ?? 300;
   form.bloodMoonNotice1 = source.bloodMoonNotice1 ?? '';
   form.bloodMoonNotice2 = source.bloodMoonNotice2 ?? '';
   form.bloodMoonNotice3 = source.bloodMoonNotice3 ?? '';
@@ -123,20 +144,42 @@ function applyValues(source: API.GameNotice.Settings) {
   savedWelcomeNotices.value = [...welcomeNotices.value];
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    settings.value = await getSettings();
-    applyValues(settings.value);
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    settings.value = data;
+    applyValues(data);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  settings.value = state.data;
+  applyValues(state.data);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 function addNotice() {
@@ -165,11 +208,10 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
     const filteredWelcomeNotices = welcomeNotices.value.map(n => n.trim()).filter(n => n.length > 0);
     const filteredNotices = rotatingNotices.value.map(n => n.trim()).filter(n => n.length > 0);
-    const payload: API.GameNotice.Settings = {
+    const payload: GameNoticeFeatureSettingsDto = {
       ...settings.value,
       isEnabled: form.isEnabled,
       welcomeNotices: filteredWelcomeNotices.length > 0 ? filteredWelcomeNotices : null,
@@ -179,18 +221,12 @@ async function onSubmit() {
       bloodMoonNotice2: form.bloodMoonNotice2.trim() || null,
       bloodMoonNotice3: form.bloodMoonNotice3.trim() || null,
     };
-    await updateSettings(payload);
-    settings.value = { ...payload };
-    savedForm.value = cloneDeep(form);
-    savedRotatingNotices.value = [...rotatingNotices.value];
-    savedWelcomeNotices.value = [...welcomeNotices.value];
+    await updateSettingsMutation.mutateAsync({ body: payload });
     toast({ type: 'success', text: t('views.gameNotice.settings.messages.saveSuccess') });
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -203,9 +239,8 @@ async function onReset() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    settings.value = await resetSettings();
+    settings.value = await resetSettingsMutation.mutateAsync({});
     applyValues(settings.value);
     await nextTick();
     formRef.value?.clearValidate();
@@ -213,9 +248,6 @@ async function onReset() {
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -227,10 +259,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.gameNotice.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

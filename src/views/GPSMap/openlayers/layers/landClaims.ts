@@ -1,5 +1,7 @@
 import type { FeatureLike } from 'ol/Feature';
 import type { LandClaimFeatureData, OpenLayersModuleContext } from '../../types';
+import type { ClaimOwnerDto, PositionDto } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import { createEmpty, extend } from 'ol/extent';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
@@ -13,7 +15,7 @@ import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
-import { getLandClaims } from '~/api/gameServer';
+import { gameServerGetLandClaims2Query } from '~/generated/api/@pinia/colada.gen';
 import { i18n } from '~/plugins/i18n';
 import { useMapPopup } from '../../composables/useMapPopup';
 import { LAYER_ID } from '../../constants';
@@ -25,6 +27,7 @@ import { layerRegistry } from '../mapRegistry';
  */
 export function setupLandClaimsLayer(context: OpenLayersModuleContext) {
   const { map, mapInfo } = context;
+  const queryCache = useQueryCache();
 
   const active_style = new Style({
     fill: new Fill({ color: 'rgba(34, 197, 94, 0.2)' }),
@@ -94,9 +97,9 @@ export function setupLandClaimsLayer(context: OpenLayersModuleContext) {
   layerRegistry.set(LAYER_ID.LAND_CLAIMS_LAYER_GROUP, layerGroup);
 
   function createClaimPolygon(
-    position: API.GameServer.Position,
+    position: PositionDto,
     claimSize: number,
-    owner: API.GameServer.ClaimOwner,
+    owner: ClaimOwnerDto,
   ): Feature<Polygon> {
     const half = Math.floor(claimSize / 2);
     const minX = position.x - half;
@@ -125,7 +128,7 @@ export function setupLandClaimsLayer(context: OpenLayersModuleContext) {
     return feature;
   }
 
-  function createClaimMarker(position: API.GameServer.Position, claimSize: number, owner: API.GameServer.ClaimOwner): Feature<Point> {
+  function createClaimMarker(position: PositionDto, claimSize: number, owner: ClaimOwnerDto): Feature<Point> {
     const feature = new Feature<Point>(new Point([position.x, position.z]));
     const data: LandClaimFeatureData = {
       playerId: owner.playerId,
@@ -140,7 +143,18 @@ export function setupLandClaimsLayer(context: OpenLayersModuleContext) {
   }
 
   const loadLandClaims = async (): Promise<void> => {
-    const response = await getLandClaims();
+    const entry = queryCache.ensure(gameServerGetLandClaims2Query());
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    const response = state.data;
+    if (!response) {
+      return;
+    }
+
     const polygonFeatures: Feature<Polygon>[] = [];
     const markerFeatures: Feature<Point>[] = [];
 

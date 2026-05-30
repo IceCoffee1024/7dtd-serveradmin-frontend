@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { SystemPlatformInfoDto } from '~/generated/api/types.gen';
+
 interface Props {
-  model?: API.Devices.SystemPlatformInfo;
+  model?: SystemPlatformInfoDto;
 }
 defineProps<Props>();
 </script>

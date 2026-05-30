@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { PlayerSkillDto } from '~/generated/api/types.gen';
+
 interface Props {
-  tableData: API.GameServer.PlayerSkill[];
+  tableData: PlayerSkillDto[];
   expandAll?: boolean;
 }
 
@@ -10,15 +12,15 @@ const props = withDefaults(defineProps<Props>(), {
 
 const tableRenderKey = ref(0);
 
-function isSkillOrBookGroup(data: API.GameServer.PlayerSkill): boolean {
+function isSkillOrBookGroup(data: PlayerSkillDto): boolean {
   return data.type === 'Skill' || data.type === 'BookGroup';
 }
 
-function getFieldValue(row: API.GameServer.PlayerSkill, field: 'level' | 'maxLevel' | 'costForNextLevel'): string | number {
+function getFieldValue(row: PlayerSkillDto, field: 'level' | 'maxLevel' | 'costForNextLevel'): string | number {
   if (isSkillOrBookGroup(row)) {
     return '';
   }
-  return row[field];
+  return row[field] ?? '';
 }
 
 watch(

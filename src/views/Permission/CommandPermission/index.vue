@@ -1,19 +1,32 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { CommandPermissionDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import {
+  gameServerGetCommandPermissionsQuery,
+  gameServerRemoveCommandPermissionsMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-type CommandPermissionRow = API.GameServer.CommandPermission;
+type CommandPermissionRow = CommandPermissionDto;
 
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<CommandPermissionRow | null>(null);
+const queryCache = useQueryCache();
+const removeCommandPermissionsMutation = useMutation({
+  ...gameServerRemoveCommandPermissionsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const columns = computed<MyTableColumn<CommandPermissionRow>[]>(() => [
   {
@@ -34,7 +47,15 @@ const columns = computed<MyTableColumn<CommandPermissionRow>[]>(() => [
 const selectedRows = ref<CommandPermissionRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<CommandPermissionRow>> {
-  const response = await api.getCommandPermissions(params);
+  const options = gameServerGetCommandPermissionsQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data ?? [];
   const keyword = params.search?.keyword?.trim() || '';
   const filteredList = searchByKeyword(response, keyword, ['command', 'description']);
   const data = orderByField(
@@ -55,7 +76,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await api.deleteCommandPermissions(selectedRows.value.map(row => row.command));
+        await removeCommandPermissionsMutation.mutateAsync({ body: selectedRows.value.map(row => row.command) });
         tableRef.value?.reload();
       }
     },
@@ -73,7 +94,7 @@ function onEdit(rowData: CommandPermissionRow) {
 }
 
 async function onDelete(rowData: CommandPermissionRow) {
-  await api.deleteCommandPermissions([rowData.command]);
+  await removeCommandPermissionsMutation.mutateAsync({ body: [rowData.command] });
   tableRef.value?.reload();
 }
 

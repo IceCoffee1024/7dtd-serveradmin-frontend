@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { PlayerSkillDto } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { getPlayerSkills } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import { useLatestAsync } from '~/composables/useLatestAsync';
+import { gameServerGetPlayerSkillsQuery } from '~/generated/api/@pinia/colada.gen';
 import Table from './Table.vue';
 
 defineOptions({ name: 'PlayerSkillsDialog' });
@@ -14,6 +16,7 @@ const title = ref('');
 const activeTab = ref('0');
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 const layout = ref<LayoutMode>('expand');
 
 const {
@@ -21,9 +24,21 @@ const {
   pending: loading,
   execute: executeLatest,
   reset,
-} = useLatestAsync<API.GameServer.PlayerSkill[]>({
+} = useLatestAsync<PlayerSkillDto[]>({
   initialValue: [],
 });
+
+async function fetchPlayerSkills(playerId: string): Promise<PlayerSkillDto[]> {
+  const options = gameServerGetPlayerSkillsQuery({ path: { playerId } });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  return state.data ?? [];
+}
 
 const options = computed<Array<{ label: string; value: LayoutMode }>>(() => [
   { label: t('components.playerSkillsDialog.collapse'), value: 'collapse' },
@@ -44,7 +59,7 @@ async function open(playerId: string, playerName: string) {
   layout.value = 'expand';
   dialogRef.value?.open();
 
-  await executeLatest(() => getPlayerSkills(playerId));
+  await executeLatest(() => fetchPlayerSkills(playerId));
 }
 
 defineExpose({

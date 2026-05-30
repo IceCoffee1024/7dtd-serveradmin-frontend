@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { EconomyTransactionDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 
 defineOptions({ name: 'EconomyTransactionDetailDialog' });
@@ -6,7 +7,7 @@ defineOptions({ name: 'EconomyTransactionDetailDialog' });
 defineProps<Props>();
 
 interface Props {
-  transaction: API.Economy.Transaction | null;
+  transaction: EconomyTransactionDto | null;
 }
 
 const dialogRef = useTemplateRef('dialogRef');

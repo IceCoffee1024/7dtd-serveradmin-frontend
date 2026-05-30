@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import { useMutation, useQuery } from '@pinia/colada';
 import { groupBy } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
-import { getServerSettings, updateServerSettings } from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import {
+  gameServerSettingsGetQuery,
+  gameServerSettingsPutMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 
 defineOptions({
   name: 'ServerConfig',
@@ -25,9 +30,15 @@ const { prompt } = usePopup();
 
 const modelValue = ref<ServerConfigGroup[]>([]);
 const activeCollapseNames = ref<Array<string | number>>([]);
+const settingsQuery = useQuery(gameServerSettingsGetQuery());
+const updateSettingsMutation = useMutation({
+  ...gameServerSettingsPutMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
-async function getData() {
-  const data = await getServerSettings();
+function applyData(data: Record<string, string>) {
   const list: ServerConfigItem[] = [];
 
   Object.keys(data).forEach((key) => {
@@ -52,9 +63,25 @@ async function getData() {
   modelValue.value = groupedList;
   activeCollapseNames.value = groupedList.map((_, index) => index);
 }
-getData();
 
-watch(locale, getData);
+watch(
+  () => ({ data: settingsQuery.data.value, language: locale.value }),
+  ({ data }) => {
+    if (data == null) {
+      return;
+    }
+
+    applyData(data);
+  },
+  { immediate: true },
+);
+
+async function refreshData() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status === 'success') {
+    applyData(state.data);
+  }
+}
 
 function getName(str: string) {
   if (!str) {
@@ -72,10 +99,10 @@ async function onEdit(data: ServerConfigItem) {
       return;
     }
 
-    const dict: API.GameServer.ServerSettings = {};
+    const dict: Record<string, string> = {};
     dict[name] = value;
-    await updateServerSettings(dict);
-    await getData();
+    await updateSettingsMutation.mutateAsync({ body: dict });
+    await refreshData();
   }
   catch {}
 }

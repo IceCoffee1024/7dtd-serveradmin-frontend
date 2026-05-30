@@ -3,6 +3,7 @@ import type { FeatureLike } from 'ol/Feature';
 import type { Geometry, LineString, Polygon } from 'ol/geom';
 import type { Options } from 'ol/layer/BaseVector';
 import type { EntityInfoFeatureData, EntityLayerOptions, OpenLayersModuleContext } from '../types';
+import { useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
 import AnimatedCluster from 'ol-ext/layer/AnimatedCluster';
 import { createEmpty, extend, getCenter, getHeight, getWidth } from 'ol/extent';
@@ -11,7 +12,7 @@ import { Point } from 'ol/geom';
 import { Cluster } from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style';
-import { getLocations } from '~/api/gameServer';
+import { gameServerGetLocationsQuery } from '~/generated/api/@pinia/colada.gen';
 import { useMapPopup } from '../composables/useMapPopup';
 import { REFRESH_INTERVAL_MS } from '../constants';
 import { MapLifecycle } from '../types';
@@ -52,6 +53,7 @@ export function getFeatureCenter(feature: Feature): number[] {
  */
 export function setupEntityLocationLayer(context: OpenLayersModuleContext, options: EntityLayerOptions) {
   const { map, mapInfo } = context;
+  const queryCache = useQueryCache();
 
   const distance = 40;
   const scaledDistance = distance / (2 ** mapInfo.extraZoom);
@@ -111,7 +113,7 @@ export function setupEntityLocationLayer(context: OpenLayersModuleContext, optio
     showPopup(options.layerId, data, (geometry as Point).getCoordinates());
   });
 
-  function createPlayerMarker(entityInfo: API.GameServer.EntityBasicInfo): Feature<Point> {
+  function createPlayerMarker(entityInfo: EntityInfoFeatureData): Feature<Point> {
     const { position } = entityInfo;
     const feature = new Feature<Point>(new Point([position.x, position.z]));
     feature.set('data', entityInfo);
@@ -159,8 +161,15 @@ export function setupEntityLocationLayer(context: OpenLayersModuleContext, optio
 
     isRefreshing = true;
     try {
-      const data = await getLocations(options.entityType);
+      const queryOptions = gameServerGetLocationsQuery({ query: { entityType: options.entityType } });
+      const entry = queryCache.ensure(queryOptions);
+      const state = await queryCache.fetch(entry);
 
+      if (state.status === 'error') {
+        throw state.error;
+      }
+
+      const data = state.data ?? [];
       const features = data.map(item => createPlayerMarker(item));
       pointSource.clear(true);
       pointSource.addFeatures(features);

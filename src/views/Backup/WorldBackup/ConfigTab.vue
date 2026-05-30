@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { BackupFeatureSettingsDto, WorldBackupSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { getSettings, runWorldBackup, updateSettings } from '~/api/backup';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  backupGetSettingsQuery,
+  backupRunWorldBackupMutation,
+  backupUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateBackupQueries } from '~/queries/backup';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'WorldBackupConfigTab' });
@@ -32,10 +39,7 @@ const { t } = useI18n();
 const { confirm, prompt, toast } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
-const isRunning = ref(false);
-const settings = ref<API.Backup.Settings | null>(null);
+const settings = ref<BackupFeatureSettingsDto | null>(null);
 
 function buildDefaults(): FormModel {
   return {
@@ -90,33 +94,67 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'broadcastCompleteMessage', label: t('views.backup.fields.broadcastCompleteMessage'), el: 'el-input', tooltip: t('views.backup.tooltips.broadcastMessage'), span: { xs: 24 } },
 ]);
 
-function applyValues(source: API.Backup.WorldBackupConfig) {
-  form.isEnabled = source.isEnabled;
-  form.cronExpression = source.cronExpression;
-  form.destinationRoot = source.destinationRoot;
-  form.compressToZip = source.compressToZip;
-  form.retentionCount = source.retentionCount;
-  form.saveWorldBeforeBackup = source.saveWorldBeforeBackup;
-  form.broadcastOnStart = source.broadcastOnStart ?? false;
-  form.broadcastStartMessage = source.broadcastStartMessage ?? '';
-  form.broadcastOnComplete = source.broadcastOnComplete ?? false;
-  form.broadcastCompleteMessage = source.broadcastCompleteMessage ?? '';
+const settingsQuery = useQuery(backupGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...backupUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateBackupQueries();
+  },
+});
+const runBackupMutation = useMutation(backupRunWorldBackupMutation());
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value);
+const isRunning = computed(() => runBackupMutation.isLoading.value);
+
+function applyValues(source?: WorldBackupSettingsDto) {
+  form.isEnabled = source?.isEnabled ?? false;
+  form.cronExpression = source?.cronExpression ?? '0 0 * * *';
+  form.destinationRoot = source?.destinationRoot ?? '';
+  form.compressToZip = source?.compressToZip ?? true;
+  form.retentionCount = source?.retentionCount ?? 7;
+  form.saveWorldBeforeBackup = source?.saveWorldBeforeBackup ?? true;
+  form.broadcastOnStart = source?.broadcastOnStart ?? false;
+  form.broadcastStartMessage = source?.broadcastStartMessage ?? '';
+  form.broadcastOnComplete = source?.broadcastOnComplete ?? false;
+  form.broadcastCompleteMessage = source?.broadcastCompleteMessage ?? '';
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    settings.value = await getSettings();
-    applyValues(settings.value.worldBackup);
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    settings.value = data;
+    applyValues(data.worldBackup);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  settings.value = state.data;
+  applyValues(state.data.worldBackup);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onSubmit() {
@@ -128,9 +166,8 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    const payload: API.Backup.Settings = {
+    const payload: BackupFeatureSettingsDto = {
       ...settings.value,
       worldBackup: {
         isEnabled: form.isEnabled,
@@ -145,15 +182,12 @@ async function onSubmit() {
         broadcastCompleteMessage: form.broadcastCompleteMessage.trim() || null,
       },
     };
-    await updateSettings(payload);
+    await updateSettingsMutation.mutateAsync({ body: payload });
     toast({ type: 'success', text: t('views.backup.settings.messages.saveSuccess') });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -167,9 +201,8 @@ async function onRunNow() {
     return;
   }
 
-  isRunning.value = true;
   try {
-    const run = await runWorldBackup({ reason: reason || null });
+    const run = await runBackupMutation.mutateAsync({ body: { reason: reason || null } });
     toast({
       type: run.succeeded ? 'success' : 'error',
       text: run.succeeded ? t('views.backup.actions.runNowSuccess') : (run.errorMessage || t('views.backup.actions.runNowFailed')),
@@ -178,14 +211,7 @@ async function onRunNow() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isRunning.value = false;
-  }
 }
-
-onMounted(() => {
-  loadSettings();
-});
 </script>
 
 <template>

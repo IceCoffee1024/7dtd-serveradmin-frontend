@@ -1,3 +1,4 @@
+import type { PlayerBasicInfoDto } from '~/generated/api/types.gen';
 import mitt from 'mitt';
 
 export const EVENT_TYPES = {
@@ -43,6 +44,8 @@ export interface ChatMessagePayload {
   senderName?: string;
 }
 
+type RespawnType = 'NewGame' | 'LoadedGame' | 'Died' | 'Teleport' | 'EnterMultiplayer' | 'JoinMultiplayer' | 'Unknown';
+
 // eslint-disable-next-line ts/consistent-type-definitions
 export type Events = {
   [EVENT_TYPES.AUTH.UNAUTHORIZED]: {
@@ -56,12 +59,12 @@ export type Events = {
   [EVENT_TYPES.GAME.GAME_START_DONE]: void;
   [EVENT_TYPES.GAME.CHAT_MESSAGE]: ChatMessagePayload;
   [EVENT_TYPES.GAME.PLAYER_SPAWNED_IN_WORLD]: {
-    playerInfo: API.GameServer.PlayerBasicInfo;
-    respawnType: API.GameServer.RespawnType;
+    playerInfo: PlayerBasicInfoDto;
+    respawnType: RespawnType;
     timestamp: string;
   };
   [EVENT_TYPES.GAME.PLAYER_DISCONNECTED]: {
-    playerInfo: API.GameServer.PlayerBasicInfo;
+    playerInfo: PlayerBasicInfoDto;
     gameShuttingDown: boolean;
     timestamp: string;
   };

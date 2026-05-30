@@ -1,8 +1,9 @@
 import type Map from 'ol/Map';
 import type TileSource from 'ol/source/Tile';
+import { useMutation } from '@pinia/colada';
 import Control from 'ol/control/Control';
-import { renderExploredArea, renderFullMap } from '~/api/gameServer';
 import { usePopup } from '~/composables/usePopup';
+import { gameServerRenderExploredAreaMutation, gameServerRenderFullMapMutation } from '~/generated/api/@pinia/colada.gen';
 import { i18n } from '~/plugins/i18n';
 
 /**
@@ -12,6 +13,12 @@ import { i18n } from '~/plugins/i18n';
  */
 export function setupRenderActionsControl(map: Map, sdtdTileSource: TileSource) {
   const { confirm } = usePopup();
+  const renderFullMapMutation = useMutation({
+    ...gameServerRenderFullMapMutation(),
+  });
+  const renderExploredAreaMutation = useMutation({
+    ...gameServerRenderExploredAreaMutation(),
+  });
 
   const element = document.createElement('div');
   element.className = 'ol-unselectable ol-control ol-render-actions';
@@ -32,7 +39,7 @@ export function setupRenderActionsControl(map: Map, sdtdTileSource: TileSource) 
   fullButton.onclick = async () => {
     const confirmed = await confirm({ text: i18n.global.t('views.map.renderFullMapConfirm') });
     if (confirmed) {
-      await renderFullMap();
+      await renderFullMapMutation.mutateAsync({});
     }
   };
 
@@ -40,7 +47,7 @@ export function setupRenderActionsControl(map: Map, sdtdTileSource: TileSource) 
   exploredButton.onclick = async () => {
     const confirmed = await confirm({ text: i18n.global.t('views.map.renderExploredAreaConfirm') });
     if (confirmed) {
-      await renderExploredArea();
+      await renderExploredAreaMutation.mutateAsync({});
     }
   };
 

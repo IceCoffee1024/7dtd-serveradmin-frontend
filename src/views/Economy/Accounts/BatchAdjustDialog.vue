@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { EconomyBatchAdjustRequestDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { batchAdjust } from '~/api/economy';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import { economyBatchAdjustMutation } from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateEconomyAndTransactionsQueries } from '~/queries/economy';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'EconomyBatchAdjustDialog' });
@@ -29,7 +32,13 @@ const { toast } = usePopup();
 
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isSubmitting = ref(false);
+const batchAdjustMutation = useMutation({
+  ...economyBatchAdjustMutation(),
+  async onSettled() {
+    await invalidateEconomyAndTransactionsQueries();
+  },
+});
+const isSubmitting = computed(() => batchAdjustMutation.isLoading.value);
 const form = reactive<FormModel>({ scope: 'AllOnline', amount: 0, reason: '' });
 
 const schema = v.object({
@@ -86,16 +95,16 @@ async function onSubmit() {
     return false;
   }
 
-  isSubmitting.value = true;
   try {
-    const result = await batchAdjust({
+    const payload: EconomyBatchAdjustRequestDto = {
       scope: form.scope,
       amount: Number(form.amount),
       reason: form.reason.trim() || null,
-    });
+    };
+    const result = await batchAdjustMutation.mutateAsync({ body: payload });
 
     const failedCount = result.failed?.length ?? 0;
-    const successMsg = t('views.economy.accounts.batchAdjustDialog.messages.success', { succeeded: result.succeeded });
+    const successMsg = t('views.economy.accounts.batchAdjustDialog.messages.success', { succeeded: result.succeeded ?? 0 });
     const failMsg = failedCount > 0 ? t('views.economy.accounts.batchAdjustDialog.messages.partialFail', { failed: failedCount }) : '';
 
     toast({
@@ -107,9 +116,6 @@ async function onSubmit() {
   }
   catch {
     return false;
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 

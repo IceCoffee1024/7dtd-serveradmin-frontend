@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { PlayerDetailsDto } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getPlayerDetails } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import { useLatestAsync } from '~/composables/useLatestAsync';
+import { gameServerGetPlayerDetailsQuery } from '~/generated/api/@pinia/colada.gen';
 import { formatMinute, formatPosition } from '~/utils';
 
 defineOptions({ name: 'PlayerDetailsDialog' });
@@ -14,6 +16,7 @@ interface DetailRow {
 }
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const {
   data,
@@ -59,7 +62,23 @@ async function open(playerId: string, playerName: string) {
   reset();
   dialogRef.value?.open();
 
-  await executeLatest(async () => getModel(await getPlayerDetails(playerId)));
+  await executeLatest(async () => getModel(await fetchPlayerDetails(playerId)));
+}
+
+async function fetchPlayerDetails(playerId: string): Promise<PlayerDetailsDto> {
+  const options = gameServerGetPlayerDetailsQuery({ path: { playerId } });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  if (!state.data) {
+    throw new Error('Player details response is empty.');
+  }
+
+  return state.data;
 }
 
 function onDialogClosed() {
@@ -71,7 +90,7 @@ defineExpose({
   open,
 });
 
-function getModel(data: API.GameServer.PlayerDetails): DetailRow[] {
+function getModel(data: PlayerDetailsDto): DetailRow[] {
   const source = data as unknown as Record<string, unknown>;
 
   const result: DetailRow[] = [

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import type { MyFormField } from '~/composables/useMyForm';
+import type { WhitelistEntryDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { addPlayerToWhitelist, removePlayerFromWhitelist } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
+import {
+  gameServerCreateWhitelistEntryMutation,
+  gameServerRemoveWhitelistEntriesMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
@@ -13,7 +19,7 @@ interface FormModel {
 }
 
 interface Props {
-  editData?: Record<string, any> | null;
+  editData?: WhitelistEntryDto | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,10 +30,23 @@ const emit = defineEmits(['saved']);
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef('formRef');
 const { t } = useI18n();
+const createWhitelistEntryMutation = useMutation({
+  ...gameServerCreateWhitelistEntryMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
+const removeWhitelistEntriesMutation = useMutation({
+  ...gameServerRemoveWhitelistEntriesMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const isEdit = computed(() => !!props.editData);
 const dialogTitle = computed(() => (isEdit.value ? t('views.banWhitelist.editWhitelist') : t('views.banWhitelist.addWhitelist')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+const isSubmitting = computed(() => createWhitelistEntryMutation.isLoading.value || removeWhitelistEntriesMutation.isLoading.value);
 
 const form = reactive<FormModel>({
   playerId: '',
@@ -90,14 +109,19 @@ async function onSubmit() {
     if (isEdit.value) {
       const oldPlayerId = props.editData?.playerId;
       if (oldPlayerId) {
-        const removeResult = await removePlayerFromWhitelist([oldPlayerId]);
-        if (!showCommandResult(removeResult, t('common.update')))
+        const removeResult = await removeWhitelistEntriesMutation.mutateAsync({ body: [oldPlayerId] });
+        if (!showCommandResult(removeResult ?? undefined, t('common.update')))
           return false;
       }
     }
 
-    const result = await addPlayerToWhitelist(form.playerId, form.displayName);
-    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+    const result = await createWhitelistEntryMutation.mutateAsync({
+      body: {
+        playerId: form.playerId,
+        displayName: form.displayName,
+      },
+    });
+    if (!showCommandResult(result ?? undefined, isEdit.value ? t('common.update') : t('common.save')))
       return false;
 
     emit('saved');
@@ -127,6 +151,7 @@ defineExpose({
     ref="dialogRef"
     :title="dialogTitle"
     width="50rem"
+    :loading="isSubmitting"
     :on-confirm="onSubmit"
     :confirm-text="confirmText"
     :cancel-text="t('common.cancel')"

@@ -1,5 +1,6 @@
 import type { FormRules } from 'element-plus';
 import type { AsyncComponentLoader, FunctionalComponent, SVGAttributes } from 'vue';
+import type { PositionDto } from '~/generated/api/types.gen';
 import { usePopup } from '~/composables/usePopup';
 import { i18n } from '~/plugins/i18n';
 import v from '~/plugins/valibot';
@@ -58,7 +59,7 @@ export function bytesToMB(bytes: number, decimalPlaces = 0) {
   return Number(megabytes.toFixed(decimalPlaces));
 }
 
-export function formatPosition(position: API.GameServer.Position | null | undefined) {
+export function formatPosition(position: PositionDto | null | undefined) {
   if (!position)
     return '';
   return `${position.x}, ${position.y}, ${position.z}`;
@@ -127,7 +128,7 @@ const DEFAULT_COMMAND_ERROR_PATTERN = /not valid|not a valid|invalid|error|faile
  * @returns `true` when the result looks successful; otherwise `false`.
  */
 export function showCommandResult(
-  result: API.GameServer.CommandExecutionResult | undefined,
+  result: string[] | null | undefined,
   fallbackText: string,
   errorPattern: RegExp = DEFAULT_COMMAND_ERROR_PATTERN,
 ): boolean {

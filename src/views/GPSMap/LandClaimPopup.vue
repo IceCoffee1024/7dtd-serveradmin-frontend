@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import type { LandClaimFeatureData } from './types';
+import { useMutation } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { removePlayerLandClaimByPosition } from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import { gameServerRemovePlayerLandClaim2Mutation } from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { formatPosition } from '~/utils';
 
 interface Props {
@@ -15,11 +17,17 @@ const emit = defineEmits(['claimRemoved']);
 
 const { t } = useI18n();
 const { confirm } = usePopup();
+const removeLandClaimMutation = useMutation({
+  ...gameServerRemovePlayerLandClaim2Mutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 async function handleRemoveClaim() {
   const confirmed = await confirm({ text: t('views.map.removeLandClaimConfirm'), type: 'warning' });
   if (confirmed) {
-    await removePlayerLandClaimByPosition(props.data.claimPosition);
+    await removeLandClaimMutation.mutateAsync({ body: props.data.claimPosition });
     emit('claimRemoved');
   }
 }

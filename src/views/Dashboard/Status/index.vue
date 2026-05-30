@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { StatsDto, SystemMetricsSnapshotDto } from '~/generated/api/types.gen';
 import { useI18n } from 'vue-i18n';
 import { bytesToMB } from '~/utils';
 import Doughnut from './Doughnut.vue';
 
 interface Props {
-  gameServerStats?: API.GameServer.Stats;
-  systemMetricsSnapshot?: API.Devices.SystemMetricsSnapshot;
+  gameServerStats?: StatsDto;
+  systemMetricsSnapshot?: SystemMetricsSnapshotDto;
 }
 const props = defineProps<Props>();
 
@@ -39,17 +40,24 @@ watch(
       return;
     }
 
-    playerStatus.used = newStats.onlinePlayers;
-    playerStatus.free = newStats.maxOnlinePlayers - newStats.onlinePlayers;
-    playerStatus.centerText = `${newStats.onlinePlayers} / ${newStats.maxOnlinePlayers}`;
+    const onlinePlayers = newStats.onlinePlayers ?? 0;
+    const maxOnlinePlayers = newStats.maxOnlinePlayers ?? 0;
+    const zombies = newStats.zombies ?? 0;
+    const maxZombies = newStats.maxZombies ?? 0;
+    const animals = newStats.animals ?? 0;
+    const maxAnimals = newStats.maxAnimals ?? 0;
 
-    zombieStatus.used = newStats.zombies;
-    zombieStatus.free = newStats.maxZombies - newStats.zombies;
-    zombieStatus.centerText = `${newStats.zombies} / ${newStats.maxZombies}`;
+    playerStatus.used = onlinePlayers;
+    playerStatus.free = Math.max(maxOnlinePlayers - onlinePlayers, 0);
+    playerStatus.centerText = `${onlinePlayers} / ${maxOnlinePlayers}`;
 
-    animalStatus.used = newStats.animals;
-    animalStatus.free = newStats.maxAnimals - newStats.animals;
-    animalStatus.centerText = `${newStats.animals} / ${newStats.maxAnimals}`;
+    zombieStatus.used = zombies;
+    zombieStatus.free = Math.max(maxZombies - zombies, 0);
+    zombieStatus.centerText = `${zombies} / ${maxZombies}`;
+
+    animalStatus.used = animals;
+    animalStatus.free = Math.max(maxAnimals - animals, 0);
+    animalStatus.centerText = `${animals} / ${maxAnimals}`;
   },
 );
 
@@ -68,7 +76,7 @@ watch(
     memoryStatus.free = bytesToMB(newMetrics.memoryInfo.availablePhysicalMemory);
     memoryStatus.centerText = `${newMetrics.memoryInfo.usedPercentage} %`;
 
-    const diskUsed = sumValues(newMetrics.diskInfos.map(i => i.usedSize));
+    const diskUsed = sumValues(newMetrics.diskInfos.map(i => i.usedSize ?? 0));
     const diskFree = sumValues(newMetrics.diskInfos.map(i => i.freeSpace));
 
     diskStatus.used = bytesToMB(diskUsed);

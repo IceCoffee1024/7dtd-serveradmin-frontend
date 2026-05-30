@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { useMutation } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { restartServer, shutdownServer } from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import { gameServerExecuteConsoleCommandMutation } from '~/generated/api/@pinia/colada.gen';
 
 interface Props {
   nextRestartAt?: string | null;
@@ -18,6 +19,9 @@ const { t } = useI18n();
 const { confirm, toast } = usePopup();
 
 const actionLoading = ref<QuickActionType | null>(null);
+const executeConsoleCommandMutation = useMutation({
+  ...gameServerExecuteConsoleCommandMutation(),
+});
 
 /**
  * Executes a destructive server action after user confirmation.
@@ -36,12 +40,12 @@ async function executeQuickAction(actionType: QuickActionType): Promise<void> {
 
   actionLoading.value = actionType;
   try {
-    if (actionType === 'restart') {
-      await restartServer();
-    }
-    else {
-      await shutdownServer();
-    }
+    await executeConsoleCommandMutation.mutateAsync({
+      body: {
+        command: actionType === 'restart' ? 'ty-RestartServer' : 'shutdown',
+        inMainThread: true,
+      },
+    });
 
     toast({
       type: 'success',

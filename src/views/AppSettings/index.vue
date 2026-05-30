@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { AppSettings } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getAppSettings, updateAppSettings } from '~/api/gameServer';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  appSettingsGetQuery,
+  appSettingsUpdateMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'AppSettings' });
@@ -30,8 +36,7 @@ interface FormExpose {
 }
 
 const formRef = ref<FormExpose>();
-const isLoading = ref(false);
-const isSubmitting = ref(false);
+const settings = ref<AppSettings | null>(null);
 
 function buildDefaults(): FormModel {
   return {
@@ -106,7 +111,17 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function mapSettings(data: API.GameServer.AppSettings | null | undefined): FormModel {
+const settingsQuery = useQuery(appSettingsGetQuery());
+const updateSettingsMutation = useMutation({
+  ...appSettingsUpdateMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('AppSettings');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value);
+
+function mapSettings(data: AppSettings | null | undefined): FormModel {
   const source = data ?? {
     webUrl: '',
     userName: '',
@@ -134,23 +149,46 @@ function applyFormValues(values: FormModel): void {
   form.serverConfigFile = values.serverConfigFile;
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getAppSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    settings.value = data;
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  settings.value = state.data;
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 function onReset() {
@@ -158,7 +196,7 @@ function onReset() {
   nextTick(() => formRef.value?.clearValidate());
 }
 
-function toPayload(values: FormModel): API.GameServer.AppSettings {
+function toPayload(values: FormModel): AppSettings {
   return {
     webUrl: values.webUrl,
     userName: values.userName,
@@ -166,6 +204,8 @@ function toPayload(values: FormModel): API.GameServer.AppSettings {
     accessTokenExpireTime: Number(values.accessTokenExpireTime ?? 0),
     refreshTokenExpireTime: Number(values.refreshTokenExpireTime ?? 0),
     serverConfigFile: values.serverConfigFile,
+    databasePath: settings.value?.databasePath ?? '',
+    enableRequestLog: settings.value?.enableRequestLog ?? false,
   };
 }
 
@@ -179,21 +219,17 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateAppSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.appSettings.actions.save'),
       text: t('views.appSettings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -205,10 +241,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.appSettings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

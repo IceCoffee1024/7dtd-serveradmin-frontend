@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { VoteKickFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/voteKick';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  voteKickGetSettingsQuery,
+  voteKickResetSettingsMutation,
+  voteKickUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'VoteKickSettingsPage' });
@@ -45,8 +52,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -272,18 +277,34 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function mapSettings(data: API.VoteKick.Settings | null | undefined): FormModel {
+const settingsQuery = useQuery(voteKickGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...voteKickUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('VoteKick');
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...voteKickResetSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('VoteKick');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function mapSettings(data: VoteKickFeatureSettingsDto | null | undefined): FormModel {
   if (!data)
     return buildDefaults();
   return {
-    isEnabled: data.isEnabled,
+    isEnabled: data.isEnabled ?? false,
     commandName: data.commandName ?? 'votekick',
     commandAliases: (data.commandAliases ?? []).join(', '),
-    minOnlinePlayers: data.minOnlinePlayers,
-    voteDurationSeconds: data.voteDurationSeconds,
-    passThresholdPercent: data.passThresholdPercent,
-    initiatorCooldownSeconds: data.initiatorCooldownSeconds,
-    targetImmunitySeconds: data.targetImmunitySeconds,
+    minOnlinePlayers: data.minOnlinePlayers ?? 3,
+    voteDurationSeconds: data.voteDurationSeconds ?? 60,
+    passThresholdPercent: data.passThresholdPercent ?? 60,
+    initiatorCooldownSeconds: data.initiatorCooldownSeconds ?? 120,
+    targetImmunitySeconds: data.targetImmunitySeconds ?? 300,
     kickReason: data.kickReason ?? 'Voted off by players',
     voteStartedMessage: data.voteStartedMessage ?? '',
     votePassedMessage: data.votePassedMessage ?? '',
@@ -304,7 +325,7 @@ function applyFormValues(values: FormModel): void {
   Object.assign(form, values);
 }
 
-function toPayload(values: FormModel): API.VoteKick.Settings {
+function toPayload(values: FormModel): VoteKickFeatureSettingsDto {
   const parseAliases = (s: string) => s.split(',').map(x => x.trim()).filter(Boolean);
   return {
     isEnabled: values.isEnabled,
@@ -331,23 +352,44 @@ function toPayload(values: FormModel): API.VoteKick.Settings {
   };
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onSubmit() {
@@ -360,28 +402,23 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.voteKick.settings.actions.save'),
       text: t('views.voteKick.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -395,9 +432,6 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 onBeforeRouteLeave(async () => {
@@ -408,10 +442,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.voteKick.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

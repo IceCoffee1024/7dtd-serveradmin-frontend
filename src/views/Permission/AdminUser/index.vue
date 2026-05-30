@@ -1,19 +1,32 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { AdminUserDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import {
+  gameServerGetAdminUsersQuery,
+  gameServerRemoveAdminUsersMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-type AdminUserRow = API.GameServer.AdminUser;
+type AdminUserRow = AdminUserDto;
 
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<AdminUserRow | null>(null);
+const queryCache = useQueryCache();
+const removeAdminUsersMutation = useMutation({
+  ...gameServerRemoveAdminUsersMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const columns = computed<MyTableColumn<AdminUserRow>[]>(() => [
   {
@@ -34,7 +47,15 @@ const columns = computed<MyTableColumn<AdminUserRow>[]>(() => [
 const selectedRows = ref<AdminUserRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<AdminUserRow>> {
-  let data = await api.getAdminUsers(params);
+  const options = gameServerGetAdminUsersQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  let data = state.data ?? [];
   const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'displayName']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
@@ -51,7 +72,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await api.deleteAdminUsers(selectedRows.value.map(row => row.playerId));
+        await removeAdminUsersMutation.mutateAsync({ body: selectedRows.value.map(row => row.playerId) });
         tableRef.value?.reload();
       }
     },
@@ -69,7 +90,7 @@ function onEdit(rowData: AdminUserRow) {
 }
 
 async function onDelete(rowData: AdminUserRow) {
-  await api.deleteAdminUsers([rowData.playerId]);
+  await removeAdminUsersMutation.mutateAsync({ body: [rowData.playerId] });
   tableRef.value?.reload();
 }
 

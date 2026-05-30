@@ -2,13 +2,26 @@
 import type { FormRules } from 'element-plus';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type { MyFormField } from '~/composables/useMyForm';
+import type {
+  EconomyCodeRedemptionDto,
+  EconomyCreateRedeemCodeRequestDto,
+  EconomyRedeemCodeDto,
+  EconomyRedeemCodeQueryOrder,
+} from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/economy';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  economyRedeemCodeCreateCodeMutation,
+  economyRedeemCodeDeleteCodeMutation,
+  economyRedeemCodeGetCodesQuery,
+  economyRedeemCodeGetRedemptionsQuery,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateEconomyRedeemCodeQueries } from '~/queries/economy';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'EconomyRedeemCodesPage' });
@@ -28,15 +41,28 @@ interface FormModel {
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
+const queryCache = useQueryCache();
 
 const tableRef = useTemplateRef('tableRef');
 const createDialogRef = useTemplateRef('createDialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 const redemptionsDialogRef = useTemplateRef('redemptionsDialogRef');
 
-const isSubmitting = ref(false);
-const viewingCode = ref<API.Economy.RedeemCode | null>(null);
-const redemptions = ref<API.Economy.CodeRedemption[]>([]);
+const createCodeMutation = useMutation({
+  ...economyRedeemCodeCreateCodeMutation(),
+  async onSettled() {
+    await invalidateEconomyRedeemCodeQueries();
+  },
+});
+const deleteCodeMutation = useMutation({
+  ...economyRedeemCodeDeleteCodeMutation(),
+  async onSettled() {
+    await invalidateEconomyRedeemCodeQueries();
+  },
+});
+const isSubmitting = computed(() => createCodeMutation.isLoading.value);
+const viewingCode = ref<EconomyRedeemCodeDto | null>(null);
+const redemptions = ref<EconomyCodeRedemptionDto[]>([]);
 const isLoadingRedemptions = ref(false);
 const commandRewards = ref<string[]>([]);
 
@@ -99,9 +125,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-type RedeemCodeQueryOrder = API.Economy.RedeemCodeQueryOrder;
-
-const columns = computed<MyTableColumn<API.Economy.RedeemCode>[]>(() => [
+const columns = computed<MyTableColumn<EconomyRedeemCodeDto>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
@@ -165,7 +189,7 @@ const columns = computed<MyTableColumn<API.Economy.RedeemCode>[]>(() => [
   },
 ]);
 
-function toOrder(sortField: string | undefined): RedeemCodeQueryOrder | undefined {
+function toOrder(sortField: string | undefined): EconomyRedeemCodeQueryOrder | undefined {
   switch (sortField) {
     case 'code': return 'Code';
     case 'expiresAt': return 'ExpiresAt';
@@ -174,16 +198,27 @@ function toOrder(sortField: string | undefined): RedeemCodeQueryOrder | undefine
   }
 }
 
-async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<API.Economy.RedeemCode>> {
-  const response = await api.getRedeemCodes({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyRedeemCodeDto>> {
+  const options = economyRedeemCodeGetCodesQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
-  return { list: response.items, total: response.total };
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
+
+  return { list: response?.items ?? [], total: response?.total ?? 0 };
 }
 
 function formatTimestamp(value: string | null | undefined): string {
@@ -211,7 +246,6 @@ async function onConfirm(): Promise<boolean | void> {
     return false;
   }
 
-  isSubmitting.value = true;
   try {
     const filteredCommands = commandRewards.value.map(c => c.trim()).filter(c => c.length > 0);
     if (form.amount === 0 && filteredCommands.length === 0) {
@@ -219,14 +253,15 @@ async function onConfirm(): Promise<boolean | void> {
       return false;
     }
 
-    await api.createRedeemCode({
+    const payload: EconomyCreateRedeemCodeRequestDto = {
       code: form.code.trim(),
       description: form.description.trim() || null,
       amount: Number(form.amount),
       maxUses: Number(form.maxUses),
       expiresAt: form.expiresAt || null,
       commandRewards: filteredCommands.length > 0 ? filteredCommands : null,
-    });
+    };
+    await createCodeMutation.mutateAsync({ body: payload });
     toast({ type: 'success', text: t('views.economy.redeemCodes.messages.createSuccess') });
     tableRef.value?.reload();
   }
@@ -234,12 +269,13 @@ async function onConfirm(): Promise<boolean | void> {
     console.error(error);
     return false;
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-async function onDelete(row: API.Economy.RedeemCode) {
+async function onDelete(row: EconomyRedeemCodeDto) {
+  if (row.id == null) {
+    return;
+  }
+
   const confirmed = await confirm({
     text: t('views.economy.redeemCodes.actions.deleteConfirm'),
     type: 'warning',
@@ -249,7 +285,7 @@ async function onDelete(row: API.Economy.RedeemCode) {
   }
 
   try {
-    await api.deleteRedeemCode(row.id);
+    await deleteCodeMutation.mutateAsync({ path: { id: row.id } });
     toast({ type: 'success', text: t('views.economy.redeemCodes.messages.deleteSuccess') });
     tableRef.value?.reload();
   }
@@ -258,13 +294,25 @@ async function onDelete(row: API.Economy.RedeemCode) {
   }
 }
 
-async function onViewRedemptions(row: API.Economy.RedeemCode) {
+async function onViewRedemptions(row: EconomyRedeemCodeDto) {
+  if (row.id == null) {
+    return;
+  }
+
   viewingCode.value = row;
   redemptions.value = [];
   redemptionsDialogRef.value?.open();
   isLoadingRedemptions.value = true;
   try {
-    redemptions.value = await api.getCodeRedemptions(row.id);
+    const options = economyRedeemCodeGetRedemptionsQuery({ path: { id: row.id } });
+    const entry = queryCache.ensure(options);
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    redemptions.value = state.data ?? [];
   }
   catch (error) {
     console.error(error);

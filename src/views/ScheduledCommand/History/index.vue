@@ -1,20 +1,31 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  ScheduledCommandTypeInfoDto,
+  ScheduledTaskRunLogDto,
+  ScheduledTaskRunLogQueryOrder,
+} from '~/generated/api/types.gen';
+import { useQuery, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getRuns, getTaskTypes } from '~/api/scheduledCommand';
+import {
+  scheduledCommandsGetRunsQuery,
+  scheduledCommandsGetTaskTypesQuery,
+} from '~/generated/api/@pinia/colada.gen';
 import RunDetailDialog from './RunDetailDialog.vue';
 
 defineOptions({ name: 'ScheduledCommandHistoryPage' });
 
-type RunRow = API.ScheduledCommand.Run;
+type RunRow = ScheduledTaskRunLogDto;
 
 const { t } = useI18n();
 
 const tableRef = useTemplateRef('tableRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const currentRun = ref<RunRow | null>(null);
-const taskTypes = ref<API.ScheduledCommand.TaskTypeInfo[]>([]);
+const queryCache = useQueryCache();
+const taskTypesQuery = useQuery(scheduledCommandsGetTaskTypesQuery());
+const taskTypes = computed<ScheduledCommandTypeInfoDto[]>(() => taskTypesQuery.data.value ?? []);
 
 const taskTypeOptions = computed(() => taskTypes.value.map(item => ({ label: item.title, value: item.taskType })));
 const triggerSourceOptions = computed(() => [
@@ -107,33 +118,33 @@ const columns = computed<MyTableColumn<RunRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<RunRow>> {
-  const response = await getRuns({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: toOptionalString(params.search?.keyword),
-    taskType: toOptionalString(params.search?.taskType),
-    triggerSource: toOptionalString(params.search?.triggerSource),
-    succeeded: typeof params.search?.succeeded === 'boolean' ? params.search.succeeded : undefined,
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = scheduledCommandsGetRunsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: toOptionalString(params.search?.keyword),
+      taskType: toOptionalString(params.search?.taskType),
+      triggerSource: toOptionalString(params.search?.triggerSource),
+      succeeded: typeof params.search?.succeeded === 'boolean' ? params.search.succeeded : undefined,
+      startTime: toOptionalString(params.search?.startTime),
+      endTime: toOptionalString(params.search?.endTime),
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
-}
-
-async function loadMeta() {
-  try {
-    taskTypes.value = await getTaskTypes();
-  }
-  catch (error) {
-    console.error(error);
-    taskTypes.value = [];
-  }
 }
 
 function toOptionalString(value: unknown): string | undefined {
@@ -145,7 +156,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.ScheduledCommand.RunQueryOrder | undefined {
+function toOrder(sortField: string | undefined): ScheduledTaskRunLogQueryOrder | undefined {
   switch (sortField) {
     case 'taskName':
       return 'TaskName';
@@ -193,10 +204,6 @@ function onView(row: RunRow) {
   currentRun.value = row;
   detailDialogRef.value?.show();
 }
-
-onMounted(() => {
-  loadMeta();
-});
 </script>
 
 <template>

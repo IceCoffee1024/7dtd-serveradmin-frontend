@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { AuditLogDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { usePopup } from '~/composables';
@@ -8,7 +9,7 @@ defineOptions({ name: 'AuditLogDetailDialog' });
 const props = defineProps<Props>();
 
 interface Props {
-  log: API.AuditLog.Item | null;
+  log: AuditLogDto | null;
 }
 
 const dialogRef = useTemplateRef('dialogRef');

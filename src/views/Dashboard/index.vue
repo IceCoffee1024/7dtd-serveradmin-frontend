@@ -1,8 +1,17 @@
 <script setup lang="ts">
+import type {
+  StatsDto,
+  SystemMetricsSnapshotDto,
+  SystemPlatformInfoDto,
+} from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
-import * as devicesApi from '~/api/devices';
-import * as gameServerApi from '~/api/gameServer';
-import { getSettings as getRestartSettings } from '~/api/restart';
+import {
+  devicesGetSystemMetricsSnapshotQuery,
+  devicesGetSystemPlatformInfoQuery,
+  gameServerGetStatisticsQuery,
+  restartGetSettingsQuery,
+} from '~/generated/api/@pinia/colada.gen';
 import Monitor from './Monitor/index.vue';
 import Overview from './Overview/index.vue';
 import QuickActions from './QuickActions/index.vue';
@@ -12,33 +21,32 @@ import SystemInfo from './SystemInfo/index.vue';
 
 defineOptions({ name: 'Dashboard' });
 
-const gameServerStats = ref<API.GameServer.Stats>();
-const systemMetricsSnapshot = ref<API.Devices.SystemMetricsSnapshot>();
-const systemPlatformInfo = ref<API.Devices.SystemPlatformInfo>();
+const queryCache = useQueryCache();
+const gameServerStats = ref<StatsDto>();
+const systemMetricsSnapshot = ref<SystemMetricsSnapshotDto>();
+const systemPlatformInfo = ref<SystemPlatformInfoDto>();
 const nextRestartAt = ref<string | null>(null);
 
-devicesApi.getSystemPlatformInfo()
+fetchSystemPlatformInfo()
   .then((data) => {
-    systemPlatformInfo.value = data;
+    systemPlatformInfo.value = data ?? undefined;
   })
   .catch((_) => {});
 
-getRestartSettings()
+fetchNextRestartAt()
   .then((data) => {
-    nextRestartAt.value = data.nextRunAt ?? null;
+    nextRestartAt.value = data;
   })
   .catch((_) => {});
 
 const { pause, resume, isActive } = useIntervalFn(
   () => {
-    gameServerApi
-      .getStats()
+    fetchGameServerStats()
       .then((data) => {
-        gameServerStats.value = data;
+        gameServerStats.value = data ?? undefined;
       })
       .catch((_) => {});
-    devicesApi
-      .getSystemMetricsSnapshot()
+    fetchSystemMetricsSnapshot()
       .then((data) => {
         systemMetricsSnapshot.value = data;
       })
@@ -54,6 +62,54 @@ onActivated(() => {
   }
 });
 onDeactivated(pause);
+
+async function fetchSystemPlatformInfo() {
+  const entry = queryCache.ensure(devicesGetSystemPlatformInfoQuery());
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  return state.data;
+}
+
+async function fetchNextRestartAt(): Promise<string | null> {
+  const entry = queryCache.ensure(restartGetSettingsQuery());
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  return state.data?.nextRunAt ?? null;
+}
+
+async function fetchGameServerStats() {
+  const entry = queryCache.ensure(gameServerGetStatisticsQuery());
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  return state.data;
+}
+
+async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
+  const entry = queryCache.ensure(devicesGetSystemMetricsSnapshotQuery());
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  if (!state.data) {
+    throw new Error('System metrics snapshot response is empty.');
+  }
+
+  return state.data;
+}
 </script>
 
 <template>

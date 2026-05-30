@@ -1,18 +1,31 @@
 <script setup lang="ts">
+import type { HomeLocationDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/teleport';
 import { usePopup } from '~/composables';
+import {
+  teleportDeleteHomeMutation,
+  teleportGetHomesQuery,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 
 defineOptions({ name: 'TeleportHomesPage' });
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
+const queryCache = useQueryCache();
 
 const playerIdInput = ref('');
 const searchedPlayerId = ref('');
-const homes = ref<API.Teleport.HomeLocation[]>([]);
+const homes = ref<HomeLocationDto[]>([]);
 const loading = ref(false);
 const hasSearched = ref(false);
+const deleteHomeMutation = useMutation({
+  ...teleportDeleteHomeMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Teleport');
+  },
+});
 
 async function searchHomes() {
   const playerId = playerIdInput.value.trim();
@@ -22,7 +35,15 @@ async function searchHomes() {
   hasSearched.value = true;
   searchedPlayerId.value = playerId;
   try {
-    homes.value = await api.getHomes(playerId);
+    const options = teleportGetHomesQuery({ query: { playerId } });
+    const entry = queryCache.ensure(options);
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    homes.value = state.data ?? [];
   }
   catch (error) {
     console.error(error);
@@ -33,18 +54,24 @@ async function searchHomes() {
   }
 }
 
-async function onDelete(row: API.Teleport.HomeLocation) {
+async function onDelete(row: HomeLocationDto) {
+  const playerId = row.playerId ?? searchedPlayerId.value;
+  const homeName = row.homeName;
+  if (!playerId || !homeName) {
+    return;
+  }
+
   const confirmed = await confirm({
-    text: t('views.teleport.homes.actions.deleteConfirm', { name: row.homeName }),
+    text: t('views.teleport.homes.actions.deleteConfirm', { name: homeName }),
     type: 'warning',
   });
   if (!confirmed)
     return;
 
   try {
-    await api.deleteHome(row.playerId, row.homeName);
+    await deleteHomeMutation.mutateAsync({ path: { playerId, homeName } });
     toast({ type: 'success', text: t('views.teleport.homes.messages.deleteSuccess') });
-    homes.value = homes.value.filter(h => h.id !== row.id);
+    homes.value = homes.value.filter(h => h.id !== row.id || h.homeName !== homeName);
   }
   catch (error) {
     console.error(error);

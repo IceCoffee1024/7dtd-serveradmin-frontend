@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import type { ChartData, ChartOptions } from 'chart.js';
+import type { CpuTimesDto, MemoryInfoDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from '~/composables/useTheme';
 
-type CpuTimes = API.Devices.SystemMetricsSnapshot['cpuTimes'];
+type CpuTimes = CpuTimesDto | null;
 
 interface Props {
   timestamp?: string;
   cpuTimes?: CpuTimes;
-  memoryInfo?: API.Devices.SystemMetricsSnapshot['memoryInfo'];
+  memoryInfo?: MemoryInfoDto | null;
 }
 const props = defineProps<Props>();
 

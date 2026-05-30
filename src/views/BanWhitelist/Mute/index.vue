@@ -1,20 +1,33 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { MuteEntryDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getMutes, removeMutes } from '~/api/chat';
 import { usePopup } from '~/composables';
+import {
+  chatGetMutesQuery,
+  chatRemoveMutesMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-type MuteEntryRow = API.Chat.MuteEntry;
+type MuteEntryRow = MuteEntryDto;
 
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<MuteEntryRow | null>(null);
+const queryCache = useQueryCache();
+const removeMutesMutation = useMutation({
+  ...chatRemoveMutesMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Chat');
+  },
+});
 
 const columns = computed<MyTableColumn<MuteEntryRow>[]>(() => [
   {
@@ -37,7 +50,15 @@ const columns = computed<MyTableColumn<MuteEntryRow>[]>(() => [
 const selectedRows = ref<MuteEntryRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<MuteEntryRow>> {
-  let data = await getMutes();
+  const options = chatGetMutesQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  let data = state.data ?? [];
   const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'playerName', 'reason']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
@@ -54,7 +75,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await removeMutes(selectedRows.value.map(row => row.playerId));
+        await removeMutesMutation.mutateAsync({ body: selectedRows.value.map(row => row.playerId) });
         tableRef.value?.reload();
       }
     },
@@ -72,13 +93,17 @@ function onEdit(rowData: MuteEntryRow) {
 }
 
 async function onDelete(rowData: MuteEntryRow) {
-  await removeMutes([rowData.playerId]);
+  await removeMutesMutation.mutateAsync({ body: [rowData.playerId] });
   tableRef.value?.reload();
 }
 
 function onSaved() {
   tableRef.value?.reload();
   editData.value = null;
+}
+
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
 </script>
 
@@ -98,13 +123,13 @@ function onSaved() {
       @delete="onDelete"
     >
       <template #mutedUntil="{ row }">
-        <span v-if="row.mutedUntil">{{ dayjs(row.mutedUntil).format('YYYY-MM-DD HH:mm:ss') }}</span>
+        <span v-if="row.mutedUntil">{{ formatTimestamp(row.mutedUntil) }}</span>
         <el-tag v-else type="danger" size="small">
           {{ $t('views.banWhitelist.permanent') }}
         </el-tag>
       </template>
       <template #createdAt="{ row }">
-        {{ dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
+        {{ formatTimestamp(row.createdAt) }}
       </template>
     </MyTable>
     <AddOrEditDialog ref="addOrEditDialogRef" :edit-data="editData" @saved="onSaved" />

@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { BackupFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { cloneDeep, isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/backup';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  backupGetSettingsQuery,
+  backupResetSettingsMutation,
+  backupUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateBackupQueries } from '~/queries/backup';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'BackupSettingsPage' });
@@ -27,9 +34,7 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
-const settings = ref<API.Backup.Settings | null>(null);
+const settings = ref<BackupFeatureSettingsDto | null>(null);
 
 function buildDefaults(): FormModel {
   return { isEnabled: false, timeZoneId: '', historyRetentionDays: 30 };
@@ -79,34 +84,72 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function applyValues(source: API.Backup.Settings | null | undefined) {
+const settingsQuery = useQuery(backupGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...backupUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateBackupQueries();
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...backupResetSettingsMutation(),
+  async onSettled() {
+    await invalidateBackupQueries();
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function applyValues(source: BackupFeatureSettingsDto | null | undefined) {
   const data = source ?? null;
   form.isEnabled = data?.isEnabled ?? false;
   form.timeZoneId = data?.timeZoneId ?? '';
   form.historyRetentionDays = data?.historyRetentionDays ?? 30;
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    settings.value = await getSettings();
-    applyValues(settings.value);
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    settings.value = data;
+    applyValues(data);
     savedForm.value = cloneDeep(form);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  settings.value = state.data;
+  applyValues(state.data);
+  savedForm.value = cloneDeep(form);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    settings.value = await resetSettings();
+    settings.value = await resetSettingsMutation.mutateAsync({});
     applyValues(settings.value);
     savedForm.value = cloneDeep(form);
     await nextTick();
@@ -115,9 +158,6 @@ async function onReset() {
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -131,23 +171,19 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    const payload: API.Backup.Settings = {
+    const payload: BackupFeatureSettingsDto = {
       ...settings.value,
       isEnabled: form.isEnabled,
       timeZoneId: form.timeZoneId.trim() || null,
       historyRetentionDays: Number(form.historyRetentionDays ?? 0),
     };
-    await updateSettings(payload);
+    await updateSettingsMutation.mutateAsync({ body: payload });
     toast({ type: 'success', text: t('views.backup.settings.messages.saveSuccess') });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -159,10 +195,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.backup.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

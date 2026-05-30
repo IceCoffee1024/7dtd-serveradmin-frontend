@@ -1,15 +1,19 @@
 <script setup lang="ts">
+import type { GameItemDto } from '~/generated/api/types.gen';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
+import { useQueryCache } from '@pinia/colada';
 import { useElementSize, useVirtualList } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
-import * as gameServerApi from '~/api/gameServer';
 import { usePopup } from '~/composables/usePopup';
+import { gameServerGetGameItemsQuery } from '~/generated/api/@pinia/colada.gen';
 import { showCustomContextMenu } from '~/plugins/contextMenu';
 import { markIcon } from '~/utils';
+import { getItemIconUrl } from '~/utils/gameServerAssets';
 
 defineOptions({ name: 'GameItems' });
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 // Cell: 108px wide, 88px img + 4px gap + 16px text = 108px content height
 // Row: 4px pt + 108px + 4px pb = 116px
@@ -19,13 +23,26 @@ const ROW_H = 116;
 const keyword = ref('');
 const activeFilter = ref<'all' | 'item' | 'block'>('item');
 const showUserHidden = ref(false);
-const allItems = ref<API.GameServer.GameItem[]>([]);
+const allItems = ref<GameItemDto[]>([]);
 const loading = ref(false);
 
 async function loadItems() {
   loading.value = true;
   try {
-    allItems.value = await gameServerApi.getGameItems(showUserHidden.value, true);
+    const options = gameServerGetGameItemsQuery({
+      query: {
+        showUserHidden: showUserHidden.value,
+        includeBlocks: true,
+      },
+    });
+    const entry = queryCache.ensure(options);
+    const state = await queryCache.fetch(entry);
+
+    if (state.status === 'error') {
+      throw state.error;
+    }
+
+    allItems.value = state.data ?? [];
   }
   finally {
     loading.value = false;
@@ -58,7 +75,7 @@ const colCount = computed(() => Math.max(4, Math.floor((gridWidth.value || 600) 
 const rows = computed(() => {
   const cols = colCount.value;
   const items = filteredItems.value;
-  const result: API.GameServer.GameItem[][] = [];
+  const result: GameItemDto[][] = [];
   for (let i = 0; i < items.length; i += cols)
     result.push(items.slice(i, i + cols));
   return result;
@@ -79,8 +96,8 @@ async function copyText(text: string) {
   toast({ text, type: 'success' });
 }
 
-function onCellContextMenu(e: MouseEvent, item: API.GameServer.GameItem) {
-  const options: ContextMenuOption<API.GameServer.GameItem>[] = [
+function onCellContextMenu(e: MouseEvent, item: GameItemDto) {
+  const options: ContextMenuOption<GameItemDto>[] = [
     {
       label: t('views.gameItems.copyName'),
       icon: iconCopy,
@@ -194,7 +211,7 @@ onMounted(loadItems);
                   style="height: 88px;"
                 >
                   <img
-                    :src="gameServerApi.getItemIconUrl(item.iconName ?? item.name, item.iconTintColor ?? undefined)"
+                    :src="getItemIconUrl(item.iconName ?? item.name, item.iconTintColor)"
                     class="h-16 w-16 object-contain"
                     loading="lazy"
                     @error="(e: Event) => { (e.target as HTMLImageElement).style.visibility = 'hidden' }"

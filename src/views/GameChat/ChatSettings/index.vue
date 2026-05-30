@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { ChatFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getChatSettings, resetChatSettings, updateChatSettings } from '~/api/chat';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  chatGetSettingsQuery,
+  chatResetSettingsMutation,
+  chatUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'ChatSettingsPage' });
@@ -33,8 +40,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -157,8 +162,24 @@ const previewChannels = computed(() => [
   },
 ]);
 
-function mapSettings(data: API.Chat.ChatSettings | null | undefined): FormModel {
-  const source: Partial<API.Chat.ChatSettings> = data ?? {
+const settingsQuery = useQuery(chatGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...chatUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Chat');
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...chatResetSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Chat');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel {
+  const source: Partial<ChatFeatureSettingsDto> = data ?? {
     globalServerName: null,
     whisperServerName: null,
     chatCommandPrefixes: ['/'],
@@ -200,29 +221,49 @@ function splitCommaSeparated(value: string, trimItems: boolean = true): string[]
     .filter(item => trimItems ? item.length > 0 : item !== '');
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getChatSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetChatSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -236,12 +277,9 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-function toPayload(values: FormModel): API.Chat.ChatSettings {
+function toPayload(values: FormModel): ChatFeatureSettingsDto {
   return {
     globalServerName: values.globalServerName || null,
     whisperServerName: values.whisperServerName || null,
@@ -264,21 +302,17 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateChatSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.chatSettings.actions.save'),
       text: t('views.chatSettings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -290,10 +324,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.chatSettings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

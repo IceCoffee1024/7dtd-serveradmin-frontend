@@ -1,18 +1,37 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  AchievementRecordQueryOrder,
+} from '~/generated/api/types.gen';
+import type { AchievementRecordRow } from '~/queries/achievement';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/achievement';
 import { usePopup } from '~/composables';
+import {
+  achievementDeleteRecordMutation,
+  achievementGetRecordsQuery,
+} from '~/generated/api/@pinia/colada.gen';
+import {
+  invalidateAchievementQueries,
+  toAchievementRecordRow,
+} from '~/queries/achievement';
 
 defineOptions({ name: 'AchievementRecordsPage' });
 
-type RecordRow = API.Achievement.RecordDto;
+type RecordRow = AchievementRecordRow;
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const tableRef = useTemplateRef('tableRef');
+const queryCache = useQueryCache();
+const deleteRecordMutation = useMutation({
+  ...achievementDeleteRecordMutation(),
+  async onSettled() {
+    await invalidateAchievementQueries();
+  },
+});
 
 const columns = computed<MyTableColumn<RecordRow>[]>(() => [
   {
@@ -52,7 +71,6 @@ const columns = computed<MyTableColumn<RecordRow>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.achievement.records.columns.playerId'),
-    sortable: true,
     minWidth: 160,
     search: {
       el: 'el-input',
@@ -65,7 +83,6 @@ const columns = computed<MyTableColumn<RecordRow>[]>(() => [
     prop: 'economyRewarded',
     label: t('views.achievement.records.columns.economyRewarded'),
     slot: 'economyRewarded',
-    sortable: true,
     width: 130,
     align: 'right',
   },
@@ -78,29 +95,40 @@ const columns = computed<MyTableColumn<RecordRow>[]>(() => [
   },
 ]);
 
-type RecordQueryOrder = 'AchievementName' | 'PlayerName' | 'PlayerId' | 'EconomyRewarded' | 'CreatedAt';
-
-function toOrder(sortField: string | undefined): RecordQueryOrder | undefined {
+function toOrder(sortField: string | undefined): AchievementRecordQueryOrder | undefined {
   switch (sortField) {
     case 'achievementName': return 'AchievementName';
     case 'playerName': return 'PlayerName';
-    case 'playerId': return 'PlayerId';
-    case 'economyRewarded': return 'EconomyRewarded';
     case 'createdAt': return 'CreatedAt';
     default: return undefined;
   }
 }
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<RecordRow>> {
-  const response = await api.getRecords({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    playerId: typeof params.search?.playerId === 'string' ? params.search.playerId.trim() || undefined : undefined,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = achievementGetRecordsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      playerId: typeof params.search?.playerId === 'string' ? params.search.playerId.trim() || undefined : undefined,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
-  return { list: response.items, total: response.total };
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
+
+  if (response == null) {
+    return { list: [], total: 0 };
+  }
+
+  return { list: response.items.map(toAchievementRecordRow), total: response.total };
 }
 
 async function onDelete(row: RecordRow) {
@@ -113,7 +141,7 @@ async function onDelete(row: RecordRow) {
   }
 
   try {
-    await api.deleteRecord(row.id);
+    await deleteRecordMutation.mutateAsync({ path: { id: row.id } });
     toast({ type: 'success', text: t('views.achievement.records.messages.deleteSuccess') });
     tableRef.value?.reload();
   }

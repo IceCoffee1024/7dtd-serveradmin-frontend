@@ -1,44 +1,57 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  EconomyAccountDto,
+  EconomyAccountQueryOrder,
+} from '~/generated/api/types.gen';
+import type { EconomyLeaderboardRow } from '~/queries/economy';
+import { useMutation, useQuery, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/economy';
 import { usePopup } from '~/composables';
+import {
+  economyDeleteAccountMutation,
+  economyFreezeAccountMutation,
+  economyGetAccountsQuery,
+  economyGetLeaderboardQuery,
+} from '~/generated/api/@pinia/colada.gen';
+import {
+  invalidateEconomyAndTransactionsQueries,
+  toEconomyLeaderboardRows,
+} from '~/queries/economy';
 import AccountDetailDialog from './AccountDetailDialog.vue';
 import AdjustBalanceDialog from './AdjustBalanceDialog.vue';
 import BatchAdjustDialog from './BatchAdjustDialog.vue';
 
 defineOptions({ name: 'EconomyAccountsPage' });
 
-interface AccountRow {
-  id: number;
-  playerId: string;
-  playerName: string;
-  balance: number;
-  isFrozen: boolean;
-  lastTransactionAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface LeaderboardItem {
-  rank: number;
-  playerId: string;
-  playerName: string;
-  balance: number;
-}
-
-type AccountQueryOrder = API.Economy.AccountQueryOrder;
+type AccountRow = EconomyAccountDto;
 
 const { t } = useI18n();
 const { confirm } = usePopup();
+const queryCache = useQueryCache();
 const tableRef = useTemplateRef('tableRef');
 const adjustDialogRef = useTemplateRef('adjustDialogRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const batchAdjustDialogRef = useTemplateRef('batchAdjustDialogRef');
 const currentRow = ref<AccountRow | null>(null);
 const detailPlayerId = ref('');
-const leaderboard = ref<LeaderboardItem[]>([]);
+const leaderboardQuery = useQuery(economyGetLeaderboardQuery());
+const deleteAccountMutation = useMutation({
+  ...economyDeleteAccountMutation(),
+  async onSettled() {
+    await invalidateEconomyAndTransactionsQueries();
+  },
+});
+const freezeAccountMutation = useMutation({
+  ...economyFreezeAccountMutation(),
+  async onSettled() {
+    await invalidateEconomyAndTransactionsQueries();
+  },
+});
+const leaderboard = computed<EconomyLeaderboardRow[]>(() =>
+  toEconomyLeaderboardRows(leaderboardQuery.data.value ?? []),
+);
 
 const columns = computed<MyTableColumn<AccountRow>[]>(() => [
   {
@@ -103,30 +116,42 @@ const columns = computed<MyTableColumn<AccountRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<AccountRow>> {
-  const response = await api.getAccounts({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    playerId: toOptionalString(params.search?.playerId),
-    playerName: toOptionalString(params.search?.playerName),
-    isFrozen: typeof params.search?.isFrozen === 'boolean' ? params.search.isFrozen : undefined,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = economyGetAccountsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      playerId: toOptionalString(params.search?.playerId),
+      playerName: toOptionalString(params.search?.playerName),
+      isFrozen: typeof params.search?.isFrozen === 'boolean' ? params.search.isFrozen : undefined,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
 }
 
-async function loadLeaderboard() {
+async function refreshLeaderboard() {
   try {
-    leaderboard.value = await api.getLeaderboard();
+    const state = await leaderboardQuery.refetch(true);
+    if (state.status === 'error') {
+      throw state.error;
+    }
   }
   catch (error) {
     console.error(error);
-    leaderboard.value = [];
   }
 }
 
@@ -139,7 +164,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
-function toOrder(sortField: string | undefined): AccountQueryOrder | undefined {
+function toOrder(sortField: string | undefined): EconomyAccountQueryOrder | undefined {
   switch (sortField) {
     case 'playerId':
       return 'PlayerId';
@@ -174,9 +199,9 @@ async function onDelete(row: AccountRow) {
   }
 
   try {
-    await api.deleteAccount(row.playerId);
+    await deleteAccountMutation.mutateAsync({ path: { playerId: row.playerId } });
     tableRef.value?.reload();
-    await loadLeaderboard();
+    await refreshLeaderboard();
   }
   catch (error) {
     console.error(error);
@@ -195,9 +220,12 @@ function onView(row: AccountRow) {
 
 async function onToggleFrozen(row: AccountRow) {
   try {
-    await api.setAccountFrozen(row.playerId, !row.isFrozen);
+    await freezeAccountMutation.mutateAsync({
+      path: { playerId: row.playerId },
+      body: { isFrozen: !row.isFrozen },
+    });
     tableRef.value?.reload();
-    await loadLeaderboard();
+    await refreshLeaderboard();
   }
   catch (error) {
     console.error(error);
@@ -206,12 +234,8 @@ async function onToggleFrozen(row: AccountRow) {
 
 async function onSaved() {
   tableRef.value?.reload();
-  await loadLeaderboard();
+  await refreshLeaderboard();
 }
-
-onMounted(() => {
-  loadLeaderboard();
-});
 </script>
 
 <template>

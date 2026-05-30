@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { ScheduledCommandDto, ScheduledCommandUpsertDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { createTask, updateTask } from '~/api/scheduledCommand';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  scheduledCommandsCreateCommandMutation,
+  scheduledCommandsUpdateCommandMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateScheduledCommandAndRunLogQueries } from '~/queries/scheduledCommand';
 import { generateElementRules } from '~/utils';
 
 interface Props {
-  editData?: API.ScheduledCommand.Task | null;
+  editData?: ScheduledCommandDto | null;
   defaultTimeZoneId?: string | null;
   defaultAllowConcurrentExecution?: boolean;
 }
@@ -44,10 +50,23 @@ const dialogRef = useTemplateRef<{ open: () => void; close: () => void }>('dialo
 const formRef = useTemplateRef<FormExpose>('formRef');
 const { t } = useI18n();
 const { toast } = usePopup();
+const createTaskMutation = useMutation({
+  ...scheduledCommandsCreateCommandMutation(),
+  async onSettled() {
+    await invalidateScheduledCommandAndRunLogQueries();
+  },
+});
+const updateTaskMutation = useMutation({
+  ...scheduledCommandsUpdateCommandMutation(),
+  async onSettled() {
+    await invalidateScheduledCommandAndRunLogQueries();
+  },
+});
 
 const isEdit = computed(() => props.editData !== null);
 const dialogTitle = computed(() => (isEdit.value ? t('views.scheduler.tasks.dialog.editTitle') : t('views.scheduler.tasks.dialog.createTitle')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+const isSubmitting = computed(() => createTaskMutation.isLoading.value || updateTaskMutation.isLoading.value);
 
 /** The ordered list of console commands managed separately from the base form model. */
 const commands = ref<string[]>(['']);
@@ -166,14 +185,14 @@ function syncFormData() {
   const source = props.editData;
   if (source) {
     form.name = source.name;
-    form.isEnabled = source.isEnabled;
+    form.isEnabled = source.isEnabled ?? true;
     form.cronExpression = source.cronExpression;
     form.timeZoneId = source.timeZoneId ?? props.defaultTimeZoneId ?? '';
-    form.allowConcurrentExecution = source.allowConcurrentExecution;
+    form.allowConcurrentExecution = source.allowConcurrentExecution ?? props.defaultAllowConcurrentExecution;
     form.description = source.description || '';
-    form.executeOnMainThread = source.executeOnMainThread;
-    form.requireGameStartDone = source.requireGameStartDone;
-    form.captureOutput = source.captureOutput;
+    form.executeOnMainThread = source.executeOnMainThread ?? true;
+    form.requireGameStartDone = source.requireGameStartDone ?? true;
+    form.captureOutput = source.captureOutput ?? true;
     commands.value = source.commands.length > 0 ? [...source.commands] : [''];
     return;
   }
@@ -219,7 +238,7 @@ async function onSubmit() {
     return false;
   }
 
-  const payload: API.ScheduledCommand.TaskUpsert = {
+  const payload: ScheduledCommandUpsertDto = {
     name: form.name.trim(),
     isEnabled: form.isEnabled,
     cronExpression: form.cronExpression.trim(),
@@ -234,10 +253,14 @@ async function onSubmit() {
 
   try {
     if (isEdit.value && props.editData) {
-      await updateTask(props.editData.id, payload);
+      if (props.editData.id == null) {
+        return false;
+      }
+
+      await updateTaskMutation.mutateAsync({ path: { id: props.editData.id }, body: payload });
     }
     else {
-      await createTask(payload);
+      await createTaskMutation.mutateAsync({ body: payload });
     }
 
     toast({
@@ -279,6 +302,7 @@ defineExpose({
     ref="dialogRef"
     :title="dialogTitle"
     width="72rem"
+    :loading="isSubmitting"
     :on-confirm="onSubmit"
     :confirm-text="confirmText"
     :cancel-text="t('common.cancel')"

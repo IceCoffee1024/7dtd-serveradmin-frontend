@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { ScheduledCommandDto, ScheduledCommandQueryOrder } from '~/generated/api/types.gen';
+import { useMutation, useQuery, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { deleteTask, getSettings, getTasks, runTask } from '~/api/scheduledCommand';
 import { usePopup } from '~/composables';
+import {
+  scheduledCommandsDeleteCommandMutation,
+  scheduledCommandsGetCommandsQuery,
+  scheduledCommandsGetSettingsQuery,
+  scheduledCommandsRunCommandMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateScheduledCommandAndRunLogQueries } from '~/queries/scheduledCommand';
 import TaskEditorDialog from './TaskEditorDialog.vue';
 
 defineOptions({ name: 'ScheduledCommandTasksPage' });
 
-type TaskRow = API.ScheduledCommand.Task;
+type TaskRow = ScheduledCommandDto;
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
@@ -16,7 +24,21 @@ const { confirm, toast } = usePopup();
 const tableRef = useTemplateRef('tableRef');
 const taskDialogRef = useTemplateRef('taskDialogRef');
 const currentTask = ref<TaskRow | null>(null);
-const schedulerSettings = ref<API.ScheduledCommand.Settings | null>(null);
+const queryCache = useQueryCache();
+const schedulerSettingsQuery = useQuery(scheduledCommandsGetSettingsQuery());
+const schedulerSettings = computed(() => schedulerSettingsQuery.data.value ?? null);
+const runTaskMutation = useMutation({
+  ...scheduledCommandsRunCommandMutation(),
+  async onSettled() {
+    await invalidateScheduledCommandAndRunLogQueries();
+  },
+});
+const deleteTaskMutation = useMutation({
+  ...scheduledCommandsDeleteCommandMutation(),
+  async onSettled() {
+    await invalidateScheduledCommandAndRunLogQueries();
+  },
+});
 
 const enabledOptions = computed(() => [
   { label: t('common.yes'), value: true },
@@ -57,29 +79,29 @@ const columns = computed<MyTableColumn<TaskRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<TaskRow>> {
-  const response = await getTasks({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: toOptionalString(params.search?.keyword),
-    isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = scheduledCommandsGetCommandsQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: toOptionalString(params.search?.keyword),
+      isEnabled: typeof params.search?.isEnabled === 'boolean' ? params.search.isEnabled : undefined,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
-}
-
-async function loadMeta() {
-  try {
-    schedulerSettings.value = await getSettings();
-  }
-  catch (error) {
-    console.error(error);
-    schedulerSettings.value = null;
-  }
 }
 
 function toOptionalString(value: unknown): string | undefined {
@@ -91,7 +113,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.ScheduledCommand.TaskQueryOrder | undefined {
+function toOrder(sortField: string | undefined): ScheduledCommandQueryOrder | undefined {
   switch (sortField) {
     case 'name':
       return 'Name';
@@ -138,6 +160,10 @@ function onEdit(row: TaskRow) {
 }
 
 async function onRun(row: TaskRow) {
+  if (row.id == null) {
+    return;
+  }
+
   const confirmed = await confirm({
     text: t('views.scheduler.tasks.messages.runConfirm', { name: row.name }),
     type: 'warning',
@@ -148,7 +174,7 @@ async function onRun(row: TaskRow) {
   }
 
   try {
-    const run = await runTask(row.id);
+    const run = await runTaskMutation.mutateAsync({ path: { id: row.id }, body: {} });
     toast({
       type: 'success',
       title: t('views.scheduler.tasks.actions.run'),
@@ -162,6 +188,10 @@ async function onRun(row: TaskRow) {
 }
 
 async function onDelete(row: TaskRow) {
+  if (row.id == null) {
+    return;
+  }
+
   const confirmed = await confirm({
     text: t('common.confirmDelete'),
     type: 'warning',
@@ -172,7 +202,7 @@ async function onDelete(row: TaskRow) {
   }
 
   try {
-    await deleteTask(row.id);
+    await deleteTaskMutation.mutateAsync({ path: { id: row.id } });
     toast({
       type: 'success',
       title: t('views.scheduler.tasks.actions.delete'),
@@ -189,10 +219,6 @@ function onSaved() {
   tableRef.value?.reload();
   currentTask.value = null;
 }
-
-onMounted(() => {
-  loadMeta();
-});
 </script>
 
 <template>

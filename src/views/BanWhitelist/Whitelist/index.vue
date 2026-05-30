@@ -1,19 +1,32 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { WhitelistEntryDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/gameServer';
 import { usePopup } from '~/composables';
+import {
+  gameServerGetWhitelistEntriesQuery,
+  gameServerRemoveWhitelistEntriesMutation,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { markIcon } from '~/utils';
 import { orderByField, searchByKeyword } from '~/utils/index';
 import AddOrEditDialog from './AddOrEditDialog/index.vue';
 
-type WhitelistEntryRow = API.GameServer.WhitelistEntry;
+type WhitelistEntryRow = WhitelistEntryDto;
 
 const tableRef = useTemplateRef('tableRef');
 const addOrEditDialogRef = useTemplateRef('addOrEditDialogRef');
 const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<WhitelistEntryRow | null>(null);
+const queryCache = useQueryCache();
+const removeWhitelistEntriesMutation = useMutation({
+  ...gameServerRemoveWhitelistEntriesMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const columns = computed<MyTableColumn<WhitelistEntryRow>[]>(() => [
   {
@@ -33,7 +46,15 @@ const columns = computed<MyTableColumn<WhitelistEntryRow>[]>(() => [
 const selectedRows = ref<WhitelistEntryRow[]>([]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<WhitelistEntryRow>> {
-  let data = await api.getWhitelistedPlayers(params);
+  const options = gameServerGetWhitelistEntriesQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  let data = state.data ?? [];
   const keyword = params.search?.keyword?.trim() || '';
   data = searchByKeyword(data, keyword, ['playerId', 'displayName']);
   data = orderByField(data, params.sortField ?? '', params.sortOrder === 'descending');
@@ -50,7 +71,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await api.removePlayerFromWhitelist(selectedRows.value.map(row => row.playerId));
+        await removeWhitelistEntriesMutation.mutateAsync({ body: selectedRows.value.map(row => row.playerId) });
         tableRef.value?.reload();
       }
     },
@@ -68,7 +89,7 @@ function onEdit(rowData: WhitelistEntryRow) {
 }
 
 async function onDelete(rowData: WhitelistEntryRow) {
-  await api.removePlayerFromWhitelist([rowData.playerId]);
+  await removeWhitelistEntriesMutation.mutateAsync({ body: [rowData.playerId] });
   tableRef.value?.reload();
 }
 

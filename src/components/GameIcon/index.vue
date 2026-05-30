@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { getItemIconUrl, getUiIconUrl } from '~/api/gameServer';
+import { getItemIconUrl, getUiIconUrl } from '~/utils/gameServerAssets';
 
 interface Props {
   size?: number;
   iconName?: string;
-  iconColor?: string;
+  iconColor?: string | null;
   uiIcon?: boolean;
   preview?: boolean;
 }
@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   preview: true,
 });
 
-function getIconUrl(category: 'UiIcons' | 'ItemIcons', iconName: string, iconColor?: string): string | null {
+function getIconUrl(category: 'UiIcons' | 'ItemIcons', iconName: string, iconColor?: string | null): string | null {
   if (!iconName) {
     return null;
   }

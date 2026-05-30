@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { ScheduledCommandFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/scheduledCommand';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  scheduledCommandsGetSettingsQuery,
+  scheduledCommandsResetSettingsMutation,
+  scheduledCommandsUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateScheduledCommandQueries } from '~/queries/scheduledCommand';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'ScheduledCommandSettingsPage' });
@@ -30,8 +37,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -111,13 +116,29 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-function mapSettings(data: API.ScheduledCommand.Settings | null | undefined): FormModel {
+const settingsQuery = useQuery(scheduledCommandsGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...scheduledCommandsUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateScheduledCommandQueries();
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...scheduledCommandsResetSettingsMutation(),
+  async onSettled() {
+    await invalidateScheduledCommandQueries();
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function mapSettings(data: ScheduledCommandFeatureSettingsDto | null | undefined): FormModel {
   const source = data ?? buildDefaults();
   return {
-    isEnabled: source.isEnabled,
+    isEnabled: source.isEnabled ?? false,
     defaultTimeZoneId: source.defaultTimeZoneId ?? '',
-    defaultAllowConcurrentExecution: source.defaultAllowConcurrentExecution,
-    historyRetentionDays: source.historyRetentionDays,
+    defaultAllowConcurrentExecution: source.defaultAllowConcurrentExecution ?? false,
+    historyRetentionDays: source.historyRetentionDays ?? 30,
     failureNotifyEnabled: source.failureNotifyEnabled ?? false,
     failureNotifyMessage: source.failureNotifyMessage ?? '',
   };
@@ -132,29 +153,49 @@ function applyFormValues(values: FormModel): void {
   form.failureNotifyMessage = values.failureNotifyMessage;
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -168,12 +209,9 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-function toPayload(values: FormModel): API.ScheduledCommand.Settings {
+function toPayload(values: FormModel): ScheduledCommandFeatureSettingsDto {
   return {
     isEnabled: values.isEnabled,
     defaultTimeZoneId: values.defaultTimeZoneId.trim() || null,
@@ -194,21 +232,17 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.scheduler.settings.actions.save'),
       text: t('views.scheduler.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -220,10 +254,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.scheduler.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

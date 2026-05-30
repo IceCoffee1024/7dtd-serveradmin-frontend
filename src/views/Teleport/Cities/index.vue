@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { CityLocationDto, SaveCityLocationDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/teleport';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  teleportCreateCityMutation,
+  teleportDeleteCityMutation,
+  teleportGetCitiesQuery,
+  teleportUpdateCityMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'TeleportCitiesPage' });
@@ -34,10 +42,29 @@ const { toast, confirm } = usePopup();
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef<FormExpose>('formRef');
 
-const items = ref<API.Teleport.CityLocation[]>([]);
-const loading = ref(false);
-const isSubmitting = ref(false);
 const editingId = ref<number | null>(null);
+const citiesQuery = useQuery(teleportGetCitiesQuery());
+const createCityMutation = useMutation({
+  ...teleportCreateCityMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Teleport');
+  },
+});
+const updateCityMutation = useMutation({
+  ...teleportUpdateCityMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Teleport');
+  },
+});
+const deleteCityMutation = useMutation({
+  ...teleportDeleteCityMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Teleport');
+  },
+});
+const items = computed(() => citiesQuery.data.value ?? []);
+const loading = computed(() => citiesQuery.isPending.value);
+const isSubmitting = computed(() => createCityMutation.isLoading.value || updateCityMutation.isLoading.value);
 
 function buildDefaults(): FormModel {
   return {
@@ -145,16 +172,10 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-async function loadCities() {
-  loading.value = true;
-  try {
-    items.value = await api.getCities();
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    loading.value = false;
+async function refreshCities() {
+  const state = await citiesQuery.refetch(true);
+  if (state.status === 'error') {
+    throw state.error;
   }
 }
 
@@ -165,17 +186,21 @@ function openAdd() {
   nextTick(() => formRef.value?.clearValidate());
 }
 
-function openEdit(row: API.Teleport.CityLocation) {
+function openEdit(row: CityLocationDto) {
+  if (row.id == null) {
+    return;
+  }
+
   editingId.value = row.id;
-  form.name = row.name;
+  form.name = row.name ?? '';
   form.description = row.description ?? '';
-  form.x = row.x;
-  form.y = row.y;
-  form.z = row.z;
-  form.yawAngle = row.yawAngle;
-  form.currencyRequired = row.currencyRequired;
-  form.isEnabled = row.isEnabled;
-  form.sortOrder = row.sortOrder;
+  form.x = row.x ?? 0;
+  form.y = row.y ?? 0;
+  form.z = row.z ?? 0;
+  form.yawAngle = row.yawAngle ?? 0;
+  form.currencyRequired = row.currencyRequired ?? 0;
+  form.isEnabled = row.isEnabled ?? true;
+  form.sortOrder = row.sortOrder ?? 0;
   dialogRef.value?.open();
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -185,9 +210,8 @@ async function onConfirm(): Promise<boolean | void> {
   if (!valid)
     return false;
 
-  isSubmitting.value = true;
   try {
-    const payload: API.Teleport.SaveCityLocation = {
+    const payload: SaveCityLocationDto = {
       name: form.name.trim(),
       description: form.description.trim() || null,
       x: Number(form.x),
@@ -199,26 +223,27 @@ async function onConfirm(): Promise<boolean | void> {
       sortOrder: Number(form.sortOrder),
     };
 
-    if (editingId.value) {
-      await api.updateCity(editingId.value, payload);
+    if (editingId.value != null) {
+      await updateCityMutation.mutateAsync({ path: { id: editingId.value }, body: payload });
       toast({ type: 'success', text: t('views.teleport.cities.messages.updateSuccess') });
     }
     else {
-      await api.createCity(payload);
+      await createCityMutation.mutateAsync({ body: payload });
       toast({ type: 'success', text: t('views.teleport.cities.messages.createSuccess') });
     }
-    await loadCities();
+    await refreshCities();
   }
   catch (error) {
     console.error(error);
     return false;
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-async function onDelete(row: API.Teleport.CityLocation) {
+async function onDelete(row: CityLocationDto) {
+  if (row.id == null) {
+    return;
+  }
+
   const confirmed = await confirm({
     text: t('views.teleport.cities.actions.deleteConfirm'),
     type: 'warning',
@@ -227,16 +252,14 @@ async function onDelete(row: API.Teleport.CityLocation) {
     return;
 
   try {
-    await api.deleteCity(row.id);
+    await deleteCityMutation.mutateAsync({ path: { id: row.id } });
     toast({ type: 'success', text: t('views.teleport.cities.messages.deleteSuccess') });
-    await loadCities();
+    await refreshCities();
   }
   catch (error) {
     console.error(error);
   }
 }
-
-onMounted(() => loadCities());
 </script>
 
 <template>

@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { ScheduledTaskRunLogDto, ScheduledTaskRunLogQueryOrder } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getRestartRuns } from '~/api/restart';
+import { scheduledTaskRunLogsGetRunsQuery } from '~/generated/api/@pinia/colada.gen';
 import RunDetailDialog from '~/views/ScheduledCommand/History/RunDetailDialog.vue';
 
 defineOptions({ name: 'RestartHistoryPage' });
 
-type RunRow = API.ScheduledCommand.Run;
+type RunRow = ScheduledTaskRunLogDto;
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const tableRef = useTemplateRef('tableRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
@@ -92,21 +95,32 @@ const columns = computed<MyTableColumn<RunRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<RunRow>> {
-  const response = await getRestartRuns({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: toOptionalString(params.search?.keyword),
-    triggerSource: toOptionalString(params.search?.triggerSource),
-    succeeded: typeof params.search?.succeeded === 'boolean' ? params.search.succeeded : undefined,
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = scheduledTaskRunLogsGetRunsQuery({
+    query: {
+      featureKey: 'restart',
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: toOptionalString(params.search?.keyword),
+      triggerSource: toOptionalString(params.search?.triggerSource),
+      succeeded: typeof params.search?.succeeded === 'boolean' ? params.search.succeeded : undefined,
+      startTime: toOptionalString(params.search?.startTime),
+      endTime: toOptionalString(params.search?.endTime),
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
 }
 
@@ -119,7 +133,7 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmed || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.ScheduledCommand.RunQueryOrder | undefined {
+function toOrder(sortField: string | undefined): ScheduledTaskRunLogQueryOrder | undefined {
   switch (sortField) {
     case 'startedAt':
       return 'StartedAt';

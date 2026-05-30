@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as gameServerApi from '~/api/gameServer';
 import { useCommandHistory } from '~/composables';
+import { gameServerSendGlobalMessageMutation } from '~/generated/api/@pinia/colada.gen';
 import { useGameEventStore } from '~/stores/gameEvent';
 
 defineOptions({ name: 'LiveChat' });
@@ -12,6 +13,9 @@ const inputRef = useTemplateRef<HTMLInputElement>('inputRef');
 const contentRef = useTemplateRef<HTMLDivElement>('contentRef');
 const isLoading = ref(false);
 const { currentCommand, navigateUp, navigateDown, addCommandToHistory, onInputChange } = useCommandHistory();
+const sendGlobalMessageMutation = useMutation({
+  ...gameServerSendGlobalMessageMutation(),
+});
 
 /** Send the current command as a global chat message. */
 async function onEnter() {
@@ -21,7 +25,7 @@ async function onEnter() {
 
   isLoading.value = true;
   try {
-    await gameServerApi.sendGlobalMessage(msg);
+    await sendGlobalMessageMutation.mutateAsync({ body: { message: msg, senderName: null } });
     addCommandToHistory(msg);
     onInputChange('');
   }

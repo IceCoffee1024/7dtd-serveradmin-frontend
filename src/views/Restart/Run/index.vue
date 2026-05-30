@@ -1,18 +1,27 @@
 <script setup lang="ts">
+import type { RestartRunRequestDto, ScheduledTaskRunLogDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { runRestart } from '~/api/restart';
 import { usePopup } from '~/composables';
+import { restartRunRestartMutation } from '~/generated/api/@pinia/colada.gen';
 import dayjs from '~/plugins/dayjs';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 
 defineOptions({ name: 'RestartRunPage' });
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
 
-const isRunning = ref(false);
-const lastRun = ref<API.Restart.Run | null>(null);
+const lastRun = ref<ScheduledTaskRunLogDto | null>(null);
+const runRestartMutation = useMutation({
+  ...restartRunRestartMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries(['Restart', 'ScheduledTaskRunLogs']);
+  },
+});
+const isRunning = computed(() => runRestartMutation.isLoading.value);
 
-const runForm = reactive<API.Restart.RunRequest>({
+const runForm = reactive<RestartRunRequestDto>({
   reason: null,
   warningLeadSecondsOverride: null,
   restartModeOverride: null,
@@ -29,13 +38,14 @@ async function onRunNow() {
     return;
   }
 
-  isRunning.value = true;
   lastRun.value = null;
   try {
-    const run = await runRestart({
-      reason: runForm.reason || null,
-      warningLeadSecondsOverride: runForm.warningLeadSecondsOverride ?? null,
-      restartModeOverride: runForm.restartModeOverride || null,
+    const run = await runRestartMutation.mutateAsync({
+      body: {
+        reason: runForm.reason || null,
+        warningLeadSecondsOverride: runForm.warningLeadSecondsOverride ?? null,
+        restartModeOverride: runForm.restartModeOverride || null,
+      },
     });
     lastRun.value = run;
     toast({
@@ -47,9 +57,6 @@ async function onRunNow() {
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isRunning.value = false;
   }
 }
 

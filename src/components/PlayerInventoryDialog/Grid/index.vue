@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import type { InvItemDto } from '~/generated/api/types.gen';
 import GameIconEx from '../GameIconEx/index.vue';
 
 interface Props {
-  bag?: API.GameServer.InvItem[];
-  belt?: API.GameServer.InvItem[];
-  equipment?: Array<API.GameServer.InvItem | null>;
+  bag?: InvItemDto[];
+  belt?: InvItemDto[];
+  equipment?: Array<InvItemDto | null>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,8 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const iconSize = 80;
 
-const equipmentItems = computed<API.GameServer.InvItem[]>(() => {
-  return props.equipment.filter((item): item is API.GameServer.InvItem => !!item);
+const equipmentItems = computed<InvItemDto[]>(() => {
+  return props.equipment.filter((item): item is InvItemDto => !!item);
 });
 </script>
 

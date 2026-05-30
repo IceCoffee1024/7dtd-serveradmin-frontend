@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/achievement';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
+import {
+  achievementGetSettingsQuery,
+  achievementResetSettingsMutation,
+  achievementUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateAchievementQueries } from '~/queries/achievement';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'AchievementSettingsPage' });
@@ -25,8 +31,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return { isEnabled: false };
@@ -57,26 +61,59 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
+const settingsQuery = useQuery(achievementGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...achievementUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateAchievementQueries();
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...achievementResetSettingsMutation(),
+  async onSettled() {
+    await invalidateAchievementQueries();
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
 function applyFormValues(values: FormModel): void {
   Object.assign(form, values);
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
-    initialValues.value = { isEnabled: data.isEnabled };
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
+    initialValues.value = { isEnabled: data.isEnabled ?? false };
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
-  }
-  finally {
-    isLoading.value = false;
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status === 'success') {
+    initialValues.value = { isEnabled: state.data.isEnabled ?? false };
+    applyFormValues(initialValues.value);
   }
 }
 
@@ -90,29 +127,24 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings({ isEnabled: form.isEnabled });
+    await updateSettingsMutation.mutateAsync({ body: { isEnabled: form.isEnabled } });
     toast({
       type: 'success',
       title: t('views.achievement.settings.actions.save'),
       text: t('views.achievement.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
-    initialValues.value = { isEnabled: data.isEnabled };
+    const data = await resetSettingsMutation.mutateAsync({});
+    initialValues.value = { isEnabled: data.isEnabled ?? false };
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
@@ -125,9 +157,6 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
 onBeforeRouteLeave(async () => {
@@ -138,10 +167,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.achievement.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

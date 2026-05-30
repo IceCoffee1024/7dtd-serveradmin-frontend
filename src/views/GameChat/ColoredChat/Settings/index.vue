@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
+import type { ColoredChatFeatureSettingsDto } from '~/generated/api/types.gen';
+import { useMutation, useQuery } from '@pinia/colada';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
-import { getSettings, resetSettings, updateSettings } from '~/api/coloredChat';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import { COLORED_CHAT_COLOR_PRESETS } from '~/constants/coloredChat';
+import {
+  coloredChatGetSettingsQuery,
+  coloredChatResetSettingsMutation,
+  coloredChatUpdateSettingsMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'ColoredChatSettingsPage' });
@@ -33,8 +40,6 @@ const { t } = useI18n();
 const { toast, confirm } = usePopup();
 
 const formRef = useTemplateRef<FormExpose>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
 
 function buildDefaults(): FormModel {
   return {
@@ -165,7 +170,23 @@ function previewColor(hex: string): string {
   return hex ? `#${hex}` : 'inherit';
 }
 
-function mapSettings(data: API.ColoredChat.Settings | null | undefined): FormModel {
+const settingsQuery = useQuery(coloredChatGetSettingsQuery());
+const updateSettingsMutation = useMutation({
+  ...coloredChatUpdateSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('ColoredChat');
+  },
+});
+const resetSettingsMutation = useMutation({
+  ...coloredChatResetSettingsMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('ColoredChat');
+  },
+});
+const isLoading = computed(() => settingsQuery.isPending.value);
+const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || resetSettingsMutation.isLoading.value);
+
+function mapSettings(data: ColoredChatFeatureSettingsDto | null | undefined): FormModel {
   const source = data ?? {
     isEnabled: false,
     globalDefault: null,
@@ -177,7 +198,7 @@ function mapSettings(data: API.ColoredChat.Settings | null | undefined): FormMod
     playerColorTagPermission: 'None',
   };
   return {
-    isEnabled: source.isEnabled,
+    isEnabled: source.isEnabled ?? false,
     globalDefault: source.globalDefault ?? 'FFFFFF',
     whisperDefault: source.whisperDefault ?? 'D00000',
     friendsDefault: source.friendsDefault ?? '00BB00',
@@ -199,29 +220,49 @@ function applyFormValues(values: FormModel): void {
   form.playerColorTagPermission = values.playerColorTagPermission;
 }
 
-async function loadSettings() {
-  isLoading.value = true;
-  try {
-    const data = await getSettings();
+watch(
+  () => settingsQuery.data.value,
+  async (data) => {
+    if (data == null) {
+      return;
+    }
+
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
-  }
-  catch (error) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => settingsQuery.error.value,
+  (error) => {
+    if (error == null) {
+      return;
+    }
+
     console.error(error);
     initialValues.value = buildDefaults();
     applyFormValues(initialValues.value);
+  },
+);
+
+async function refreshSettings() {
+  const state = await settingsQuery.refetch(true);
+  if (state.status !== 'success') {
+    return;
   }
-  finally {
-    isLoading.value = false;
-  }
+
+  initialValues.value = mapSettings(state.data);
+  applyFormValues(initialValues.value);
+  await nextTick();
+  formRef.value?.clearValidate();
 }
 
 async function onReset() {
-  isSubmitting.value = true;
   try {
-    const data = await resetSettings();
+    const data = await resetSettingsMutation.mutateAsync({});
     initialValues.value = mapSettings(data);
     applyFormValues(initialValues.value);
     await nextTick();
@@ -235,12 +276,9 @@ async function onReset() {
   catch (error) {
     console.error(error);
   }
-  finally {
-    isSubmitting.value = false;
-  }
 }
 
-function toPayload(values: FormModel): API.ColoredChat.Settings {
+function toPayload(values: FormModel): ColoredChatFeatureSettingsDto {
   return {
     isEnabled: values.isEnabled,
     globalDefault: values.globalDefault || null,
@@ -263,21 +301,17 @@ async function onSubmit() {
     return;
   }
 
-  isSubmitting.value = true;
   try {
-    await updateSettings(toPayload(form));
+    await updateSettingsMutation.mutateAsync({ body: toPayload(form) });
     toast({
       type: 'success',
       title: t('views.coloredChat.settings.actions.save'),
       text: t('views.coloredChat.settings.messages.saveSuccess'),
     });
-    await loadSettings();
+    await refreshSettings();
   }
   catch (error) {
     console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
   }
 }
 
@@ -289,10 +323,6 @@ onBeforeRouteLeave(async () => {
     type: 'warning',
     text: t('views.coloredChat.settings.messages.unsavedChanges'),
   });
-});
-
-onMounted(() => {
-  loadSettings();
 });
 </script>
 

@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import type { MyFormField } from '~/composables/useMyForm';
+import type { BanEntryDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { banPlayer, unbanPlayers } from '~/api/gameServer';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
+import {
+  gameServerCreateBanMutation,
+  gameServerRemoveBansMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules, showCommandResult } from '~/utils';
 
 interface FormModel {
@@ -16,7 +22,7 @@ interface FormModel {
 }
 
 interface Props {
-  editData?: Record<string, any> | null;
+  editData?: BanEntryDto | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -27,10 +33,23 @@ const emit = defineEmits(['saved']);
 const dialogRef = useTemplateRef('dialogRef');
 const formRef = useTemplateRef('formRef');
 const { t } = useI18n();
+const createBanMutation = useMutation({
+  ...gameServerCreateBanMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
+const removeBansMutation = useMutation({
+  ...gameServerRemoveBansMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const isEdit = computed(() => !!props.editData);
 const dialogTitle = computed(() => (isEdit.value ? t('views.banWhitelist.editBan') : t('views.banWhitelist.addBan')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
+const isSubmitting = computed(() => createBanMutation.isLoading.value || removeBansMutation.isLoading.value);
 
 const form = reactive<FormModel>({
   playerId: '',
@@ -121,20 +140,22 @@ async function onSubmit() {
     if (isEdit.value) {
       const oldPlayerId = props.editData?.playerId;
       if (oldPlayerId) {
-        const unbanResult = await unbanPlayers([oldPlayerId]);
-        if (!showCommandResult(unbanResult, t('common.update')))
+        const unbanResult = await removeBansMutation.mutateAsync({ body: [oldPlayerId] });
+        if (!showCommandResult(unbanResult ?? undefined, t('common.update')))
           return false;
       }
     }
 
-    const result = await banPlayer(
-      form.playerId,
-      dayjs(form.bannedUntil).toISOString(),
-      form.displayName,
-      form.reason || null,
-    );
+    const result = await createBanMutation.mutateAsync({
+      body: {
+        playerId: form.playerId,
+        bannedUntil: dayjs(form.bannedUntil).toISOString(),
+        displayName: form.displayName,
+        reason: form.reason || null,
+      },
+    });
 
-    if (!showCommandResult(result, isEdit.value ? t('common.update') : t('common.save')))
+    if (!showCommandResult(result ?? undefined, isEdit.value ? t('common.update') : t('common.save')))
       return false;
 
     emit('saved');
@@ -164,6 +185,7 @@ defineExpose({
     ref="dialogRef"
     :title="dialogTitle"
     width="50rem"
+    :loading="isSubmitting"
     :on-confirm="onSubmit"
     :confirm-text="confirmText"
     :cancel-text="t('common.cancel')"

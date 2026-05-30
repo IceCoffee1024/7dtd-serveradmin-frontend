@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import type { ScheduledTaskRunLogDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
-  runData?: API.ScheduledCommand.Run | null;
+  runData?: ScheduledTaskRunLogDto | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {

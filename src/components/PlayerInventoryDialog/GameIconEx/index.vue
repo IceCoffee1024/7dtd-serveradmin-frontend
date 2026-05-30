@@ -5,16 +5,18 @@ interface Props {
   size?: number;
   itemName?: string;
   iconName?: string;
-  iconColor?: string;
+  iconColor?: string | null;
   localizationName?: string;
   count?: number;
   maxStackAllowed?: number;
-  quality?: number;
-  qualityColor?: string;
+  quality?: number | null;
+  qualityColor?: string | null;
   useTimes?: number;
   maxUseTimes?: number;
   mod?: boolean;
   block?: boolean;
+  isMod?: boolean;
+  isBlock?: boolean;
   backgroundColor?: string;
   fontSize?: number;
 }
@@ -33,6 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
   maxUseTimes: 0,
   mod: false,
   block: false,
+  isMod: false,
+  isBlock: false,
   backgroundColor: undefined,
   fontSize: 24,
 });
@@ -59,6 +63,8 @@ const fontSizePx = computed(() => {
 });
 
 const { t } = useI18n();
+const isMod = computed(() => props.isMod || props.mod);
+const isBlock = computed(() => props.isBlock || props.block);
 const tooltipContent = computed(() => {
   return `
 ${t('components.playerInventoryDialog.localizationName')}: ${props.localizationName} <br />
@@ -70,8 +76,8 @@ ${t('components.playerInventoryDialog.maxStackAllowed')}: ${props.maxStackAllowe
 ${t('components.playerInventoryDialog.quality')}: ${props.quality ?? 0} <br />
 ${t('components.playerInventoryDialog.useTimes')}: ${props.useTimes} <br />
 ${t('components.playerInventoryDialog.maxUseTimes')}: ${props.maxUseTimes} <br />
-${t('components.playerInventoryDialog.mod')}: ${props.mod ? t('common.yes') : t('common.no')} <br />
-${t('components.playerInventoryDialog.block')}: ${props.block ? t('common.yes') : t('common.no')}`;
+${t('components.playerInventoryDialog.mod')}: ${isMod.value ? t('common.yes') : t('common.no')} <br />
+${t('components.playerInventoryDialog.block')}: ${isBlock.value ? t('common.yes') : t('common.no')}`;
 });
 </script>
 

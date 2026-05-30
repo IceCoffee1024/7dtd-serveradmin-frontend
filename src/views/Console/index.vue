@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import type { AllowedCommandDto } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as gameServerApi from '~/api/gameServer';
 import { usePopup } from '~/composables';
 import { useCommandHistory } from '~/composables/useCommandHistory';
+import {
+  gameServerExecuteConsoleCommandMutation,
+  gameServerGetAllowedCommandsQuery,
+} from '~/generated/api/@pinia/colada.gen';
 import emitter, { EVENT_TYPES } from '~/plugins/mitt';
 import { useGameEventStore } from '~/stores/gameEvent';
 
@@ -11,6 +16,7 @@ defineOptions({ name: 'Console' });
 const { t } = useI18n();
 const { toast } = usePopup();
 const gameEventStore = useGameEventStore();
+const queryCache = useQueryCache();
 
 interface CommandOption {
   cmd: string;
@@ -28,6 +34,9 @@ const commandLookup = ref<Set<string>>(new Set());
 const isLoading = ref(false);
 const isSuggestionVisible = ref(false);
 const { currentCommand, navigateUp, navigateDown, addCommandToHistory, onInputChange } = useCommandHistory();
+const executeCommandMutation = useMutation({
+  ...gameServerExecuteConsoleCommandMutation(),
+});
 
 const commandText = computed(() => currentCommand.value);
 const isCommandInvalid = computed(() => {
@@ -53,7 +62,7 @@ function handleArrowDown() {
 
 async function getAllowedCommands() {
   try {
-    const data = await gameServerApi.getAllowedCommands();
+    const data = await fetchAllowedCommands();
     const processedCommands: CommandOption[] = [];
     const lookupSet = new Set<string>();
     data.forEach((group) => {
@@ -72,6 +81,18 @@ async function getAllowedCommands() {
   catch (error) {
     console.error('[Console] Failed to load allowed commands:', error);
   }
+}
+
+async function fetchAllowedCommands(): Promise<AllowedCommandDto[]> {
+  const options = gameServerGetAllowedCommandsQuery();
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  return state.data ?? [];
 }
 getAllowedCommands();
 
@@ -97,12 +118,17 @@ async function sendCommand() {
 
   isLoading.value = true;
   try {
-    const data = await gameServerApi.executeConsoleCommand(commandText.value, true);
+    const data = await executeCommandMutation.mutateAsync({
+      body: {
+        command: commandText.value,
+        inMainThread: true,
+      },
+    });
 
     addCommandToHistory(commandText.value);
     onInputChange('');
 
-    data.forEach((message) => {
+    (data ?? []).forEach((message) => {
       void gameEventStore.addLog(message, 'Assert');
     });
   }

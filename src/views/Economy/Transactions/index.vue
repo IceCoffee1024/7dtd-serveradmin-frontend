@@ -1,22 +1,34 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  EconomyTransactionDto,
+  EconomyTransactionQueryOrder,
+  EconomyTransactionType,
+} from '~/generated/api/types.gen';
+import type { EconomyTransactionFilters } from '~/queries/economy';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/economy';
 import { usePopup } from '~/composables/usePopup';
+import { economyTransactionsGetTransactionsQuery } from '~/generated/api/@pinia/colada.gen';
+import {
+
+  exportEconomyTransactionsCsv,
+} from '~/queries/economy';
 import DetailDialog from './DetailDialog.vue';
 
 defineOptions({ name: 'EconomyTransactionsPage' });
 
-type TransactionRow = API.Economy.Transaction;
+type TransactionRow = EconomyTransactionDto;
 
 const { t } = useI18n();
 const { toast } = usePopup();
+const queryCache = useQueryCache();
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const detailRow = ref<TransactionRow | null>(null);
 
 /** Mirrors the most-recently applied search filters so the export button can use the same criteria. */
-const currentFilters = ref<Omit<API.Economy.TransactionQuery, 'pageNumber' | 'pageSize' | 'order' | 'desc'>>({});
+const currentFilters = ref<EconomyTransactionFilters>({});
 const exporting = ref(false);
 
 const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
@@ -117,36 +129,40 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     keyword: params.search?.keyword?.trim() || undefined,
     playerId: toOptionalString(params.search?.playerId),
     playerName: toOptionalString(params.search?.playerName),
-    type: toOptionalString(params.search?.type) as API.Economy.TransactionType | undefined,
+    type: toOptionalTransactionType(params.search?.type),
     source: toOptionalString(params.search?.source),
     startTime: toOptionalString(params.search?.startTime),
     endTime: toOptionalString(params.search?.endTime),
   };
 
-  const response = await api.getTransactions({
-    ...currentFilters.value,
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = economyTransactionsGetTransactionsQuery({
+    query: {
+      ...currentFilters.value,
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
 }
 
 async function onExport() {
   exporting.value = true;
   try {
-    const blob = await api.exportTransactions(currentFilters.value);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `transactions_${dayjs().format('YYYYMMDD_HHmmss')}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    await exportEconomyTransactionsCsv(queryCache, currentFilters.value);
     toast({ type: 'success', text: t('views.economy.transactions.messages.exportSuccess') });
   }
   catch {
@@ -166,7 +182,21 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
-function toOrder(sortField: string | undefined): API.Economy.TransactionQueryOrder | undefined {
+function toOptionalTransactionType(value: unknown): EconomyTransactionType | undefined {
+  switch (value) {
+    case 'AdminGrant':
+    case 'AdminDeduct':
+    case 'TransferOut':
+    case 'TransferIn':
+    case 'DailyReward':
+    case 'Tax':
+      return value;
+    default:
+      return undefined;
+  }
+}
+
+function toOrder(sortField: string | undefined): EconomyTransactionQueryOrder | undefined {
   switch (sortField) {
     case 'createdAt':
       return 'CreatedAt';

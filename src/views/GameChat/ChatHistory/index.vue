@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { ChatMessageDto, ChatMessageQueryOrder, ChatType } from '~/generated/api/types.gen';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getChatMessages } from '~/api/chat';
+import { chatMessagesGetQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'ChatHistory' });
 
-type ChatMessageRow = API.Chat.ChatMessage;
+type ChatMessageRow = ChatMessageDto;
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const chatTypeOptions = computed(() => [
   { label: 'Global', value: 'Global' },
   { label: 'Whisper', value: 'Whisper' },
   { label: 'Party', value: 'Party' },
   { label: 'Friends', value: 'Friends' },
-  { label: 'System', value: 'System' },
+  { label: 'Unknown', value: 'Unknown' },
 ]);
 
 const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
@@ -115,23 +118,32 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
  * @returns Table-friendly paged data.
  */
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<ChatMessageRow>> {
-  const query: API.Chat.ChatMessageQuery = {
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: toOptionalString(params.search?.keyword),
-    senderName: toOptionalString(params.search?.senderName),
-    playerId: toOptionalString(params.search?.playerId),
-    chatType: toOptionalString(params.search?.chatType),
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
-  };
+  const options = chatMessagesGetQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: toOptionalString(params.search?.keyword),
+      senderName: toOptionalString(params.search?.senderName),
+      playerId: toOptionalString(params.search?.playerId),
+      chatType: toOptionalChatType(params.search?.chatType),
+      startTime: toOptionalString(params.search?.startTime),
+      endTime: toOptionalString(params.search?.endTime),
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
+  });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
 
-  const response = await getChatMessages(query);
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
+
   return {
-    total: response.total,
-    list: response.items,
+    total: response?.total ?? 0,
+    list: response?.items ?? [],
   };
 }
 
@@ -140,7 +152,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
  * @param sortField - Raw sort field emitted by Element Plus.
  * @returns Backend order value or undefined when the column is not sortable remotely.
  */
-function toOrder(sortField: string | undefined): API.Chat.ChatMessageQueryOrder | undefined {
+function toOrder(sortField: string | undefined): ChatMessageQueryOrder | undefined {
   switch (sortField) {
     case 'createdAt':
       return 'CreatedAt';
@@ -171,13 +183,26 @@ function toOptionalString(value: unknown): string | undefined {
   return trimmedValue || undefined;
 }
 
+function toOptionalChatType(value: unknown): ChatType | undefined {
+  switch (value) {
+    case 'Global':
+    case 'Friends':
+    case 'Party':
+    case 'Whisper':
+    case 'Unknown':
+      return value;
+    default:
+      return undefined;
+  }
+}
+
 /**
  * Formats UTC timestamps into a compact local representation for operator review.
  * @param value - Backend ISO timestamp.
  * @returns Formatted local timestamp.
  */
-function formatTimestamp(value: string): string {
-  return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
 </script>
 

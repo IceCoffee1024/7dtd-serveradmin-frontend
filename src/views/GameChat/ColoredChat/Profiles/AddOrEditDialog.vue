@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import type { MyFormField } from '~/composables/useMyForm';
+import type { ColoredChatProfileDto, ColoredChatProfileUpsertDto } from '~/generated/api/types.gen';
+import { useMutation } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import { createProfile, updateProfile } from '~/api/coloredChat';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
 import { COLORED_CHAT_COLOR_PRESETS } from '~/constants/coloredChat';
+import {
+  coloredChatCreateProfileMutation,
+  coloredChatUpdateProfileMutation,
+} from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 
 const props = withDefaults(defineProps<Props>(), {
@@ -42,7 +48,7 @@ interface FormExpose {
 }
 
 interface Props {
-  editData?: Record<string, unknown> | null;
+  editData?: ColoredChatProfileDto | null;
 }
 
 const PLAYER_ID_SCHEMA = v.pipe(
@@ -66,11 +72,24 @@ const formRef = useTemplateRef<FormExpose>('formRef');
 const customNameInputRef = useTemplateRef<{ input: HTMLInputElement }>('customNameInputRef');
 const { t } = useI18n();
 const { toast } = usePopup();
+const createProfileMutation = useMutation({
+  ...coloredChatCreateProfileMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('ColoredChat');
+  },
+});
+const updateProfileMutation = useMutation({
+  ...coloredChatUpdateProfileMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('ColoredChat');
+  },
+});
 
 const isEdit = computed(() => !!props.editData);
 const dialogTitle = computed(() => (isEdit.value ? t('views.coloredChat.profiles.editProfile') : t('views.coloredChat.profiles.addProfile')));
 const confirmText = computed(() => (isEdit.value ? t('common.update') : t('common.save')));
 const colorPresets = computed(() => [...COLORED_CHAT_COLOR_PRESETS]);
+const isSubmitting = computed(() => createProfileMutation.isLoading.value || updateProfileMutation.isLoading.value);
 
 const form = reactive<FormModel>({
   playerId: '',
@@ -168,7 +187,7 @@ watch(
   { immediate: true },
 );
 
-function toPayload(): API.ColoredChat.ProfileUpsert {
+function toPayload(): ColoredChatProfileUpsertDto {
   return {
     playerId: normalizePlayerId(form.playerId),
     customName: form.customName || null,
@@ -190,10 +209,10 @@ async function onSubmit() {
 
   try {
     if (isEdit.value) {
-      await updateProfile(toPayload());
+      await updateProfileMutation.mutateAsync({ body: toPayload() });
     }
     else {
-      await createProfile(toPayload());
+      await createProfileMutation.mutateAsync({ body: toPayload() });
     }
 
     toast({
@@ -252,6 +271,7 @@ defineExpose({
     ref="dialogRef"
     :title="dialogTitle"
     width="50rem"
+    :loading="isSubmitting"
     :on-confirm="onSubmit"
     :confirm-text="confirmText"
     :cancel-text="t('common.cancel')"

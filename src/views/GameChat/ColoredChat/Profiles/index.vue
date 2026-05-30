@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { ColoredChatProfileDto, ColoredChatProfileQueryOrder } from '~/generated/api/types.gen';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
-import * as api from '~/api/coloredChat';
 import { usePopup } from '~/composables';
+import {
+  coloredChatDeleteProfilesMutation,
+  coloredChatGetProfilesQuery,
+} from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { markIcon } from '~/utils';
 import AddOrEditDialog from './AddOrEditDialog.vue';
 
 defineOptions({ name: 'ColoredProfilesPage' });
 
-type ColoredProfileRow = API.ColoredChat.Profile;
+type ColoredProfileRow = ColoredChatProfileDto;
 
 const HEX_COLOR_PREFIX_REGEX = /^#/;
 
@@ -18,6 +24,13 @@ const { t } = useI18n();
 const { confirm } = usePopup();
 const editData = ref<ColoredProfileRow | null>(null);
 const selectedRows = ref<ColoredProfileRow[]>([]);
+const queryCache = useQueryCache();
+const deleteProfilesMutation = useMutation({
+  ...coloredChatDeleteProfilesMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('ColoredChat');
+  },
+});
 
 const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
   {
@@ -99,22 +112,32 @@ const columns = computed<MyTableColumn<ColoredProfileRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<ColoredProfileRow>> {
-  const response = await api.getProfiles({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    playerId: toOptionalString(params.search?.playerId),
-    customName: toOptionalString(params.search?.customName),
-    nameColor: toOptionalColor(params.search?.nameColor),
-    startTime: toOptionalString(params.search?.startTime),
-    endTime: toOptionalString(params.search?.endTime),
-    order: toOrder(params.sortField),
-    desc: params.sortOrder === 'descending',
+  const options = coloredChatGetProfilesQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      playerId: toOptionalString(params.search?.playerId),
+      customName: toOptionalString(params.search?.customName),
+      nameColor: toOptionalColor(params.search?.nameColor),
+      startTime: toOptionalString(params.search?.startTime),
+      endTime: toOptionalString(params.search?.endTime),
+      order: toOrder(params.sortField),
+      desc: params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
 }
 
@@ -125,7 +148,7 @@ const batchMenuItems = computed(() => [
     disabled: selectedRows.value.length === 0,
     action: async () => {
       if (await confirm()) {
-        await api.deleteProfiles(selectedRows.value.map(row => row.playerId));
+        await deleteProfilesMutation.mutateAsync({ body: selectedRows.value.map(row => row.playerId) });
         tableRef.value?.reload();
       }
     },
@@ -161,7 +184,7 @@ function toOptionalColor(value: unknown): string | undefined {
  * @param sortField - Column key emitted by the table.
  * @returns Backend order enum value or undefined when the column is not remotely sortable.
  */
-function toOrder(sortField: string | undefined): API.ColoredChat.ProfileQueryOrder | undefined {
+function toOrder(sortField: string | undefined): ColoredChatProfileQueryOrder | undefined {
   switch (sortField) {
     case 'createdAt':
       return 'CreatedAt';
@@ -191,7 +214,7 @@ function onEdit(rowData: ColoredProfileRow) {
 }
 
 async function onDelete(rowData: ColoredProfileRow) {
-  await api.deleteProfiles([rowData.playerId]);
+  await deleteProfilesMutation.mutateAsync({ body: [rowData.playerId] });
   tableRef.value?.reload();
 }
 

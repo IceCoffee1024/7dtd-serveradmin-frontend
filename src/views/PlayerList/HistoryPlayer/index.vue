@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  HistoryPlayerDto,
+  HistoryPlayerQueryOrder,
+  PositionDto,
+} from '~/generated/api/types.gen';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
+import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { getHistoryPlayers } from '~/api/gameServer';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
+import { gameServerGetHistoryPlayersQuery } from '~/generated/api/@pinia/colada.gen';
 import { formatPosition } from '~/utils';
 
-type HistoryPlayerRow = API.GameServer.HistoryPlayer;
+type HistoryPlayerRow = HistoryPlayerDto;
 
 const { t } = useI18n();
+const queryCache = useQueryCache();
 
 const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   {
@@ -37,9 +44,9 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
     sortable: true,
     exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
   },
-  { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as API.GameServer.Position | null | undefined) },
+  { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as PositionDto | null | undefined) },
   { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
-  { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll', exportFormatter: value => formatPosition(value as API.GameServer.Position | null | undefined) },
+  { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll', exportFormatter: value => formatPosition(value as PositionDto | null | undefined) },
   { prop: 'playerId', label: t('views.playerList.playerId') },
   { prop: 'platformId', label: t('views.playerList.platformId') },
   { prop: 'playGroup', label: t('views.playerList.playGroup'), sortable: true },
@@ -50,18 +57,44 @@ const playerSkillsDialogRef = useTemplateRef('playerSkillsDialogRef');
 const playerDetailsDialogRef = useTemplateRef('playerDetailsDialogRef');
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<HistoryPlayerRow>> {
-  const response = await getHistoryPlayers({
-    pageNumber: params.pageNumber,
-    pageSize: params.pageSize,
-    keyword: params.search?.keyword?.trim() || undefined,
-    order: params.sortField as API.GameServer.HistoryPlayerQuery['order'],
-    desc: !params.sortOrder ? undefined : params.sortOrder === 'descending',
+  const options = gameServerGetHistoryPlayersQuery({
+    query: {
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
+      keyword: params.search?.keyword?.trim() || undefined,
+      order: toOrder(params.sortField),
+      desc: !params.sortOrder ? undefined : params.sortOrder === 'descending',
+    },
   });
+  const entry = queryCache.ensure(options);
+  const state = await queryCache.fetch(entry);
+
+  if (state.status === 'error') {
+    throw state.error;
+  }
+
+  const response = state.data;
 
   return {
-    list: response.items,
-    total: response.total,
+    list: response?.items ?? [],
+    total: response?.total ?? 0,
   };
+}
+
+function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undefined {
+  switch (sortField) {
+    case 'entityId': return 'EntityId';
+    case 'playerName': return 'PlayerName';
+    case 'permissionLevel': return 'PermissionLevel';
+    case 'isOffline': return 'IsOffline';
+    case 'playGroup': return 'PlayGroup';
+    case 'lastLogin': return 'LastLogin';
+    default: return undefined;
+  }
+}
+
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
 
 const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
@@ -111,7 +144,7 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
         </span>
       </template>
       <template #lastLogin="{ row }">
-        {{ dayjs(row.lastLogin).format('YYYY-MM-DD HH:mm:ss') }}
+        {{ formatTimestamp(row.lastLogin) }}
       </template>
       <template #position="{ row }">
         {{ formatPosition(row.position) }}
