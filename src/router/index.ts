@@ -1,7 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Layout from '~/layout/index.vue';
-import { i18n, isSupportedLocale } from '~/plugins/i18n';
+import { LOCALE_TYPE } from '~/locales/constant';
+import { i18n, isSupportedLocale, resolveSupportedLocale } from '~/plugins/i18n';
 import nProgress from '~/plugins/nprogress';
 import { useLocaleStore } from '~/stores/locale';
 import { useUserInfoStore } from '~/stores/userInfo';
@@ -13,7 +14,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: () => {
-      return { name: 'Dashboard', params: { locale: locale.value } };
+      return { name: 'Dashboard', params: { locale: resolveSupportedLocale(locale.value) } };
     },
     children: [
       {
@@ -592,6 +593,10 @@ const router = createRouter({
   routes,
 });
 
+function getRouteLocaleParam(routeLocale: unknown): string | undefined {
+  return Array.isArray(routeLocale) ? routeLocale[0] : routeLocale as string | undefined;
+}
+
 function getMenuLabel(title: string | (() => string) | undefined): string {
   return (typeof title === 'function' ? title() : title) || 'Unnamed';
 }
@@ -605,6 +610,17 @@ function updateDocumentTitle(routeTitle?: string | (() => string)) {
 router.beforeEach(async (to) => {
   nProgress.start();
 
+  const routeLocale = getRouteLocaleParam(to.params.locale);
+
+  if (routeLocale !== undefined) {
+    if (!isSupportedLocale(routeLocale)) {
+      return { name: 'Dashboard', params: { locale: LOCALE_TYPE.EN } };
+    }
+
+    const localeStore = useLocaleStore();
+    await localeStore.applyLocale(routeLocale);
+  }
+
   // Check if this route requires authorization and if the user has logged in
   if (to.meta.requiresAuth !== false) {
     const userInfoStore = useUserInfoStore();
@@ -615,15 +631,6 @@ router.beforeEach(async (to) => {
       return `/login?redirect=${to.fullPath}`;
     }
   }
-
-  const paramsLocale = to.params.locale || locale.value;
-
-  if (!isSupportedLocale(paramsLocale)) {
-    return '/404';
-  }
-
-  const localeStore = useLocaleStore();
-  await localeStore.applyLocale(paramsLocale);
 });
 
 router.afterEach((to) => {

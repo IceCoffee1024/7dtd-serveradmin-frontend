@@ -5,15 +5,17 @@ import { defineStore } from 'pinia';
 import { LOCALE_CONFIGS, STORAGE_LOCALE_KEY, SUPPORT_LOCALES } from '~/locales/constant';
 import { setDayjsLanguage } from '~/plugins/dayjs';
 import { setElementLanguage } from '~/plugins/elementPlus';
-import { i18n, setI18nLanguage } from '~/plugins/i18n';
+import { i18n, resolveSupportedLocale, setI18nLanguage } from '~/plugins/i18n';
 import { setValibotLanguage } from '~/plugins/valibot';
 
 export const useLocaleStore = defineStore('locale', () => {
-  const storedLocale = useStorage<LocaleType>(STORAGE_LOCALE_KEY, i18n.global.locale.value as LocaleType);
+  const storedLocale = useStorage<LocaleType>(STORAGE_LOCALE_KEY, resolveSupportedLocale(i18n.global.locale.value));
   let lastLoadedLocale: string = '';
 
+  storedLocale.value = resolveSupportedLocale(storedLocale.value);
+
   const languageEnglishName = computed(() => {
-    return LOCALE_CONFIGS[storedLocale.value].englishName as Language;
+    return LOCALE_CONFIGS[resolveSupportedLocale(storedLocale.value)].englishName as Language;
   });
 
   const localeOptions = computed(() =>
@@ -24,14 +26,21 @@ export const useLocaleStore = defineStore('locale', () => {
   );
 
   const applyLocale = async (locale: LocaleType) => {
-    if (locale === lastLoadedLocale) {
+    const resolvedLocale = resolveSupportedLocale(locale);
+
+    if (resolvedLocale === lastLoadedLocale) {
       return;
     }
 
-    await Promise.all([setI18nLanguage(locale), setElementLanguage(locale), setDayjsLanguage(locale), setValibotLanguage(locale)]);
+    await Promise.all([
+      setI18nLanguage(resolvedLocale),
+      setElementLanguage(resolvedLocale),
+      setDayjsLanguage(resolvedLocale),
+      setValibotLanguage(resolvedLocale),
+    ]);
 
-    storedLocale.value = locale;
-    lastLoadedLocale = locale;
+    storedLocale.value = resolvedLocale;
+    lastLoadedLocale = resolvedLocale;
     return nextTick();
   };
 

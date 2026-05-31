@@ -14,6 +14,10 @@ function isSupportedLocale(locale: unknown): locale is LocaleType {
   return typeof locale === 'string' && (SUPPORT_LOCALES as readonly string[]).includes(locale);
 }
 
+function resolveSupportedLocale(locale: unknown): LocaleType {
+  return isSupportedLocale(locale) ? locale : LOCALE_TYPE.EN;
+}
+
 /**
  * Parse the browser's language settings to find a supported language
  */
@@ -47,8 +51,8 @@ function parseBrowserLanguage(): LocaleType | null {
           return code;
         }
 
-        // Fuzzy match (starts with the code)
-        const fuzzyMatch = Object.values(LOCALE_TYPE).find(supported =>
+        // Fuzzy match only against locales that this app can actually load.
+        const fuzzyMatch = SUPPORT_LOCALES.find(supported =>
           supported.startsWith(code),
         );
         if (fuzzyMatch) {
@@ -69,11 +73,16 @@ function parseBrowserLanguage(): LocaleType | null {
  */
 function detectPreferredLocale(): LocaleType {
   const savedLang = localStorage.getItem(STORAGE_LOCALE_KEY);
+  const normalizedSavedLang = savedLang?.toLowerCase();
 
   // 1. Check saved language preference
-  if (savedLang && isSupportedLocale(savedLang)) {
-    console.log('✅ Using saved language:', savedLang);
-    return savedLang;
+  if (isSupportedLocale(normalizedSavedLang)) {
+    console.log('✅ Using saved language:', normalizedSavedLang);
+    return normalizedSavedLang;
+  }
+
+  if (savedLang) {
+    localStorage.removeItem(STORAGE_LOCALE_KEY);
   }
 
   // 2. Parse browser language
@@ -108,12 +117,14 @@ async function loadLocaleMessages(locale: LocaleType) {
 }
 
 async function setI18nLanguage(locale: LocaleType) {
+  const resolvedLocale = resolveSupportedLocale(locale);
+
   try {
-    if (!i18n.global.availableLocales.includes(locale)) {
-      await loadLocaleMessages(locale);
+    if (!i18n.global.availableLocales.includes(resolvedLocale)) {
+      await loadLocaleMessages(resolvedLocale);
     }
 
-    i18n.global.locale.value = locale;
+    i18n.global.locale.value = resolvedLocale;
 
     /**
      * NOTE:
@@ -123,10 +134,10 @@ async function setI18nLanguage(locale: LocaleType) {
      * axios.defaults.headers.common['Accept-Language'] = locale
      */
 
-    document.querySelector('html')!.setAttribute('lang', locale);
+    document.querySelector('html')!.setAttribute('lang', resolvedLocale);
   }
   catch (error) {
-    console.error(`Failed to load locale messages for language: ${locale}`, error);
+    console.error(`Failed to load locale messages for language: ${resolvedLocale}`, error);
   }
 }
 
@@ -155,4 +166,4 @@ if (import.meta.hot) {
   });
 }
 
-export { i18n, isSupportedLocale, setI18nLanguage, setupI18n };
+export { i18n, isSupportedLocale, resolveSupportedLocale, setI18nLanguage, setupI18n };
