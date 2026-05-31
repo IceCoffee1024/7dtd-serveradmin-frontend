@@ -272,7 +272,7 @@ async function onDelete(row: CityLocationDto) {
     </div>
 
     <div class="cities-page__table-shell">
-      <el-table v-loading="loading" :data="items" row-key="id" class="cities-page__table">
+      <el-table v-loading="loading" :data="items" row-key="id" class="cities-page__table" height="100%">
         <template #empty>
           <div class="app-empty-state cities-page__empty">
             <div class="app-empty-state__icon">
@@ -357,6 +357,8 @@ async function onDelete(row: CityLocationDto) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: 100%;
+  min-height: 0;
 }
 
 .cities-page__toolbar {
@@ -370,7 +372,12 @@ async function onDelete(row: CityLocationDto) {
 }
 
 .cities-page__table-shell {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
   padding: 1rem;
+  overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
   border-radius: 28px;
   background:
@@ -380,6 +387,9 @@ async function onDelete(row: CityLocationDto) {
 }
 
 .cities-page__table {
+  flex: 1 1 auto;
+  min-height: 0;
+
   :deep(.el-table__inner-wrapper::before) {
     display: none;
   }

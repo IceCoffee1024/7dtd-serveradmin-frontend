@@ -426,6 +426,8 @@ async function onSaved() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: 100%;
+  min-height: 0;
 }
 
 .accounts-page__overview {
@@ -474,11 +476,14 @@ async function onSaved() {
 
 .accounts-page__grid {
   display: grid;
+  flex: 1 1 auto;
   grid-template-columns: minmax(0, 1fr) 320px;
   gap: 1rem;
+  min-height: 0;
 }
 
 .accounts-page__table {
+  height: 100%;
   min-height: 0;
 }
 
@@ -571,6 +576,11 @@ async function onSaved() {
 @media (max-width: 1100px) {
   .accounts-page__grid {
     grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .accounts-page__table {
+    min-height: 460px;
   }
 }
 

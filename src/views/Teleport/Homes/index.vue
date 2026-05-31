@@ -101,7 +101,7 @@ async function onDelete(row: HomeLocationDto) {
 
     <template v-if="hasSearched">
       <div class="homes-page__table-shell">
-        <el-table v-loading="loading" :data="homes" row-key="id" class="homes-page__table">
+        <el-table v-loading="loading" :data="homes" row-key="id" class="homes-page__table" height="100%">
           <template #empty>
             <div class="app-empty-state homes-page__empty">
               <div class="app-empty-state__icon">
@@ -158,6 +158,8 @@ async function onDelete(row: HomeLocationDto) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: 100%;
+  min-height: 0;
 }
 
 .homes-page__search-shell {
@@ -191,7 +193,12 @@ async function onDelete(row: HomeLocationDto) {
 }
 
 .homes-page__table-shell {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
   padding: 1rem;
+  overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
   border-radius: 28px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
@@ -199,6 +206,9 @@ async function onDelete(row: HomeLocationDto) {
 }
 
 .homes-page__table {
+  flex: 1 1 auto;
+  min-height: 0;
+
   :deep(.el-table__inner-wrapper::before) {
     display: none;
   }
