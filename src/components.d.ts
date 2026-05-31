@@ -140,7 +140,6 @@ declare module 'vue' {
     IconMdiPlayCircleOutline: typeof import('~icons/mdi/play-circle-outline')['default']
     IconMdiPlus: typeof import('~icons/mdi/plus')['default']
     IconMdiPower: typeof import('~icons/mdi/power')['default']
-    IconMdiPowerCycle: typeof import('~icons/mdi/power-cycle')['default']
     IconMdiPulse: typeof import('~icons/mdi/pulse')['default']
     IconMdiRadar: typeof import('~icons/mdi/radar')['default']
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']
