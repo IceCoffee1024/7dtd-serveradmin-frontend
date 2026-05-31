@@ -13,6 +13,8 @@ const isScrolled = computed(() => windowScrollY.value > 0);
 
 const { currentTheme } = useTheme();
 
+const FOOTER_VISUAL_MIN_HEIGHT = 96;
+
 const sidebarWidth = computed(() => {
   if (currentTheme.value.layout.sidebar.collapsed) {
     return addUnit(currentTheme.value.layout.sidebar.collapsedWidth);
@@ -34,7 +36,7 @@ const contentOffsetTop = computed(() => headerContainerHeight.value);
 
 const footerHeight = computed(() => {
   return currentTheme.value.layout.footer.visible
-    ? addUnit(currentTheme.value.layout.footer.height)
+    ? addUnit(Math.max(currentTheme.value.layout.footer.height, FOOTER_VISUAL_MIN_HEIGHT))
     : '0px';
 });
 
@@ -45,6 +47,7 @@ const mainAvailableHeight = computed(() =>
 );
 
 const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
+const isInnerScroll = computed(() => currentTheme.value.general.scrollMode === 'inner');
 
 const isTransparentBorder = computed(() => {
   return currentTheme.value.general.scrollMode === 'outer' && !currentTheme.value.layout.tab.visible && !isScrolled.value;
@@ -72,13 +75,14 @@ const isTransparentBorder = computed(() => {
       class="content" :style="{
         'marginLeft': isTopMenu ? 0 : sidebarWidth,
         'marginTop': contentOffsetTop,
-        'height': contentHeight,
+        'height': isInnerScroll ? contentHeight : undefined,
+        'minHeight': contentHeight,
         '--layout-content-offset-top': contentOffsetTop,
         '--layout-footer-height': footerHeight,
         '--layout-main-padding-y': '32px',
         '--layout-main-available-height': mainAvailableHeight,
       }"
-      :class="{ 'overflow-y-auto overflow-x-hidden': currentTheme.general.scrollMode === 'inner' }"
+      :class="{ 'content--inner-scroll': isInnerScroll }"
     >
       <div class="main">
         <Main />
@@ -126,12 +130,23 @@ const isTransparentBorder = computed(() => {
   @apply: flex flex-col min-h-0 transition-all-300;
 
   .main {
-    @apply: flex flex-col flex-1 min-h-0 p-16px;
+    @apply: flex flex-col min-h-0 p-16px;
     box-sizing: border-box;
+    flex: 1 0 auto;
+
+    :deep(> .h-full),
+    :deep(> .size-full) {
+      height: var(--layout-main-available-height);
+    }
   }
 
   .footer {
     @apply: mt-auto shrink-0;
   }
+}
+
+.content--inner-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

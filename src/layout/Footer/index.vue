@@ -24,17 +24,19 @@
 
 <style scoped lang="scss">
 .footer-shell {
+  box-sizing: border-box;
   width: 100%;
   padding: 0 1rem 1rem;
 }
 
 .footer-shell__content {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-height: 52px;
-  padding: 0.85rem 1rem;
+  min-height: 64px;
+  padding: 0.65rem 1rem;
   border-radius: 22px;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
   background:

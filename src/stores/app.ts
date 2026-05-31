@@ -49,7 +49,7 @@ const BASE_THEME_SETTINGS = {
     },
     footer: {
       visible: true,
-      height: 48,
+      height: 96,
     },
   },
   general: {
