@@ -12,8 +12,23 @@ interface Props {
   centerText: string;
   legendLabels?: string[];
   unit?: string;
+  accentColor?: string;
 }
 const props = defineProps<Props>();
+
+function resolveColor(input: string | undefined, fallback: string): string {
+  if (!input) {
+    return fallback;
+  }
+
+  const normalized = input.trim();
+  if (!normalized.startsWith('var(')) {
+    return normalized;
+  }
+
+  const variableName = normalized.slice(4, -1).trim();
+  return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim() || fallback;
+}
 
 const centerTextPlugin: Plugin<'doughnut'> = {
   id: 'centerText',
@@ -31,13 +46,17 @@ const centerTextPlugin: Plugin<'doughnut'> = {
     // Configure text style
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = '600 22px Inter var, system-ui, sans-serif';
-    ctx.fillStyle = documentStyle.getPropertyValue('--colors-primary'); // Text color
+    ctx.font = '600 21px "Segoe UI", sans-serif';
+    ctx.fillStyle = resolveColor(props.accentColor, documentStyle.getPropertyValue('--colors-primary').trim() || '#409EFF');
 
     // Draw text at chart center
     ctx.fillText(props.centerText, xCenter, yCenter - 10); // Adjust y coordinate for vertical centering
   },
 };
+
+const accentColor = computed(() =>
+  resolveColor(props.accentColor, getComputedStyle(document.documentElement).getPropertyValue('--colors-primary').trim() || '#409EFF'),
+);
 
 const chartData: ComputedRef<ChartData<'doughnut'>> = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement);
@@ -47,13 +66,35 @@ const chartData: ComputedRef<ChartData<'doughnut'>> = computed(() => {
       {
         data: [props.used, props.free],
         backgroundColor: [
-          documentStyle.getPropertyValue('--colors-primary').trim() || '#409EFF',
+          accentColor.value,
           documentStyle.getPropertyValue('--el-border-color-light').trim() || '#E5E7EB',
         ],
         borderWidth: 0, // Remove border for smoother effect
       },
     ],
   };
+});
+
+const legendItems = computed(() => [
+  {
+    label: props.legendLabels?.[0] ?? '',
+    value: props.unit ? `${props.used} ${props.unit}` : `${props.used}`,
+    color: accentColor.value,
+  },
+  {
+    label: props.legendLabels?.[1] ?? '',
+    value: props.unit ? `${props.free} ${props.unit}` : `${props.free}`,
+    color: getComputedStyle(document.documentElement).getPropertyValue('--el-border-color').trim() || '#CBD5E1',
+  },
+]);
+
+const usagePercent = computed(() => {
+  const total = props.used + props.free;
+  if (total <= 0) {
+    return 0;
+  }
+
+  return Math.round((props.used / total) * 100);
 });
 
 const chartOptions = ref<ChartOptions<'doughnut'>>({
@@ -89,11 +130,29 @@ watch(currentTheme, async () => {
 </script>
 
 <template>
-  <div class="doughnut-card">
-    <div class="doughnut-card__title">
-      {{ title }}
+  <div class="doughnut-card" :style="{ '--doughnut-accent': accentColor }">
+    <div class="doughnut-card__header">
+      <div class="doughnut-card__title">
+        {{ title }}
+      </div>
+      <span class="doughnut-card__badge" :style="{ color: accentColor }">
+        {{ usagePercent }}%
+      </span>
     </div>
     <DoughnutChart ref="chartRef" :data="chartData" :options="chartOptions" :plugins="[centerTextPlugin]" class="doughnut-card__chart" />
+    <div class="doughnut-card__legend">
+      <div
+        v-for="item in legendItems"
+        :key="item.label"
+        class="doughnut-card__legend-item"
+      >
+        <span class="doughnut-card__legend-label">
+          <span class="doughnut-card__legend-dot" :style="{ background: item.color }" />
+          {{ item.label }}
+        </span>
+        <strong>{{ item.value }}</strong>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -101,13 +160,20 @@ watch(currentTheme, async () => {
 .doughnut-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 0.6rem 0;
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--el-bg-color) 94%, white 6%);
+  gap: 0.65rem;
+  padding: 0.9rem 0.8rem 0.8rem;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--doughnut-accent) 9%, transparent), transparent 36%),
+    color-mix(in srgb, var(--el-bg-color) 94%, white 6%);
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+}
+
+.doughnut-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .doughnut-card__title {
@@ -116,8 +182,52 @@ watch(currentTheme, async () => {
   color: var(--el-text-color-primary);
 }
 
+.doughnut-card__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
 .doughnut-card__chart {
   width: 100%;
   height: 176px;
+}
+
+.doughnut-card__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.doughnut-card__legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+}
+
+.doughnut-card__legend-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--el-text-color-secondary);
+  min-width: 0;
+}
+
+.doughnut-card__legend-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.doughnut-card__legend-item strong {
+  color: var(--el-text-color-primary);
+  font-size: 0.8rem;
 }
 </style>

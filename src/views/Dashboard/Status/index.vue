@@ -96,6 +96,7 @@ watch(
       :free="playerStatus.free"
       :center-text="playerStatus.centerText"
       :legend-labels="playerLegend"
+      accent-color="#0284c7"
     />
     <Doughnut
       :title="$t('views.dashboard.status.zombies')"
@@ -103,6 +104,7 @@ watch(
       :free="zombieStatus.free"
       :center-text="zombieStatus.centerText"
       :legend-labels="zombieLegend"
+      accent-color="#dc2626"
     />
     <Doughnut
       :title="$t('views.dashboard.status.animals')"
@@ -110,6 +112,7 @@ watch(
       :free="animalStatus.free"
       :center-text="animalStatus.centerText"
       :legend-labels="animalLegend"
+      accent-color="#059669"
     />
     <Doughnut
       :title="$t('views.dashboard.status.memory')"
@@ -118,6 +121,7 @@ watch(
       :center-text="memoryStatus.centerText"
       :legend-labels="memoryLegend"
       unit="MB"
+      accent-color="#d97706"
     />
     <Doughnut
       :title="$t('views.dashboard.status.disk')"
@@ -126,6 +130,7 @@ watch(
       :center-text="diskStatus.centerText"
       :legend-labels="diskLegend"
       unit="MB"
+      accent-color="#7c3aed"
     />
   </div>
 </template>
@@ -134,7 +139,7 @@ watch(
 .status-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 @media (max-width: 1400px) {

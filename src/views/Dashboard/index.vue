@@ -54,6 +54,126 @@ const snapshotLabel = computed(() => {
     : '--:--:--';
 });
 
+const heroSignalItems = computed(() => [
+  {
+    key: 'onlinePlayers',
+    label: t('views.dashboard.status.onlinePlayers'),
+    value: gameServerStats.value
+      ? `${gameServerStats.value.onlinePlayers ?? 0} / ${gameServerStats.value.maxOnlinePlayers ?? 0}`
+      : t('common.unknown'),
+    tone: 'primary',
+    icon: 'players',
+  },
+  {
+    key: 'fps',
+    label: t('views.dashboard.headers.fps'),
+    value: formatNumber(gameServerStats.value?.fps, 1),
+    tone: serverHealthTone.value === 'healthy'
+      ? 'success'
+      : serverHealthTone.value === 'degraded'
+        ? 'warning'
+        : 'danger',
+    icon: 'fps',
+  },
+  {
+    key: 'memory',
+    label: t('views.dashboard.headers.residentSetSize'),
+    value: formatMemory(gameServerStats.value?.residentSetSize),
+    tone: 'warning',
+    icon: 'memory',
+  },
+]);
+
+const metricCards = computed(() => [
+  {
+    key: 'players',
+    label: t('views.dashboard.status.onlinePlayers'),
+    value: gameServerStats.value
+      ? `${gameServerStats.value.onlinePlayers ?? 0} / ${gameServerStats.value.maxOnlinePlayers ?? 0}`
+      : t('common.unknown'),
+    detail: `${t('views.dashboard.headers.historyPlayers')}: ${formatNumber(gameServerStats.value?.historyPlayers)}`,
+    icon: 'players',
+    tone: 'primary',
+  },
+  {
+    key: 'fps',
+    label: t('views.dashboard.headers.fps'),
+    value: formatNumber(gameServerStats.value?.fps, 1),
+    detail: `${t('views.dashboard.quickActions.nextRestart')}: ${formatCompactDate(nextRestartAt.value)}`,
+    icon: 'fps',
+    tone: serverHealthTone.value === 'healthy'
+      ? 'success'
+      : serverHealthTone.value === 'degraded'
+        ? 'warning'
+        : 'danger',
+  },
+  {
+    key: 'residentSetSize',
+    label: t('views.dashboard.headers.residentSetSize'),
+    value: formatMemory(gameServerStats.value?.residentSetSize),
+    detail: `${t('views.dashboard.headers.heap')}: ${formatMemory(gameServerStats.value?.heap)}`,
+    icon: 'memory',
+    tone: 'warning',
+  },
+  {
+    key: 'zombies',
+    label: t('views.dashboard.status.zombies'),
+    value: gameServerStats.value
+      ? `${gameServerStats.value.zombies ?? 0} / ${gameServerStats.value.maxZombies ?? 0}`
+      : t('common.unknown'),
+    detail: `${t('views.dashboard.status.animals')}: ${gameServerStats.value ? `${gameServerStats.value.animals ?? 0} / ${gameServerStats.value.maxAnimals ?? 0}` : t('common.unknown')}`,
+    icon: 'zombies',
+    tone: 'danger',
+  },
+  {
+    key: 'chunks',
+    label: t('views.dashboard.headers.chunks'),
+    value: formatNumber(gameServerStats.value?.chunks),
+    detail: `CGO: ${formatNumber(gameServerStats.value?.chunkGameObjects)}`,
+    icon: 'chunks',
+    tone: 'info',
+  },
+  {
+    key: 'entities',
+    label: t('views.dashboard.headers.entities'),
+    value: formatNumber(gameServerStats.value?.entities),
+    detail: `${t('views.dashboard.headers.items')}: ${formatNumber(gameServerStats.value?.items)}`,
+    icon: 'entities',
+    tone: 'success',
+  },
+]);
+
+const miniMetricItems = computed(() => [
+  {
+    key: 'historyPlayers',
+    header: t('views.dashboard.headers.historyPlayers'),
+    value: formatNumber(gameServerStats.value?.historyPlayers),
+    caption: t('views.dashboard.headers.historyPlayers'),
+    tone: 'primary',
+  },
+  {
+    key: 'heap',
+    header: t('views.dashboard.headers.heap'),
+    value: formatMemory(gameServerStats.value?.heap),
+    caption: t('views.dashboard.headers.heap'),
+    tone: 'warning',
+  },
+  {
+    key: 'chunkGameObjects',
+    header: t('views.dashboard.headers.chunks'),
+    value: formatNumber(gameServerStats.value?.chunkGameObjects),
+    caption: 'CGO',
+    tone: 'info',
+  },
+  {
+    key: 'items',
+    header: t('views.dashboard.headers.items'),
+    value: formatNumber(gameServerStats.value?.items),
+    caption: t('views.dashboard.headers.items'),
+    tone: 'success',
+  },
+]);
+
 const overviewSummary = computed(() => {
   const stats = gameServerStats.value;
   if (!stats) {
@@ -203,6 +323,25 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
           {{ overviewSummary }}
         </p>
 
+        <div class="dashboard-hero__signals">
+          <div
+            v-for="item in heroSignalItems"
+            :key="item.key"
+            class="dashboard-signal"
+            :class="`dashboard-signal--${item.tone}`"
+          >
+            <span class="dashboard-signal__icon">
+              <icon-mdi-account-group-outline v-if="item.icon === 'players'" />
+              <icon-mdi-speedometer v-else-if="item.icon === 'fps'" />
+              <icon-mdi-memory v-else />
+            </span>
+            <span class="dashboard-signal__content">
+              <small>{{ item.label }}</small>
+              <strong>{{ item.value }}</strong>
+            </span>
+          </div>
+        </div>
+
         <div class="dashboard-hero__chips">
           <div class="dashboard-chip">
             <icon-mdi-ip-network-outline class="dashboard-chip__icon" />
@@ -255,58 +394,29 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
     </section>
 
     <section class="dashboard-metrics">
-      <div class="metric-card">
-        <div class="metric-card__label">
-          <icon-mdi-account-group-outline />
-          {{ $t('views.dashboard.status.onlinePlayers') }}
+      <div
+        v-for="item in metricCards"
+        :key="item.key"
+        class="metric-card"
+        :class="`metric-card--${item.tone}`"
+      >
+        <div class="metric-card__header">
+          <div class="metric-card__label">
+            <icon-mdi-account-group-outline v-if="item.icon === 'players'" />
+            <icon-mdi-speedometer v-else-if="item.icon === 'fps'" />
+            <icon-mdi-memory v-else-if="item.icon === 'memory'" />
+            <icon-mdi-ghost-outline v-else-if="item.icon === 'zombies'" />
+            <icon-mdi-cube-outline v-else-if="item.icon === 'chunks'" />
+            <icon-mdi-chart-timeline-variant v-else />
+            {{ item.label }}
+          </div>
+          <span class="metric-card__tone-dot" />
         </div>
         <div class="metric-card__value">
-          {{ gameServerStats ? `${gameServerStats.onlinePlayers ?? 0} / ${gameServerStats.maxOnlinePlayers ?? 0}` : $t('common.unknown') }}
+          {{ item.value }}
         </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card__label">
-          <icon-mdi-speedometer />
-          {{ $t('views.dashboard.headers.fps') }}
-        </div>
-        <div class="metric-card__value">
-          {{ formatNumber(gameServerStats?.fps, 1) }}
-        </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card__label">
-          <icon-mdi-memory />
-          {{ $t('views.dashboard.headers.residentSetSize') }}
-        </div>
-        <div class="metric-card__value">
-          {{ formatMemory(gameServerStats?.residentSetSize) }}
-        </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card__label">
-          <icon-mdi-ghost-outline />
-          {{ $t('views.dashboard.status.zombies') }}
-        </div>
-        <div class="metric-card__value">
-          {{ gameServerStats ? `${gameServerStats.zombies ?? 0} / ${gameServerStats.maxZombies ?? 0}` : $t('common.unknown') }}
-        </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card__label">
-          <icon-mdi-cube-outline />
-          {{ $t('views.dashboard.headers.chunks') }}
-        </div>
-        <div class="metric-card__value">
-          {{ formatNumber(gameServerStats?.chunks) }}
-        </div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-card__label">
-          <icon-mdi-chart-timeline-variant />
-          {{ $t('views.dashboard.headers.entities') }}
-        </div>
-        <div class="metric-card__value">
-          {{ formatNumber(gameServerStats?.entities) }}
+        <div class="metric-card__detail">
+          {{ item.detail }}
         </div>
       </div>
     </section>
@@ -314,6 +424,12 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
     <div class="dashboard-grid">
       <div class="dashboard-grid__main">
         <MyCard :header="$t('views.dashboard.headers.status')">
+          <template #extra>
+            <span class="section-pill" :class="`section-pill--${serverHealthTone}`">
+              <span class="section-pill__dot" />
+              {{ serverStatusLabel }}
+            </span>
+          </template>
           <Status :game-server-stats="gameServerStats" :system-metrics-snapshot="systemMetricsSnapshot" />
         </MyCard>
 
@@ -334,6 +450,12 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
 
       <div class="dashboard-grid__side">
         <MyCard :header="$t('views.dashboard.headers.quickActions')">
+          <template #extra>
+            <span class="section-pill">
+              <icon-mdi-clock-outline class="text-primary" />
+              {{ formatCompactDate(nextRestartAt) }}
+            </span>
+          </template>
           <QuickActions :next-restart-at="nextRestartAt" />
         </MyCard>
 
@@ -341,29 +463,18 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
           <RecentActivity />
         </MyCard>
 
-        <div class="mt-4 dashboard-mini-grid">
-          <MyCard :header="$t('views.dashboard.headers.historyPlayers')" compact>
+        <div class="dashboard-mini-grid mt-4">
+          <MyCard
+            v-for="item in miniMetricItems"
+            :key="item.key"
+            :header="item.header"
+            compact
+            class="dashboard-mini-card"
+            :class="`dashboard-mini-card--${item.tone}`"
+          >
             <div class="mini-metric">
-              <strong>{{ formatNumber(gameServerStats?.historyPlayers) }}</strong>
-              <span>{{ $t('views.dashboard.headers.historyPlayers') }}</span>
-            </div>
-          </MyCard>
-          <MyCard :header="$t('views.dashboard.headers.heap')" compact>
-            <div class="mini-metric">
-              <strong>{{ formatMemory(gameServerStats?.heap) }}</strong>
-              <span>{{ $t('views.dashboard.headers.heap') }}</span>
-            </div>
-          </MyCard>
-          <MyCard :header="$t('views.dashboard.headers.chunks')" compact>
-            <div class="mini-metric">
-              <strong>{{ formatNumber(gameServerStats?.chunkGameObjects) }}</strong>
-              <span>CGO</span>
-            </div>
-          </MyCard>
-          <MyCard :header="$t('views.dashboard.headers.items')" compact>
-            <div class="mini-metric">
-              <strong>{{ formatNumber(gameServerStats?.items) }}</strong>
-              <span>{{ $t('views.dashboard.headers.items') }}</span>
+              <strong>{{ item.value }}</strong>
+              <span>{{ item.caption }}</span>
             </div>
           </MyCard>
         </div>
@@ -459,6 +570,71 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
   margin-top: 1.25rem;
 }
 
+.dashboard-hero__signals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+}
+
+.dashboard-signal {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.82rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--el-bg-color) 88%, white 12%);
+}
+
+.dashboard-signal--primary {
+  color: var(--colors-primary);
+}
+
+.dashboard-signal--success {
+  color: #0f766e;
+}
+
+.dashboard-signal--warning {
+  color: #b45309;
+}
+
+.dashboard-signal--danger {
+  color: #be123c;
+}
+
+.dashboard-signal__icon {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 16px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.dashboard-signal__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dashboard-signal__content small {
+  color: var(--el-text-color-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dashboard-signal__content strong {
+  color: var(--el-text-color-primary);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
 .dashboard-chip {
   display: inline-flex;
   align-items: center;
@@ -526,13 +702,20 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
 }
 
 .metric-card {
-  padding: 1rem 1.1rem;
+  padding: 0.95rem 1.05rem;
   border-radius: 24px;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 96%, white 4%), var(--el-bg-color)),
     radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 8%, transparent), transparent 40%);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+}
+
+.metric-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .metric-card__label {
@@ -543,11 +726,47 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
   font-size: 0.85rem;
 }
 
+.metric-card__tone-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.9;
+  box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 12%, transparent);
+}
+
 .metric-card__value {
-  margin-top: 0.75rem;
-  font-size: 1.5rem;
+  margin-top: 0.6rem;
+  font-size: 1.42rem;
   font-weight: 800;
   line-height: 1.1;
+}
+
+.metric-card__detail {
+  margin-top: 0.4rem;
+  color: var(--el-text-color-secondary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.metric-card--primary {
+  color: var(--colors-primary);
+}
+
+.metric-card--success {
+  color: #0f766e;
+}
+
+.metric-card--warning {
+  color: #b45309;
+}
+
+.metric-card--danger {
+  color: #be123c;
+}
+
+.metric-card--info {
+  color: #0369a1;
 }
 
 .dashboard-grid {
@@ -570,12 +789,42 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
 .mini-metric {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.25rem;
+}
+
+.dashboard-mini-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-mini-card::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  content: '';
+  background: color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.dashboard-mini-card--primary {
+  color: var(--colors-primary);
+}
+
+.dashboard-mini-card--warning {
+  color: #b45309;
+}
+
+.dashboard-mini-card--info {
+  color: #0369a1;
+}
+
+.dashboard-mini-card--success {
+  color: #0f766e;
 }
 
 .mini-metric strong {
   font-size: 1.3rem;
   line-height: 1.1;
+  color: var(--el-text-color-primary);
 }
 
 .mini-metric span {
@@ -594,6 +843,32 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
   font-size: 0.82rem;
 }
 
+.section-pill--healthy,
+.section-pill--success {
+  color: var(--el-color-success);
+  background: color-mix(in srgb, var(--el-color-success) 10%, transparent);
+}
+
+.section-pill--degraded,
+.section-pill--warning {
+  color: var(--el-color-warning);
+  background: color-mix(in srgb, var(--el-color-warning) 10%, transparent);
+}
+
+.section-pill--critical,
+.section-pill--offline,
+.section-pill--danger {
+  color: var(--el-color-danger);
+  background: color-mix(in srgb, var(--el-color-danger) 10%, transparent);
+}
+
+.section-pill__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
 @media (max-width: 1536px) {
   .dashboard-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -608,6 +883,7 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
 }
 
 @media (max-width: 960px) {
+  .dashboard-hero__signals,
   .dashboard-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -623,6 +899,7 @@ async function fetchSystemMetricsSnapshot(): Promise<SystemMetricsSnapshotDto> {
     border-radius: 24px;
   }
 
+  .dashboard-hero__signals,
   .dashboard-metrics {
     grid-template-columns: 1fr;
   }
