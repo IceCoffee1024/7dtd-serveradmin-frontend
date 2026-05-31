@@ -3,13 +3,13 @@
 A Vue 3 + Vite + Element Plus admin frontend for 7 Days to Die server operations, including dashboard monitoring, ban/whitelist management, locale-aware routing, and theme customization.
 
 ![Vue](https://img.shields.io/badge/Vue-3.x-brightgreen.svg)
-![Vite](https://img.shields.io/badge/Vite-7.x-747bff.svg)
+![Vite](https://img.shields.io/badge/Vite-8.x-747bff.svg)
 ![Element Plus](https://img.shields.io/badge/Element%20Plus-2.x-409EFF.svg)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## Key Features
 
-- Vue 3 + Vite 7 + TypeScript with pnpm as the package manager.
+- Vue 3 + Vite 8 + TypeScript with pnpm as the package manager.
 - Element Plus: component auto-import via `unplugin-vue-components` while `useTheme` synchronizes Element Plus CSS vars and dark-mode palette instead of a static `src/styles/element/index.scss`.
 - Unified layout: `layout/Header`, `layout/Sidebar`, `layout/Main`, `layout/NavTab`, and `layout/MenuTree` compose the console navigation framework.
 - Routing: hash mode routes are wrapped by `Layout`, support localized entry points like `/:locale/dashboard`, and include 403/404/500 pages plus multi-level menu demos.

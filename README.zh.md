@@ -3,7 +3,7 @@
 基于 Vue 3 + Vite + Element Plus 的 7 Days to Die 服务器管理前端，集成 Pinia 状态、路由布局、统一主题、国际化与常用插件，支持仪表盘监控与封禁白名单管理。
 
 [![Vue](https://img.shields.io/badge/Vue-3.x-brightgreen.svg)](https://vuejs.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.x-747bff.svg)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8.x-747bff.svg)](https://vitejs.dev/)
 [![Element Plus](https://img.shields.io/badge/Element%20Plus-2.x-409EFF.svg)](https://element-plus.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -13,7 +13,7 @@
 
 ## 主要特性
 
-- Vue 3 + Vite 7 + TypeScript，默认使用 pnpm 作为包管理器。
+- Vue 3 + Vite 8 + TypeScript，默认使用 pnpm 作为包管理器。
 - Element Plus：通过 `unplugin-vue-components` 自动按需加载，主题与暗黑变量统一由 `useTheme` 组合式函数动态管理，无需手动维护 `src/styles/element/index.scss`。
 - 统一布局：`layout/Header` + `layout/Sidebar` + `layout/Main` + `layout/NavTab` + `layout/MenuTree` 共同构成控制台级的导航架构。
 - 路由：hash 路由配合 `Layout` 包裹，主入口支持本地化路径（如 `/:locale/dashboard`），内置 403/404/500 页面与多级菜单样例。
