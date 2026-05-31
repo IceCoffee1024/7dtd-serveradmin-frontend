@@ -377,7 +377,7 @@ async function onCancelRestart() {
             <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
               {{ t('views.restart.settings.warningStages.sectionTitle') }}
             </h3>
-            <el-button size="small" @click="addWarningStage">
+            <el-button size="small" class="app-pill-button" @click="addWarningStage">
               <el-icon><icon-mdi-plus /></el-icon>
               {{ t('views.restart.settings.warningStages.add') }}
             </el-button>
@@ -396,9 +396,16 @@ async function onCancelRestart() {
               <el-input v-model="stage.message" :placeholder="t('views.restart.settings.warningStages.messagePlaceholder')" />
             </el-form-item>
             <el-form-item class="flex-none">
-              <el-button type="danger" plain size="small" @click="removeWarningStage(idx)">
-                <el-icon><icon-mdi-trash-can-outline /></el-icon>
-              </el-button>
+              <IconButton
+                round
+                border
+                button-size="small"
+                type="danger"
+                :tooltip-content="t('common.delete')"
+                @click="removeWarningStage(idx)"
+              >
+                <icon-mdi-trash-can-outline />
+              </IconButton>
             </el-form-item>
           </div>
         </div>

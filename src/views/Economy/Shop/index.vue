@@ -386,7 +386,7 @@ async function onDelete(row: EconomyShopItemDto) {
       :columns="columns"
       :fetch-data="fetchData"
       :selectable="false"
-      :operation-column-width="160"
+      :operation-column-width="112"
       :auto-column-width="true"
       :search-collapsible="true"
       @add="openAdd"
@@ -402,13 +402,26 @@ async function onDelete(row: EconomyShopItemDto) {
       </template>
 
       <template #operation="{ row }">
-        <div class="flex gap-2 justify-center">
-          <el-button size="small" plain @click="openEdit(row)">
-            {{ t('views.economy.shop.actions.edit') }}
-          </el-button>
-          <el-button size="small" plain type="danger" @click="onDelete(row)">
-            {{ t('views.economy.shop.actions.delete') }}
-          </el-button>
+        <div class="inline-flex gap-1 justify-center">
+          <IconButton
+            round
+            border
+            button-size="small"
+            :tooltip-content="t('views.economy.shop.actions.edit')"
+            @click="openEdit(row)"
+          >
+            <icon-mdi-pencil-outline />
+          </IconButton>
+          <IconButton
+            round
+            border
+            button-size="small"
+            type="danger"
+            :tooltip-content="t('views.economy.shop.actions.delete')"
+            @click="onDelete(row)"
+          >
+            <icon-mdi-delete-outline />
+          </IconButton>
         </div>
       </template>
     </MyTable>

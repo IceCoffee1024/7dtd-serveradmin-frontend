@@ -159,7 +159,7 @@ async function onDelete(row: RecordRow) {
       :columns="columns"
       :fetch-data="fetchData"
       :selectable="false"
-      :operation-column-width="100"
+      :operation-column-width="72"
       :auto-column-width="true"
       :search-collapsible="true"
       :show-add-btn="false"
@@ -173,9 +173,16 @@ async function onDelete(row: RecordRow) {
       </template>
 
       <template #operation="{ row }">
-        <el-button size="small" plain type="danger" @click="onDelete(row)">
-          {{ t('common.delete') }}
-        </el-button>
+        <IconButton
+          round
+          border
+          button-size="small"
+          type="danger"
+          :tooltip-content="t('common.delete')"
+          @click="onDelete(row)"
+        >
+          <icon-mdi-delete-outline />
+        </IconButton>
       </template>
     </MyTable>
   </div>

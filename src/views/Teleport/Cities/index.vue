@@ -263,47 +263,75 @@ async function onDelete(row: CityLocationDto) {
 </script>
 
 <template>
-  <div>
-    <div class="mb-3 flex justify-end">
-      <el-button type="primary" @click="openAdd">
+  <div class="cities-page">
+    <div class="cities-page__toolbar">
+      <el-button type="primary" class="cities-page__add-btn" @click="openAdd">
         <el-icon><icon-mdi-plus /></el-icon>
         {{ t('components.myTable.add') }}
       </el-button>
     </div>
 
-    <el-table v-loading="loading" :data="items" border row-key="id">
-      <el-table-column prop="name" :label="t('views.teleport.cities.columns.name')" min-width="120" />
-      <el-table-column prop="description" :label="t('views.teleport.cities.columns.description')" min-width="140" show-overflow-tooltip />
-      <el-table-column prop="x" :label="t('views.teleport.cities.columns.x')" width="80" align="right" />
-      <el-table-column prop="y" :label="t('views.teleport.cities.columns.y')" width="80" align="right" />
-      <el-table-column prop="z" :label="t('views.teleport.cities.columns.z')" width="80" align="right" />
-      <el-table-column prop="yawAngle" :label="t('views.teleport.cities.columns.yawAngle')" width="90" align="right" />
-      <el-table-column prop="currencyRequired" :label="t('views.teleport.cities.columns.currencyRequired')" width="90" align="right">
-        <template #default="{ row }">
-          <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.currencyRequired }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="sortOrder" :label="t('views.teleport.cities.columns.sortOrder')" width="80" align="right" />
-      <el-table-column prop="isEnabled" :label="t('views.teleport.cities.columns.isEnabled')" width="90" align="center">
-        <template #default="{ row }">
-          <el-tag :type="row.isEnabled ? 'success' : 'info'">
-            {{ row.isEnabled ? t('common.yes') : t('common.no') }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column :label="t('components.myTable.operation')" width="140" align="center" fixed="right">
-        <template #default="{ row }">
-          <div class="flex gap-2 justify-center">
-            <el-button size="small" plain @click="openEdit(row)">
-              {{ t('views.teleport.cities.actions.edit') }}
-            </el-button>
-            <el-button size="small" plain type="danger" @click="onDelete(row)">
-              {{ t('views.teleport.cities.actions.delete') }}
-            </el-button>
+    <div class="cities-page__table-shell">
+      <el-table v-loading="loading" :data="items" row-key="id" class="cities-page__table">
+        <template #empty>
+          <div class="app-empty-state cities-page__empty">
+            <div class="app-empty-state__icon">
+              <icon-mdi-map-marker-radius-outline />
+            </div>
+            <div class="app-empty-state__title">
+              {{ t('views.teleport.cities.form.addTitle') }}
+            </div>
+            <div class="app-empty-state__description">
+              {{ t('views.teleport.cities.columns.description') }}
+            </div>
           </div>
         </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column prop="name" :label="t('views.teleport.cities.columns.name')" min-width="120" />
+        <el-table-column prop="description" :label="t('views.teleport.cities.columns.description')" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="x" :label="t('views.teleport.cities.columns.x')" width="80" align="right" />
+        <el-table-column prop="y" :label="t('views.teleport.cities.columns.y')" width="80" align="right" />
+        <el-table-column prop="z" :label="t('views.teleport.cities.columns.z')" width="80" align="right" />
+        <el-table-column prop="yawAngle" :label="t('views.teleport.cities.columns.yawAngle')" width="90" align="right" />
+        <el-table-column prop="currencyRequired" :label="t('views.teleport.cities.columns.currencyRequired')" width="90" align="right">
+          <template #default="{ row }">
+            <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.currencyRequired }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="sortOrder" :label="t('views.teleport.cities.columns.sortOrder')" width="80" align="right" />
+        <el-table-column prop="isEnabled" :label="t('views.teleport.cities.columns.isEnabled')" width="90" align="center">
+          <template #default="{ row }">
+            <el-tag :type="row.isEnabled ? 'success' : 'info'">
+              {{ row.isEnabled ? t('common.yes') : t('common.no') }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column :label="t('components.myTable.operation')" width="140" align="center" fixed="right">
+          <template #default="{ row }">
+            <div class="cities-page__actions">
+              <IconButton
+                round
+                border
+                button-size="small"
+                :tooltip-content="t('views.teleport.cities.actions.edit')"
+                @click="openEdit(row)"
+              >
+                <icon-mdi-pencil-outline />
+              </IconButton>
+              <IconButton
+                round
+                border
+                button-size="small"
+                type="danger"
+                :tooltip-content="t('views.teleport.cities.actions.delete')"
+                @click="onDelete(row)"
+              >
+                <icon-mdi-delete-outline />
+              </IconButton>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <MyDialog
       ref="dialogRef"
@@ -323,3 +351,47 @@ async function onDelete(row: CityLocationDto) {
     </MyDialog>
   </div>
 </template>
+
+<style scoped lang="scss">
+.cities-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cities-page__toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cities-page__add-btn {
+  border-radius: 999px;
+  padding-inline: 1rem;
+}
+
+.cities-page__table-shell {
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 7%, transparent), transparent 38%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
+}
+
+.cities-page__table {
+  :deep(.el-table__inner-wrapper::before) {
+    display: none;
+  }
+}
+
+.cities-page__actions {
+  display: inline-flex;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.cities-page__empty {
+  min-height: 220px;
+}
+</style>

@@ -238,7 +238,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
 </script>
 
 <template>
-  <div class="h-[calc(100vh-250px)]">
+  <div class="h-full">
     <MyTable
       row-key="playerId"
       :columns="columns"
@@ -246,7 +246,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       :context-menu-items="contextMenuItems"
       :auto-refresh-interval="resolvedAutoRefreshInterval"
       :show-add-btn="false"
-      :is-selectable="false"
+      :selectable="false"
       :operation-column-width="110"
       :auto-column-width="true"
     >

@@ -405,7 +405,7 @@ function triggerTypeLabel(value: string): string {
       :columns="columns"
       :fetch-data="fetchData"
       :selectable="false"
-      :operation-column-width="160"
+      :operation-column-width="112"
       :auto-column-width="true"
       :search-collapsible="true"
       @add="openAdd"
@@ -427,13 +427,26 @@ function triggerTypeLabel(value: string): string {
       </template>
 
       <template #operation="{ row }">
-        <div class="flex gap-2 justify-center">
-          <el-button size="small" plain @click="openEdit(row)">
-            {{ t('components.myTable.edit') }}
-          </el-button>
-          <el-button size="small" plain type="danger" @click="onDelete(row)">
-            {{ t('common.delete') }}
-          </el-button>
+        <div class="inline-flex gap-1 justify-center">
+          <IconButton
+            round
+            border
+            button-size="small"
+            :tooltip-content="t('components.myTable.edit')"
+            @click="openEdit(row)"
+          >
+            <icon-mdi-pencil-outline />
+          </IconButton>
+          <IconButton
+            round
+            border
+            button-size="small"
+            type="danger"
+            :tooltip-content="t('common.delete')"
+            @click="onDelete(row)"
+          >
+            <icon-mdi-delete-outline />
+          </IconButton>
         </div>
       </template>
     </MyTable>

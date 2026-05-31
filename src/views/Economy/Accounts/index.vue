@@ -36,6 +36,7 @@ const detailDialogRef = useTemplateRef('detailDialogRef');
 const batchAdjustDialogRef = useTemplateRef('batchAdjustDialogRef');
 const currentRow = ref<AccountRow | null>(null);
 const detailPlayerId = ref('');
+const visibleAccounts = ref<AccountRow[]>([]);
 const leaderboardQuery = useQuery(economyGetLeaderboardQuery());
 const deleteAccountMutation = useMutation({
   ...economyDeleteAccountMutation(),
@@ -52,6 +53,29 @@ const freezeAccountMutation = useMutation({
 const leaderboard = computed<EconomyLeaderboardRow[]>(() =>
   toEconomyLeaderboardRows(leaderboardQuery.data.value ?? []),
 );
+const visibleBalance = computed(() =>
+  visibleAccounts.value.reduce((sum, item) => sum + Number(item.balance ?? 0), 0),
+);
+const visibleFrozenCount = computed(() =>
+  visibleAccounts.value.filter(item => item.isFrozen).length,
+);
+const overviewItems = computed(() => [
+  {
+    label: t('views.economy.accounts.columns.balance'),
+    value: visibleBalance.value.toLocaleString(),
+    tone: 'primary',
+  },
+  {
+    label: t('views.economy.accounts.columns.isFrozen'),
+    value: `${visibleFrozenCount.value}/${visibleAccounts.value.length}`,
+    tone: 'danger',
+  },
+  {
+    label: t('views.economy.accounts.leaderboard.title'),
+    value: leaderboard.value[0]?.playerName ?? '--',
+    tone: 'warning',
+  },
+]);
 
 const columns = computed<MyTableColumn<AccountRow>[]>(() => [
   {
@@ -136,6 +160,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
   }
 
   const response = state.data;
+  visibleAccounts.value = response?.items ?? [];
 
   return {
     list: response?.items ?? [],
@@ -239,83 +264,139 @@ async function onSaved() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="gap-4 grid lg:grid-cols-[minmax(0,1fr)_320px]">
+  <div class="accounts-page">
+    <div class="accounts-page__overview">
+      <div
+        v-for="item in overviewItems"
+        :key="item.label"
+        class="accounts-page__metric"
+        :class="`accounts-page__metric--${item.tone}`"
+      >
+        <span class="accounts-page__metric-label">{{ item.label }}</span>
+        <strong class="accounts-page__metric-value">{{ item.value }}</strong>
+      </div>
+    </div>
+
+    <div class="accounts-page__grid">
       <MyTable
         ref="tableRef"
         row-key="playerId"
         :columns="columns"
         :fetch-data="fetchData"
-        :is-selectable="false"
+        :selectable="false"
         :show-add-btn="false"
         :operation-column-width="270"
         :auto-column-width="true"
         :search-collapsible="true"
+        class="accounts-page__table"
       >
         <template #toolbar-left>
-          <el-button type="primary" plain @click="onBatchAdjust">
+          <el-button type="primary" class="accounts-page__batch-btn" @click="onBatchAdjust">
             {{ t('views.economy.accounts.actions.batchAdjust') }}
           </el-button>
         </template>
 
         <template #balance="{ row }">
-          <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.balance }}</span>
+          <span class="accounts-page__balance">{{ row.balance }}</span>
         </template>
 
         <template #isFrozen="{ row }">
-          <el-tag :type="row.isFrozen ? 'danger' : 'success'">
+          <el-tag :type="row.isFrozen ? 'danger' : 'success'" effect="light" round>
             {{ row.isFrozen ? t('common.yes') : t('common.no') }}
           </el-tag>
         </template>
 
         <template #lastTransactionAt="{ row }">
-          <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.lastTransactionAt) }}</span>
+          <span class="accounts-page__mono">{{ formatTimestamp(row.lastTransactionAt) }}</span>
         </template>
 
         <template #operation="{ row }">
-          <div class="flex gap-2 justify-center">
-            <el-button size="small" plain @click="onView(row)">
-              {{ t('components.myTable.view') }}
-            </el-button>
-            <el-button size="small" plain @click="onAdjust(row)">
-              {{ t('views.economy.accounts.actions.adjust') }}
-            </el-button>
-            <el-button size="small" plain @click="onToggleFrozen(row)">
-              {{ row.isFrozen ? t('views.economy.accounts.actions.unfreeze') : t('views.economy.accounts.actions.freeze') }}
-            </el-button>
-            <el-button size="small" type="danger" plain @click="onDelete(row)">
-              {{ t('views.economy.accounts.actions.delete') }}
-            </el-button>
+          <div class="accounts-page__actions">
+            <IconButton
+              round
+              border
+              button-size="small"
+              :tooltip-content="t('components.myTable.view')"
+              @click="onView(row as AccountRow)"
+            >
+              <icon-mdi-eye-outline />
+            </IconButton>
+            <IconButton
+              round
+              border
+              button-size="small"
+              :tooltip-content="t('views.economy.accounts.actions.adjust')"
+              @click="onAdjust(row as AccountRow)"
+            >
+              <icon-mdi-pencil-outline />
+            </IconButton>
+            <IconButton
+              round
+              border
+              button-size="small"
+              :tooltip-content="row.isFrozen ? t('views.economy.accounts.actions.unfreeze') : t('views.economy.accounts.actions.freeze')"
+              @click="onToggleFrozen(row as AccountRow)"
+            >
+              <icon-mdi-snowflake />
+            </IconButton>
+            <IconButton
+              round
+              border
+              button-size="small"
+              type="danger"
+              :tooltip-content="t('views.economy.accounts.actions.delete')"
+              @click="onDelete(row as AccountRow)"
+            >
+              <icon-mdi-delete-outline />
+            </IconButton>
           </div>
         </template>
       </MyTable>
 
-      <div class="p-4 border border-gray-200 rounded-4 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900/70">
-        <div class="text-sm text-gray-900 font-semibold mb-3 dark:text-gray-100">
-          {{ t('views.economy.accounts.leaderboard.title') }}
-        </div>
-        <div v-if="leaderboard.length === 0" class="text-sm text-gray-500 dark:text-gray-400">
+      <MyCard
+        :header="t('views.economy.accounts.leaderboard.title')"
+        compact
+        class="accounts-page__leaderboard"
+      >
+        <template #extra>
+          <IconButton
+            round
+            border
+            button-size="small"
+            :loading="leaderboardQuery.isPending.value"
+            :tooltip-content="t('components.myTable.refresh')"
+            @click="refreshLeaderboard"
+          >
+            <icon-mdi-refresh />
+          </IconButton>
+        </template>
+
+        <div v-if="leaderboard.length === 0" class="accounts-page__leaderboard-empty">
           {{ t('views.economy.accounts.leaderboard.empty') }}
         </div>
-        <div v-else class="flex flex-col gap-3">
-          <div v-for="item in leaderboard" :key="item.playerId" class="px-3 py-2 rounded-3 bg-gray-50 flex gap-3 items-center justify-between dark:bg-gray-800/70">
-            <div class="min-w-0">
-              <div class="text-xs text-gray-400 tracking-[0.16em] uppercase">
+        <div v-else class="accounts-page__leaderboard-list">
+          <div
+            v-for="item in leaderboard"
+            :key="item.playerId"
+            class="accounts-page__leaderboard-item"
+          >
+            <div class="accounts-page__leaderboard-main">
+              <div class="accounts-page__leaderboard-rank">
                 #{{ item.rank }}
               </div>
-              <div class="text-sm text-gray-900 font-semibold truncate dark:text-gray-100">
+              <div class="accounts-page__leaderboard-name">
                 {{ item.playerName }}
               </div>
-              <div class="text-xs text-gray-500 font-mono truncate dark:text-gray-400">
+              <div class="accounts-page__leaderboard-id">
                 {{ item.playerId }}
               </div>
             </div>
-            <div class="text-sm text-amber-600 font-semibold dark:text-amber-400">
+            <div class="accounts-page__leaderboard-balance">
               {{ item.balance }}
             </div>
           </div>
         </div>
-      </div>
+      </MyCard>
     </div>
 
     <AdjustBalanceDialog
@@ -339,3 +420,163 @@ async function onSaved() {
     />
   </div>
 </template>
+
+<style scoped lang="scss">
+.accounts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.accounts-page__overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.accounts-page__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, currentColor 10%, transparent), transparent 36%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+}
+
+.accounts-page__metric--primary {
+  color: var(--colors-primary);
+}
+
+.accounts-page__metric--danger {
+  color: #be123c;
+}
+
+.accounts-page__metric--warning {
+  color: #b45309;
+}
+
+.accounts-page__metric-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.accounts-page__metric-value {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: var(--el-text-color-primary);
+}
+
+.accounts-page__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1rem;
+}
+
+.accounts-page__table {
+  min-height: 0;
+}
+
+.accounts-page__batch-btn {
+  border-radius: 999px;
+  padding-inline: 1rem;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--colors-primary) 16%, transparent);
+}
+
+.accounts-page__balance {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.accounts-page__mono {
+  font-family: var(--el-font-family-monospace, 'Cascadia Mono', 'Consolas', monospace);
+  font-size: 0.76rem;
+  color: var(--el-text-color-secondary);
+}
+
+.accounts-page__actions {
+  display: inline-flex;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.accounts-page__leaderboard {
+  align-self: start;
+}
+
+.accounts-page__leaderboard-empty {
+  color: var(--el-text-color-secondary);
+  font-size: 0.9rem;
+}
+
+.accounts-page__leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.accounts-page__leaderboard-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 98%, white 2%), var(--el-bg-color)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--el-color-warning) 10%, transparent), transparent 38%);
+}
+
+.accounts-page__leaderboard-main {
+  min-width: 0;
+}
+
+.accounts-page__leaderboard-rank {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--el-text-color-placeholder);
+}
+
+.accounts-page__leaderboard-name {
+  overflow: hidden;
+  color: var(--el-text-color-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accounts-page__leaderboard-id {
+  overflow: hidden;
+  color: var(--el-text-color-secondary);
+  font-family: var(--el-font-family-monospace, 'Cascadia Mono', 'Consolas', monospace);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accounts-page__leaderboard-balance {
+  color: #d97706;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .accounts-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .accounts-page__overview {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

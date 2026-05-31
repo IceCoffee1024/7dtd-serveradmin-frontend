@@ -56,6 +56,24 @@ const succeededOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
+const overviewItems = computed(() => [
+  {
+    label: t('views.auditLogs.columns.source'),
+    value: sourceOptions.value.length,
+    tone: 'primary',
+  },
+  {
+    label: t('views.auditLogs.columns.actionType'),
+    value: actionTypeOptions.value.length,
+    tone: 'warning',
+  },
+  {
+    label: t('views.auditLogs.columns.succeeded'),
+    value: succeededOptions.value.length,
+    tone: 'success',
+  },
+]);
+
 const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
   {
     prop: 'keyword',
@@ -423,43 +441,56 @@ function onView(row: AuditLogRow) {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-196px)]">
+  <div class="audit-log-page">
+    <div class="audit-log-page__overview">
+      <div
+        v-for="item in overviewItems"
+        :key="item.label"
+        class="audit-log-page__metric"
+        :class="`audit-log-page__metric--${item.tone}`"
+      >
+        <span class="audit-log-page__metric-label">{{ item.label }}</span>
+        <strong class="audit-log-page__metric-value">{{ item.value }}</strong>
+      </div>
+    </div>
+
     <MyTable
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"
-      :is-selectable="false"
+      :selectable="false"
       :show-add-btn="false"
-      :show-operation-column="false"
+      :operation-column-width="96"
       :auto-column-width="true"
       :search-collapsible="true"
+      class="audit-log-page__table"
     >
       <template #createdAt="{ row }">
-        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
+        <span class="audit-log-page__mono">{{ formatTimestamp(row.createdAt) }}</span>
       </template>
 
       <template #source="{ row }">
-        <span class="text-xs text-gray-600 dark:text-gray-300">{{ getSourceLabel(row.source) }}</span>
+        <span class="audit-log-page__pill audit-log-page__pill--neutral">{{ getSourceLabel(row.source) }}</span>
       </template>
 
       <template #actionType="{ row }">
-        <span class="text-xs text-gray-700 dark:text-gray-200">{{ getActionTypeLabel(row.actionType) }}</span>
+        <span class="audit-log-page__pill audit-log-page__pill--accent">{{ getActionTypeLabel(row.actionType) }}</span>
       </template>
 
       <template #operatorId="{ row }">
-        <span class="text-xs text-gray-600 font-mono dark:text-gray-300">
+        <span class="audit-log-page__mono">
           {{ row.operatorId || t('views.auditLogs.empty.operatorId') }}
         </span>
       </template>
 
       <template #resourceId="{ row }">
-        <span class="text-xs text-gray-600 font-mono dark:text-gray-300">
+        <span class="audit-log-page__mono">
           {{ row.resourceId || t('views.auditLogs.empty.resourceId') }}
         </span>
       </template>
 
       <template #summary="{ row }">
-        <div class="text-gray-800 leading-5 dark:text-gray-100">
+        <div class="audit-log-page__summary">
           {{ row.summary }}
         </div>
       </template>
@@ -470,17 +501,129 @@ function onView(row: AuditLogRow) {
         </el-tag>
       </template>
       <template #errorMessage="{ row }">
-        <span v-if="row.errorMessage" class="text-xs text-red-600 dark:text-red-400">{{ row.errorMessage }}</span>
-        <span v-else class="text-xs text-gray-400 dark:text-gray-500">{{ t('views.auditLogs.empty.errorMessage') }}</span>
+        <span v-if="row.errorMessage" class="audit-log-page__error">{{ row.errorMessage }}</span>
+        <span v-else class="audit-log-page__empty">{{ t('views.auditLogs.empty.errorMessage') }}</span>
       </template>
 
       <template #operation="{ row }">
-        <el-button link type="primary" @click="onView(row)">
-          {{ t('components.myTable.view') }}
-        </el-button>
+        <IconButton
+          round
+          border
+          button-size="small"
+          :tooltip-content="t('components.myTable.view')"
+          @click="onView(row as AuditLogRow)"
+        >
+          <icon-mdi-eye-outline />
+        </IconButton>
       </template>
     </MyTable>
 
     <DetailDialog ref="detailDialogRef" :log="currentDetailLog" />
   </div>
 </template>
+
+<style scoped lang="scss">
+.audit-log-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.audit-log-page__overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.audit-log-page__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, currentColor 10%, transparent), transparent 36%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+}
+
+.audit-log-page__metric--primary {
+  color: var(--colors-primary);
+}
+
+.audit-log-page__metric--warning {
+  color: #b45309;
+}
+
+.audit-log-page__metric--success {
+  color: #0f766e;
+}
+
+.audit-log-page__metric-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.audit-log-page__metric-value {
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--el-text-color-primary);
+}
+
+.audit-log-page__table {
+  flex: 1;
+  min-height: 0;
+}
+
+.audit-log-page__mono {
+  font-family: var(--el-font-family-monospace, 'Cascadia Mono', 'Consolas', monospace);
+  font-size: 0.76rem;
+  color: var(--el-text-color-secondary);
+}
+
+.audit-log-page__pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0.1rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.audit-log-page__pill--neutral {
+  color: var(--el-text-color-primary);
+  background: color-mix(in srgb, var(--el-fill-color-light) 86%, white 14%);
+}
+
+.audit-log-page__pill--accent {
+  color: var(--colors-primary);
+  background: color-mix(in srgb, var(--colors-primary) 10%, transparent);
+}
+
+.audit-log-page__summary {
+  color: var(--el-text-color-primary);
+  line-height: 1.65;
+}
+
+.audit-log-page__error {
+  font-size: 0.76rem;
+  color: var(--el-color-danger);
+}
+
+.audit-log-page__empty {
+  font-size: 0.76rem;
+  color: var(--el-text-color-placeholder);
+}
+
+@media (max-width: 900px) {
+  .audit-log-page__overview {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

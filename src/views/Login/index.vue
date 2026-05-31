@@ -82,23 +82,23 @@ async function handleLogin() {
           </div>
           <div class="mt-5">
             <el-form-item prop="username" class="text-sm mb-5 mt-1">
-              <label class="text-gray-600 font-semibold pb-1 block" for="username">{{ $t('views.login.username') }}</label>
+              <label class="text-gray-600 font-semibold pb-1 block dark:text-gray-300" for="username">{{ $t('views.login.username') }}</label>
               <el-input id="username" v-model="loginForm.username" size="large" class="w-full" autofocus />
             </el-form-item>
             <el-form-item prop="password" class="text-sm mb-5 mt-1">
-              <label class="text-gray-600 font-semibold pb-1 block" for="password">{{ $t('views.login.password') }}</label>
+              <label class="text-gray-600 font-semibold pb-1 block dark:text-gray-300" for="password">{{ $t('views.login.password') }}</label>
               <el-input id="password" v-model="loginForm.password" size="large" show-password type="password" class="w-full" />
             </el-form-item>
           </div>
           <div class="mb-4 flex items-center">
             <el-checkbox id="rememberMe" v-model="userInfoStore.isRememberMe" class="!mr-0" />
-            <label class="text-xs text-gray-500 font-semibold ml-1 cursor-pointer hover:text-gray-600" for="rememberMe">
+            <label class="text-xs text-gray-500 font-semibold ml-1 cursor-pointer dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" for="rememberMe">
               {{ $t('views.login.rememberMe') }}
             </label>
-            <a class="text-xs text-gray-500 font-semibold ml-auto underline cursor-pointer hover:text-gray-600" href="#">{{ $t('views.login.forgotPassword') }}</a>
+            <a class="text-xs text-gray-500 font-semibold ml-auto underline cursor-pointer dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" href="#">{{ $t('views.login.forgotPassword') }}</a>
           </div>
           <div class="mt-5">
-            <el-button size="large" native-type="submit" plain class="text-base text-white font-semibold px-4 py-2 text-center rounded-lg bg-blue-600 w-full cursor-pointer shadow-md transition duration-200 ease-in hover:text-white focus:outline-none hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200">
+            <el-button type="primary" size="large" native-type="submit" class="text-base font-semibold w-full shadow-md">
               {{ $t('views.login.submit') }}
             </el-button>
           </div>

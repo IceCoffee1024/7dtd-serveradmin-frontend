@@ -694,7 +694,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 </script>
 
 <template>
-  <div>
+  <div class="teleport-settings-page">
     <div v-if="isLoading" class="flex flex-col gap-4">
       <el-skeleton v-for="index in 6" :key="index" animated>
         <template #template>
@@ -703,7 +703,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
       </el-skeleton>
     </div>
     <template v-else>
-      <el-card shadow="never" class="mb-4">
+      <el-card shadow="never" class="teleport-settings-page__master-card mb-4">
         <MyForm
           ref="formRef"
           v-model="form"
@@ -715,11 +715,11 @@ onBeforeRouteLeave(async (_to, _from, next) => {
       </el-card>
 
       <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
-        <el-tabs type="border-card">
+        <el-tabs type="border-card" class="teleport-settings-page__tabs">
           <!-- ==================== Home Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.home')">
-            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+            <div class="teleport-settings-page__panel-grid">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
                 </template>
@@ -732,7 +732,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
                 </template>
@@ -745,7 +745,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.homeEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
                 </template>
@@ -762,8 +762,8 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 
           <!-- ==================== City Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.city')">
-            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+            <div class="teleport-settings-page__panel-grid">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
                 </template>
@@ -776,7 +776,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
                 </template>
@@ -789,7 +789,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.cityEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
                 </template>
@@ -806,8 +806,8 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 
           <!-- ==================== Friend Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.friend')">
-            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+            <div class="teleport-settings-page__panel-grid">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
                 </template>
@@ -820,7 +820,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
                 </template>
@@ -833,7 +833,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.friendEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
                 </template>
@@ -850,7 +850,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 
           <!-- ==================== Global Cooldown Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.globalCooldown')">
-            <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+            <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900">
               <template #header>
                 <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
               </template>
@@ -866,8 +866,8 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 
           <!-- ==================== Back Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.back')">
-            <div class="gap-4 grid grid-cols-1 xl:grid-cols-2">
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900">
+            <div class="teleport-settings-page__panel-grid">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.basic') }}</span>
                 </template>
@@ -880,7 +880,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900" :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.commands') }}</span>
                 </template>
@@ -893,7 +893,7 @@ onBeforeRouteLeave(async (_to, _from, next) => {
                 />
               </el-card>
 
-              <el-card shadow="never" class="border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
+              <el-card shadow="never" class="teleport-settings-page__panel-card border-none bg-gray-50/50 dark:bg-dark-900 xl:col-span-2" :class="{ 'opacity-40 pointer-events-none select-none': !form.backEnabled }">
                 <template #header>
                   <span class="text-sm font-semibold">{{ t('views.teleport.settings.sections.tips') }}</span>
                 </template>
@@ -911,11 +911,11 @@ onBeforeRouteLeave(async (_to, _from, next) => {
       </div>
 
       <div class="mt-4 flex gap-2 justify-end">
-        <el-button :disabled="isSubmitting" @click="onReset">
+        <el-button class="app-pill-button" :disabled="isSubmitting" @click="onReset">
           <el-icon><icon-mdi-refresh /></el-icon>
           {{ t('views.teleport.settings.actions.reset') }}
         </el-button>
-        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
+        <el-button type="primary" class="app-pill-button" :loading="isSubmitting" :disabled="!isDirty" @click="onSubmit">
           <el-icon><icon-mdi-check /></el-icon>
           {{ t('views.teleport.settings.actions.save') }}
         </el-button>
@@ -923,3 +923,45 @@ onBeforeRouteLeave(async (_to, _from, next) => {
     </template>
   </div>
 </template>
+
+<style scoped lang="scss">
+.teleport-settings-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.teleport-settings-page__master-card {
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
+}
+
+.teleport-settings-page__tabs {
+  :deep(.el-tabs__content) {
+    background: transparent;
+  }
+}
+
+.teleport-settings-page__panel-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.teleport-settings-page__panel-card {
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 96%, white 4%), var(--el-bg-color)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 42%) !important;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 45%, transparent);
+}
+
+@media (min-width: 1280px) {
+  .teleport-settings-page__panel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>

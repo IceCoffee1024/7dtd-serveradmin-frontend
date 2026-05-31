@@ -31,6 +31,24 @@ const detailRow = ref<TransactionRow | null>(null);
 const currentFilters = ref<EconomyTransactionFilters>({});
 const exporting = ref(false);
 
+const overviewItems = computed(() => [
+  {
+    label: t('views.economy.transactions.columns.type'),
+    value: 6,
+    tone: 'primary',
+  },
+  {
+    label: t('views.economy.transactions.columns.occurredAt'),
+    value: 'UTC',
+    tone: 'info',
+  },
+  {
+    label: t('views.economy.transactions.exportCsv'),
+    value: 'CSV',
+    tone: 'success',
+  },
+]);
+
 const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
   {
     prop: 'keyword',
@@ -226,20 +244,33 @@ async function onView(row: TransactionRow) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 h-full min-h-0">
+  <div class="transactions-page">
+    <div class="transactions-page__overview">
+      <div
+        v-for="item in overviewItems"
+        :key="item.label"
+        class="transactions-page__metric"
+        :class="`transactions-page__metric--${item.tone}`"
+      >
+        <span class="transactions-page__metric-label">{{ item.label }}</span>
+        <strong class="transactions-page__metric-value">{{ item.value }}</strong>
+      </div>
+    </div>
+
     <MyTable
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"
-      :is-selectable="false"
+      :selectable="false"
       :show-add-btn="false"
       :auto-column-width="true"
       :search-collapsible="true"
-      class="flex-1 min-h-0"
+      :operation-column-width="92"
+      class="transactions-page__table"
     >
       <template #amount="{ row }">
         <span
-          class="font-semibold"
+          class="transactions-page__amount"
           :class="row.direction === 'Income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
         >
           {{ row.direction === 'Income' ? '+' : '-' }}{{ row.amount }}
@@ -247,7 +278,7 @@ async function onView(row: TransactionRow) {
       </template>
 
       <template #occurredAt="{ row }">
-        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.occurredAt) }}</span>
+        <span class="transactions-page__mono">{{ formatTimestamp(row.occurredAt) }}</span>
       </template>
 
       <template #toolbar-right>
@@ -255,7 +286,8 @@ async function onView(row: TransactionRow) {
           :tooltip-content="t('views.economy.transactions.exportCsv')"
           :loading="exporting"
           button-size="small"
-          plain
+          round
+          border
           @click="onExport"
         >
           <icon-mdi-download />
@@ -263,14 +295,94 @@ async function onView(row: TransactionRow) {
       </template>
 
       <template #operation="{ row }">
-        <div class="flex justify-center">
-          <el-button size="small" plain @click="onView(row)">
-            {{ t('components.myTable.view') }}
-          </el-button>
-        </div>
+        <IconButton
+          round
+          border
+          button-size="small"
+          :tooltip-content="t('components.myTable.view')"
+          @click="onView(row as TransactionRow)"
+        >
+          <icon-mdi-eye-outline />
+        </IconButton>
       </template>
     </MyTable>
 
     <DetailDialog ref="detailDialogRef" :transaction="detailRow" />
   </div>
 </template>
+
+<style scoped lang="scss">
+.transactions-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.transactions-page__overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.transactions-page__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, currentColor 9%, transparent), transparent 36%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+}
+
+.transactions-page__metric--primary {
+  color: var(--colors-primary);
+}
+
+.transactions-page__metric--info {
+  color: #0369a1;
+}
+
+.transactions-page__metric--success {
+  color: #0f766e;
+}
+
+.transactions-page__metric-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.transactions-page__metric-value {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--el-text-color-primary);
+}
+
+.transactions-page__table {
+  flex: 1;
+  min-height: 0;
+}
+
+.transactions-page__amount {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.transactions-page__mono {
+  font-family: var(--el-font-family-monospace, 'Cascadia Mono', 'Consolas', monospace);
+  font-size: 0.76rem;
+  color: var(--el-text-color-secondary);
+}
+
+@media (max-width: 900px) {
+  .transactions-page__overview {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

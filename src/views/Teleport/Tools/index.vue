@@ -117,14 +117,14 @@ async function submitToPlayer() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <el-tabs type="border-card">
+  <div class="teleport-tools-page">
+    <el-tabs type="border-card" class="teleport-tools-page__tabs">
       <!-- Tab 1: Teleport to Position -->
       <el-tab-pane :label="t('views.teleport.tools.tabs.toPosition')">
-        <div class="p-4 max-w-lg">
-          <div class="mb-4 flex gap-2 items-center">
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ t('views.teleport.tools.hints.onlinePlayers') }}</span>
-            <IconButton button-size="small" icon-size="16" :loading="loadingPlayers" :tooltip-content="t('components.myTable.refresh')" @click="refreshPlayers">
+        <div class="teleport-tools-page__pane">
+          <div class="teleport-tools-page__toolbar">
+            <span class="teleport-tools-page__hint">{{ t('views.teleport.tools.hints.onlinePlayers') }}</span>
+            <IconButton round border button-size="small" icon-size="16" :loading="loadingPlayers" :tooltip-content="t('components.myTable.refresh')" @click="refreshPlayers">
               <icon-mdi-refresh />
             </IconButton>
           </div>
@@ -162,6 +162,7 @@ async function submitToPlayer() {
             <el-form-item>
               <el-button
                 type="primary"
+                class="app-pill-button"
                 :loading="toPositionLoading"
                 :disabled="toPositionForm.entityId == null || toPositionForm.x == null || toPositionForm.y == null || toPositionForm.z == null"
                 @click="submitToPosition"
@@ -175,10 +176,10 @@ async function submitToPlayer() {
 
       <!-- Tab 2: Teleport to Player -->
       <el-tab-pane :label="t('views.teleport.tools.tabs.toPlayer')">
-        <div class="p-4 max-w-lg">
-          <div class="mb-4 flex gap-2 items-center">
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ t('views.teleport.tools.hints.onlinePlayers') }}</span>
-            <IconButton button-size="small" icon-size="16" :loading="loadingPlayers" :tooltip-content="t('components.myTable.refresh')" @click="refreshPlayers">
+        <div class="teleport-tools-page__pane">
+          <div class="teleport-tools-page__toolbar">
+            <span class="teleport-tools-page__hint">{{ t('views.teleport.tools.hints.onlinePlayers') }}</span>
+            <IconButton round border button-size="small" icon-size="16" :loading="loadingPlayers" :tooltip-content="t('components.myTable.refresh')" @click="refreshPlayers">
               <icon-mdi-refresh />
             </IconButton>
           </div>
@@ -222,6 +223,7 @@ async function submitToPlayer() {
             <el-form-item>
               <el-button
                 type="primary"
+                class="app-pill-button"
                 :loading="toPlayerLoading"
                 :disabled="toPlayerForm.sourceEntityId == null || toPlayerForm.targetEntityId == null"
                 @click="submitToPlayer"
@@ -235,3 +237,35 @@ async function submitToPlayer() {
     </el-tabs>
   </div>
 </template>
+
+<style scoped lang="scss">
+.teleport-tools-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.teleport-tools-page__pane {
+  max-width: 34rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 36%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+}
+
+.teleport-tools-page__toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.teleport-tools-page__hint {
+  color: var(--el-text-color-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+</style>

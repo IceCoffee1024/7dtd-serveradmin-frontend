@@ -290,7 +290,7 @@ onBeforeRouteLeave(async () => {
           <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
             {{ t('views.gameNotice.settings.fields.welcomeNotices') }}
           </span>
-          <el-button size="small" plain @click="addWelcomeNotice">
+          <el-button size="small" class="app-pill-button" @click="addWelcomeNotice">
             <el-icon><icon-mdi-plus /></el-icon>
             {{ t('views.gameNotice.settings.actions.addNotice') }}
           </el-button>
@@ -310,7 +310,9 @@ onBeforeRouteLeave(async () => {
             <IconButton
               button-size="small"
               icon-size="16"
-              plain
+              round
+              border
+              type="danger"
               :tooltip-content="t('views.gameNotice.settings.actions.removeNotice')"
               @click="removeWelcomeNotice(index)"
             >
@@ -326,7 +328,7 @@ onBeforeRouteLeave(async () => {
           <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
             {{ t('views.gameNotice.settings.fields.rotatingNotices') }}
           </span>
-          <el-button size="small" plain @click="addNotice">
+          <el-button size="small" class="app-pill-button" @click="addNotice">
             <el-icon><icon-mdi-plus /></el-icon>
             {{ t('views.gameNotice.settings.actions.addNotice') }}
           </el-button>
@@ -346,7 +348,9 @@ onBeforeRouteLeave(async () => {
             <IconButton
               button-size="small"
               icon-size="16"
-              plain
+              round
+              border
+              type="danger"
               :tooltip-content="t('views.gameNotice.settings.actions.removeNotice')"
               @click="removeNotice(index)"
             >

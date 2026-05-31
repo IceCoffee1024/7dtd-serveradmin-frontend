@@ -331,7 +331,7 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
       :columns="columns"
       :fetch-data="fetchData"
       :selectable="false"
-      :operation-column-width="200"
+      :operation-column-width="112"
       :auto-column-width="true"
       :search-collapsible="true"
       @add="openAdd"
@@ -355,13 +355,26 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
       </template>
 
       <template #operation="{ row }">
-        <div class="flex gap-2 justify-center">
-          <el-button size="small" plain @click="onViewRedemptions(row)">
-            {{ t('views.economy.redeemCodes.actions.viewRedemptions') }}
-          </el-button>
-          <el-button size="small" plain type="danger" @click="onDelete(row)">
-            {{ t('views.economy.redeemCodes.actions.delete') }}
-          </el-button>
+        <div class="redeem-codes-page__actions">
+          <IconButton
+            round
+            border
+            button-size="small"
+            :tooltip-content="t('views.economy.redeemCodes.actions.viewRedemptions')"
+            @click="onViewRedemptions(row)"
+          >
+            <icon-mdi-history />
+          </IconButton>
+          <IconButton
+            round
+            border
+            button-size="small"
+            type="danger"
+            :tooltip-content="t('views.economy.redeemCodes.actions.delete')"
+            @click="onDelete(row)"
+          >
+            <icon-mdi-delete-outline />
+          </IconButton>
         </div>
       </template>
     </MyTable>
@@ -394,7 +407,7 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
               {{ t('views.economy.redeemCodes.form.hints.commandRewards') }}
             </div>
           </div>
-          <el-button size="small" plain @click="addCommandReward">
+          <el-button size="small" class="redeem-codes-page__add-command" @click="addCommandReward">
             <el-icon><icon-mdi-plus /></el-icon>
             {{ t('views.economy.redeemCodes.form.actions.addCommand') }}
           </el-button>
@@ -411,7 +424,9 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
             <IconButton
               button-size="small"
               icon-size="16"
-              plain
+              round
+              border
+              type="danger"
               :tooltip-content="t('views.economy.redeemCodes.form.actions.removeCommand')"
               @click="removeCommandReward(index)"
             >
@@ -435,10 +450,18 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
         </el-icon>
       </div>
       <template v-else>
-        <div v-if="redemptions.length === 0" class="text-sm text-gray-500 py-6 text-center dark:text-gray-400">
-          {{ t('views.economy.redeemCodes.redemptionsDialog.empty') }}
+        <div v-if="redemptions.length === 0" class="app-empty-state redeem-codes-page__empty">
+          <div class="app-empty-state__icon">
+            <icon-mdi-ticket-percent-outline />
+          </div>
+          <div class="app-empty-state__title">
+            {{ t('views.economy.redeemCodes.actions.viewRedemptions') }}
+          </div>
+          <div class="app-empty-state__description">
+            {{ t('views.economy.redeemCodes.redemptionsDialog.empty') }}
+          </div>
         </div>
-        <el-table v-else :data="redemptions" size="small" stripe>
+        <el-table v-else :data="redemptions" size="small" stripe class="redeem-codes-page__redemptions-table">
           <el-table-column
             prop="playerName"
             :label="t('views.economy.redeemCodes.redemptionsDialog.columns.playerName')"
@@ -459,3 +482,26 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
     </MyDialog>
   </div>
 </template>
+
+<style scoped lang="scss">
+.redeem-codes-page__actions {
+  display: inline-flex;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.redeem-codes-page__add-command {
+  border-radius: 999px;
+  padding-inline: 0.95rem;
+}
+
+.redeem-codes-page__empty {
+  min-height: 200px;
+}
+
+.redeem-codes-page__redemptions-table {
+  :deep(.el-table__cell) {
+    padding-block: 0.7rem;
+  }
+}
+</style>

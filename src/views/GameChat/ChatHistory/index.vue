@@ -212,7 +212,7 @@ function formatTimestamp(value: string | null | undefined): string {
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"
-      :is-selectable="false"
+      :selectable="false"
       :show-add-btn="false"
       :show-operation-column="false"
       :auto-column-width="true"

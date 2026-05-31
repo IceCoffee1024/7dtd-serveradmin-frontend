@@ -119,7 +119,7 @@ defineExpose({ reload: () => tableRef.value?.reload() });
       row-key="folderName"
       :columns="columns"
       :fetch-data="fetchData"
-      :is-selectable="false"
+      :selectable="false"
       :show-add-btn="false"
       :auto-column-width="true"
     >

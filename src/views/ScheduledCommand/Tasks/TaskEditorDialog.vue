@@ -321,7 +321,7 @@ defineExpose({
         <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
           {{ t('views.scheduler.tasks.dialog.fields.commands') }}
         </span>
-        <el-button size="small" plain @click="addCommand">
+        <el-button size="small" class="app-pill-button" @click="addCommand">
           <el-icon><icon-mdi-plus /></el-icon>
           {{ t('views.scheduler.tasks.dialog.actions.addCommand') }}
         </el-button>
@@ -338,7 +338,9 @@ defineExpose({
           <IconButton
             button-size="small"
             icon-size="16"
-            plain
+            round
+            border
+            type="danger"
             :disabled="commands.length <= 1"
             :tooltip-content="t('views.scheduler.tasks.dialog.actions.removeCommand')"
             @click="removeCommand(index)"

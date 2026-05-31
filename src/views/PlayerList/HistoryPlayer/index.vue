@@ -126,14 +126,14 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
 </script>
 
 <template>
-  <div class="h-[calc(100vh-250px)]">
+  <div class="h-full">
     <MyTable
       row-key="playerId"
       :columns="columns"
       :fetch-data="fetchData"
       :context-menu-items="contextMenuItems"
       :show-add-btn="false"
-      :is-selectable="false"
+      :selectable="false"
       :operation-column-width="110"
       :auto-column-width="true"
     >

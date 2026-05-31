@@ -73,7 +73,16 @@ onDeactivated(() => {
 
 <style scoped lang="scss">
 .map-wrapper {
-  height: calc(100vh - 88px);
+  height: var(
+    --layout-main-available-height,
+    calc(
+      100vh - var(--layout-content-offset-top, 56px) - var(--layout-footer-height, 0px) - var(
+          --layout-main-padding-y,
+          32px
+        )
+    )
+  );
+  min-height: 360px;
   background-image: url(~/assets/images/map-background.jpg);
   background-repeat: no-repeat;
   background-attachment: fixed;

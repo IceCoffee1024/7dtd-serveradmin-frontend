@@ -80,10 +80,10 @@ async function onDelete(row: HomeLocationDto) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="flex gap-2 items-end">
-      <div class="flex-1 max-w-md">
-        <div class="text-sm text-gray-700 mb-1 dark:text-gray-300">
+  <div class="homes-page">
+    <div class="homes-page__search-shell">
+      <div class="homes-page__search-field">
+        <div class="homes-page__search-label">
           {{ t('views.teleport.homes.search.playerIdLabel') }}
         </div>
         <el-input
@@ -93,32 +93,133 @@ async function onDelete(row: HomeLocationDto) {
           @keyup.enter="searchHomes"
         />
       </div>
-      <el-button type="primary" :loading="loading" @click="searchHomes">
+      <el-button type="primary" class="homes-page__search-btn" :loading="loading" @click="searchHomes">
         <el-icon><icon-mdi-magnify /></el-icon>
         {{ t('views.teleport.homes.search.button') }}
       </el-button>
     </div>
 
     <template v-if="hasSearched">
-      <el-table v-loading="loading" :data="homes" border row-key="id">
-        <el-table-column prop="homeName" :label="t('views.teleport.homes.columns.homeName')" min-width="120" />
-        <el-table-column prop="playerName" :label="t('views.teleport.homes.columns.playerName')" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="x" :label="t('views.teleport.homes.columns.x')" width="80" align="right" />
-        <el-table-column prop="y" :label="t('views.teleport.homes.columns.y')" width="80" align="right" />
-        <el-table-column prop="z" :label="t('views.teleport.homes.columns.z')" width="80" align="right" />
-        <el-table-column prop="createdAt" :label="t('views.teleport.homes.columns.createdAt')" min-width="160" show-overflow-tooltip />
-        <el-table-column :label="t('components.myTable.operation')" width="110" align="center" fixed="right">
-          <template #default="{ row }">
-            <el-button size="small" plain type="danger" @click="onDelete(row)">
-              {{ t('views.teleport.homes.actions.delete') }}
-            </el-button>
+      <div class="homes-page__table-shell">
+        <el-table v-loading="loading" :data="homes" row-key="id" class="homes-page__table">
+          <template #empty>
+            <div class="app-empty-state homes-page__empty">
+              <div class="app-empty-state__icon">
+                <icon-mdi-home-search-outline />
+              </div>
+              <div class="app-empty-state__title">
+                {{ t('views.teleport.homes.search.button') }}
+              </div>
+              <div class="app-empty-state__description">
+                {{ t('views.teleport.homes.search.emptyHint') }}
+              </div>
+            </div>
           </template>
-        </el-table-column>
-      </el-table>
-
-      <el-empty v-if="homes.length === 0 && !loading" />
+          <el-table-column prop="homeName" :label="t('views.teleport.homes.columns.homeName')" min-width="120" />
+          <el-table-column prop="playerName" :label="t('views.teleport.homes.columns.playerName')" min-width="120" show-overflow-tooltip />
+          <el-table-column prop="x" :label="t('views.teleport.homes.columns.x')" width="80" align="right" />
+          <el-table-column prop="y" :label="t('views.teleport.homes.columns.y')" width="80" align="right" />
+          <el-table-column prop="z" :label="t('views.teleport.homes.columns.z')" width="80" align="right" />
+          <el-table-column prop="createdAt" :label="t('views.teleport.homes.columns.createdAt')" min-width="160" show-overflow-tooltip />
+          <el-table-column :label="t('components.myTable.operation')" width="72" align="center" fixed="right">
+            <template #default="{ row }">
+              <IconButton
+                round
+                border
+                button-size="small"
+                type="danger"
+                :tooltip-content="t('views.teleport.homes.actions.delete')"
+                @click="onDelete(row)"
+              >
+                <icon-mdi-delete-outline />
+              </IconButton>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </template>
 
-    <el-empty v-else :description="t('views.teleport.homes.search.emptyHint')" />
+    <div v-else class="app-empty-state homes-page__empty homes-page__empty--initial">
+      <div class="app-empty-state__icon">
+        <icon-mdi-account-search-outline />
+      </div>
+      <div class="app-empty-state__title">
+        {{ t('views.teleport.homes.search.playerIdLabel') }}
+      </div>
+      <div class="app-empty-state__description">
+        {{ t('views.teleport.homes.search.emptyHint') }}
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.homes-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.homes-page__search-shell {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 7%, transparent), transparent 38%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
+}
+
+.homes-page__search-field {
+  flex: 1;
+  max-width: 28rem;
+}
+
+.homes-page__search-label {
+  margin-bottom: 0.35rem;
+  color: var(--el-text-color-secondary);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.homes-page__search-btn {
+  border-radius: 999px;
+  padding-inline: 1rem;
+}
+
+.homes-page__table-shell {
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
+  border-radius: 28px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
+}
+
+.homes-page__table {
+  :deep(.el-table__inner-wrapper::before) {
+    display: none;
+  }
+}
+
+.homes-page__empty {
+  min-height: 220px;
+}
+
+.homes-page__empty--initial {
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 720px) {
+  .homes-page__search-shell {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .homes-page__search-field {
+    max-width: none;
+  }
+}
+</style>

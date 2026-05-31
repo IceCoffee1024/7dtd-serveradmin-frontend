@@ -132,7 +132,7 @@ async function onEdit(data: ServerConfigItem) {
           </el-table-column>
           <el-table-column width="64" align="center">
             <template #default="{ row }">
-              <IconButton button-size="small" type="primary" circle plain border :tooltip-content="$t('common.edit')" @click="onEdit(row)">
+              <IconButton button-size="small" type="primary" circle plain border :tooltip-content="$t('common.edit')" @click="onEdit(row as ServerConfigItem)">
                 <icon-mdi:pencil />
               </IconButton>
             </template>

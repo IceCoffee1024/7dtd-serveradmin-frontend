@@ -166,11 +166,13 @@ defineExpose({ show });
   >
     <div v-loading="isLoading" class="flex flex-col gap-4 min-h-52">
       <template v-if="detail">
-        <div class="flex flex-wrap gap-2 justify-end">
-          <el-button size="small" plain @click="onAdjust">
+        <div class="account-detail-dialog__actions">
+          <el-button size="small" class="app-pill-button" @click="onAdjust">
+            <el-icon><icon-mdi-pencil-outline /></el-icon>
             {{ t('views.economy.accounts.actions.adjust') }}
           </el-button>
-          <el-button size="small" plain :loading="isUpdating" @click="onToggleFrozen">
+          <el-button size="small" class="app-pill-button" :loading="isUpdating" @click="onToggleFrozen">
+            <el-icon><icon-mdi-snowflake /></el-icon>
             {{ detail.isFrozen ? t('views.economy.accounts.actions.unfreeze') : t('views.economy.accounts.actions.freeze') }}
           </el-button>
         </div>
@@ -235,8 +237,16 @@ defineExpose({ show });
             </div>
           </div>
 
-          <div v-if="recentTransactions.length === 0" class="text-sm text-gray-500 py-4 text-center dark:text-gray-400">
-            {{ t('views.economy.accounts.detailDialog.empty.recentTransactions') }}
+          <div v-if="recentTransactions.length === 0" class="app-empty-state account-detail-dialog__empty">
+            <div class="app-empty-state__icon">
+              <icon-mdi-cash-clock />
+            </div>
+            <div class="app-empty-state__title">
+              {{ t('views.economy.accounts.detailDialog.sections.recentTransactions') }}
+            </div>
+            <div class="app-empty-state__description">
+              {{ t('views.economy.accounts.detailDialog.empty.recentTransactions') }}
+            </div>
           </div>
           <div v-else class="flex flex-col gap-2">
             <div
@@ -282,3 +292,16 @@ defineExpose({ show });
     />
   </MyDialog>
 </template>
+
+<style scoped lang="scss">
+.account-detail-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.account-detail-dialog__empty {
+  min-height: 160px;
+}
+</style>
