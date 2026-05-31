@@ -74,137 +74,175 @@ function handleContextMenu(event: MouseEvent, tabName: string) {
 </script>
 
 <template>
-  <div class="tabs-wrapper" :class="`style-${tabStyle}`">
-    <el-tabs
-      v-model="navTabStore.activeTab"
-      type="card"
-      class="w-full"
-      @tab-remove="(name) => navTabStore.removeTab(name as string)"
-      @tab-click="(context) => navTabStore.activeTab = context.props.name as string"
-    >
-      <el-tab-pane
-        v-for="item in navTabStore.getOpenedTabs()"
-        :key="item.name"
-        :name="item.name"
-        :closable="item.closable"
+  <div class="nav-tab-shell">
+    <div class="tabs-wrapper" :class="`style-${tabStyle}`">
+      <el-tabs
+        v-model="navTabStore.activeTab"
+        type="card"
+        class="layout-nav-tabs w-full"
+        @tab-remove="(name) => navTabStore.removeTab(name as string)"
+        @tab-click="(context) => navTabStore.activeTab = context.props.name as string"
       >
-        <template #label>
-          <span class="tab-content" @contextmenu="handleContextMenu($event, item.name)">
-            <component :is="item.icon" v-if="showIcon && item.icon" class="tab-icon" />
-            <span>{{ item.title }}</span>
-          </span>
-        </template>
-      </el-tab-pane>
-    </el-tabs>
+        <el-tab-pane
+          v-for="item in navTabStore.getOpenedTabs()"
+          :key="item.name"
+          :name="item.name"
+          :closable="item.closable"
+        >
+          <template #label>
+            <span class="tab-content" @contextmenu="handleContextMenu($event, item.name)">
+              <component :is="item.icon" v-if="showIcon && item.icon" class="tab-icon" />
+              <span>{{ item.title }}</span>
+            </span>
+          </template>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-$theme-color: var(--colors-primary);
+.nav-tab-shell {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
 
 .tabs-wrapper {
   display: flex;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 0.2rem 0.25rem;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 92%, white 8%), var(--el-bg-color)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 8%, transparent), transparent 34%);
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
 
   .tab-content {
     display: flex;
     align-items: center;
+    gap: 0.4rem;
+    max-width: 180px;
+    min-width: 0;
   }
 
   :deep(.el-tabs__header) {
+    height: 100%;
     margin: 0;
     border: none;
+    width: 100%;
+  }
+  :deep(.el-tabs__content) {
+    display: none;
   }
   :deep(.el-tabs__nav) {
+    display: flex;
+    align-items: center;
+    height: 100%;
     border: none !important;
+  }
+  :deep(.el-tabs__nav-scroll) {
+    height: 100%;
+    padding: 0;
+  }
+  :deep(.el-tabs__nav-wrap) {
+    height: 100%;
+  }
+  :deep(.el-tabs__nav-wrap)::after {
+    display: none;
   }
   :deep(.el-tabs__item) {
     border: none !important;
-    font-weight: normal;
-    transition: all 0.2s;
+    font-weight: 600;
+    color: var(--el-text-color-secondary);
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
 
     .tab-icon {
-      margin-right: 4px;
-      vertical-align: -2px;
       width: 14px;
+      flex-shrink: 0;
     }
 
     &:hover {
-      color: $theme-color;
+      color: var(--colors-primary);
     }
 
     &.is-active {
-      background-color: var(--colors-primary-100);
-      .dark & {
-        background-color: var(--colors-primary-950);
-      }
-      color: $theme-color;
+      color: var(--colors-primary);
     }
+  }
+
+  :deep(.el-tabs__new-tab) {
+    display: none;
   }
 }
 
 .tabs-wrapper.style-google {
   :deep(.el-tabs__item) {
-    height: 34px;
-    line-height: 34px;
-    padding: 0 16px !important;
-    margin: 0 2px;
-    border-radius: 4px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 12px !important;
+    margin: 0 0.2rem;
+    border-radius: 999px;
     position: relative;
-
-    &::after {
-      content: '|';
-      color: var(--el-text-color-primary);
-      position: absolute;
-      right: -8px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 12px;
-      pointer-events: none;
-    }
-
-    &:last-child::after,
-    &.is-active::after {
-      display: none;
-    }
+    background: transparent;
 
     &.is-active {
-      font-weight: bold;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--colors-primary) 14%, transparent),
+        color-mix(in srgb, var(--el-color-info) 8%, transparent)
+      );
+      box-shadow: 0 8px 18px color-mix(in srgb, var(--colors-primary) 12%, transparent);
     }
   }
 }
 
 .tabs-wrapper.style-button {
   :deep(.el-tabs__item) {
-    height: 32px;
-    line-height: 30px;
-    margin-top: 1px;
-    margin-right: 8px;
-    border: 1px solid var(--el-border-color) !important;
-    border-radius: 4px;
+    height: 30px;
+    line-height: 28px;
+    margin-right: 0.45rem;
+    border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%) !important;
+    border-radius: 14px;
     padding: 0 12px !important;
+    background: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
 
     &:hover {
-      border-color: rgba($theme-color, 0.5) !important;
-      color: $theme-color;
+      border-color: color-mix(in srgb, var(--colors-primary) 40%, white 60%) !important;
     }
 
     &.is-active {
-      border-color: $theme-color !important;
+      border-color: color-mix(in srgb, var(--colors-primary) 48%, white 52%) !important;
+      background: color-mix(in srgb, var(--colors-primary) 12%, transparent);
+      box-shadow: 0 8px 18px color-mix(in srgb, var(--colors-primary) 10%, transparent);
     }
   }
 }
 
 .tabs-wrapper.style-smooth {
   :deep(.el-tabs__item) {
-    height: 34px;
-    line-height: 34px;
-    margin-right: 4px;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 0.35rem;
     padding: 0 16px !important;
-    border-radius: 4px 4px 0 0;
+    border-radius: 14px 14px 999px 999px;
 
     &.is-active {
-      border-bottom: 2px solid $theme-color !important;
+      background: color-mix(in srgb, var(--colors-primary) 10%, transparent);
+      box-shadow: inset 0 -2px 0 var(--colors-primary);
     }
   }
 }

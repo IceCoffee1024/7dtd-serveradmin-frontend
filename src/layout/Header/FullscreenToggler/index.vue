@@ -6,6 +6,8 @@ const { isFullscreen, toggle } = useFullscreen();
 
 <template>
   <IconButton
+
+    round border
     :tooltip-content="isFullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
     tooltip-placement="bottom"
     @click="toggle()"

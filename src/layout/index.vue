@@ -30,6 +30,20 @@ const headerContainerHeight = computed(() => {
     : addUnit(currentTheme.value.layout.header.height);
 });
 
+const contentOffsetTop = computed(() => headerContainerHeight.value);
+
+const footerHeight = computed(() => {
+  return currentTheme.value.layout.footer.visible
+    ? addUnit(currentTheme.value.layout.footer.height)
+    : '0px';
+});
+
+const contentHeight = computed(() => `calc(100vh - ${contentOffsetTop.value})`);
+
+const mainAvailableHeight = computed(() =>
+  `calc(100vh - ${contentOffsetTop.value} - ${footerHeight.value} - 32px)`,
+);
+
 const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
 
 const isTransparentBorder = computed(() => {
@@ -39,11 +53,12 @@ const isTransparentBorder = computed(() => {
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="header-container" :style="{ height: headerContainerHeight }" :class="{ '!border-transparent': isTransparentBorder }">
+    <div class="header-container" :style="{ height: headerContainerHeight }" :class="{ 'header-container--transparent': isTransparentBorder }">
       <Header :style="{ height: headerHeight }" class="header" />
       <NavTab
         v-if="currentTheme.layout.tab.visible" class="nav-tab" :style="{
           marginLeft: isTopMenu ? 0 : sidebarWidth,
+          width: isTopMenu ? '100%' : `calc(100% - ${sidebarWidth})`,
           height: addUnit(currentTheme.layout.tab.height),
         }"
         :tab-style="currentTheme.layout.tab.style"
@@ -55,15 +70,20 @@ const isTransparentBorder = computed(() => {
     </div>
     <div
       class="content" :style="{
-        marginLeft: isTopMenu ? 0 : sidebarWidth,
-        marginTop: currentTheme.layout.tab.visible ? addUnit(currentTheme.layout.tab.height + currentTheme.layout.header.height) : headerHeight,
+        'marginLeft': isTopMenu ? 0 : sidebarWidth,
+        'marginTop': contentOffsetTop,
+        'height': contentHeight,
+        '--layout-content-offset-top': contentOffsetTop,
+        '--layout-footer-height': footerHeight,
+        '--layout-main-padding-y': '32px',
+        '--layout-main-available-height': mainAvailableHeight,
       }"
       :class="{ 'overflow-y-auto overflow-x-hidden': currentTheme.general.scrollMode === 'inner' }"
     >
       <div class="main">
         <Main />
       </div>
-      <div v-if="currentTheme.layout.footer.visible" class="footer" :style="{ minHeight: addUnit(currentTheme.layout.footer.height) }">
+      <div v-if="currentTheme.layout.footer.visible" class="footer" :style="{ minHeight: footerHeight }">
         <Footer />
       </div>
     </div>
@@ -72,28 +92,46 @@ const isTransparentBorder = computed(() => {
 
 <style scoped lang="scss">
 .header-container {
-  @apply: border-b border-card transition-all-300 inset-x-0 top-0 fixed z-1 backdrop-blur-md;
+  @apply: transition-all-300 inset-x-0 top-0 fixed z-1 backdrop-blur-md;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--el-bg-color) 86%, white 14%),
+      color-mix(in srgb, var(--el-bg-color) 80%, transparent)
+    ),
+    radial-gradient(circle at top left, color-mix(in srgb, var(--colors-primary) 8%, transparent), transparent 28%);
+  border-bottom: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+
   .header {
     @apply: transition-all-300 px-16px;
   }
   .nav-tab {
-    @apply: transition-all-300 px-16px border-t border-base;
+    @apply: transition-all-300 px-16px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-top: 1px solid color-mix(in srgb, var(--el-border-color-light) 62%, white 38%);
   }
+}
+
+.header-container--transparent {
+  border-bottom-color: transparent;
 }
 
 .sidebar {
-  @apply: left-0 bottom-0 overflow-y-auto fixed shadow-card transition-all-300 bg-base z-2;
+  @apply: left-0 bottom-0 overflow-y-auto fixed transition-all-300 z-2;
+  background: transparent;
 }
 
 .content {
-  @apply: flex flex-col h-full transition-all-300;
+  @apply: flex flex-col min-h-0 transition-all-300;
 
   .main {
-    @apply: p-16px;
+    @apply: flex flex-col flex-1 min-h-0 p-16px;
+    box-sizing: border-box;
   }
 
   .footer {
-    @apply: mt-auto;
+    @apply: mt-auto shrink-0;
   }
 }
 </style>

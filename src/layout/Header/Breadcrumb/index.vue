@@ -92,20 +92,20 @@ const breadcrumbs = computed(() => {
 </script>
 
 <template>
-  <el-breadcrumb class="flex">
+  <el-breadcrumb class="breadcrumb-shell">
     <!-- define component start: BreadcrumbContent -->
     <DefineBreadcrumbContent v-slot="{ breadcrumb }">
-      <div class="align-middle inline-flex items-center">
-        <el-icon v-if="showIcon && breadcrumb.icon" class="text-lg me-4px">
+      <div class="breadcrumb-content">
+        <el-icon v-if="showIcon && breadcrumb.icon" class="breadcrumb-content__icon">
           <component :is="breadcrumb.icon" />
         </el-icon>
-        {{ breadcrumb.label }}
+        <span class="ellipsis-text">{{ breadcrumb.label }}</span>
       </div>
     </DefineBreadcrumbContent>
 
     <!-- define component end: BreadcrumbContent -->
     <el-breadcrumb-item v-for="item in breadcrumbs" :key="item.index">
-      <el-dropdown v-if="item.options?.length" class="cursor-pointer" @command="handleClickMenu">
+      <el-dropdown v-if="item.options?.length" class="breadcrumb-dropdown" @command="handleClickMenu">
         <BreadcrumbContent :breadcrumb="item" />
         <template #dropdown>
           <el-dropdown-menu>
@@ -120,4 +120,41 @@ const breadcrumbs = computed(() => {
   </el-breadcrumb>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.breadcrumb-shell {
+  display: flex;
+  align-items: center;
+  color: var(--el-text-color-secondary);
+}
+
+.breadcrumb-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 220px;
+  min-width: 0;
+  padding: 0.15rem 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.breadcrumb-content__icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.breadcrumb-dropdown {
+  cursor: pointer;
+}
+
+:deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner),
+:deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner a) {
+  color: var(--el-text-color-primary);
+  font-weight: 700;
+}
+
+:deep(.el-breadcrumb__separator) {
+  margin: 0 0.45rem;
+  color: color-mix(in srgb, var(--el-text-color-secondary) 68%, white 32%);
+}
+</style>

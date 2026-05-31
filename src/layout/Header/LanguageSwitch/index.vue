@@ -24,6 +24,8 @@ function handleCommand(command: string) {
   <el-dropdown trigger="click" @command="handleCommand">
     <div>
       <IconButton
+
+        round border
         :tooltip-content="$t('layout.header.switchLang')"
         tooltip-placement="left"
       >

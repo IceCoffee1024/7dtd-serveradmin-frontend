@@ -13,12 +13,42 @@ interface Props {
 </script>
 
 <template>
-  <RouterLink to="/" class="flex-center">
-    <el-image v-if="showLogo" src="src/assets/images/logo.png" class="size-32px" />
-    <h2 v-if="showTitle" class="text-base font-bold pl-8px transition duration-300 ease-in-out text-primary">
+  <RouterLink to="/" class="logo-link">
+    <el-image v-if="showLogo" src="src/assets/images/logo.png" class="logo-link__image" />
+    <h2 v-if="showTitle" class="logo-link__title">
       {{ $t('common.projectName') }}
     </h2>
   </RouterLink>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.logo-link {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0.35rem 0.6rem 0.35rem 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--el-bg-color) 86%, white 14%);
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.logo-link__image {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--colors-primary) 14%, transparent);
+}
+
+.logo-link__title {
+  margin: 0;
+  padding-left: 0.6rem;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: var(--colors-primary);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+</style>

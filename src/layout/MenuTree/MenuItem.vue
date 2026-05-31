@@ -12,7 +12,7 @@ const { menu } = defineProps<Props>();
       <el-icon>
         <component :is="menu.icon" />
       </el-icon>
-      <span class="ellipsis-text" :title="menu.label">{{ menu.label }}</span>
+      <span class="menu-item__label ellipsis-text" :title="menu.label">{{ menu.label }}</span>
     </template>
     <MenuItem v-for="child in menu.children" :key="child.index" :menu="child" :index="child.index" />
   </el-sub-menu>
@@ -20,6 +20,13 @@ const { menu } = defineProps<Props>();
     <el-icon>
       <component :is="menu.icon" />
     </el-icon>
-    <span class="ellipsis-text" :title="menu.label">{{ menu.label }}</span>
+    <span class="menu-item__label ellipsis-text" :title="menu.label">{{ menu.label }}</span>
   </el-menu-item>
 </template>
+
+<style scoped lang="scss">
+.menu-item__label {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+</style>

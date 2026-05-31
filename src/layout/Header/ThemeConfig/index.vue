@@ -18,6 +18,8 @@ const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
 <template>
   <div>
     <IconButton
+
+      round border
       :tooltip-content="$t('layout.header.themeConfiguration')"
       tooltip-placement="bottom"
       @click="drawer = true"

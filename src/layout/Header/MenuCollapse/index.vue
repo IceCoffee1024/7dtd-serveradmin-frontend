@@ -7,6 +7,8 @@ const toggle = useToggle(collapsed);
 
 <template>
   <IconButton
+
+    round border
     :tooltip-content="collapsed ? $t('layout.header.expandMenu') : $t('layout.header.collapseMenu')"
     tooltip-placement="bottom-start"
     @click="toggle()"
