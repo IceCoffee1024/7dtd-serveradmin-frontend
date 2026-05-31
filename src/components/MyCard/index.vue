@@ -17,7 +17,7 @@ withDefaults(defineProps<{
         <div v-if="header || description || $slots.header || $slots.extra" class="my-card__header">
           <div class="my-card__title-wrap">
             <span class="my-card__accent" />
-            <div class="min-w-0 flex-1">
+            <div class="flex-1 min-w-0">
               <slot name="header">
                 <p v-if="header" class="my-card__title">
                   {{ header }}
@@ -108,5 +108,16 @@ withDefaults(defineProps<{
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .my-card__header {
+    flex-direction: column;
+  }
+
+  .my-card__extra {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 </style>

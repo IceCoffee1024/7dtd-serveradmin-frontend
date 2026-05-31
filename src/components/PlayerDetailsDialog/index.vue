@@ -148,23 +148,98 @@ function getModel(data: PlayerDetailsDto): DetailRow[] {
     :loading="loading"
     @closed="onDialogClosed"
   >
-    <div>
-      <div class="text-sm font-semibold mb-3">
+    <div class="player-details-dialog">
+      <div class="player-details-dialog__title">
         {{ title }}
       </div>
       <template v-if="data?.length">
-        <div class="gap-2 grid grid-cols-2 overflow-auto">
-          <el-table :data="leftTableData" stripe show-overflow-tooltip border :show-header="false">
-            <el-table-column prop="label" min-width="180" class-name="font-semibold" />
-            <el-table-column prop="value" min-width="220" />
-          </el-table>
-          <el-table :data="rightTableData" stripe show-overflow-tooltip border :show-header="false">
-            <el-table-column prop="label" min-width="180" class-name="font-semibold" />
-            <el-table-column prop="value" min-width="220" />
-          </el-table>
+        <div class="player-details-dialog__grid">
+          <div class="player-details-dialog__panel">
+            <el-table :data="leftTableData" stripe show-overflow-tooltip border :show-header="false" class="player-details-dialog__table">
+              <el-table-column prop="label" min-width="180" class-name="font-semibold" />
+              <el-table-column prop="value" min-width="220" />
+            </el-table>
+          </div>
+          <div class="player-details-dialog__panel">
+            <el-table :data="rightTableData" stripe show-overflow-tooltip border :show-header="false" class="player-details-dialog__table">
+              <el-table-column prop="label" min-width="180" class-name="font-semibold" />
+              <el-table-column prop="value" min-width="220" />
+            </el-table>
+          </div>
         </div>
       </template>
-      <el-empty v-else class="h-full" />
+      <div v-else class="app-empty-state player-details-dialog__empty">
+        <div class="app-empty-state__icon">
+          <icon-mdi-account-search-outline />
+        </div>
+        <div class="app-empty-state__title">
+          {{ $t('components.playerDetailsDialog.header') }}
+        </div>
+        <div class="app-empty-state__description">
+          {{ $t('components.myTable.noData') }}
+        </div>
+      </div>
     </div>
   </MyDialog>
 </template>
+
+<style scoped lang="scss">
+.player-details-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.player-details-dialog__title {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--colors-primary) 10%, transparent);
+  color: var(--el-text-color-primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.player-details-dialog__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  overflow: auto;
+}
+
+.player-details-dialog__panel {
+  padding: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 40%);
+}
+
+.player-details-dialog__table {
+  :deep(.el-table__cell:first-child .cell) {
+    color: var(--el-text-color-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  :deep(.el-table__cell:last-child .cell) {
+    color: var(--el-text-color-primary);
+    font-family: var(--el-font-family-monospace, 'Cascadia Mono', 'Consolas', monospace);
+    font-size: 0.8rem;
+  }
+}
+
+.player-details-dialog__empty {
+  min-height: 320px;
+}
+
+@media (max-width: 960px) {
+  .player-details-dialog__grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

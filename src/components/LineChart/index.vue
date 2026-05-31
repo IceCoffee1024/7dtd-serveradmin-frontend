@@ -13,10 +13,26 @@ ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale
 </script>
 
 <template>
-  <div>
+  <div class="line-chart-shell">
     <Line
       :options="options"
       :data="data"
     />
   </div>
 </template>
+
+<style scoped lang="scss">
+.line-chart-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  :deep(canvas) {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 16px;
+  }
+}
+</style>

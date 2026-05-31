@@ -33,7 +33,7 @@ interface Props extends /* @vue-ignore */ Omit<ElButtonProps, 'size'> {
 <template>
   <el-tooltip :placement="tooltipPlacement" :content="tooltipContent" :disabled="!tooltipContent">
     <el-button
-      class="w-32px" :class="{ '!rounded-lg': round }" :size="buttonSize" :text="!border" :tag="aTag ? 'a' : undefined"
+      class="icon-button" :class="{ 'icon-button--pill': round, 'icon-button--border': border }" :size="buttonSize" :text="!border" :tag="aTag ? 'a' : undefined"
       :target="aTag ? '_blank' : undefined" :rel="aTag ? 'noopener noreferrer' : undefined" :loading="loading" v-bind="$attrs"
     >
       <el-icon v-show="!loading" class="text-lg" :color="color" :size="iconSize">
@@ -46,5 +46,41 @@ interface Props extends /* @vue-ignore */ Omit<ElButtonProps, 'size'> {
 <style scoped>
 .el-button + .el-button {
   margin-left: 0;
+}
+
+.icon-button {
+  width: 32px;
+  min-width: 32px;
+  border-radius: 12px;
+  color: var(--el-text-color-primary);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.icon-button:hover {
+  transform: translateY(-1px);
+}
+
+.icon-button:disabled,
+.icon-button.is-disabled {
+  transform: none;
+  opacity: 0.72;
+}
+
+.icon-button--pill {
+  border-radius: 999px;
+}
+
+.icon-button--border {
+  border-color: color-mix(in srgb, var(--el-border-color) 72%, white 28%);
+  background: color-mix(in srgb, var(--el-bg-color) 94%, white 6%);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+}
+
+.icon-button--border:hover {
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--colors-primary) 10%, transparent);
 }
 </style>

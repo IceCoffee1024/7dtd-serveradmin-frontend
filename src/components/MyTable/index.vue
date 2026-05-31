@@ -43,7 +43,6 @@
  * ```
  */
 
-import type { ElTable } from 'element-plus';
 import type {
   BatchActionItem,
   MyTableColumn,
@@ -62,16 +61,52 @@ import { showCustomContextMenu } from '~/plugins/contextMenu';
 import SearchForm from './SearchForm.vue';
 
 type FetchDataResult = MyTableFetchResult<T> | T[];
+type TableSize = App.ThemeSettings['general']['tableSize'];
+
+interface Slots {
+  [name: string]: ((props: any) => any) | undefined;
+  'toolbar-left'?: (props: { tableSize: TableSize }) => any;
+  'toolbar-right'?: (props: { tableSize: TableSize }) => any;
+  'footer-left'?: (props: { tableSize: TableSize }) => any;
+  'operation'?: (props: { row: T; tableSize: TableSize }) => any;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  columns: () => [],
+  size: undefined,
+  selectable: true,
+  showIndex: false,
+  showAddBtn: true,
+  showEditBtn: true,
+  showDeleteBtn: true,
+  batchMenuItems: () => [],
+  autoRefreshInterval: 0,
+  showSearch: true,
+  showOperationColumn: true,
+  operationColumnWidth: 160,
+  autoColumnWidth: true,
+  searchCollapsible: false,
+});
+
+const emits = defineEmits<{
+  /** Fired when the default add button is clicked. */
+  add: [];
+  /** Fired when the default edit button is clicked. */
+  edit: [row: T];
+  /** Fired after the delete confirmation succeeds. */
+  delete: [row: T];
+}>();
+
+defineSlots<Slots>();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Props
 // ─────────────────────────────────────────────────────────────────────────────
-type ElTableProps = InstanceType<typeof ElTable>['$props'];
-interface Props extends /* @vue-ignore */ ElTableProps {
+interface Props {
   /** Column definitions. The generic row type keeps prop values aligned with the table data. */
   columns?: MyTableColumn<T>[];
   /** Table density. Falls back to the global theme's general.tableSize when omitted. */
-  size?: App.ThemeSettings['general']['tableSize'];
+  size?: TableSize;
   /** Data loader supplied by the parent component.
    * Receives normalized MyTableFetchParams, including pagination, sorting,
    * and already-transformed search parameters.
@@ -79,6 +114,8 @@ interface Props extends /* @vue-ignore */ ElTableProps {
   fetchData: (params: MyTableFetchParams) => Promise<FetchDataResult> | FetchDataResult;
   /** Shows the selection column when true. */
   selectable?: boolean;
+  /** Backward-compatible alias for `selectable`. */
+  isSelectable?: boolean;
   /** Shows a continuous row index column across pages when true. */
   showIndex?: boolean;
   /** Shows the default add button on the left side of the toolbar. */
@@ -124,32 +161,6 @@ interface Props extends /* @vue-ignore */ ElTableProps {
   searchCollapsible?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  columns: () => [],
-  size: undefined,
-  selectable: true,
-  showIndex: false,
-  showAddBtn: true,
-  showEditBtn: true,
-  showDeleteBtn: true,
-  batchMenuItems: () => [],
-  autoRefreshInterval: 0,
-  showSearch: true,
-  showOperationColumn: true,
-  operationColumnWidth: 160,
-  autoColumnWidth: true,
-  searchCollapsible: false,
-});
-
-const emits = defineEmits<{
-  /** Fired when the default add button is clicked. */
-  add: [];
-  /** Fired when the default edit button is clicked. */
-  edit: [row: T];
-  /** Fired after the delete confirmation succeeds. */
-  delete: [row: T];
-}>();
-
 const NON_LATIN_CHAR_PATTERN = /[\u4E00-\u9FA5\uFF00-\uFFEF]/g;
 
 const { confirm } = usePopup();
@@ -157,9 +168,11 @@ const { currentTheme } = useTheme();
 const { t } = useI18n();
 const attrs = useAttrs();
 
-const resolvedTableSize = computed<App.ThemeSettings['general']['tableSize']>(() =>
+const resolvedTableSize = computed<TableSize>(() =>
   props.size ?? currentTheme.value.general.tableSize,
 );
+
+const resolvedSelectable = computed(() => props.isSelectable ?? props.selectable);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // v-model:selection - selected-row binding
@@ -233,37 +246,39 @@ function getEnumLabel(col: RenderableColumn, value: any): string {
 // Row interactions: selection, click, and context menu
 // ─────────────────────────────────────────────────────────────────────────────
 
-function onSelectionChange(val: T[]) {
-  selectionModel.value = val;
+function onSelectionChange(val: unknown[]) {
+  selectionModel.value = val as T[];
 }
 
 const currentRow = ref<T | null>(null);
 
-function onRowClick(rowData: T) {
-  currentRow.value = rowData;
+function onRowClick(rowData: unknown) {
+  currentRow.value = rowData as T;
 }
 
 const showContextMenu = computed(() => !!(props.contextMenuItems?.length));
 
-function onRowContextMenu(rowData: T, _column: unknown, event: MouseEvent) {
-  currentRow.value = rowData;
+function onRowContextMenu(rowData: unknown, _column: unknown, event: MouseEvent) {
+  const resolvedRow = rowData as T;
+  currentRow.value = resolvedRow;
   if (props.contextMenuItems?.length) {
     event.preventDefault();
-    showCustomContextMenu(event, props.contextMenuItems, rowData);
+    showCustomContextMenu(event, props.contextMenuItems, resolvedRow);
   }
 }
 
-function onToggleContextMenu(event: MouseEvent, rowData: T) {
-  currentRow.value = rowData;
+function onToggleContextMenu(event: MouseEvent, rowData: unknown) {
+  const resolvedRow = rowData as T;
+  currentRow.value = resolvedRow;
   if (props.contextMenuItems?.length) {
     event.preventDefault();
-    showCustomContextMenu(event, props.contextMenuItems, rowData);
+    showCustomContextMenu(event, props.contextMenuItems, resolvedRow);
   }
 }
 
-async function onConfirmDelete(rowData: T) {
+async function onConfirmDelete(rowData: unknown) {
   if (await confirm()) {
-    emits('delete', rowData);
+    emits('delete', rowData as T);
   }
 }
 
@@ -422,10 +437,10 @@ defineExpose({
 </script>
 
 <template>
-  <div class="flex flex-col size-full">
+  <div class="my-table-root flex flex-col size-full min-h-0">
     <el-card
       shadow="never"
-      class="table-main-card flex-1 b-none!"
+      class="table-main-card flex-1 min-h-0"
       :body-style="{
         padding: '16px',
         height: '100%',
@@ -436,20 +451,20 @@ defineExpose({
       <!-- Search panel wrapper adds visual separation from the table below. -->
       <div
         v-if="showSearch && hasSearchColumns && !isCompactSearch"
-        class="mb-3 border border-gray-200 rounded-xl bg-gray-50 overflow-hidden dark:border-gray-700 dark:bg-gray-800/50"
+        class="table-search-panel"
       >
         <!-- Collapsible header row, shown only when searchCollapsible is enabled. -->
         <div
           v-if="searchCollapsible"
-          class="px-4 py-2.5 flex cursor-pointer select-none transition-colors items-center justify-between hover:bg-gray-100/80 dark:hover:bg-gray-700/30"
-          :class="{ 'border-b border-gray-200 dark:border-gray-700': !searchCollapsed }"
+          class="table-search-panel__header"
+          :class="{ 'table-search-panel__header--expanded': !searchCollapsed }"
           @click="searchCollapsed = !searchCollapsed"
         >
-          <span class="text-sm text-gray-600 font-medium inline-flex gap-1.5 items-center dark:text-gray-400">
+          <span class="table-search-panel__title">
             <el-icon :size="14"><icon-mdi:filter-outline /></el-icon>
             {{ $t('components.myTable.filters') }}
           </span>
-          <span class="text-xs text-gray-400 inline-flex gap-1 items-center dark:text-gray-500">
+          <span class="table-search-panel__toggle">
             {{ searchCollapsed ? $t('components.myTable.expand') : $t('components.myTable.collapse') }}
             <el-icon
               class="transition-transform duration-200"
@@ -464,7 +479,7 @@ defineExpose({
         <el-collapse-transition>
           <div
             v-show="!searchCollapsible || !searchCollapsed"
-            class="px-4 pb-3 pt-3"
+            class="table-search-panel__body"
           >
             <SearchForm
               v-model="searchParam"
@@ -479,8 +494,8 @@ defineExpose({
       </div>
 
       <!-- Toolbar -->
-      <div class="mb-3 flex items-center justify-between">
-        <div class="flex gap-2">
+      <div class="table-toolbar">
+        <div class="table-toolbar__group">
           <slot name="toolbar-left" :table-size="resolvedTableSize">
             <IconButton
               v-if="showAddBtn"
@@ -540,7 +555,7 @@ defineExpose({
           />
         </div>
 
-        <div class="flex gap-2">
+        <div class="table-toolbar__group table-toolbar__group--right">
           <slot name="toolbar-right" :table-size="resolvedTableSize" />
 
           <IconButton
@@ -554,6 +569,7 @@ defineExpose({
           </IconButton>
 
           <el-select
+            class="table-toolbar__column-select"
             :model-value="selectedColumns"
             :size="resolvedTableSize"
             value-key="prop"
@@ -574,9 +590,10 @@ defineExpose({
         </div>
       </div>
 
-      <div class="flex-1 min-h-0">
+      <div class="table-main-region flex-1 min-h-0">
         <el-table
           v-loading="loading"
+          class="table-main"
           :data="tableData"
           :size="resolvedTableSize"
           :border="true"
@@ -596,7 +613,7 @@ defineExpose({
           </template>
 
           <el-table-column
-            v-if="selectable"
+            v-if="resolvedSelectable"
             type="selection"
             width="48"
             fixed="left"
@@ -684,12 +701,13 @@ defineExpose({
         </el-table>
       </div>
 
-      <div class="mt-3 flex gap-3 items-center justify-between">
-        <div class="flex gap-3 min-w-0 items-center">
+      <div class="table-footer">
+        <div class="table-footer__left">
           <slot name="footer-left" :table-size="resolvedTableSize" />
         </div>
 
         <el-pagination
+          class="table-footer__pagination"
           :size="resolvedTableSize"
           :current-page="currentPage"
           :page-size="rowsPerPage"
@@ -704,14 +722,169 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
-.search-area {
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
+<style scoped lang="scss">
+.my-table-root {
+  min-height: 0;
 }
 
 .table-main-card :deep(.el-card__body) {
   height: 100%;
+  min-height: 0;
+}
+
+.table-main-card {
+  min-height: 0;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 7%, transparent), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 96%, white 4%), var(--el-bg-color));
+  box-shadow:
+    0 18px 44px color-mix(in srgb, var(--colors-primary) 8%, transparent),
+    0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.table-search-panel {
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 98%, white 2%), var(--el-bg-color)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 38%);
+}
+
+.table-search-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.table-search-panel__header:hover {
+  background: color-mix(in srgb, var(--colors-primary) 6%, transparent);
+}
+
+.table-search-panel__header--expanded {
+  border-bottom: 1px solid color-mix(in srgb, var(--el-border-color-light) 62%, white 38%);
+}
+
+.table-search-panel__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--el-text-color-primary);
+}
+
+.table-search-panel__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.76rem;
+  color: var(--el-text-color-secondary);
+}
+
+.table-search-panel__body {
+  padding: 1rem 1rem 0.9rem;
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.table-toolbar__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.table-toolbar__group--right {
+  margin-left: auto;
+}
+
+.table-toolbar__column-select {
+  :deep(.el-select__wrapper) {
+    border-radius: 14px;
+    box-shadow: none;
+  }
+}
+
+.table-main-region {
+  overflow: hidden;
+}
+
+.table-main {
+  :deep(.el-table__inner-wrapper::before) {
+    display: none;
+  }
+
+  :deep(.el-table__header-wrapper th) {
+    background: var(--el-table-header-bg-color);
+    color: var(--el-text-color-primary);
+    font-weight: 700;
+  }
+
+  :deep(.el-table__header-wrapper th .cell) {
+    color: inherit;
+  }
+
+  :deep(.el-table__cell) {
+    border-bottom-color: color-mix(in srgb, var(--el-border-color-light) 62%, white 38%);
+  }
+
+  :deep(.el-table__row td) {
+    background: transparent;
+    transition: background-color 0.2s ease;
+  }
+
+  :deep(.el-table__body tr:hover > td.el-table__cell) {
+    background: color-mix(in srgb, var(--colors-primary) 5%, transparent);
+  }
+
+  :deep(.el-tag) {
+    border-radius: 999px;
+    padding-inline: 0.6rem;
+    font-weight: 600;
+  }
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.table-footer__left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.table-footer__pagination {
+  margin-left: auto;
+}
+
+@media (max-width: 960px) {
+  .table-toolbar__group--right,
+  .table-footer__pagination {
+    margin-left: 0;
+  }
 }
 </style>

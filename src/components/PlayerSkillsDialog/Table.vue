@@ -45,8 +45,16 @@ watch(
     height="100%"
   >
     <template #empty>
-      <div class="text-gray-500 py-4 text-center dark:text-gray-300">
-        {{ $t('components.myTable.noData') }}
+      <div class="app-empty-state player-skills-table__empty">
+        <div class="app-empty-state__icon">
+          <icon-mdi-book-open-variant-outline />
+        </div>
+        <div class="app-empty-state__title">
+          {{ $t('components.playerSkillsDialog.header') }}
+        </div>
+        <div class="app-empty-state__description">
+          {{ $t('components.myTable.noData') }}
+        </div>
       </div>
     </template>
 
@@ -103,5 +111,9 @@ watch(
       }
     }
   }
+}
+
+.player-skills-table__empty {
+  min-height: 220px;
 }
 </style>

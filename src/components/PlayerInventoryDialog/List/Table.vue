@@ -12,10 +12,18 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <el-table :data="tableData" stripe border size="small" height="100%">
+  <el-table :data="tableData" stripe border size="small" height="100%" class="inventory-table">
     <template #empty>
-      <div class="text-gray-500 py-4 text-center dark:text-gray-300">
-        {{ $t('components.myTable.noData') }}
+      <div class="app-empty-state inventory-table__empty">
+        <div class="app-empty-state__icon">
+          <icon-mdi-briefcase-outline />
+        </div>
+        <div class="app-empty-state__title">
+          {{ $t('components.playerInventoryDialog.bag') }}
+        </div>
+        <div class="app-empty-state__description">
+          {{ $t('components.myTable.noData') }}
+        </div>
       </div>
     </template>
 
@@ -44,3 +52,9 @@ withDefaults(defineProps<Props>(), {
     </el-table-column>
   </el-table>
 </template>
+
+<style scoped lang="scss">
+.inventory-table__empty {
+  min-height: 220px;
+}
+</style>

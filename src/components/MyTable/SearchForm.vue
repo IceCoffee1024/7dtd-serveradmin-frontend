@@ -102,11 +102,11 @@ function onReset() {
         @keyup.enter="onSearch"
         @clear="onSearch"
       />
-      <el-button :size="size" type="primary" :loading="loading" @click="onSearch">
+      <el-button class="search-toolbar__search" :size="size" type="primary" :loading="loading" @click="onSearch">
         <icon-mdi:magnify class="mr-1" />
         {{ t('components.myTable.search') }}
       </el-button>
-      <el-button :size="size" @click="onReset">
+      <el-button class="search-toolbar__reset" :size="size" :aria-label="t('components.myTable.reset')" @click="onReset">
         <icon-mdi:restore />
       </el-button>
     </div>
@@ -120,11 +120,11 @@ function onReset() {
         :gutter="12"
       />
       <div class="search-panel__footer">
-        <el-button :size="size" type="primary" :loading="loading" @click="onSearch">
+        <el-button class="search-panel__action" :size="size" type="primary" :loading="loading" @click="onSearch">
           <icon-mdi:magnify class="mr-1" />
           {{ t('components.myTable.search') }}
         </el-button>
-        <el-button :size="size" @click="onReset">
+        <el-button class="search-panel__action" :size="size" @click="onReset">
           <icon-mdi:restore class="mr-1" />
           {{ t('components.myTable.reset') }}
         </el-button>
@@ -135,14 +135,27 @@ function onReset() {
 
 <style scoped>
 .search-toolbar {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.55rem;
   flex-wrap: nowrap;
+  min-width: 0;
+  padding: 0.15rem 0;
 }
 
 .search-toolbar__input {
-  width: 260px;
+  width: clamp(220px, 28vw, 320px);
+  flex: 0 1 320px;
+  min-width: 220px;
+}
+
+.search-toolbar__search {
+  flex: 0 0 auto;
+}
+
+.search-toolbar__reset {
+  flex: 0 0 auto;
+  padding-inline: 0.9rem;
 }
 
 .search-panel__footer {
@@ -150,6 +163,23 @@ function onReset() {
   justify-content: flex-end;
   align-items: center;
   gap: 8px;
-  padding-top: 4px;
+  padding-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .search-toolbar {
+    width: 100%;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .search-toolbar__input {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .search-toolbar__search {
+    flex: 1 1 auto;
+  }
 }
 </style>

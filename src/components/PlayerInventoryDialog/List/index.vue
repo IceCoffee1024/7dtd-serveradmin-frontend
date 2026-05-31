@@ -22,7 +22,7 @@ const equipmentItems = computed<InvItemDto[]>(() => {
 </script>
 
 <template>
-  <el-tabs v-model="activeTab">
+  <el-tabs v-model="activeTab" class="inventory-tabs">
     <el-tab-pane name="bag" :label="$t('components.playerInventoryDialog.bag')">
       <Table :table-data="bag" />
     </el-tab-pane>
@@ -36,9 +36,14 @@ const equipmentItems = computed<InvItemDto[]>(() => {
 </template>
 
 <style scoped lang="scss">
-.el-tabs {
+.inventory-tabs {
   height: calc(100% - 40px);
-  .el-tab-pane {
+
+  :deep(.el-tabs__content) {
+    height: calc(100% - 54px);
+  }
+
+  :deep(.el-tab-pane) {
     height: 100%;
   }
 }

@@ -90,6 +90,7 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
 <template>
   <el-form
     ref="formRef"
+    class="my-form"
     :model="formData"
     :label-width="labelWidth"
     :label-position="labelPosition"
@@ -99,20 +100,22 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
       <el-col
         v-for="field in fields"
         :key="field.prop"
+        class="my-form__col"
         v-bind="getColProps(field.span)"
       >
         <el-form-item
+          class="my-form__item"
           :prop="field.prop"
         >
           <template #label>
-            <span class="inline-flex" style="align-items: center; gap: 4px;">
+            <span class="my-form__label">
               <span>{{ field.label }}</span>
               <el-tooltip
                 v-if="getTooltipContent(field)"
                 :content="getTooltipContent(field)"
                 :placement="getTooltipPlacement(field)"
               >
-                <span class="inline-flex" style="align-items: center; color: var(--el-color-info); cursor: help;">
+                <span class="my-form__label-help">
                   <el-icon :size="14">
                     <icon-mdi:help-circle-outline />
                   </el-icon>
@@ -142,3 +145,71 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
     </el-row>
   </el-form>
 </template>
+
+<style scoped lang="scss">
+.my-form {
+  :deep(.el-form-item) {
+    margin-bottom: 1rem;
+  }
+
+  :deep(.el-form-item__label) {
+    color: var(--el-text-color-primary);
+    font-weight: 700;
+  }
+
+  :deep(.el-input__wrapper),
+  :deep(.el-textarea__inner),
+  :deep(.el-select__wrapper),
+  :deep(.el-input-number),
+  :deep(.el-date-editor.el-input__wrapper) {
+    border-radius: 14px;
+    box-shadow: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  :deep(.el-input__wrapper),
+  :deep(.el-select__wrapper),
+  :deep(.el-textarea__inner) {
+    background: color-mix(in srgb, var(--el-bg-color) 97%, white 3%);
+  }
+
+  :deep(.el-input__wrapper:hover),
+  :deep(.el-select__wrapper:hover),
+  :deep(.el-input-number:hover),
+  :deep(.el-date-editor.el-input__wrapper:hover) {
+    border-color: color-mix(in srgb, var(--colors-primary) 26%, var(--el-border-color));
+  }
+
+  :deep(.el-form-item.is-error .el-input__wrapper),
+  :deep(.el-form-item.is-error .el-select__wrapper),
+  :deep(.el-form-item.is-error .el-input-number),
+  :deep(.el-form-item.is-error .el-date-editor.el-input__wrapper) {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--el-color-danger) 14%, transparent);
+  }
+
+  :deep(.el-form-item__error) {
+    padding-top: 0.25rem;
+    font-size: 0.75rem;
+  }
+}
+
+.my-form__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.my-form__label-help {
+  display: inline-flex;
+  align-items: center;
+  color: var(--el-color-info);
+  cursor: help;
+}
+
+.my-form__col {
+  min-width: 0;
+}
+</style>

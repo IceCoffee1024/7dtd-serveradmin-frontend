@@ -114,13 +114,15 @@ defineExpose({
         <span :id="titleId" :class="titleClass" class="font-bold">{{ title }}</span>
         <span>
           <IconButton
-            icon-size="24" class="fullscreen-btn" :tooltip-content="fullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
+
+            round border
+            icon-size="22" class="fullscreen-btn" :tooltip-content="fullscreen ? $t('layout.header.exitFullscreen') : $t('layout.header.fullscreen')"
             @click="toggleFullscreen"
           >
             <icon-mdi:fullscreen v-if="!fullscreen" />
             <icon-mdi:fullscreen-exit v-else />
           </IconButton>
-          <IconButton icon-size="24" class="close-btn" :tooltip-content="$t('common.close')" @click="close">
+          <IconButton round border icon-size="22" class="close-btn" :tooltip-content="$t('common.close')" @click="close">
             <icon-mdi:close />
           </IconButton>
         </span>
@@ -132,11 +134,12 @@ defineExpose({
     <template v-if="showFooter" #footer>
       <div v-loading="loading">
         <slot name="footer" :close="close" :confirm="handleConfirm">
-          <el-button @click="close">
+          <el-button class="my-dialog__secondary-btn" @click="close">
             {{ cancelText || $t('common.cancel') || '取消' }}
           </el-button>
           <el-button
             type="primary"
+            class="my-dialog__primary-btn"
             @click="handleConfirm"
           >
             {{ confirmText || $t('common.confirm') || '确定' }}
@@ -147,7 +150,34 @@ defineExpose({
   </el-dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+:deep(.el-dialog) {
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 8%, transparent), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
+  box-shadow:
+    0 24px 60px color-mix(in srgb, var(--colors-primary) 10%, transparent),
+    0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+:deep(.el-dialog__header) {
+  padding: 1rem 1.1rem 0.85rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--el-border-color-light) 62%, white 38%);
+}
+
+:deep(.el-dialog__body) {
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 0.9rem 1.1rem 1.1rem;
+  border-top: 1px solid color-mix(in srgb, var(--el-border-color-light) 62%, white 38%);
+  background: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
+}
+
 .fullscreen-btn,
 .close-btn {
   color: var(--el-color-info);
@@ -157,5 +187,11 @@ defineExpose({
 }
 .close-btn:hover {
   color: var(--el-color-danger);
+}
+
+.my-dialog__secondary-btn,
+.my-dialog__primary-btn {
+  min-width: 88px;
+  border-radius: 999px;
 }
 </style>

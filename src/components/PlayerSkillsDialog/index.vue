@@ -78,10 +78,10 @@ defineExpose({
     :loading="loading"
     @closed="onDialogClosed"
   >
-    <div :style="{ height: fullscreen ? 'calc(100vh - 80px)' : '618px' }">
-      <div class="mb-3 flex gap-4 items-center justify-between">
-        <span>{{ title }}</span>
-        <el-radio-group v-model="layout" size="small">
+    <div class="player-skills-dialog" :style="{ height: fullscreen ? 'calc(100vh - 80px)' : '618px' }">
+      <div class="player-skills-dialog__toolbar">
+        <span class="player-skills-dialog__title">{{ title }}</span>
+        <el-radio-group v-model="layout" size="small" class="player-skills-dialog__layout-switch">
           <el-radio-button v-for="item in options" :key="item.value" :value="item.value">
             <el-tooltip :content="item.label" placement="top">
               <el-icon>
@@ -94,7 +94,7 @@ defineExpose({
       </div>
 
       <template v-if="data?.length">
-        <el-tabs v-model="activeTab">
+        <el-tabs v-model="activeTab" class="player-skills-dialog__tabs">
           <el-tab-pane v-for="(item, index) in data" :key="item.name || String(index)" :name="String(index)" lazy>
             <template #label>
               <div class="flex gap-1 items-center">
@@ -106,16 +106,73 @@ defineExpose({
           </el-tab-pane>
         </el-tabs>
       </template>
-      <el-empty v-else class="h-full" />
+      <div v-else class="app-empty-state player-skills-dialog__empty">
+        <div class="app-empty-state__icon">
+          <icon-mdi-school-outline />
+        </div>
+        <div class="app-empty-state__title">
+          {{ $t('components.playerSkillsDialog.header') }}
+        </div>
+        <div class="app-empty-state__description">
+          {{ $t('components.myTable.noData') }}
+        </div>
+      </div>
     </div>
   </MyDialog>
 </template>
 
 <style scoped lang="scss">
-.el-tabs {
-  height: calc(100% - 40px);
-  .el-tab-pane {
+.player-skills-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.player-skills-dialog__toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-skills-dialog__title {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--colors-primary) 10%, transparent);
+  color: var(--el-text-color-primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.player-skills-dialog__layout-switch {
+  :deep(.el-radio-button__inner) {
+    border-radius: 999px;
+  }
+}
+
+.player-skills-dialog__tabs {
+  height: calc(100% - 52px);
+
+  :deep(.el-tabs__content) {
+    height: calc(100% - 54px);
+  }
+
+  :deep(.el-tab-pane) {
     height: 100%;
+  }
+}
+
+.player-skills-dialog__empty {
+  min-height: 320px;
+}
+
+@media (max-width: 720px) {
+  .player-skills-dialog__toolbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 </style>
