@@ -148,6 +148,12 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
 
 <style scoped lang="scss">
 .my-form {
+  --my-form-control-bg: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
+  --my-form-control-border: color-mix(in srgb, var(--el-border-color) 72%, var(--el-bg-color) 28%);
+  --my-form-control-border-hover: color-mix(in srgb, var(--colors-primary) 34%, var(--el-border-color) 66%);
+  --my-form-control-focus-ring: color-mix(in srgb, var(--colors-primary) 18%, transparent);
+  --my-form-control-shadow: 0 0 0 1px var(--my-form-control-border) inset, 0 1px 2px rgba(15, 23, 42, 0.04);
+
   :deep(.el-form-item) {
     margin-bottom: 1rem;
   }
@@ -160,34 +166,53 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
   :deep(.el-input__wrapper),
   :deep(.el-textarea__inner),
   :deep(.el-select__wrapper),
-  :deep(.el-input-number),
   :deep(.el-date-editor.el-input__wrapper) {
     border-radius: 14px;
-    box-shadow: none;
+    background: var(--my-form-control-bg);
+    box-shadow: var(--my-form-control-shadow);
     transition:
-      border-color 0.2s ease,
       box-shadow 0.2s ease,
       background-color 0.2s ease;
   }
 
-  :deep(.el-input__wrapper),
-  :deep(.el-select__wrapper),
-  :deep(.el-textarea__inner) {
-    background: color-mix(in srgb, var(--el-bg-color) 97%, white 3%);
+  :deep(.el-input-number) {
+    border-radius: 14px;
   }
 
   :deep(.el-input__wrapper:hover),
   :deep(.el-select__wrapper:hover),
-  :deep(.el-input-number:hover),
+  :deep(.el-textarea__inner:hover),
   :deep(.el-date-editor.el-input__wrapper:hover) {
-    border-color: color-mix(in srgb, var(--colors-primary) 26%, var(--el-border-color));
+    box-shadow:
+      0 0 0 1px var(--my-form-control-border-hover) inset,
+      0 2px 6px rgba(15, 23, 42, 0.05);
+  }
+
+  :deep(.el-input.is-focus .el-input__wrapper),
+  :deep(.el-input__wrapper.is-focus),
+  :deep(.el-select__wrapper.is-focused),
+  :deep(.el-textarea__inner:focus),
+  :deep(.el-textarea__inner:focus-visible),
+  :deep(.el-date-editor.el-input__wrapper.is-focus) {
+    box-shadow:
+      0 0 0 1px var(--colors-primary) inset,
+      0 0 0 3px var(--my-form-control-focus-ring);
+  }
+
+  :deep(.el-input.is-disabled .el-input__wrapper),
+  :deep(.el-select__wrapper.is-disabled),
+  :deep(.el-textarea__inner:disabled) {
+    background: color-mix(in srgb, var(--el-fill-color-light) 72%, var(--el-bg-color) 28%);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--el-border-color-light) 82%, transparent) inset;
   }
 
   :deep(.el-form-item.is-error .el-input__wrapper),
   :deep(.el-form-item.is-error .el-select__wrapper),
-  :deep(.el-form-item.is-error .el-input-number),
+  :deep(.el-form-item.is-error .el-textarea__inner),
   :deep(.el-form-item.is-error .el-date-editor.el-input__wrapper) {
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--el-color-danger) 14%, transparent);
+    box-shadow:
+      0 0 0 1px var(--el-color-danger) inset,
+      0 0 0 3px color-mix(in srgb, var(--el-color-danger) 14%, transparent);
   }
 
   :deep(.el-form-item__error) {

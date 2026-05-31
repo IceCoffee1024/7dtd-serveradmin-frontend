@@ -135,6 +135,11 @@ function onReset() {
 
 <style scoped>
 .search-toolbar {
+  --search-control-bg: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
+  --search-control-border: color-mix(in srgb, var(--el-border-color) 72%, var(--el-bg-color) 28%);
+  --search-control-border-hover: color-mix(in srgb, var(--colors-primary) 34%, var(--el-border-color) 66%);
+  --search-control-focus-ring: color-mix(in srgb, var(--colors-primary) 18%, transparent);
+
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -147,6 +152,29 @@ function onReset() {
   width: clamp(220px, 28vw, 320px);
   flex: 0 1 320px;
   min-width: 220px;
+}
+
+.search-toolbar__input :deep(.el-input__wrapper) {
+  border-radius: 14px;
+  background: var(--search-control-bg);
+  box-shadow:
+    0 0 0 1px var(--search-control-border) inset,
+    0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.search-toolbar__input :deep(.el-input__wrapper:hover) {
+  box-shadow:
+    0 0 0 1px var(--search-control-border-hover) inset,
+    0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.search-toolbar__input.is-focus :deep(.el-input__wrapper) {
+  box-shadow:
+    0 0 0 1px var(--colors-primary) inset,
+    0 0 0 3px var(--search-control-focus-ring);
 }
 
 .search-toolbar__search {

@@ -82,6 +82,7 @@ declare module 'vue' {
     'IconLineMd:menuFoldRight': typeof import('~icons/line-md/menu-fold-right')['default']
     'IconMdi:accountCircle': typeof import('~icons/mdi/account-circle')['default']
     'IconMdi:alphaACircle': typeof import('~icons/mdi/alpha-a-circle')['default']
+    'IconMdi:chatOutline': typeof import('~icons/mdi/chat-outline')['default']
     'IconMdi:chevronUp': typeof import('~icons/mdi/chevron-up')['default']
     'IconMdi:close': typeof import('~icons/mdi/close')['default']
     'IconMdi:delete': typeof import('~icons/mdi/delete')['default']
