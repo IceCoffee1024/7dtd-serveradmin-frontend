@@ -15,7 +15,9 @@ const { menus } = useMenus();
   <!-- overflow-x-hidden: Prevent horizontal scrollbars from appearing when collapsing. -->
   <div class="sidebar-shell">
     <div class="sidebar-panel">
-      <MenuTree :menus="menus" :collapse="collapse" />
+      <div class="sidebar-scroller">
+        <MenuTree :menus="menus" :collapse="collapse" />
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +31,8 @@ const { menus } = useMenus();
 }
 
 .sidebar-panel {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   border-radius: 28px;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
@@ -38,7 +42,29 @@ const { menus } = useMenus();
   box-shadow:
     0 16px 40px color-mix(in srgb, var(--colors-primary) 8%, transparent),
     0 8px 20px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+}
+
+.sidebar-scroller {
+  flex: 1;
+  min-height: 0;
+  margin: 0.45rem 0.35rem 0.45rem 0;
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-color: color-mix(in srgb, var(--colors-primary) 18%, transparent) transparent;
+}
+
+.sidebar-scroller::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-scroller::-webkit-scrollbar-thumb {
+  border-width: 2px;
+  background-color: color-mix(in srgb, var(--colors-primary) 20%, transparent);
+}
+
+.sidebar-scroller::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--colors-primary) 28%, transparent);
 }
 </style>
