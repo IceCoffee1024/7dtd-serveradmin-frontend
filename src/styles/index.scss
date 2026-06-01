@@ -270,14 +270,45 @@ code {
   transform: translateY(-1px);
 }
 
-.el-button:not(.el-button--primary, .el-button--success, .el-button--warning, .el-button--danger, .el-button--info, .is-text, .is-link),
-.el-button.is-plain:not(.el-button--primary, .el-button--success, .el-button--warning, .el-button--danger, .el-button--info) {
+.el-button:not(
+  .el-button--primary,
+  .el-button--success,
+  .el-button--warning,
+  .el-button--danger,
+  .el-button--info,
+  .is-text,
+  .is-link
+),
+.el-button.is-plain:not(
+    .el-button--primary,
+    .el-button--success,
+    .el-button--warning,
+    .el-button--danger,
+    .el-button--info
+  ) {
   border-color: color-mix(in srgb, var(--el-border-color) 70%, white 30%);
   background: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
 }
 
 .el-button--primary {
   box-shadow: 0 12px 22px color-mix(in srgb, var(--colors-primary) 16%, transparent);
+}
+
+html.dark {
+  .el-popper.is-dark.el-tooltip {
+    --el-popper-bg-color-dark: color-mix(in srgb, var(--colors-surface-900) 90%, black 10%);
+    --app-tooltip-dark-border-color: color-mix(in srgb, var(--el-border-color-light) 78%, black 22%);
+
+    color: var(--el-text-color-primary);
+    background: var(--el-popper-bg-color-dark);
+    border-color: var(--app-tooltip-dark-border-color);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
+  }
+
+  .el-popper.is-dark.el-tooltip > .el-popper__arrow:before {
+    background: var(--el-popper-bg-color-dark);
+    border-color: var(--app-tooltip-dark-border-color);
+  }
 }
 
 .app-empty-state {
