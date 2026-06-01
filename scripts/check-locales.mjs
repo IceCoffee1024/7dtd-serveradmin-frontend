@@ -50,8 +50,12 @@ const failures = [];
 for (const localeFile of localeFiles) {
   const localeMessages = flattenMessages(readLocaleMessages(localeFile));
   const localeKeys = Object.keys(localeMessages).sort();
+  const isScaffoldLocale = localeKeys.length > 0 && localeKeys.every(key => typeof localeMessages[key] === 'string' && localeMessages[key] === '');
 
   console.log(`[locale-check] ${localeFile}: ${localeKeys.length} leaf keys`);
+  if (isScaffoldLocale) {
+    console.log(`[locale-check] ${localeFile} is a scaffold locale; placeholder checks are skipped.`);
+  }
 
   if (localeFile === baseLocaleFile) {
     continue;
@@ -59,18 +63,20 @@ for (const localeFile of localeFiles) {
 
   const missingKeys = baseKeys.filter(key => key in localeMessages === false);
   const extraKeys = localeKeys.filter(key => key in baseMessages === false);
-  const placeholderMismatches = baseKeys
-    .filter(key => key in localeMessages)
-    .filter((key) => {
-      const expected = JSON.stringify(readPlaceholders(baseMessages[key]));
-      const actual = JSON.stringify(readPlaceholders(localeMessages[key]));
-      return expected !== actual;
-    })
-    .map(key => ({
-      key,
-      expected: readPlaceholders(baseMessages[key]),
-      actual: readPlaceholders(localeMessages[key]),
-    }));
+  const placeholderMismatches = isScaffoldLocale
+    ? []
+    : baseKeys
+        .filter(key => key in localeMessages)
+        .filter((key) => {
+          const expected = JSON.stringify(readPlaceholders(baseMessages[key]));
+          const actual = JSON.stringify(readPlaceholders(localeMessages[key]));
+          return expected !== actual;
+        })
+        .map(key => ({
+          key,
+          expected: readPlaceholders(baseMessages[key]),
+          actual: readPlaceholders(localeMessages[key]),
+        }));
 
   if (missingKeys.length === 0 && extraKeys.length === 0 && placeholderMismatches.length === 0) {
     continue;

@@ -18,6 +18,17 @@ export type LocaleType = typeof LOCALE_TYPE[keyof typeof LOCALE_TYPE];
 export const SUPPORT_LOCALES: LocaleType[] = [
   LOCALE_TYPE.EN,
   LOCALE_TYPE.ZH_CN,
+  LOCALE_TYPE.DE,
+  LOCALE_TYPE.ES,
+  LOCALE_TYPE.FR,
+  LOCALE_TYPE.IT,
+  LOCALE_TYPE.JA,
+  LOCALE_TYPE.KO,
+  LOCALE_TYPE.PL,
+  LOCALE_TYPE.PT_BR,
+  LOCALE_TYPE.RU,
+  LOCALE_TYPE.TR,
+  LOCALE_TYPE.ZH_TW,
 ] as const;
 
 export const STORAGE_LOCALE_KEY = 'locale';

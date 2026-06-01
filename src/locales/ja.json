@@ -1,0 +1,2390 @@
+{
+  "common": {
+    "projectName": "7 Days to Die サーバー管理者",
+    "unknown": "未知",
+    "yes": "はい",
+    "no": "いいえ",
+    "online": "オンライン",
+    "offline": "オフライン",
+    "day": "日 | 日 | 日",
+    "hour": "時間 | 時間 | 時間",
+    "minute": "分 | 分 | 分",
+    "second": "秒 | 秒 | 秒",
+    "lessThan": "未満",
+    "moreThan": "以上",
+    "equal": "等しい",
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "update": "更新",
+    "save": "保存",
+    "batchDelete": "一括削除",
+    "backToHome": "ホームに戻る",
+    "delete": "削除",
+    "deleteSuccess": "正常に削除されました。",
+    "confirmDelete": "削除してもよろしいですか?",
+    "apply": "適用",
+    "reset": "リセット",
+    "close": "閉じる",
+    "edit": "編集",
+    "player": "プレイヤー",
+    "serverLocalTime": "サーバーの現地時間"
+  },
+  "menus": {
+    "login": "ログイン",
+    "dashboard": "ダッシュボード",
+    "playerList": "プレイヤー一覧",
+    "gpsMap": "GPSマップ",
+    "gameChat": "ゲームチャット",
+    "liveChat": "ライブチャット",
+    "chatHistory": "チャット履歴",
+    "chatSettings": "チャット設定",
+    "coloredChat": "カラーチャット",
+    "auditLogs": "監査ログ",
+    "serverConfig": "サーバー構成",
+    "appSettings": "アプリの設定",
+    "banWhitelist": "BAN / ホワイトリスト",
+    "permission": "権限",
+    "modManagement": "MOD管理",
+    "economy": "経済",
+    "restart": "サーバーの再起動",
+    "scheduler": "タスクスケジューラ",
+    "backup": "バックアップ",
+    "backupSettings": "バックアップ設定",
+    "worldBackup": "ワールドバックアップ",
+    "databaseBackup": "データベースのバックアップ",
+    "serverConfigBackup": "サーバー構成のバックアップ",
+    "console": "コンソール",
+    "apiDocumentation": "APIドキュメント",
+    "schedulerTasks": "タスク",
+    "schedulerHistory": "履歴",
+    "schedulerSettings": "設定",
+    "groups": {
+      "monitoring": "監視",
+      "gameFeatures": "ゲームの特徴",
+      "serverManagement": "サーバー管理",
+      "operations": "運営",
+      "system": "システム"
+    },
+    "restartSettings": "設定",
+    "restartRun": "手動再起動",
+    "economyOverview": "概要",
+    "economyAccounts": "アカウント",
+    "economyTransactions": "トランザクション",
+    "economySettings": "設定",
+    "economyShop": "ショップ",
+    "economyRedeemCodes": "コードを引き換える",
+    "backupTasks": "バックアップタスク",
+    "backupHistory": "履歴",
+    "restartHistory": "履歴",
+    "teleport": "テレポート",
+    "teleportTools": "ツール",
+    "teleportSettings": "設定",
+    "teleportCities": "都市",
+    "teleportHomes": "プレイヤーホーム",
+    "teleportLogs": "テレポートログ",
+    "gameNotice": "ゲーム告知",
+    "voteRestart": "投票による再起動",
+    "voteRestartSettings": "設定",
+    "voteKick": "投票によるキック",
+    "voteKickSettings": "設定",
+    "achievement": "実績",
+    "achievementDefinitions": "定義",
+    "achievementRecords": "記録",
+    "achievementSettings": "設定",
+    "onlineReward": "オンライン報酬",
+    "onlineRewardSettings": "設定",
+    "gameEventLogs": "ゲームイベントログ",
+    "gameItems": "アイテム / ブロック"
+  },
+  "components": {
+    "myTable": {
+      "total": "合計 {0}",
+      "keywordSearch": "キーワード検索",
+      "view": "表示",
+      "batch": "一括",
+      "refresh": "更新",
+      "noData": "データなし",
+      "exportCSV": "CSVのエクスポート",
+      "add": "追加",
+      "search": "検索",
+      "reset": "リセット",
+      "autoRefresh": "自動更新",
+      "refreshInterval": "リフレッシュ間隔",
+      "secondsUnit": "秒",
+      "pleaseInput": "入力してください",
+      "operation": "操作",
+      "batchActions": "一括操作",
+      "moreActions": "その他の操作",
+      "filters": "フィルター",
+      "collapse": "折りたたむ",
+      "expand": "展開",
+      "edit": "編集"
+    },
+    "myForm": {
+      "pleaseInput": "入力してください",
+      "pleaseSelect": "選択してください"
+    },
+    "colorPicker": {
+      "placeholder": "6桁の色の値を入力してください",
+      "clear": "クリア",
+      "presets": "プリセットカラー",
+      "hint": "値は 6 桁の 16 進数の色として保存されます。"
+    },
+    "playerInventoryDialog": {
+      "header": "プレイヤーのインベントリ",
+      "grid": "グリッド",
+      "list": "リスト",
+      "bag": "バッグ",
+      "belt": "ベルト",
+      "equipment": "装備",
+      "itemName": "アイテム名",
+      "icon": "アイコン",
+      "iconName": "アイコン名",
+      "iconColor": "アイコンの色",
+      "localizationName": "ローカリゼーション名",
+      "count": "数量",
+      "maxStackAllowed": "許可される最大スタック数",
+      "quality": "品質",
+      "qualityColor": "品質の色",
+      "useTimes": "使用回数",
+      "maxUseTimes": "最大使用回数",
+      "mod": "MOD",
+      "block": "ブロック"
+    },
+    "playerSkillsDialog": {
+      "header": "プレイヤースキル",
+      "collapse": "すべて折りたたむ",
+      "expand": "すべて展開",
+      "name": "名前",
+      "icon": "アイコン",
+      "localizationName": "ローカリゼーション名",
+      "level": "レベル",
+      "maxLevel": "最大レベル",
+      "costForNextLevel": "次のレベルのコスト",
+      "type": "種類",
+      "localizationDesc": "説明"
+    },
+    "playerDetailsDialog": {
+      "header": "プレイヤーの詳細",
+      "playerName": "プレイヤー名",
+      "entityId": "エンティティID",
+      "playerId": "プレイヤーID",
+      "platformId": "プラットフォームID",
+      "playGroup": "プレイヤーグループ",
+      "admin": "管理者",
+      "online": "オンライン",
+      "ip": "IPアドレス",
+      "ping": "Ping",
+      "position": "位置",
+      "lastSpawnPosition": "最後のスポーン位置",
+      "gameStage": "ゲームステージ",
+      "lastLogin": "最終ログイン",
+      "playerKills": "プレイヤーキル数",
+      "zombieKills": "ゾンビキル",
+      "deaths": "死亡数",
+      "score": "スコア",
+      "health": "体力",
+      "stamina": "スタミナ",
+      "food": "食べ物",
+      "water": "水",
+      "level": "レベル",
+      "expToNextLevel": "次のレベルへの経験値",
+      "skillPoints": "スキルポイント",
+      "isLandProtectionActive": "土地保護は有効ですか",
+      "distanceWalked": "歩いた距離",
+      "totalItemsCrafted": "作成されたアイテムの合計",
+      "totalTimePlayed": "合計プレイ時間",
+      "currentLife": "現在のライフ",
+      "longestLife": "最長のライフ",
+      "alreadyCraftedList": "作成済みアイテム",
+      "unlockedRecipeList": "解放済みレシピ",
+      "rentedVMPosition": "レンタル位置",
+      "rentalEndDayTime": "レンタル終了時間",
+      "bedroll": "寝袋",
+      "active": "アクティブ",
+      "inactive": "非アクティブ"
+    }
+  },
+  "errors": {
+    "http": {
+      "badRequest": "要求の形式が正しくありません。\n入力内容を確認してください。",
+      "unauthorized": "認証されていません。\n再度ログインしてください。",
+      "forbidden": "アクセスが拒否されました。\n許可がありません。",
+      "notFound": "見つかりません。\nリソースが存在しません。",
+      "serverError": "サーバーエラー。\n私たちの側で何か問題が発生しました。",
+      "timeout": "リクエストがタイムアウトしました。\n接続を確認してください。"
+    }
+  },
+  "layout": {
+    "header": {
+      "expandMenu": "メニューを展開する",
+      "collapseMenu": "メニューを折りたたむ",
+      "switchLang": "言語を切り替える",
+      "fullscreen": "全画面表示",
+      "exitFullscreen": "全画面表示を終了する",
+      "themeConfiguration": "テーマ設定",
+      "github": "GitHub",
+      "community": "コミュニティ",
+      "userMenu": "ユーザーメニュー",
+      "logout": "ログアウト",
+      "appearance": "外観",
+      "layout": "レイアウト",
+      "general": "一般",
+      "preset": "プリセット",
+      "themeScheme": "テーマスキーム",
+      "grayscale": "グレースケール",
+      "colorWeakness": "色の弱点",
+      "themeColor": "テーマカラー",
+      "primaryColor": "原色",
+      "infoColor": "情報の色",
+      "successColor": "サクセスカラー",
+      "warningColor": "警告色",
+      "dangerColor": "デンジャーカラー",
+      "surfaceColor": "表面の色",
+      "layoutMode": "レイアウトモード",
+      "verticalMode": "垂直モード",
+      "horizontalMode": "水平モード",
+      "headerSettings": "ヘッダー設定",
+      "headerHeight": "ヘッダーの高さ",
+      "showLogo": "ロゴを表示する",
+      "showTitle": "タイトルを表示",
+      "showMenuCollapseBtn": "メニューの折りたたみボタンを表示",
+      "showBreadcrumb": "パンくずを表示",
+      "showBreadcrumbIcon": "パンくずアイコンを表示",
+      "topMenuAlignment": "トップメニューの配置",
+      "left": "左",
+      "center": "中央",
+      "right": "右",
+      "showFullscreenBtn": "全画面表示ボタンを表示",
+      "showLanguageSwitchBtn": "言語切り替えボタンを表示",
+      "showThemeConfigBtn": "テーマ設定ボタンを表示",
+      "sidebarSettings": "サイドバーの設定",
+      "sidebarWidth": "サイドバーの幅",
+      "sidebarCollapsedWidth": "サイドバーの折りたたみ幅",
+      "tabSettings": "タブ設定",
+      "showTab": "タブを表示",
+      "tabHeight": "タブの高さ",
+      "showTabIcon": "タブアイコンを表示",
+      "tabStyle": "タブスタイル",
+      "googleStyle": "Googleスタイル",
+      "buttonStyle": "ボタンのスタイル",
+      "smoothStyle": "スムーズスタイル",
+      "footerSettings": "フッター設定",
+      "showFooter": "フッターを表示",
+      "footerHeight": "フッターの高さ",
+      "presets": {
+        "blue": {
+          "name": "クラシックブルー",
+          "description": "プロの標準。\nエンタープライズアプリケーション向けの信頼できるバランスの取れた配色。"
+        },
+        "violet": {
+          "name": "モダンバイオレット",
+          "description": "インターフェイスに活気に満ちた洗練された雰囲気をもたらす、エレガントでテクノロジーを進化させたパレットです。"
+        },
+        "teal": {
+          "name": "フレッシュティール",
+          "description": "自然をイメージした穏やかな美学が、明瞭さとさわやかなユーザー エクスペリエンスを促進します。"
+        },
+        "pink": {
+          "name": "鮮やかなピンク",
+          "description": "温かくてエネルギッシュ。\n創造性とエンゲージメントを刺激するように設計された情熱的なカラーパレット。"
+        },
+        "tan": {
+          "name": "レトロタン",
+          "description": "プレミアムなビンテージ感を備えた素朴でオーガニックなパレットは、職人技や高級ブランドに最適です。"
+        },
+        "zinc": {
+          "name": "最小限の亜鉛",
+          "description": "工業的な精度とプロフェッショナルなミニマリズムに重点を置いた、洗練されたグレースケールの美学。"
+        }
+      },
+      "showTransitionAnimation": "トランジションアニメーションを表示",
+      "tableSize": "テーブルサイズ",
+      "small": "小さい",
+      "default": "デフォルト",
+      "large": "大きい",
+      "scrollMode": "スクロールモード",
+      "outerScroll": "外側スクロール",
+      "innerScroll": "内側スクロール",
+      "contextMenuStyle": "コンテキストメニュースタイル",
+      "defaultStyle": "デフォルトのスタイル",
+      "flatStyle": "フラットスタイル",
+      "win10Style": "Windows 10 スタイル",
+      "macStyle": "Macスタイル",
+      "popBoxStyle": "ポップアップボックスのスタイル",
+      "elementPlusStyle": "Element Plus スタイル",
+      "sweetAlert2Style": "SweetAlert2 スタイル",
+      "bootstrap5Style": "ブートストラップ 5 スタイル",
+      "bootstrap4Style": "ブートストラップ 4 スタイル",
+      "materialUIStyle": "Material UI スタイル",
+      "bulmaStyle": "ブルマスタイル"
+    },
+    "tabs": {
+      "close": "閉じる",
+      "closeOthers": "その他を閉じる",
+      "closeLeft": "左を閉じる",
+      "closeRight": "右を閉じる",
+      "closeAll": "すべて閉じる"
+    }
+  },
+  "ui": {
+    "dialog": {
+      "warningTitle": "警告",
+      "confirmButtonText": "OK",
+      "cancelButtonText": "キャンセル",
+      "warningText": "続行してもよろしいですか?"
+    }
+  },
+  "views": {
+    "login": {
+      "failedTitle": "ログインに失敗しました！",
+      "password": "パスワード",
+      "username": "ユーザー名",
+      "submit": "サインイン",
+      "forgotPassword": "パスワードをお忘れですか？",
+      "forgotPasswordHelpTitle": "パスワードの設定",
+      "forgotPasswordHelpUnavailable": "このパネルはセルフサービスのパスワード リセットをサポートしていません。",
+      "forgotPasswordHelpPathLabel": "7 Days to Die サーバーのルートにある次のファイルの認証情報を更新します。",
+      "forgotPasswordHelpFieldsLabel": "{usernameField} フィールドと {passwordField} フィールドを更新した後、構成を保存します。",
+      "forgotPasswordHelpRestartHint": "サーバーが設定を自動的にリロードしない場合は、サーバーを再起動するか、MOD をリロードします。",
+      "rememberMe": "ログイン情報を記憶する",
+      "successTitle": "おかえり！",
+      "failedMessage": "ユーザー名またはパスワードが間違っています。もう一度試してください。",
+      "successMessage": "正常にサインインしました。"
+    },
+    "dashboard": {
+      "headers": {
+        "overview": "概要",
+        "status": "状態",
+        "monitor": "モニター",
+        "quickActions": "クイックアクション",
+        "recentActivity": "最近の活動",
+        "systemPlatformInfo": "システムプラットフォーム情報",
+        "historyPlayers": "過去のプレイヤー",
+        "entities": "エンティティ",
+        "fps": "FPS",
+        "residentSetSize": "RSS",
+        "heap": "ヒープ",
+        "chunks": "チャンク",
+        "chunkGameObjects": "CGO",
+        "items": "アイテム"
+      },
+      "overview": {
+        "serverName": "サーバー名",
+        "region": "サーバー地域",
+        "language": "サーバー言語",
+        "serverIp": "サーバーIP",
+        "uptime": "サーバー稼働時間",
+        "gameTime": "ゲーム時間",
+        "serverPort": "サーバーポート",
+        "gameName": "ゲーム名",
+        "gameMode": "ゲームモード",
+        "serverVersion": "サーバーのバージョン",
+        "gameWorld": "ゲームワールド",
+        "gameDifficulty": "ゲームの難易度",
+        "gameDifficultys": {
+          "0": "スカベンジャー",
+          "1": "冒険者",
+          "2": "遊牧民",
+          "3": "戦士",
+          "4": "サバイバリスト",
+          "5": "非常識な"
+        },
+        "uptimeFormat": "{hours} : {minutes} : {seconds} | \n{days} : {hours} : {minutes} : {seconds}",
+        "gameTimeFormat": "日 {days}、{hours} : {minutes}"
+      },
+      "status": {
+        "freeSlots": "空きスロット",
+        "players": "プレイヤー",
+        "onlinePlayers": "オンラインプレイヤー",
+        "maxOnlinePlayers": "最大オンラインプレイヤー数",
+        "zombies": "ゾンビ",
+        "activeZombies": "アクティブなゾンビ",
+        "maxZombies": "最大ゾンビ数",
+        "animals": "動物",
+        "activeAnimals": "活発な動物",
+        "maxAnimals": "最大動物数",
+        "memory": "メモリ",
+        "usedMemory": "使用済みメモリ",
+        "freeMemory": "空きメモリ",
+        "totalMemory": "総メモリ",
+        "disk": "ディスク",
+        "usedDisk": "使用済みディスク",
+        "freeDisk": "フリーディスク",
+        "totalDisk": "総ディスク数"
+      },
+      "monitor": {
+        "cpu": "CPU",
+        "ram": "RAM",
+        "usage": "使用率（%）",
+        "time": "時間",
+        "network": "ネットワーク",
+        "trafficIn": "トラフィックイン",
+        "trafficOut": "トラフィックアウト"
+      },
+      "quickActions": {
+        "restartTitle": "サーバーを再起動します",
+        "shutdownTitle": "サーバーをシャットダウンする",
+        "restartButton": "サーバーを再起動します",
+        "shutdownButton": "サーバーをシャットダウンする",
+        "restartConfirm": "サーバーを再起動してもよろしいですか?\n接続中のプレーヤーが切断される可能性があります。",
+        "shutdownConfirm": "サーバーをシャットダウンしてもよろしいですか?\nこれにより、現在のサービスが中断されます。",
+        "restartSuccess": "再起動コマンドが送信されました",
+        "shutdownSuccess": "シャットダウンコマンドが送信されました",
+        "restartError": "再起動コマンドの送信に失敗しました",
+        "shutdownError": "シャットダウンコマンドの送信に失敗しました",
+        "hint": "リスクの高い操作。\n続行する前に、誰も重要なアクションを実行していないことを確認してください。",
+        "nextRestart": "次に予定されている再起動"
+      },
+      "systemInfo": {
+        "deviceName": "デバイス名",
+        "deviceModel": "デバイスモデル",
+        "deviceType": "デバイスの種類",
+        "deviceUniqueIdentifier": "デバイスの一意の識別子",
+        "operatingSystem": "オペレーティング·システム",
+        "processorType": "プロセッサの種類",
+        "processorCount": "プロセッサ数",
+        "processorFrequency": "プロセッサ周波数",
+        "systemMemorySize": "システムメモリサイズ",
+        "userName": "ユーザー名"
+      },
+      "recentActivity": {
+        "login": "ログイン成功",
+        "playerEnterGame": "プレーヤー: {0} がゲームに参加しました",
+        "playerLeaveGame": "プレーヤー: {0} がゲームを終了しました"
+      }
+    },
+    "playerList": {
+      "onlinePlayers": "オンラインプレイヤー",
+      "historyPlayers": "歴史上の選手",
+      "playerName": "プレイヤー名",
+      "status": "状態",
+      "entityId": "エンティティID",
+      "playerId": "プレイヤーID",
+      "platformId": "プラットフォームID",
+      "playGroup": "プレイグループ",
+      "position": "位置",
+      "lastLogin": "最終ログイン",
+      "bedroll": "ベッドロール",
+      "permissionLevel": "許可レベル",
+      "ip": "IPアドレス",
+      "ping": "ピン",
+      "twitchEnabled": "トゥイッチ有効",
+      "zombieKills": "ゾンビキル",
+      "playerKills": "プレイヤーキル数",
+      "deaths": "死亡者（数",
+      "level": "レベル",
+      "expToNextLevel": "次のレベルへの経験値",
+      "skillPoints": "スキルポイント",
+      "gameStage": "ゲームステージ",
+      "admin": "管理者",
+      "viewInventory": "在庫を見る",
+      "viewSkills": "スキルを見る",
+      "viewDetails": "詳細を見る",
+      "kick": "キックプレイヤー",
+      "kickReason": "キック理由 (オプション)",
+      "ban": "禁止プレイヤー",
+      "banDuration": "禁止期間 (分)",
+      "banReason": "禁止理由 (オプション)",
+      "mute": "プレーヤーをミュートします",
+      "muteDuration": "ミュート期間 (分、永久の場合は 0 または空)",
+      "muteReason": "ミュートの理由 (オプション)"
+    },
+    "map": {
+      "region": "リージョンファイル",
+      "landClaim": "土地の主張",
+      "zombie": "ゾンビ",
+      "hostiles": "敵対船",
+      "animal": "動物",
+      "offlinePlayer": "プレーヤー (オフライン)",
+      "onlinePlayer": "プレイヤー（オンライン）",
+      "mousePos": "マウスの位置",
+      "lastClick": "ラストクリック",
+      "renderExploredArea": "探索された領域をレンダリングする",
+      "renderExploredAreaConfirm": "探索した領域をレンダリングしてもよろしいですか?\nこれには数分かかる場合があります。コンソールで進行状況を確認できます。",
+      "renderFullMap": "フルマップを探索する",
+      "renderFullMapConfirm": "マップ全体を探索してもよろしいですか?\nこれには数分かかる場合があります。コンソールで進行状況を確認できます。この操作は通常、サーバーの起動後に 1 回だけ実行されます。",
+      "refreshMap": "マップを更新",
+      "autoReload": "リロード間隔",
+      "seconds": "秒",
+      "landOwner": "土地所有者",
+      "removeLandClaim": "取り除く",
+      "removeLandClaimConfirm": "土地の所有権を削除してもよろしいですか?",
+      "dragendTelePlayerConfirm": "プレーヤー: {0} をターゲットの場所 {1} にテレポートしてもよろしいですか?",
+      "gameTimeLoading": "読み込み中...",
+      "gameTimeFormat": "日 {days}、{hours}:{minutes}",
+      "claimActive": "アクティブ",
+      "claimInactive": "非アクティブ",
+      "claimStatus": "請求ステータス",
+      "viewPlayerInventory": "在庫を見る"
+    },
+    "gameChat": {
+      "typeMessage": "メッセージを入力してください",
+      "send": "送信",
+      "history": {
+        "columns": {
+          "createdAt": "時間",
+          "chatType": "チャネル",
+          "senderName": "送信者",
+          "playerId": "プレイヤーID",
+          "entityId": "エンティティID",
+          "message": "メッセージ"
+        },
+        "filters": {
+          "senderName": "送信者",
+          "playerId": "プレイヤーID",
+          "chatType": "チャネル",
+          "timeRange": "時間範囲"
+        },
+        "placeholders": {
+          "allChatTypes": "すべてのチャンネル",
+          "timeRange": "時間範囲を選択してください"
+        },
+        "emptyPlayerId": "システム / 不明"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "監査ログ",
+        "backupRuns": "バックアップの実行"
+      },
+      "sources": {
+        "api": "API",
+        "chatCommand": "チャットコマンド",
+        "consoleCommand": "コンソールコマンド",
+        "scheduler": "スケジューラ",
+        "system": "システム",
+        "gameEvent": "ゲームイベント"
+      },
+      "actionTypes": {
+        "create": "作成する",
+        "update": "アップデート",
+        "delete": "消去",
+        "enable": "有効にする",
+        "disable": "無効にする",
+        "execute": "実行する",
+        "send": "送信",
+        "kick": "キック",
+        "ban": "禁止",
+        "unban": "禁止を解除する",
+        "restart": "再起動",
+        "reload": "リロード",
+        "grant": "付与",
+        "revoke": "取り消す",
+        "import": "輸入",
+        "export": "輸出",
+        "reset": "リセット",
+        "other": "他の"
+      },
+      "filters": {
+        "timeRange": "時間範囲",
+        "source": "ソース",
+        "operatorId": "オペレーターID",
+        "actionType": "アクションの種類",
+        "resourceType": "リソースの種類",
+        "resourceId": "リソースID",
+        "succeeded": "結果"
+      },
+      "placeholders": {
+        "timeRange": "時間範囲を選択してください",
+        "allSources": "すべてのソース",
+        "allActionTypes": "すべてのアクションタイプ",
+        "allResults": "すべての結果"
+      },
+      "columns": {
+        "createdAt": "作成日",
+        "source": "ソース",
+        "operatorId": "オペレーターID",
+        "operatorName": "オペレーター名",
+        "actionType": "アクションの種類",
+        "resourceType": "リソースの種類",
+        "resourceId": "リソースID",
+        "summary": "まとめ",
+        "succeeded": "成功しました",
+        "errorMessage": "エラーメッセージ"
+      },
+      "empty": {
+        "operatorId": "匿名またはシステム",
+        "operatorName": "不明なオペレーター",
+        "source": "出典不明",
+        "actionType": "不明なアクション",
+        "resourceType": "不特定",
+        "resourceId": "なし",
+        "summary": "要約なし",
+        "timestamp": "不明な時間",
+        "details": "詳細ペイロードなし",
+        "errorMessage": "なし"
+      },
+      "detailDialog": {
+        "title": "監査ログの詳細",
+        "actions": {
+          "copy": "詳細をコピーする"
+        },
+        "messages": {
+          "copySuccess": "詳細がクリップボードにコピーされました。",
+          "copyFailed": "詳細をコピーできませんでした。\n後でもう一度試してください。"
+        },
+        "sections": {
+          "metadata": "メタデータ",
+          "summary": "実行結果",
+          "details": "詳細なコンテキスト"
+        }
+      }
+    },
+    "serverConfig": {
+      "settings": {
+        "ServerName": {
+          "group": "サーバー",
+          "desc": "サーバー名。\n好きな名前を入力してください"
+        },
+        "ServerDescription": {
+          "group": "サーバー",
+          "desc": "サーバーの説明。\nサーバーの説明を任意に入力します"
+        },
+        "ServerWebsiteURL": {
+          "group": "サーバー",
+          "desc": "サーバーの Web サイトのアドレス。\nサーバーブラウザでクリック可能なリンクとして表示されます"
+        },
+        "ServerPassword": {
+          "group": "サーバー",
+          "desc": "サーバーのパスワード。\nプレイヤーがゲームサーバーに入るために使用するパスワード"
+        },
+        "ServerLoginConfirmationText": {
+          "group": "サーバー",
+          "desc": "サーバーのログイン確認テキスト。\nこのオプションが設定されている場合、ユーザーはサーバーに参加するときにこのメッセージが表示され、続行する前に確認する必要があります。\nこのウィンドウをより複雑に変更するには、XUi でサーバー参加ルール ダイアログ ウィンドウを変更します。"
+        },
+        "Region": {
+          "group": "サーバー",
+          "desc": "サーバーが配置されているリージョン。\n可能な値は次のとおりです: アジア、北アメリカ東部、北アメリカ西部、中央アメリカ、南アメリカ、ヨーロッパ、ロシア、中東、アフリカ、オセアニア"
+        },
+        "Language": {
+          "group": "サーバー",
+          "desc": "サーバー上のプレーヤーの主言語。\nプレーヤーが検索したい言語の英語名を使用します。\n可能な値は次のとおりです: 英語、ドイツ語、スペイン語、フランス語、イタリア語、日本語、韓国語、ポーランド語、ブラジル語、ロシア語、トルコ語、中国語、中国語"
+        },
+        "ServerPort": {
+          "group": "ネットワーク",
+          "desc": "サーバー プログラムがリッスンしているポート。\n同じ LAN 上のコンピュータから LAN サーバーとして認識されるようにするには、これを 26900 ～ 26905 または 27015 ～ 27020 の範囲に保ちます。"
+        },
+        "ServerVisibility": {
+          "group": "ネットワーク",
+          "desc": "サーバーの可視性。 \n2 = 公開、1 = 友人のみに表示、0 = 非公開。\n専用サーバーとは決して友達ではないため、これを 1 に設定すると、最初のプレーヤーが IP で手動で接続した場合にのみ機能します。"
+        },
+        "ServerDisabledNetworkProtocols": {
+          "group": "ネットワーキング",
+          "desc": "ネットワーク プロトコルがサーバーによって無効になっています。\nカンマ区切りの可能な値、LiteNetLib、SteamNetworking。\nユーザーとサーバーの間に NAT ルーターがない場合、またはポート転送が正しく設定されている場合、専用サーバーは SteamNetworking を無効にする必要があります"
+        },
+        "ServerMaxWorldTransferSpeedKiBs": {
+          "group": "ネットワーキング",
+          "desc": "サーバーの世界最大転送速度。\nクライアントにまだワールドがない場合の、最初の接続時のワールド転送の最大速度 (kiB/秒)。\n最大値は、より高く設定した場合でも約 1300 kiB/s です"
+        },
+        "ServerMaxPlayerCount": {
+          "group": "スロット",
+          "desc": "サーバー上の最大プレイヤー数。\n同時にオンラインで許可されるプレイヤーの最大数"
+        },
+        "ServerReservedSlots": {
+          "group": "スロット",
+          "desc": "サーバーの予約済みスロット。\n最大プレイヤー数を超えると、多くのスロットは特定の許可レベルを持つプレイヤーのみが使用できます。"
+        },
+        "ServerReservedSlotsPermission": {
+          "group": "スロット",
+          "desc": "サーバー予約スロット許可。\n上記の予約スロットを使用するために必要な許可レベル"
+        },
+        "ServerAdminSlots": {
+          "group": "スロット",
+          "desc": "サーバー管理スロット。\nサーバーがプレイヤーの最大数に達した場合でも、参加できる管理者はまだたくさんいます"
+        },
+        "ServerAdminSlotsPermission": {
+          "group": "スロット",
+          "desc": "サーバー管理者権限スロット。\n上記の管理者スロットを使用するために必要な権限レベル"
+        },
+        "WebDashboardEnabled": {
+          "group": "管理インターフェース",
+          "desc": "Web ダッシュボードを有効/無効にします。"
+        },
+        "WebDashboardPort": {
+          "group": "管理インターフェース",
+          "desc": "Web ダッシュボードのポート。"
+        },
+        "WebDashboardUrl": {
+          "group": "管理インターフェース",
+          "desc": "Web ダッシュボードの外部 URL。 \n(サーバーのパブリック IP のみを使用していない場合、たとえば Web ダッシュボードがリバース プロキシの背後にある場合)。\n完全な URL である必要があります。 \nhttps://domainOfReverseProxy.tld:1234/。\nパブリック IP とダッシュボード ポートを直接使用する場合は、空白のままにすることができます。"
+        },
+        "EnableMapRendering": {
+          "group": "管理インターフェース",
+          "desc": "マップのレンダリングを有効にします。\nマップを参照するときに、マップをタイル イメージとしてレンダリングすることを有効/無効にします。\nたとえば、Web ダッシュボードはこれを使用してマップ ビューを表示できます。"
+        },
+        "TelnetEnabled": {
+          "group": "管理インターフェース",
+          "desc": "Telnet サービスが有効かどうか。 \nTelnet サービスを有効または無効にする [true、false]"
+        },
+        "TelnetPort": {
+          "group": "管理インターフェース",
+          "desc": "Telnetポート。 \nTelnetサーバーポート"
+        },
+        "TelnetPassword": {
+          "group": "管理インターフェース",
+          "desc": "Telnet アクセスのパスワード。\nパスワードが設定されていない場合、サーバーはローカル ループバック インターフェイスのみをリッスンします。"
+        },
+        "TelnetFailedLoginLimit": {
+          "group": "管理インターフェース",
+          "desc": "Telnet ログインの失敗制限。\nリモート クライアントが間違ったパスワードを複数回入力すると、クライアントは Telnet インターフェイスへの接続をブロックされます。"
+        },
+        "TelnetFailedLoginsBlocktime": {
+          "group": "管理インターフェース",
+          "desc": "ログイン失敗のロック時間。\nログイン失敗制限を超えた後、ブロックが続く時間 (秒単位)"
+        },
+        "TerminalWindowEnabled": {
+          "group": "管理インターフェース",
+          "desc": "ターミナルウィンドウが有効になりました。\nログ出力/コマンド入力用のターミナルウィンドウを表示する(Windowsのみ)"
+        },
+        "AdminFileName": {
+          "group": "フォルダーとファイルの場所",
+          "desc": "サーバー管理ファイル名。 \nSaveGameFolder への相対パス"
+        },
+        "UserDataFolder": {
+          "group": "フォルダーとファイルの場所",
+          "desc": "ユーザーデータフォルダー。\nこれを使用して、RWG で生成されたワールドを含む、生成されたすべてのデータをサーバーが保存する場所をオーバーライドします。\nコメントを外すことを忘れないでください"
+        },
+        "SaveGameFolder": {
+          "group": "フォルダーとファイルの場所",
+          "desc": "ゲームフォルダを保存します。\nゲームの保存パスを上書きするためにのみ使用されます。\nコメントを外すことを忘れないでください"
+        },
+        "ServerAllowCrossplay": {
+          "group": "その他の技術設定",
+          "desc": "クロスプレイを有効/無効にします。クロスプレイ サーバーは検索でのみ検出され、制裁が無視されず、プレイヤー スロット数がデフォルトまたはそれより少ない場合に参加可能になります。"
+        },
+        "EACEnabled": {
+          "group": "その他の技術設定",
+          "desc": "EAC アンチチートが有効かどうか。\nアンチチート機能を有効にするかどうか (クラックサーバーや中国サーバーの場合はオフにする必要があります)"
+        },
+        "IgnoreEOSSanctions": {
+          "group": "その他の技術設定",
+          "desc": "EOS制裁を無視してください。\nプレイヤーの参加を許可する際に EOS 制裁を無視する"
+        },
+        "HideCommandExecutionLog": {
+          "group": "その他の技術設定",
+          "desc": "コマンド実行ログを非表示にします。 \n0 = すべてを表示、1 = Telnet/コントロール パネルからのみ非表示、2 = リモート ゲーム クライアントからも非表示、3 = すべてを非表示"
+        },
+        "MaxUncoveredMapChunksPerPlayer": {
+          "group": "その他の技術設定",
+          "desc": "各プレイヤーがゲームマップ上で探索できるエリア。\nしたがって、プレーヤーごとの最大マップ ファイル サイズは (x * 512 バイト) に制限され、カバーエリアは (x * 256 平方メートル) になります。\nデフォルト値の 131072 は、いつでも最大 32 平方キロメートルのマップを探索できることを意味します。"
+        },
+        "PersistentPlayerProfiles": {
+          "group": "その他の技術設定",
+          "desc": "プレーヤーのプロフィールを変更できるかどうか。\n無効にすると、プレーヤーは選択したプロファイルで参加できます。 \ntrue の場合、最後に参加した構成ファイルを使用して参加します。"
+        },
+        "MaxChunkAge": {
+          "group": "その他の技術設定",
+          "desc": "ゲーム内でチャンクが再訪問または保護されていない場合 (近くにテリトリーストーンや寝袋があるなど)、チャンクが訪問されてから元の状態にリセットされるまでの日数。"
+        },
+        "SaveDataLimit": {
+          "group": "その他の技術設定",
+          "desc": "セーブデータ制限。\n保存されたゲームごとに許可される最大ディスク容量 (MB 単位)。\nこの制限に達すると、領域を解放するために、保存されたゲーム チャンクが強制的に元の状態にリセットされる場合があります。\n負の値は制限を無効にします"
+        },
+        "GameWorld": {
+          "group": "ゲームワールド",
+          "desc": "ゲームの世界地図。 \nNavezgan[固定マップ]、RWG[ランダム マップ] (以下の「ワールド シード」および「ワールド サイズ」オプションを参照)、または「Worlds」フォルダー内の既存のワールド名 (例: 「Navezgan」、「PREGEN01」...)"
+        },
+        "WorldGenSeed": {
+          "group": "ゲームワールド",
+          "desc": "ワールドシード。 \nRWGなら、これは新たな世界を生み出す種となる。\n同じ名前のワールドがすでに存在する場合は、直接ロードされます"
+        },
+        "WorldGenSize": {
+          "group": "ゲームワールド",
+          "desc": "ワールド生成サイズ。 \nRWG の場合、作成されるワールドの幅と高さを制御します。\n公式にサポートされているサイズは 6144 ～ 10240 であり、2048 の倍数である必要があります。 \n6144、8192、10240"
+        },
+        "GameName": {
+          "group": "ゲームワールド",
+          "desc": "ゲーム名。\nゲームの名前が何であれ、これは保存されたゲームの名前と、ワールドに装飾 (木など) を配置するときに使用されるシードに影響します。 \nRWG ワールドを作成する場合、ワールドの一般的なレイアウトは制御されません。"
+        },
+        "GameMode": {
+          "group": "ゲームワールド",
+          "desc": "ゲームモード。\nゲームモードサバイバル (マルチプレイヤー)"
+        },
+        "GameDifficulty": {
+          "group": "ゲームの難易度",
+          "desc": "ゲームの難易度。\n難易度は0から5まであり、0が最も簡単、5が最も難しいです"
+        },
+        "BlockDamagePlayer": {
+          "group": "ゲームの難易度",
+          "desc": "プレイヤーブロックダメージ。\nプレイヤーがブロックに与えたダメージ (割合、整数で表現)"
+        },
+        "BlockDamageAI": {
+          "group": "ゲームの難易度",
+          "desc": "AIブロックダメージ。 \nAIがブロックに与えるダメージ（割合、整数で表す）"
+        },
+        "BlockDamageAIBM": {
+          "group": "ゲームの難易度",
+          "desc": "ブラッドムーン中のAIブロックダメージ。 \nBlood Moon 中に AI によってブロックに与えられたダメージ (割合、整数で表現)"
+        },
+        "XPMultiplier": {
+          "group": "ゲームの難易度",
+          "desc": "XP ゲイン乗数。\nプレイヤーの XP ゲイン乗数 (パーセント、整数で表現)"
+        },
+        "PlayerSafeZoneLevel": {
+          "group": "ゲームの難易度",
+          "desc": "初心者プレイヤーのセーフゾーン レベル。\nプレイヤーのレベルがこのレベル以下の場合、スポーン時に安全地帯 (敵がいない) が作成されます。\nプレイヤーがこのレベル以下の場合、ゾンビはプレイヤーの周囲にスポーンしなくなります"
+        },
+        "PlayerSafeZoneHours": {
+          "group": "ゲームの難易度",
+          "desc": "セーフゾーンの期間。\nプレイヤーの安全地帯の有効時間（ゲーム時間内）"
+        },
+        "BuildCreate": {
+          "group": "ゲームの難易度",
+          "desc": "クリエイティブモード。\nチートモードのオンとオフを切り替えます"
+        },
+        "DayNightLength": {
+          "group": "ゲームの難易度",
+          "desc": "ゲーム内の 1 日のリアルタイム時間 (分単位)。\nゲーム内の 1 日に相当するリアルタイム時間が何分かを示します。"
+        },
+        "DayLightLength": {
+          "group": "ゲームの難易度",
+          "desc": "ゲーム内の日照時間。 \n1 日の日照時間を示します (デフォルトは 18 時間)"
+        },
+        "BiomeProgression": {
+          "group": "ゲームの難易度",
+          "desc": "バイオームの進行を促進するために、バイオームのハザードと戦利品ステージのキャップを有効にします。\n戦利品ステージのキャップは、バイオームチャレンジを完了することで増加します。"
+        },
+        "StormFreq": {
+          "group": "ゲームの難易度",
+          "desc": "嵐の頻度を調整します。 \n0% ではオフになります。\nバニラ値: 0、50、100、150、200、300、400、500"
+        },
+        "DeathPenalty": {
+          "group": "ゲームの難易度",
+          "desc": "死亡後の罰則。 \n0 = なし。 \n1 = デフォルト: クラシック XP ペナルティ。 \n2 = 負傷: デバフのほとんどが維持されます。\n食料と水の比率が 50% の状態でリスポーンします。 \n3 = パーマデス: キャラクターは完全にリセットされます。\nセーブしたゲームに生まれ変わります）"
+        },
+        "DropOnDeath": {
+          "group": "ゲームの難易度",
+          "desc": "死のドロップ。 \n0 = なし、1 = すべて、2 = ツールベルトのみ、3 = バックパックのみ、4 = すべて削除"
+        },
+        "DropOnQuit": {
+          "group": "ゲームの難易度",
+          "desc": "ログアウトドロップ。 \n0 = なし、1 = すべて、2 = ツールベルトのみ、3 = バックパックのみ"
+        },
+        "BedrollDeadZoneSize": {
+          "group": "ゲームの難易度",
+          "desc": "ゾンビがスポーンしない BedrollDeadZone (つまり、各辺の長さが指定された値の 2 倍であるボックスの半径) のサイズ。 \nBedrollDeadZone に触れたクリアされたスリーパー ゾーンは、クリア後に再びスポーンしません。"
+        },
+        "BedrollExpiryTime": {
+          "group": "ゲームの難易度",
+          "desc": "ベッドロールの有効期限。\n所有者が最後にオンラインになった後、寝袋がアクティブであり続ける現実世界の日数"
+        },
+        "AllowSpawnNearFriend": {
+          "group": "ゲームの難易度",
+          "desc": "初めてサーバーに参加する新規プレイヤーは、同時にプレイしている友人の近くに参加することを選択できますか? \n0 = 無効、1 = 常に、2 = 森林バイオームの近くの友人のみ"
+        },
+        "CameraRestrictionMode": {
+          "group": "ゲームの難易度",
+          "desc": "カメラ制限モード。 \n0 = プレイヤーは一人称視点と三人称視点のカメラ モードを自由に切り替えることができます、1 = 一人称視点に制限されます、2 = 三人称視点に制限されます"
+        },
+        "JarRefund": {
+          "group": "ゲームの難易度",
+          "desc": "空瓶の返金率。\nアイテムを消費した後に返される空の瓶の割合。\n使用可能な値: 0、5、10、20、30、40、50、60、70、80、90、100"
+        },
+        "MaxSpawnedZombies": {
+          "group": "パフォーマンス",
+          "desc": "スポーンされるゾンビの最大数。\nこの設定はマップ全体をカバーします。マップ全体に一度に存在できるゾンビの数は限られています。\nこの設定を変更すると、パフォーマンスに大きな影響を与える可能性があります"
+        },
+        "MaxSpawnedAnimals": {
+          "group": "パフォーマンス",
+          "desc": "スポーンされるゾンビの最大数。\nサーバー上に多数のプレイヤーがいる場合は、この制限を増やして野生動物を追加できます。\n動物はゾンビのように CPU を大量に消費しません。\n注: これにより、恣意的により多くの動物がスポーンすることはありません。バイオームスポーン システムは、特定のエリアに特定の数の動物のみをスポーンしますが、プレイヤー ベースが大きくて分散している場合は、制限に遭遇する可能性があるため、増やすことができます。"
+        },
+        "ServerMaxAllowedViewDistance": {
+          "group": "パフォーマンス",
+          "desc": "クライアントに許可される最大表示距離 (6 ～ 12)。\nメモリ使用量とパフォーマンスに大きな影響を与える"
+        },
+        "MaxQueuedMeshLayers": {
+          "group": "パフォーマンス",
+          "desc": "メッシュ生成中にキューに入れることができるチャンク メッシュ レイヤーの最大数。\nこの値を減らすとメモリ使用量が増加しますが、チャンクの生成時間が長くなる可能性があります。"
+        },
+        "EnemySpawnMode": {
+          "group": "ゾンビの設定",
+          "desc": "敵の出現を有効/無効にします。"
+        },
+        "EnemyDifficulty": {
+          "group": "ゾンビの設定",
+          "desc": "ゾンビの激しさ。 \n0 = 通常、1 = 狂乱"
+        },
+        "ZombieFeralSense": {
+          "group": "ゾンビの設定",
+          "desc": "ゾンビのフェラルセンス。 \n0-3 (オフ、昼、夜、すべて)"
+        },
+        "ZombieMove": {
+          "group": "ゾンビの設定",
+          "desc": "ゾンビの動き。 \n0-4 (ウォーキング、ジョギング、ランニング、スプリント、悪夢)"
+        },
+        "ZombieMoveNight": {
+          "group": "ゾンビの設定",
+          "desc": "ゾンビナイトの動き。 \n0-4 (ウォーキング、ジョギング、ランニング、スプリント、悪夢)"
+        },
+        "ZombieFeralMove": {
+          "group": "ゾンビの設定",
+          "desc": "ゾンビのフェラルムーブ。 \n0-4 (ウォーキング、ジョギング、ランニング、スプリント、ナイトメア)"
+        },
+        "ZombieBMMove": {
+          "group": "ゾンビの設定",
+          "desc": "ゾンビBMの動き。 \n0-4 (ウォーキング、ジョギング、ランニング、スプリント、ナイトメア)"
+        },
+        "AISmellMode": {
+          "group": "ゾンビの設定",
+          "desc": "AI匂いモード。 \n0-5 (オフ、ウォーキング、ジョギング、ランニング、スプリント、悪夢)"
+        },
+        "BloodMoonFrequency": {
+          "group": "ゾンビの設定",
+          "desc": "ブラッドムーンの周波数。\nブラッドムーンが現れる頻度（日数）。\nこれを 0 に設定すると、Blood Moon が存在しないことを意味します"
+        },
+        "BloodMoonRange": {
+          "group": "ゾンビの設定",
+          "desc": "ブラッドムーン山脈。\n実際のブラッド ムーンの日は、上記の設定からランダムな日数だけずれる可能性があります。\nこの値を 0 に設定すると、ブラッド ムーンの頻度で指定された N 日ごとに、ブラッド ムーンが時間どおりに表示されます。"
+        },
+        "BloodMoonWarning": {
+          "group": "ゾンビの設定",
+          "desc": "ブラッドムーン警告。\nブラッドムーンデーの赤い日が始まってからの時間数。\nこれを -1 に設定すると、赤は表示されなくなります。"
+        },
+        "BloodMoonEnemyCount": {
+          "group": "ゾンビの設定",
+          "desc": "ブラッドムーンの敵の数。\nこれは、Blood Moon Zombie Group 内の各プレイヤーがいつでも生きている (同時にスポーンできる) ゾンビの数ですが、マルチプレイヤーでは MaxSpawnedZombies がこれをオーバーライドします。\nまた、ゲームのステージによって各サイドのゾンビの最大数が設定されることにも注意してください。\nゲーム ステージの値が低いと、ゾンビの数が Blood Moon の敵の数の設定よりも低くなります。\nこの設定を変更すると、パフォーマンスに大きな影響を与える可能性があります。"
+        },
+        "LootAbundance": {
+          "group": "戦利品",
+          "desc": "検索アイテムの存在率"
+        },
+        "LootRespawnDays": {
+          "group": "戦利品",
+          "desc": "検索アイテムの更新日。\n検索可能なアイテムのリソースを更新するのにかかる日数"
+        },
+        "AirDropFrequency": {
+          "group": "戦利品",
+          "desc": "エアドロップの頻度。\nエアドロップが行われたゲーム時間数を示します。0 = 行われない"
+        },
+        "AirDropMarker": {
+          "group": "戦利品",
+          "desc": "エアドロップ表示。\nエアドロップのマップ/コンパス上にマーカーを追加するかどうかを設定します"
+        },
+        "PartySharedKillRange": {
+          "group": "マルチプレイヤー",
+          "desc": "パーティ共有のキルレンジ。\nパーティ共有キル報酬とミッションパーティキルターゲット報酬を獲得するために必要な距離"
+        },
+        "PlayerKillingMode": {
+          "group": "マルチプレイヤー",
+          "desc": "プレイヤーの殺害設定 (0 = 殺害なし、1 = 味方のみにダメージを与える、2 = 見知らぬ人のみにダメージを与える、3 = 全員にダメージを与える)"
+        },
+        "LandClaimCount": {
+          "group": "LandClaimSize オプション",
+          "desc": "土地請求の数。\nプレイヤーごとに許可される LandClaimSize の最大数"
+        },
+        "LandClaimSize": {
+          "group": "LandClaimSize オプション",
+          "desc": "LandClaimSize の保護範囲。\n単位はブロックです"
+        },
+        "LandClaimDeadZone": {
+          "group": "LandClaimSize オプション",
+          "desc": "LandClaimSize の保護範囲。 \nLandClaimSize 間の距離。 \nLandClaimSizes を設定するには、この距離よりも大きくする必要があります (相手と友達でない場合)。"
+        },
+        "LandClaimExpiryTime": {
+          "group": "LandClaimSize オプション",
+          "desc": "プレーヤーがオフラインのときに LandClaim が保護される日数。\nプレーヤーがオフラインになった後、LandClaimSize が有効になる日数 (リアルタイム)"
+        },
+        "LandClaimDecayMode": {
+          "group": "LandClaimSize オプション",
+          "desc": "LandClaimSize 保護減衰モード。\nオフライン プレイヤーの土地範囲の減衰モードを制御します。 \n0 = 遅い (線形)、1 = 速い (指数関数的)、2 = なし (有効期限が切れるまで完全な保護)"
+        },
+        "LandClaimOnlineDurabilityModifier": {
+          "group": "ランドストーンのオプション",
+          "desc": "プレイヤーがオンラインのときの LandStone の保護乗数。\nプレイヤーがオンラインのときの LandStone の硬度乗数を示します。0 は無敵を意味し、デフォルトは 4 倍です"
+        },
+        "LandClaimOfflineDurabilityModifier": {
+          "group": "ランドストーンのオプション",
+          "desc": "プレーヤーがオフラインのときの LandStone の保護乗数。\nプレイヤーがオフラインのときの LandStone の硬度乗数を示します。0 は無敵を意味し、デフォルトは 4 倍です"
+        },
+        "LandClaimOfflineDelay": {
+          "group": "ランドストーンのオプション",
+          "desc": "プレーヤーがゲームを終了してから、LandStone の硬度がオンラインからオフラインに変更されるまでの分数。\nデフォルトは0です"
+        },
+        "DynamicMeshEnabled": {
+          "group": "他の",
+          "desc": "ダイナミックメッシュシステムを有効にするかどうか"
+        },
+        "DynamicMeshLandClaimOnly": {
+          "group": "他の",
+          "desc": "ダイナミック メッシュ システムがプレーヤーの LCB 領域でのみ有効かどうか"
+        },
+        "DynamicMeshLandClaimBuffer": {
+          "group": "他の",
+          "desc": "ダイナミックメッシュLCBブロック半径"
+        },
+        "DynamicMeshMaxItemCache": {
+          "group": "他の",
+          "desc": "動的メッシュの最大アイテム キャッシュ。\n同時に処理できるプロジェクトの数。値が大きいほど、より多くの RAM が使用されます。"
+        },
+        "TwitchServerPermission": {
+          "group": "他の",
+          "desc": "サーバー上で Twitch 統合を使用するために必要な権限レベル"
+        },
+        "TwitchBloodMoonAllowed": {
+          "group": "他の",
+          "desc": "Twitch Blood Moon を許可するかどうか。\nサーバーがブラッド ムーン中に Twitch 操作を許可している場合、ブラッド ムーン中に追加のゾンビがスポーンし、サーバーのラグが発生する可能性があります。"
+        },
+        "QuestProgressionDailyLimit": {
+          "group": "他の",
+          "desc": "毎日のクエストの進行制限。\nクエスト レベルを上げるために、プレイヤーが毎日完了できるクエストの数を制限します。\n制限を超えたクエストも完了して報酬を受け取ることができます"
+        }
+      }
+    },
+    "appSettings": {
+      "empty": "利用可能なアプリケーション設定はありません。",
+      "groups": {
+        "general": "一般的な"
+      },
+      "fields": {
+        "webUrl": "ウェブURL",
+        "userName": "ユーザー名",
+        "password": "パスワード",
+        "accessTokenExpireTime": "アクセストークンの有効期限",
+        "refreshTokenExpireTime": "リフレッシュトークンの有効期限",
+        "serverConfigFile": "サーバー構成ファイル"
+      },
+      "tooltips": {
+        "webUrl": "フロントエンドが API にアクセスするために使用するベース アドレス。 \nhttp または https を含めます。",
+        "password": "管理バックエンドへのログインに使用されるパスワードは、サーバー アカウントと一致する必要があります。",
+        "accessTokenExpireTime": "アクセス トークンの有効期間 (秒単位)。",
+        "refreshTokenExpireTime": "リフレッシュ トークンの有効期間 (秒単位)。",
+        "serverConfigFile": "編集するサーバー構成ファイルへのパス。\n相対パスまたはサーバー ディレクトリ パスはどちらも機能します。"
+      },
+      "actions": {
+        "save": "設定の保存",
+        "reset": "リセット"
+      },
+      "messages": {
+        "saveSuccess": "アプリケーション設定が更新されました。",
+        "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+      }
+    },
+    "chatSettings": {
+      "fields": {
+        "isEnabled": "チャットを有効にする",
+        "globalServerName": "グローバル送信者名",
+        "whisperServerName": "ささやき送信者名",
+        "chatCommandPrefixes": "コマンドプレフィックス",
+        "allowNoPrefix": "プレフィックスのないコマンドを許可する",
+        "chatCommandSeparators": "コマンド区切り文字",
+        "historyRetentionDays": "履歴の保存日数",
+        "excludeCommandsFromHistory": "履歴からコマンドを除外する",
+        "muteNotifyMessage": "通知メッセージをミュートする"
+      },
+      "tooltips": {
+        "isEnabled": "チャットは、チャット コマンドを登録するすべての機能に必要なコア サービスです。\n無効にすることはできません。",
+        "globalServerName": "サーバーがグローバル チャット メッセージを送信するときに使用される表示名。",
+        "whisperServerName": "サーバーがウィスパー メッセージを送信するときに使用される表示名。",
+        "chatCommandPrefixes": "複数のプレフィックスはカンマで区切ります (例: /,!)。",
+        "allowNoPrefix": "有効にすると、プレーンなグローバル チャット行がコマンドとして解釈される可能性があります。",
+        "chatCommandSeparators": "複数の区切り文字はカンマで区切ります。\n通常のデフォルトは 1 つのスペースです。",
+        "historyRetentionDays": "チャット履歴を保存する日数。\n永久に保持するには 0 に設定します。",
+        "excludeCommandsFromHistory": "有効にすると、コマンド接頭辞で始まるチャット メッセージは履歴に保存されません。",
+        "muteNotifyMessage": "ミュートされたプレイヤーがチャットしようとすると、ささやき声が送られます。\n通知を送信しない場合は空のままにします。"
+      },
+      "actions": {
+        "save": "チャット設定の保存",
+        "reset": "デフォルト設定の復元"
+      },
+      "messages": {
+        "resetSuccess": "バックエンドのデフォルト設定が復元されました。",
+        "saveSuccess": "チャット設定が更新されました。",
+        "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+      },
+      "preview": {
+        "title": "エフェクトのプレビュー",
+        "sampleMessage": "これはサンプルメッセージです。",
+        "defaultSender": "サーバ",
+        "channels": {
+          "global": "グローバル",
+          "whisper": "ささやき"
+        }
+      }
+    },
+    "coloredChat": {
+      "tabs": {
+        "settings": "設定",
+        "profiles": "プロフィール"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "カラーチャットを有効にする",
+          "globalDefault": "グローバルデフォルトカラー",
+          "whisperDefault": "ウィスパーのデフォルトカラー",
+          "friendsDefault": "友達のデフォルトカラー",
+          "partyDefault": "パーティーのデフォルトカラー",
+          "adminDefault": "管理者のデフォルトの色",
+          "systemDefault": "システムのデフォルトの色",
+          "allowPlayerColorTags": "プレーヤーのカラータグを許可する",
+          "playerColorTagPermission": "プレーヤーカラータグの許可"
+        },
+        "tooltips": {
+          "isEnabled": "ColoredChat 機能がアクティブであるかどうかを制御します。",
+          "playerColorTagPermission": "どのプレイヤーがチャットでカラータグを使用できるかを制御します。\nなし: 無効。\nすべて: すべてのプレイヤー。 \nAdminOnly: 管理者のみ。",
+          "allowPlayerColorTags": "有効にすると、プレーヤーは制御されたカラー タグ構文を使用できます。",
+          "hexColor": "FFCC00 などの 6 桁の 16 進数のカラー値を入力します。"
+        },
+        "sections": {
+          "policyTitle": "ポリシー",
+          "policyDescription": "ColoredChat を有効にするかどうか、およびプレーヤーが独自のカラー タグを入力できるかどうかを制御します。",
+          "colorsTitle": "デフォルトのチャンネルカラー",
+          "colorsDescription": "各チャット チャネルにデフォルトの色を割り当てて、プレイヤーがメッセージ ソースを一目で区別できるようにします。",
+          "colorsHint": "以下の値は 6 桁の 16 進数の色として保存されます。",
+          "playerChannels": "プレーヤーのチャンネル",
+          "systemChannels": "システムチャンネル"
+        },
+        "playerColorTagPermissions": {
+          "none": "無効",
+          "all": "全プレイヤー",
+          "adminOnly": "管理者のみ"
+        },
+        "preview": {
+          "title": "エフェクトのプレビュー",
+          "samplePlayerName": "プレイヤー名",
+          "sampleMessage": "これはサンプルメッセージです。",
+          "channels": {
+            "global": "グローバル",
+            "whisper": "ささやき",
+            "friends": "友達",
+            "party": "パーティー",
+            "admin": "管理者",
+            "system": "システム"
+          }
+        },
+        "actions": {
+          "save": "設定の保存",
+          "reset": "デフォルトに戻す"
+        },
+        "messages": {
+          "resetSuccess": "バックエンドのデフォルト設定が復元されました。",
+          "saveSuccess": "カラーチャット設定が更新されました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      },
+      "profiles": {
+        "addProfile": "チャットプロファイルの追加",
+        "editProfile": "チャットプロフィールの編集",
+        "fields": {
+          "playerId": "プレイヤーID",
+          "customName": "カスタム名",
+          "nameColor": "ネームカラー",
+          "textColor": "文字の色",
+          "description": "説明",
+          "createdAt": "作成日"
+        },
+        "tooltips": {
+          "playerId": "一時的な EntityId ではなく、安定したクロスプラットフォームの PlayerId を使用してください。",
+          "customName": "プレーヤーのライブ表示名を使用するには、空のままにします。\n動的な値を埋め込むには、以下の変数を使用します。",
+          "hexColor": "FFCC00 などの 6 桁の 16 進数のカラー値を入力します。",
+          "description": "このプロファイルが存在する理由を説明するために使用されます。"
+        },
+        "placeholders": {
+          "createdAtRange": "作成時刻の範囲を選択します"
+        },
+        "availableVariables": "利用可能な変数",
+        "variables": {
+          "playerName": "プレーヤーのライブ表示名",
+          "playerId": "クロスプラットフォームのプレイヤー ID",
+          "entityId": "ゲーム内エンティティ ID",
+          "chatType": "チャットチャネルの種類"
+        },
+        "messages": {
+          "saveSuccess": "チャット プロファイルが正常に保存されました。"
+        }
+      }
+    },
+    "economy": {
+      "overview": {
+        "totalAccounts": "総アカウント数",
+        "todayNewAccounts": "今日の新しいアカウント",
+        "totalCirculation": "総循環量",
+        "todayTransactionCount": "今日の取引",
+        "todayRewardsAmount": "本日配布された報酬",
+        "todayDailyClaimCount": "今日の毎日の請求",
+        "todayTaxCollected": "今日徴収された税金",
+        "leaderboard": "富のリーダーボード",
+        "leaderboardRank": "ランク",
+        "loading": "読み込み中...",
+        "empty": "利用可能なデータがありません"
+      },
+      "tabs": {
+        "accounts": "アカウント",
+        "transactions": "トランザクション",
+        "settings": "設定"
+      },
+      "settings": {
+        "sections": {
+          "basic": "基本通貨",
+          "transfer": "転送",
+          "dailyReward": "毎日の報酬",
+          "bonus": "ボーナス報酬",
+          "shop": "店"
+        },
+        "fields": {
+          "isEnabled": "経済性を実現する",
+          "currencyName": "通貨名",
+          "currencySymbol": "通貨記号",
+          "defaultBalance": "開始残高",
+          "allowTransfer": "プレーヤーの転送を許可する",
+          "minTransferAmount": "最低送金額",
+          "transferTaxRate": "譲渡税率",
+          "dailyRewardAmount": "毎日の報酬額",
+          "leaderboardSize": "リーダーボードのサイズ",
+          "zombieKillRewardEnabled": "ゾンビキル報酬",
+          "zombieKillRewardAmount": "ゾンビキル報酬額",
+          "dailyStreakEnabled": "毎日の連続ボーナス",
+          "dailyStreakBonusPercent": "連続ボーナスのパーセント",
+          "dailyStreakMaxDays": "連続最大日数",
+          "shopEnabled": "ショップを有効にする",
+          "playerConnectedRewardEnabled": "プレイヤー参加報酬",
+          "playerConnectedRewardAmount": "プレイヤー参加報酬額",
+          "playerDiedPenaltyEnabled": "死刑を有効にする",
+          "playerDiedPenaltyAmount": "死亡控除額"
+        },
+        "commands": {
+          "sectionTitle": "チャットコマンド名",
+          "aliasesHelp": "カンマ区切りのエイリアス、例:\n残高、お金",
+          "fields": {
+            "balCommandName": "バランスコマンド",
+            "balCommandAliases": "バランスエイリアス",
+            "payCommandName": "転送コマンド",
+            "payCommandAliases": "転送エイリアス",
+            "dailyCommandName": "毎日の報酬コマンド",
+            "dailyCommandAliases": "毎日の報酬のエイリアス",
+            "moneyTopCommandName": "リーダーボードコマンド",
+            "moneyTopCommandAliases": "リーダーボードのエイリアス",
+            "shopCommandName": "ショップコマンド",
+            "shopCommandAliases": "ショップエイリアス",
+            "buyCommandName": "購入コマンド",
+            "buyCommandAliases": "エイリアスの購入",
+            "redeemCommandName": "償還コマンド",
+            "redeemCommandAliases": "エイリアスを引き換える"
+          }
+        },
+        "tips": {
+          "sectionTitle": "コマンド応答メッセージ",
+          "sectionDescription": "コマンド実行後に送信されるデフォルトのゲーム内ヒント メッセージをオーバーライドします。\n組み込みのデフォルトを使用するには、空白のままにします。\nツールチップにリストされるプレースホルダーをサポートします。",
+          "fields": {
+            "balanceTip": "バランスチップ",
+            "payUsageTip": "有料利用のヒント",
+            "payTargetNotFoundTip": "支払い対象が見つかりません ヒント",
+            "paySuccessTip": "成功のヒントを支払う",
+            "dailySuccessTip": "毎日の報酬成功のヒント",
+            "dailyAlreadyClaimedTip": "毎日すでに受け取ったチップ",
+            "shopEmptyTip": "空のチップを購入する",
+            "buyUsageTip": "使用上のヒントを購入する",
+            "buySuccessTip": "成功のヒントを購入する",
+            "redeemUsageTip": "使用量のヒントを引き換える",
+            "redeemSuccessTip": "成功のヒントを引き換える",
+            "playerDiedPenaltyTip": "死刑のヒント"
+          },
+          "tooltips": {
+            "balanceTip": "サポート: {balance}、{currency}",
+            "payUsageTip": "サポート: {currency}",
+            "paySuccessTip": "サポート: {amount}、{currency}、{playerName}、{tax}",
+            "dailySuccessTip": "サポート: {amount}、{currency}、{streak}、{bonusPercent}",
+            "buyUsageTip": "サポート: {currency}",
+            "buySuccessTip": "サポート: {name}、{quantity}、{cost}、{currency}",
+            "redeemSuccessTip": "サポート: {amount}、{currency}",
+            "playerDiedPenaltyTip": "サポート: {amount}、{currency}"
+          }
+        },
+        "actions": {
+          "save": "エコノミー設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "エコノミー設定が正常に保存されました。",
+          "resetSuccess": "エコノミー設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        },
+        "preview": {
+          "title": "エフェクトのプレビュー",
+          "balance": "開始残高",
+          "dailyReward": "毎日の報酬",
+          "killReward": "キル報酬 (ゾンビごと)",
+          "transferTax": "譲渡税率",
+          "streakBonus": "毎日の連続ボーナス"
+        }
+      },
+      "accounts": {
+        "columns": {
+          "playerId": "プレイヤーID",
+          "playerName": "プレイヤー名",
+          "balance": "バランス",
+          "isFrozen": "凍った",
+          "lastTransactionAt": "最後の取引"
+        },
+        "actions": {
+          "view": "詳細を見る",
+          "adjust": "バランスを調整する",
+          "freeze": "フリーズ",
+          "unfreeze": "解凍する",
+          "batchAdjust": "バッチ付与",
+          "delete": "消去"
+        },
+        "leaderboard": {
+          "title": "リーダーボード",
+          "empty": "リーダーボード データはまだありません。"
+        },
+        "detailDialog": {
+          "title": "アカウントの詳細",
+          "sections": {
+            "overview": "概要",
+            "activity": "活動",
+            "recentTransactions": "最近の取引"
+          },
+          "fields": {
+            "createdAt": "作成日",
+            "updatedAt": "更新日",
+            "lastDailyClaimAt": "最後の毎日の請求",
+            "dailyStreak": "現在の連続数",
+            "longestStreak": "最長連続記録"
+          },
+          "hints": {
+            "recentTransactions": "最新の5件のみを表示"
+          },
+          "empty": {
+            "recentTransactions": "このアカウントにはまだ最近の取引はありません。",
+            "reason": "理由は示されていない"
+          },
+          "messages": {
+            "loadFailed": "アカウントの詳細をロードできませんでした。",
+            "freezeSuccess": "アカウントの凍結状態が正常に更新されました。"
+          }
+        },
+        "adjustDialog": {
+          "title": "{playerName} のバランスを調整します",
+          "fields": {
+            "amount": "額",
+            "reason": "理由"
+          },
+          "messages": {
+            "saveSuccess": "無事にバランス調整が完了しました。"
+          }
+        },
+        "batchAdjustDialog": {
+          "title": "バッチ付与通貨",
+          "fields": {
+            "scope": "範囲",
+            "amount": "額",
+            "reason": "理由"
+          },
+          "scopeOptions": {
+            "allOnline": "オンラインプレイヤーのみ",
+            "allAccounts": "すべてのアカウント"
+          },
+          "messages": {
+            "success": "バッチ付与完了: {succeeded} が成功しました",
+            "partialFail": "、{failed}失敗しました"
+          }
+        },
+        "deleteConfirm": "{playerName} のアカウントを削除しますか?\nこれを元に戻すことはできません。\n取引履歴は残ります。"
+      },
+      "transactions": {
+        "columns": {
+          "playerId": "プレイヤーID",
+          "playerName": "プレイヤー名",
+          "type": "タイプ",
+          "direction": "方向",
+          "amount": "額",
+          "source": "ソース",
+          "occurredAt": "発生時刻",
+          "referenceId": "参照ID",
+          "operatorName": "オペレーター名",
+          "operatorId": "オペレーターID",
+          "balanceBefore": "前のバランス",
+          "balanceAfter": "後の残高",
+          "reason": "理由"
+        },
+        "placeholders": {
+          "occurredAtRange": "時間範囲を選択してください"
+        },
+        "typeOptions": {
+          "adminGrant": "管理者権限付与",
+          "adminDeduct": "管理者控除",
+          "transferOut": "転出",
+          "transferIn": "転入",
+          "dailyReward": "毎日の報酬",
+          "tax": "税"
+        },
+        "detailDialog": {
+          "title": "取引詳細",
+          "sections": {
+            "primary": "主要な",
+            "metadata": "メタデータ"
+          }
+        },
+        "exportCsv": "CSVのエクスポート",
+        "messages": {
+          "exportSuccess": "CSV が正常にエクスポートされました",
+          "exportError": "CSVのエクスポートに失敗しました"
+        }
+      },
+      "shop": {
+        "columns": {
+          "name": "項目名",
+          "description": "説明",
+          "itemName": "ゲームアイテム",
+          "itemCount": "数量",
+          "price": "価格",
+          "isEnabled": "有効",
+          "displayOrder": "注文",
+          "stockLimit": "在庫制限",
+          "soldCount": "販売済み"
+        },
+        "actions": {
+          "add": "アイテムの追加",
+          "edit": "編集",
+          "delete": "消去",
+          "deleteConfirm": "このショップアイテムを削除しますか?"
+        },
+        "form": {
+          "addTitle": "ショップアイテムを追加",
+          "editTitle": "ショップアイテムの編集",
+          "fields": {
+            "name": "表示名",
+            "description": "説明",
+            "itemName": "ゲームアイテムID",
+            "itemCount": "購入ごとの数量",
+            "price": "価格",
+            "isEnabled": "有効",
+            "displayOrder": "表示順序",
+            "stockLimit": "在庫制限 (0 = 無制限)"
+          }
+        },
+        "messages": {
+          "createSuccess": "ショップアイテムが作成されました。",
+          "updateSuccess": "ショップアイテムを更新しました。",
+          "deleteSuccess": "ショップアイテムが削除されました。"
+        }
+      },
+      "redeemCodes": {
+        "columns": {
+          "code": "コード",
+          "description": "説明",
+          "amount": "報酬額",
+          "maxUses": "最大使用回数",
+          "usedCount": "使用済み",
+          "expiresAt": "有効期限は次のとおりです",
+          "isEnabled": "有効",
+          "createdAt": "作成日"
+        },
+        "actions": {
+          "add": "コードを追加",
+          "delete": "消去",
+          "deleteConfirm": "この引き換えコードとその引き換え記録をすべて削除しますか?",
+          "viewRedemptions": "特典を表示する"
+        },
+        "form": {
+          "title": "引き換えコードを追加",
+          "fields": {
+            "code": "コード",
+            "description": "説明",
+            "amount": "報酬額",
+            "maxUses": "最大使用数 (0 = 無制限)",
+            "expiresAt": "有効期限 (オプション)",
+            "commandRewards": "コマンド報酬"
+          },
+          "placeholders": {
+            "commandReward": "例えば\ngiveself {EntityId} Iron_sword 1 0 false"
+          },
+          "actions": {
+            "addCommand": "コマンドの追加",
+            "removeCommand": "取り除く"
+          },
+          "hints": {
+            "commandRewards": "{EntityId}、{PlayerId}、{PlayerName} プレースホルダーをサポートします。"
+          },
+          "messages": {
+            "noReward": "通貨金額、少なくとも 1 つのコマンド報酬、またはその両方を指定します。"
+          }
+        },
+        "redemptionsDialog": {
+          "title": "引き換え: {code}",
+          "columns": {
+            "playerName": "プレイヤー名",
+            "playerId": "プレイヤーID",
+            "redeemedAt": "引き換え場所"
+          },
+          "empty": "まだ償還はありません。"
+        },
+        "messages": {
+          "createSuccess": "引き換えコードが作成されました。",
+          "deleteSuccess": "引き換えコードが削除されました。"
+        }
+      }
+    },
+    "teleport": {
+      "tools": {
+        "tabs": {
+          "toPosition": "位置へテレポート",
+          "toPlayer": "プレイヤーにテレポート"
+        },
+        "fields": {
+          "sourcePlayer": "プレイヤーがテレポートする",
+          "targetPlayer": "宛先プレーヤー",
+          "x": "X座標",
+          "y": "Y座標",
+          "z": "Z座標"
+        },
+        "placeholders": {
+          "selectPlayer": "オンラインプレーヤーを選択してください"
+        },
+        "actions": {
+          "teleport": "テレポート"
+        },
+        "messages": {
+          "success": "テレポートに成功しました",
+          "confirmToPos": "{name} を ({x}、{y}、{z}) にテレポートしますか?",
+          "confirmToPlayer": "{source} を {target} の場所にテレポートしますか?",
+          "noPlayers": "利用可能なオンライン プレーヤーがありません"
+        },
+        "hints": {
+          "onlinePlayers": "オンラインプレイヤーのみがリストされています"
+        }
+      },
+      "settings": {
+        "tabs": {
+          "home": "ホームテレポート",
+          "city": "シティテレポート",
+          "friend": "フレンドテレポート",
+          "globalCooldown": "グローバルクールダウン",
+          "back": "バックテレポート"
+        },
+        "sections": {
+          "basic": "基本設定",
+          "commands": "コマンド",
+          "tips": "ヒントメッセージ"
+        },
+        "fields": {
+          "isEnabled": "テレポート機能を有効にする",
+          "home": {
+            "isEnabled": "ホームテレポートを有効にする",
+            "cooldownSeconds": "クールダウン (秒)",
+            "setCurrencyRequired": "住宅価格の設定",
+            "teleCurrencyRequired": "テレポートホームのコスト",
+            "maxHomes": "プレイヤーあたりの最大ホーム数",
+            "listCommandName": "ホームのリスト コマンド",
+            "setCommandName": "ホームコマンドの設定",
+            "deleteCommandName": "ホームコマンドの削除",
+            "teleCommandName": "ホームコマンドへテレポート",
+            "noHomeTip": "ホームなしのメッセージ",
+            "setLimitTip": "制限到達メッセージ",
+            "setSuccessTip": "成功メッセージの設定",
+            "overwriteTip": "上書き確認メッセージ",
+            "deleteSuccessTip": "削除成功メッセージ",
+            "homeNotFoundTip": "ホームが見つからないメッセージ",
+            "coolingTip": "クールダウンメッセージ",
+            "teleSuccessTip": "テレポート成功メッセージ",
+            "setCurrencyNotEnoughTip": "資金不足（セット）メッセージ",
+            "teleCurrencyNotEnoughTip": "資金不足（テレポート）メッセージ",
+            "allowDuringBloodMoon": "ブラッドムーン中のテレポートを許可する",
+            "bloodMoonBlockedTip": "ブラッドムーンのブロックされたメッセージ"
+          },
+          "city": {
+            "isEnabled": "シティテレポートを有効にする",
+            "cooldownSeconds": "クールダウン (秒)",
+            "listCommandName": "都市リストコマンド",
+            "teleCommandName": "都市司令部にテレポートする",
+            "noCitiesTip": "都市メッセージがありません",
+            "cityNotFoundTip": "都市が見つからないメッセージ",
+            "coolingTip": "クールダウンメッセージ",
+            "teleSuccessTip": "テレポート成功メッセージ",
+            "currencyNotEnoughTip": "資金不足のメッセージ"
+          },
+          "friend": {
+            "isEnabled": "フレンドテレポートを有効にする",
+            "cooldownSeconds": "クールダウン (秒)",
+            "currencyRequired": "テレポートコスト",
+            "requestExpirySeconds": "リクエストの有効期限 (秒)",
+            "friendBypass": "友達のクールダウンをスキップ",
+            "requestCommandName": "送信リクエストコマンド",
+            "acceptCommandName": "リクエストの受け入れコマンド",
+            "rejectCommandName": "リクエスト拒否コマンド",
+            "targetNotFoundTip": "ターゲットが見つからないメッセージ",
+            "requestSentTip": "送信済みメッセージのリクエスト",
+            "requestReceivedTip": "受信メッセージのリクエスト",
+            "acceptedTip": "受け入れられたメッセージ",
+            "rejectedTip": "拒否されたメッセージ",
+            "targetRejectedTip": "ターゲット拒否メッセージ",
+            "noRequestTip": "リクエストメッセージはありません",
+            "coolingTip": "クールダウンメッセージ",
+            "teleSuccessTip": "テレポート成功メッセージ",
+            "currencyNotEnoughTip": "資金不足のメッセージ"
+          },
+          "globalCooldown": {
+            "isEnabled": "グローバルクールダウンを有効にする",
+            "cooldownSeconds": "グローバルクールダウン (秒)"
+          },
+          "back": {
+            "isEnabled": "バックテレポートを有効にする",
+            "cooldownSeconds": "クールダウン (秒)",
+            "currencyRequired": "テレポートコスト",
+            "commandName": "バックコマンド",
+            "noPositionTip": "前の位置メッセージがありません",
+            "coolingTip": "クールダウンメッセージ",
+            "teleSuccessTip": "テレポート成功メッセージ",
+            "currencyNotEnoughTip": "資金不足のメッセージ"
+          }
+        },
+        "actions": {
+          "save": "設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "設定が正常に保存されました。",
+          "resetSuccess": "設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      },
+      "cities": {
+        "form": {
+          "addTitle": "都市を追加",
+          "editTitle": "都市の編集",
+          "fields": {
+            "name": "都市名",
+            "description": "説明",
+            "x": "×",
+            "y": "Y",
+            "z": "Z",
+            "yawAngle": "ヨー角",
+            "currencyRequired": "テレポートコスト",
+            "isEnabled": "有効",
+            "sortOrder": "並べ替え順序"
+          }
+        },
+        "columns": {
+          "name": "名前",
+          "description": "説明",
+          "x": "×",
+          "y": "Y",
+          "z": "Z",
+          "yawAngle": "ヨー角",
+          "currencyRequired": "料金",
+          "isEnabled": "有効",
+          "sortOrder": "注文"
+        },
+        "actions": {
+          "edit": "編集",
+          "delete": "消去",
+          "deleteConfirm": "この都市を削除しますか?"
+        },
+        "messages": {
+          "createSuccess": "都市が作成されました。",
+          "updateSuccess": "市が更新されました。",
+          "deleteSuccess": "市が削除されました。"
+        }
+      },
+      "homes": {
+        "search": {
+          "playerIdLabel": "プレイヤーID",
+          "playerIdPlaceholder": "プレイヤーIDを入力して家を検索",
+          "button": "検索",
+          "emptyHint": "上にプレイヤー ID を入力して、ホームを表示します。"
+        },
+        "columns": {
+          "homeName": "家の名前",
+          "playerName": "プレイヤー名",
+          "x": "×",
+          "y": "Y",
+          "z": "Z",
+          "createdAt": "作成日"
+        },
+        "actions": {
+          "delete": "消去",
+          "deleteConfirm": "ホーム「{name}」を削除しますか?"
+        },
+        "messages": {
+          "deleteSuccess": "ホームが削除されました。"
+        }
+      },
+      "logs": {
+        "filters": {
+          "playerId": "プレイヤーID",
+          "timeRange": "時間範囲"
+        },
+        "placeholders": {
+          "playerId": "プレイヤーIDでフィルタリングする",
+          "timeRange": "日付範囲を選択してください"
+        },
+        "columns": {
+          "timestamp": "タイムスタンプ",
+          "playerName": "プレイヤー名",
+          "subSystem": "サブシステム",
+          "fromX": "Xから",
+          "fromY": "Yさんより",
+          "fromZ": "Zから",
+          "toX": "Xへ",
+          "toY": "Yさんへ",
+          "toZ": "Zへ",
+          "costPaid": "支払った費用",
+          "remark": "述べる"
+        }
+      }
+    },
+    "gameNotice": {
+      "settings": {
+        "fields": {
+          "isEnabled": "ゲーム通知を有効にする",
+          "welcomeNotices": "ウェルカム通知",
+          "rotatingNotices": "ローテーション通知",
+          "rotatingIntervalSeconds": "回転間隔(秒)",
+          "bloodMoonNotice1": "ブラッドムーンのお知らせ — ステージ 1",
+          "bloodMoonNotice2": "ブラッドムーン予告 — ステージ2",
+          "bloodMoonNotice3": "ブラッドムーンのお知らせ — ステージ 3"
+        },
+        "tooltips": {
+          "welcomeNotices": "プレイヤーがサーバーに参加したときに送信されます。 \n{PlayerName}、{PlayerId}、{EntityId} をサポートします。\n各エントリは個別のメッセージとして送信されます。",
+          "rotatingIntervalSeconds": "各ローテーション通知ブロードキャスト間の秒単位の間隔。",
+          "bloodMoonNotices": "ブラッドムーンのさまざまな段階で放送されます。 \n{BloodMoonDays}、{BloodMoonStartTime}、{BloodMoonEndTime} をサポートします。"
+        },
+        "placeholders": {
+          "welcomeNotice": "ウェルカム通知テキストを入力してください…",
+          "rotatingNotice": "通知テキストを入力してください…"
+        },
+        "actions": {
+          "save": "設定の保存",
+          "resetToDefaults": "デフォルトにリセット",
+          "addNotice": "通知を追加",
+          "removeNotice": "取り除く"
+        },
+        "messages": {
+          "saveSuccess": "ゲーム通知設定が保存されました。",
+          "resetConfirm": "すべてのゲーム通知設定をデフォルトにリセットしますか?\nこれを元に戻すことはできません。",
+          "resetSuccess": "ゲーム通知設定がデフォルトにリセットされました。",
+          "noRotatingNotices": "ローテーション通知が設定されていません。 \n「通知を追加」をクリックして追加します。",
+          "noWelcomeNotices": "ウェルカム通知が設定されていません。 \n「通知を追加」をクリックして追加します。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      }
+    },
+    "voteRestart": {
+      "settings": {
+        "fields": {
+          "isEnabled": "投票の再開を有効にする",
+          "commandName": "コマンド名",
+          "commandAliases": "コマンドエイリアス",
+          "minOnlinePlayers": "最小オンラインプレイヤー数",
+          "voteDurationSeconds": "投票時間 (秒)",
+          "passThresholdPercent": "合格閾値(%)",
+          "initiatorCooldownSeconds": "イニシエーターのクールダウン (秒)",
+          "globalCooldownSeconds": "グローバルクールダウン (秒)",
+          "warningLeadSeconds": "警告リードタイム (秒)",
+          "voteStartedMessage": "投票開始メッセージ",
+          "votePassedMessage": "投票可メッセージ",
+          "voteFailedMessage": "投票失敗メッセージ",
+          "voteProgressMessage": "投票進行メッセージ",
+          "alreadyVotedMessage": "投票済みのメッセージ",
+          "initiatorCooldownMessage": "イニシエーターのクールダウンメッセージ",
+          "globalCooldownMessage": "グローバルクールダウンメッセージ",
+          "notEnoughPlayersMessage": "プレイヤーが足りないというメッセージ",
+          "alreadyActiveMessage": "すでにアクティブなメッセージに投票"
+        },
+        "tooltips": {
+          "commandAliases": "代替コマンド名のカンマ区切りリスト (例: vr、restart-vote)。",
+          "minOnlinePlayers": "投票を開始するために必要なオンライン プレーヤーの最小数。",
+          "passThresholdPercent": "投票が可決されるために必要な賛成票の割合 (1 ～ 100)。",
+          "warningLeadSeconds": "再起動の数秒前にカウントダウン警告がブロードキャストされます。",
+          "voteStartedMessage": "{Initiator}、{Duration}、{Command} をサポートします。",
+          "voteProgressMessage": "{Yes}、{No}、{Total}、{Threshold}をサポートします。",
+          "cooldownMessage": "残り時間については {RemainingSeconds} をサポートします。",
+          "notEnoughPlayersMessage": "{MinPlayers}、{CurrentPlayers} をサポートします。"
+        },
+        "actions": {
+          "save": "設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "投票再開設定が保存されました。",
+          "resetSuccess": "投票再開設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      }
+    },
+    "voteKick": {
+      "settings": {
+        "fields": {
+          "isEnabled": "投票キックを有効にする",
+          "commandName": "コマンド名",
+          "commandAliases": "コマンドエイリアス",
+          "minOnlinePlayers": "最小オンラインプレイヤー数",
+          "voteDurationSeconds": "投票時間 (秒)",
+          "passThresholdPercent": "合格閾値(%)",
+          "initiatorCooldownSeconds": "イニシエーターのクールダウン (秒)",
+          "targetImmunitySeconds": "ターゲット免疫力 (秒)",
+          "kickReason": "キックの理由",
+          "voteStartedMessage": "投票開始メッセージ",
+          "votePassedMessage": "投票可メッセージ",
+          "voteFailedMessage": "投票失敗メッセージ",
+          "voteProgressMessage": "投票進行メッセージ",
+          "alreadyVotedMessage": "投票済みのメッセージ",
+          "cooldownMessage": "クールダウンメッセージ",
+          "cannotKickAdminMessage": "管理者メッセージをキックできません",
+          "targetNotFoundMessage": "ターゲットが見つからないメッセージ",
+          "targetAlreadyGoneMessage": "ターゲットはすでになくなったというメッセージ",
+          "alreadyActiveMessage": "すでにアクティブなメッセージに投票",
+          "usageTipMessage": "使用上のヒントメッセージ",
+          "notEnoughPlayersMessage": "プレイヤーが足りないというメッセージ"
+        },
+        "tooltips": {
+          "commandAliases": "代替コマンド名のカンマ区切りリスト (vk、kick-vote など)。",
+          "minOnlinePlayers": "キック投票を開始するために必要なオンライン プレーヤーの最小数。",
+          "passThresholdPercent": "投票が可決されるために必要な賛成票の割合 (1 ～ 100)。",
+          "targetImmunitySeconds": "最近キックされたプレイヤーが再びターゲットにされる可能性がなくなる秒数。",
+          "kickReason": "キックされたプレーヤーに切断メッセージで示される理由。",
+          "voteStartedMessage": "{Initiator}、{Target}、{Duration}、{Command}をサポートします。",
+          "voteProgressMessage": "{Yes}、{No}、{Total}、{Threshold}をサポートします。",
+          "cooldownMessage": "残り時間については {RemainingSeconds} をサポートします。",
+          "usageTipMessage": "ターゲット名を指定せずにコマンドを使用した場合に表示されます。",
+          "notEnoughPlayersMessage": "{MinPlayers}、{CurrentPlayers} をサポートします。"
+        },
+        "actions": {
+          "save": "設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "投票キック設定が保存されました。",
+          "resetSuccess": "投票キック設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      }
+    },
+    "onlineReward": {
+      "settings": {
+        "fields": {
+          "isEnabled": "オンライン特典を有効にする",
+          "rewardIntervalMinutes": "報酬間隔 (分)",
+          "rewardAmount": "報酬額",
+          "rewardPartialPeriod": "報酬の一部期間",
+          "playerMessage": "プレイヤーメッセージ",
+          "playerMessageHint": "報酬を受け取った後にプレーヤーに送信されるオプションのプライベート メッセージ。 \n{amount}、{currency}、{totalMinutes} をサポートします。"
+        },
+        "actions": {
+          "save": "設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "オンライン特典設定が保存されました。",
+          "resetSuccess": "オンライン特典設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      }
+    },
+    "achievement": {
+      "settings": {
+        "fields": {
+          "isEnabled": "実績システムを有効にする"
+        },
+        "actions": {
+          "save": "設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "実績設定が保存されました。",
+          "resetSuccess": "実績設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      },
+      "definitions": {
+        "columns": {
+          "name": "名前",
+          "triggerType": "トリガータイプ",
+          "threshold": "しきい値",
+          "economyReward": "エコノミー報酬",
+          "isEnabled": "有効",
+          "sortOrder": "並べ替え順序"
+        },
+        "triggerTypes": {
+          "level": "レベル",
+          "zombieKills": "ゾンビキル",
+          "playerKills": "プレイヤーキル数",
+          "deaths": "死亡者（数",
+          "gameStage": "ゲームステージ"
+        },
+        "form": {
+          "addTitle": "実績の追加",
+          "editTitle": "実績の編集",
+          "fields": {
+            "name": "名前",
+            "description": "説明",
+            "isEnabled": "有効",
+            "triggerType": "トリガータイプ",
+            "threshold": "しきい値",
+            "economyReward": "エコノミー報酬",
+            "consoleCommands": "コンソールコマンド",
+            "playerMessage": "プレイヤーメッセージ",
+            "broadcastMessage": "ブロードキャストメッセージ",
+            "sortOrder": "並べ替え順序"
+          },
+          "tooltips": {
+            "economyReward": "実績を獲得したときにプレイヤーに付与される通貨。\nスキップするには 0 に設定します。",
+            "playerMessage": "アチーブメントを獲得したプレイヤーに送信されるプライベートメッセージ。 \n{achievementName}、{playerName}、{threshold} をサポートします。",
+            "broadcastMessage": "実績を獲得すると、すべてのオンライン プレーヤーにメッセージがブロードキャストされます。 \n{achievementName}、{playerName}、{threshold} をサポートします。",
+            "consoleCommands": "アチーブメントを獲得したときに実行されるコンソール コマンド (1 行に 1 つ)。 \n{playerId}、{playerName} をサポートします。"
+          }
+        },
+        "actions": {
+          "deleteConfirm": "この実績定義とその獲得レコードをすべて削除しますか?"
+        },
+        "messages": {
+          "createSuccess": "実績定義が作成されました。",
+          "updateSuccess": "実績の定義が更新されました。",
+          "deleteSuccess": "実績定義が削除されました。"
+        }
+      },
+      "records": {
+        "columns": {
+          "achievementName": "成果",
+          "playerName": "プレイヤー名",
+          "playerId": "プレイヤーID",
+          "economyRewarded": "経済の恩恵を受ける",
+          "createdAt": "で獲得"
+        },
+        "actions": {
+          "deleteConfirm": "この獲得記録を削除しますか?\n次回条件が満たされたときに、実績がプレイヤーに再付与されます。"
+        },
+        "messages": {
+          "deleteSuccess": "獲得記録が削除されました。"
+        }
+      }
+    },
+    "backup": {
+      "tabs": {
+        "config": "構成",
+        "files": "ファイル"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "バックアップ機能を有効にする",
+          "timeZoneId": "クロンタイムゾーン",
+          "historyRetentionDays": "実行履歴の保持期間 (日)"
+        },
+        "tooltips": {
+          "timeZoneId": "IANA タイムゾーン ID (例: アジア/上海、UTC)。\nサーバーのローカル タイム ゾーンを使用するには、空のままにします。\nすべてのバックアップ cron スケジュールに適用されます。"
+        },
+        "actions": {
+          "save": "保存",
+          "reset": "リセット"
+        },
+        "messages": {
+          "saveSuccess": "バックアップ設定が保存されました。",
+          "resetSuccess": "バックアップ設定がデフォルトに復元されました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      },
+      "tooltips": {
+        "cronExpression": "構成されたタイムゾーンで評価される標準の 5 フィールド cron 式。",
+        "destinationRoot": "バックアップ出力が書き込まれる絶対フォルダーまたは相対フォルダー。",
+        "retentionCount": "保持されるバックアップの最大数。\n何も保持しない場合は 0 を使用し、プルーニングを無効にするには -1 を使用します。",
+        "broadcastMessage": "サポート: {taskName}、{status}"
+      },
+      "fields": {
+        "broadcastOnStart": "開始時にブロードキャスト",
+        "broadcastStartMessage": "ブロードキャスト開始メッセージ",
+        "broadcastOnComplete": "完了時にブロードキャスト",
+        "broadcastCompleteMessage": "ブロードキャスト完了メッセージ"
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "ワールドバックアップを有効にする",
+          "cronExpression": "クロン式",
+          "destinationRoot": "宛先ルート",
+          "compressToZip": "ZIP に圧縮",
+          "retentionCount": "保持数",
+          "saveWorldBeforeBackup": "バックアップ前に世界を保存"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "「saveworld」コンソール コマンドを実行し、完了するまで待ってからスナップショットを作成します。"
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "データベースのバックアップを有効にする",
+          "cronExpression": "クロン式",
+          "destinationRoot": "宛先ルート",
+          "compressToZip": "ZIP に圧縮",
+          "retentionCount": "保持数"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "サーバー構成のバックアップを有効にする",
+          "cronExpression": "クロン式",
+          "destinationRoot": "宛先ルート",
+          "compressToZip": "ZIP に圧縮",
+          "retentionCount": "保持数"
+        }
+      },
+      "actions": {
+        "runNow": "今すぐ実行",
+        "runNowConfirm": "このバックアップをすぐにトリガーしますか?",
+        "runNowReason": "理由（任意）",
+        "runNowSuccess": "バックアップは正常に終了しました。",
+        "runNowFailed": "バックアップに失敗しました。",
+        "download": "ダウンロード",
+        "delete": "消去"
+      },
+      "files": {
+        "columns": {
+          "fileName": "ファイル名",
+          "size": "サイズ",
+          "createdAt": "作成日"
+        },
+        "messages": {
+          "confirmDelete": "バックアップ ファイル「{name}」を削除しますか?\nこれを元に戻すことはできません。",
+          "deleteSuccess": "バックアップファイルが削除されました。",
+          "deleteError": "バックアップファイルの削除に失敗しました。\nもう一度試してください。",
+          "downloadError": "バックアップファイルのダウンロードに失敗しました。\nもう一度試してください。",
+          "directoryDownloadUnsupported": "フォルダーのダウンロードはサポートされていません。 \nzip 圧縮を有効にして、単一のアーカイブとしてダウンロードします。"
+        }
+      },
+      "taskTypes": {
+        "world": "ワールドバックアップ",
+        "database": "データベースのバックアップ",
+        "serverConfig": "サーバー構成のバックアップ"
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "設定",
+        "tasks": "タスク",
+        "history": "実行履歴"
+      },
+      "triggerSources": {
+        "cron": "クロン",
+        "manual": "マニュアル",
+        "system": "システム"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "スケジューラを有効にする",
+          "defaultTimeZoneId": "デフォルトのタイムゾーン",
+          "defaultAllowConcurrentExecution": "デフォルトで同時実行を許可する",
+          "historyRetentionDays": "履歴の保存日数",
+          "failureNotifyEnabled": "失敗通知",
+          "failureNotifyMessage": "失敗通知メッセージ"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "UTC、アジア/上海、太平洋標準時などのプラットフォームのタイムゾーン ID を使用します。",
+          "failureNotifyEnabled": "有効にすると、スケジュールされたコマンドが失敗したときにメッセージがすべてのプレイヤーにブロードキャストされます。",
+          "failureNotifyMessage": "サポート: {taskName}、{error}"
+        },
+        "actions": {
+          "save": "スケジューラー設定の保存",
+          "reset": "デフォルトにリセット"
+        },
+        "messages": {
+          "saveSuccess": "スケジューラー設定が正常に保存されました。",
+          "resetSuccess": "スケジューラー設定がデフォルトにリセットされました。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      },
+      "tasks": {
+        "columns": {
+          "name": "名前",
+          "isEnabled": "有効",
+          "cronExpression": "クロン式",
+          "timeZoneId": "タイムゾーン",
+          "allowConcurrentExecution": "同時",
+          "lastRunAt": "ラストラン",
+          "nextRunAt": "次の実行",
+          "lastStatus": "最終ステータス",
+          "updatedAt": "更新日"
+        },
+        "filters": {
+          "isEnabled": "有効"
+        },
+        "placeholders": {
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
+        },
+        "actions": {
+          "add": "タスクの追加",
+          "edit": "タスクの編集",
+          "run": "今すぐ実行",
+          "delete": "消去"
+        },
+        "status": {
+          "success": "成功",
+          "failed": "失敗した",
+          "skipped": "スキップされました",
+          "running": "ランニング"
+        },
+        "hints": {
+          "defaultSettings": "デフォルトのタイムゾーン: {timeZone}。"
+        },
+        "messages": {
+          "runConfirm": "タスク {name} をすぐに実行しますか?",
+          "deleteSuccess": "スケジューラ タスクが正常に削除されました。"
+        },
+        "dialog": {
+          "createTitle": "スケジューラタスクの作成",
+          "editTitle": "スケジューラタスクの編集",
+          "fields": {
+            "name": "名前",
+            "isEnabled": "有効",
+            "cronExpression": "クロン式",
+            "timeZoneId": "タイムゾーン",
+            "allowConcurrentExecution": "同時実行",
+            "executeOnMainThread": "メインスレッドで実行",
+            "requireGameStartDone": "ゲームの開始が必要",
+            "captureOutput": "キャプチャ出力",
+            "commands": "コンソールコマンド",
+            "description": "説明"
+          },
+          "tooltips": {
+            "cronExpression": "バックエンドがタスクを正確にスケジュールできるように、秒精度の cron 式を使用します。",
+            "timeZoneId": "スケジュールが特定のサーバーまたは地域のタイムゾーンに従う必要がない限り、これを UTC のままにしておきます。"
+          },
+          "placeholders": {
+            "command": "コンソールコマンドを入力します。\nこんにちは"
+          },
+          "actions": {
+            "addCommand": "コマンドの追加",
+            "removeCommand": "削除コマンド"
+          },
+          "messages": {
+            "noCommands": "少なくとも 1 つのコンソール コマンドを追加してください。",
+            "saveSuccess": "スケジューラ タスクが正常に保存されました。"
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "タスク名",
+          "taskType": "タスクの種類",
+          "triggerSource": "トリガー",
+          "startedAt": "開始日",
+          "endedAt": "終了時刻",
+          "succeeded": "成功しました",
+          "durationMs": "間隔",
+          "summary": "まとめ",
+          "errorMessage": "エラー",
+          "operatorName": "オペレーター",
+          "sourceIp": "送信元IP"
+        },
+        "filters": {
+          "taskType": "タスクの種類",
+          "triggerSource": "トリガーソース",
+          "succeeded": "結果",
+          "timeRange": "時間範囲"
+        },
+        "placeholders": {
+          "timeRange": "時間範囲を選択してください"
+        },
+        "actions": {
+          "viewDetails": "詳細を見る"
+        },
+        "detailDialog": {
+          "title": "実行の詳細",
+          "titleWithName": "実行の詳細 - {name}",
+          "details": "詳細"
+        }
+      }
+    },
+    "restart": {
+      "tabs": {
+        "settings": "設定",
+        "run": "手動実行"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "スケジュールされた再起動を有効にする",
+          "cronExpression": "クロン式",
+          "timeZoneId": "タイムゾーン",
+          "warningLeadSeconds": "警告リードタイム (秒)",
+          "warningMessage": "警告メッセージ",
+          "saveWorldBeforeRestart": "再起動する前に世界を保存",
+          "restartMode": "再起動モード",
+          "restartCommand": "カスタム再起動コマンド",
+          "deferScheduledRestartDuringBloodMoonWindow": "Blood Moon 期間中はスケジュールされた再起動を延期する",
+          "bloodMoonPreDuskProtectionHours": "ブラッドムーンの夕暮れ前の保護時間",
+          "bloodMoonDeferMinutes": "試行ごとの延期分数",
+          "historyRetentionDays": "履歴の保存日数"
+        },
+        "tooltips": {
+          "timeZoneId": "UTC やアジア/上海などのプラットフォームのタイムゾーン ID を使用します。",
+          "warningMessage": "{minutes} プレースホルダーをサポートし、分単位の残りの待機時間に置き換えられます。",
+          "restartCommand": "再起動を開始するためのオプションのコンソール コマンド。\n設定されている場合、組み込みの再起動パイプラインをオーバーライドします。",
+          "restartMode": "正常: シャットダウンする前に保留中の操作をフラッシュします。\n強制: 即時シャットダウンします。",
+          "deferScheduledRestartDuringBloodMoonWindow": "有効にすると、ブラッド ムーンがアクティブな間、またはブラッド ムーンの日の夕暮れ前の保護ウィンドウ内にある間、cron によってトリガーされる再起動が延期されます。",
+          "bloodMoonPreDuskProtectionHours": "ブラッドムーンの日の夕暮れ前のゲーム内時間は保護されたウィンドウとして扱われます。\n夕暮れ前保護を無効にするには、0 に設定します。",
+          "bloodMoonDeferMinutes": "各遅延 cron 再起動試行を延期する実際の分数。"
+        },
+        "restartModes": {
+          "graceful": "優雅な",
+          "force": "力"
+        },
+        "warningStages": {
+          "sectionTitle": "多段階の警報スケジュール",
+          "description": "異なるリードタイムで複数のカウントダウン警告を定義します。\nこれらの段階を構成すると、上記の 1 つの警告が置き換えられます。\nステージはリードタイムごとに自動的に並べ替えられます。",
+          "empty": "警告段階は定義されていません。\n上記の単一の警告を使用します。",
+          "add": "ステージの追加",
+          "leadSeconds": "リードタイム(秒)",
+          "message": "メッセージ",
+          "messagePlaceholder": "サーバーは {minutes} 分後に再起動します。"
+        },
+        "actions": {
+          "save": "再起動設定の保存",
+          "cancelPending": "保留中の再起動をキャンセル"
+        },
+        "messages": {
+          "saveSuccess": "再起動設定が保存されました。",
+          "cancelSuccess": "保留中の再起動がキャンセルされました。",
+          "cancelNoActive": "キャンセルできるアクティブな再起動がありません。",
+          "unsavedChanges": "未保存の変更があります。\n本当に退会してもよろしいですか?"
+        }
+      },
+      "run": {
+        "description": "サーバーの即時再起動をトリガーします。\n上書きフィールドはオプションであり、空白のままにすると、設定されたデフォルトに戻ります。",
+        "fields": {
+          "reason": "理由",
+          "warningLeadSecondsOverride": "警告リードタイムオーバーライド (秒)",
+          "restartModeOverride": "再起動モードのオーバーライド"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "設定されたデフォルトを使用するには、空のままにしておきます。",
+          "restartModeOverride": "設定されたデフォルトを使用するには、空のままにしておきます。"
+        },
+        "restartModeOptions": {
+          "graceful": "優雅な",
+          "force": "力"
+        },
+        "actions": {
+          "run": "今すぐ実行"
+        },
+        "messages": {
+          "runConfirm": "サーバーの即時再起動をトリガーしますか?\n接続中のプレーヤーが切断される可能性があります。",
+          "runSuccess": "サーバーの再起動が要求されました。",
+          "runFailed": "再起動リクエストが失敗しました。"
+        },
+        "result": {
+          "title": "前回の実行結果",
+          "succeeded": "成功しました",
+          "failed": "失敗した",
+          "summary": "まとめ",
+          "durationMs": "間隔",
+          "errorMessage": "エラーメッセージ",
+          "startedAt": "開始日",
+          "endedAt": "終了時刻"
+        }
+      }
+    },
+    "modManagement": {
+      "columns": {
+        "displayName": "モジュール",
+        "author": "著者",
+        "version": "バージョン",
+        "website": "Webサイト",
+        "loaded": "ロード済み",
+        "uninstalled": "アンインストール済み",
+        "actions": "アクション"
+      },
+      "status": {
+        "loaded": "ロード済み",
+        "unloaded": "荷降ろし済み",
+        "installed": "インストール済み",
+        "uninstalled": "アンインストール済み"
+      },
+      "actions": {
+        "install": "インストール",
+        "uninstall": "アンインストール"
+      },
+      "toast": {
+        "title": "MOD管理",
+        "toggleSuccess": "MODのステータスが更新されました。"
+      }
+    },
+    "console": {
+      "invalidCommand": {
+        "title": "無効なコマンド",
+        "text": "有効なコマンドを入力してください。"
+      },
+      "send": "送信"
+    },
+    "banWhitelist": {
+      "ban": "禁止",
+      "whitelist": "ホワイトリスト",
+      "mute": "ミュート",
+      "playerId": "プレイヤーID",
+      "displayName": "表示名",
+      "playerName": "プレイヤー名",
+      "bannedUntil": "まで禁止",
+      "mutedUntil": "までミュート",
+      "permanent": "永続",
+      "reason": "理由",
+      "muteReason": "ミュートの理由",
+      "addBan": "禁止を追加",
+      "editBan": "編集禁止",
+      "addWhitelist": "ホワイトリストの追加",
+      "editWhitelist": "ホワイトリストの編集",
+      "addMute": "ミュートを追加",
+      "editMute": "ミュート編集",
+      "createdAt": "作成日",
+      "tooltips": {
+        "playerId": "一意のプレーヤー識別子、通常は SteamID64。",
+        "displayName": "オペレーターがターゲットを素早く識別できるように、リストに名前が表示されます。",
+        "bannedUntil": "永久に禁止する場合は、これを空白のままにしておきます。\nそれ以外の場合は、有効期限を設定します。",
+        "reason": "後の監査とトラブルシューティングのために、プレーヤーが禁止または削除された理由を記録します。",
+        "mutedUntil": "永久にミュートする場合は空のままにします。\n一時的にミュートする日付を設定します。"
+      }
+    },
+    "permission": {
+      "adminUser": "管理者ユーザー",
+      "addAdminUser": "管理者ユーザーの追加",
+      "editAdminUser": "管理者ユーザーの編集",
+      "addCommandPermission": "コマンド権限の追加",
+      "editCommandPermission": "コマンド権限の編集",
+      "commandPermission": "コマンド権限",
+      "command": "指示",
+      "description": "説明",
+      "permissionLevel": "許可レベル",
+      "tooltips": {
+        "playerId": "権限を付与する一意のプレーヤー識別子 (通常は SteamID64)。",
+        "displayName": "管理パネルでこのアカウントを認識するために使用される表示名。",
+        "permissionLevel": "サーバーの許可レベル。\n通常、値が大きいほど、より多くの権限を意味します。",
+        "command": "このルールが適用されるコンソール コマンド名。",
+        "description": "このコマンド ルールの目的または制約を説明するオプションのメモ。"
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "時間",
+        "eventType": "イベントの種類",
+        "playerName": "プレーヤー",
+        "targetPlayerName": "対象プレイヤー",
+        "entityType": "エンティティの種類"
+      },
+      "eventTypes": {
+        "PlayerJoined": "プレイヤーが参加しました",
+        "PlayerLeft": "プレーヤー左",
+        "PlayerDied": "プレイヤーが死亡しました",
+        "PlayerKilledZombie": "殺されたゾンビ",
+        "PlayerKilledPlayer": "プレイヤーキル"
+      },
+      "filters": {
+        "eventType": "イベントの種類",
+        "timeRange": "時間範囲"
+      },
+      "placeholders": {
+        "allEventTypes": "すべてのイベント",
+        "timeRange": "時間範囲を選択してください"
+      }
+    },
+    "gameItems": {
+      "searchPlaceholder": "名前で検索...",
+      "all": "全て",
+      "items": "アイテム",
+      "blocks": "ブロック",
+      "itemTag": "アイテム",
+      "blockTag": "ブロック",
+      "totalCount": "{0} エントリ",
+      "stackValue": "×{0}",
+      "showUserHidden": "非表示を表示",
+      "copyName": "名前をコピー",
+      "copyLocalizedName": "ローカライズされた名前をコピーする"
+    }
+  }
+}

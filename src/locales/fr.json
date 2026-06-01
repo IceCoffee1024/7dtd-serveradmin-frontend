@@ -1,0 +1,2390 @@
+{
+  "common": {
+    "projectName": "Administrateur du serveur 7 Days to Die",
+    "unknown": "Inconnu",
+    "yes": "Oui",
+    "no": "Non",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "day": "Jour | Jour | Jours",
+    "hour": "Heure | Heure | Heures",
+    "minute": "Minute | Minute | Minutes",
+    "second": "Seconde | Seconde | Secondes",
+    "lessThan": "Moins que",
+    "moreThan": "Supérieur à",
+    "equal": "Égal à",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "update": "Mise à jour",
+    "save": "Sauvegarder",
+    "batchDelete": "Suppression groupée",
+    "backToHome": "Retour à l'accueil",
+    "delete": "Supprimer",
+    "deleteSuccess": "Supprimé avec succès.",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ?",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser",
+    "close": "Fermer",
+    "edit": "Modifier",
+    "player": "Joueur",
+    "serverLocalTime": "Heure locale du serveur"
+  },
+  "menus": {
+    "login": "Connexion",
+    "dashboard": "Tableau de bord",
+    "playerList": "Liste des joueurs",
+    "gpsMap": "Carte GPS",
+    "gameChat": "Chat de jeu",
+    "liveChat": "Chat en direct",
+    "chatHistory": "Historique du chat",
+    "chatSettings": "Paramètres du chat",
+    "coloredChat": "Chat coloré",
+    "auditLogs": "Journaux d'audit",
+    "serverConfig": "Configuration du serveur",
+    "appSettings": "Paramètres de l'application",
+    "banWhitelist": "Bannissement / liste blanche",
+    "permission": "Autorisations",
+    "modManagement": "Gestion des mods",
+    "economy": "Économie",
+    "restart": "Redémarrage du serveur",
+    "scheduler": "Planificateur de tâches",
+    "backup": "Sauvegarde",
+    "backupSettings": "Paramètres de sauvegarde",
+    "worldBackup": "Sauvegarde du monde",
+    "databaseBackup": "Sauvegarde de base de données",
+    "serverConfigBackup": "Sauvegarde de la configuration du serveur",
+    "console": "Console",
+    "apiDocumentation": "Documentation API",
+    "schedulerTasks": "Tâches",
+    "schedulerHistory": "Historique",
+    "schedulerSettings": "Paramètres",
+    "groups": {
+      "monitoring": "Surveillance",
+      "gameFeatures": "Caractéristiques du jeu",
+      "serverManagement": "Gestion du serveur",
+      "operations": "Opérations",
+      "system": "Système"
+    },
+    "restartSettings": "Paramètres",
+    "restartRun": "Redémarrage manuel",
+    "economyOverview": "Aperçu",
+    "economyAccounts": "Comptes",
+    "economyTransactions": "Transactions",
+    "economySettings": "Paramètres",
+    "economyShop": "Boutique",
+    "economyRedeemCodes": "Échanger des codes",
+    "backupTasks": "Tâches de sauvegarde",
+    "backupHistory": "Historique",
+    "restartHistory": "Historique",
+    "teleport": "Téléportation",
+    "teleportTools": "Outils",
+    "teleportSettings": "Paramètres",
+    "teleportCities": "Villes",
+    "teleportHomes": "Maisons des joueurs",
+    "teleportLogs": "Journaux de téléportation",
+    "gameNotice": "Annonce du jeu",
+    "voteRestart": "Redémarrage par vote",
+    "voteRestartSettings": "Paramètres",
+    "voteKick": "Exclusion par vote",
+    "voteKickSettings": "Paramètres",
+    "achievement": "Succès",
+    "achievementDefinitions": "Définitions",
+    "achievementRecords": "Enregistrements",
+    "achievementSettings": "Paramètres",
+    "onlineReward": "Récompense en ligne",
+    "onlineRewardSettings": "Paramètres",
+    "gameEventLogs": "Journaux d'événements de jeu",
+    "gameItems": "Objets / blocs"
+  },
+  "components": {
+    "myTable": {
+      "total": "Total {0}",
+      "keywordSearch": "Recherche par mot-clé",
+      "view": "Voir",
+      "batch": "Lot",
+      "refresh": "Actualiser",
+      "noData": "Aucune donnée",
+      "exportCSV": "Exporter au format CSV",
+      "add": "Ajouter",
+      "search": "Recherche",
+      "reset": "Réinitialiser",
+      "autoRefresh": "Actualisation automatique",
+      "refreshInterval": "Intervalle d'actualisation",
+      "secondsUnit": "seconde",
+      "pleaseInput": "Veuillez saisir",
+      "operation": "Opération",
+      "batchActions": "Actions groupées",
+      "moreActions": "Plus d'actions",
+      "filters": "Filtres",
+      "collapse": "Réduire",
+      "expand": "Développer",
+      "edit": "Modifier"
+    },
+    "myForm": {
+      "pleaseInput": "Veuillez saisir",
+      "pleaseSelect": "Veuillez sélectionner"
+    },
+    "colorPicker": {
+      "placeholder": "Entrez une valeur de couleur à 6 chiffres",
+      "clear": "Effacer",
+      "presets": "Couleurs prédéfinies",
+      "hint": "Les valeurs sont enregistrées sous forme de couleurs hexadécimales à 6 chiffres."
+    },
+    "playerInventoryDialog": {
+      "header": "Inventaire du joueur",
+      "grid": "Grille",
+      "list": "Liste",
+      "bag": "Sac",
+      "belt": "Ceinture",
+      "equipment": "Équipement",
+      "itemName": "Nom de l'objet",
+      "icon": "Icône",
+      "iconName": "Nom de l'icône",
+      "iconColor": "Couleur de l'icône",
+      "localizationName": "Nom de localisation",
+      "count": "Quantité",
+      "maxStackAllowed": "Pile maximale autorisée",
+      "quality": "Qualité",
+      "qualityColor": "Couleur de qualité",
+      "useTimes": "Utilisations",
+      "maxUseTimes": "Utilisations maximales",
+      "mod": "Mod",
+      "block": "Bloquer"
+    },
+    "playerSkillsDialog": {
+      "header": "Compétences du joueur",
+      "collapse": "Réduire tout",
+      "expand": "Développer tout",
+      "name": "Nom",
+      "icon": "Icône",
+      "localizationName": "Nom de localisation",
+      "level": "Niveau",
+      "maxLevel": "Niveau maximum",
+      "costForNextLevel": "Coût pour le niveau suivant",
+      "type": "Type",
+      "localizationDesc": "Description"
+    },
+    "playerDetailsDialog": {
+      "header": "Détails du joueur",
+      "playerName": "Nom du joueur",
+      "entityId": "ID d'entité",
+      "playerId": "Identifiant du joueur",
+      "platformId": "ID de plateforme",
+      "playGroup": "Groupe de jeu",
+      "admin": "Administrateur",
+      "online": "En ligne",
+      "ip": "Adresse IP",
+      "ping": "Ping",
+      "position": "Position",
+      "lastSpawnPosition": "Dernière position d'apparition",
+      "gameStage": "Étape de jeu",
+      "lastLogin": "Dernière connexion",
+      "playerKills": "Kills de joueurs",
+      "zombieKills": "Kills de zombies",
+      "deaths": "Morts",
+      "score": "Score",
+      "health": "Santé",
+      "stamina": "Endurance",
+      "food": "Nourriture",
+      "water": "Eau",
+      "level": "Niveau",
+      "expToNextLevel": "Exp au niveau suivant",
+      "skillPoints": "Points de compétence",
+      "isLandProtectionActive": "La protection du territoire est-elle active",
+      "distanceWalked": "Distance parcourue",
+      "totalItemsCrafted": "Total d'objets fabriqués",
+      "totalTimePlayed": "Temps total joué",
+      "currentLife": "Vie actuelle",
+      "longestLife": "Vie la plus longue",
+      "alreadyCraftedList": "Objets déjà fabriqués",
+      "unlockedRecipeList": "Recettes débloquées",
+      "rentedVMPosition": "Emplacement loué",
+      "rentalEndDayTime": "Heure de fin de location",
+      "bedroll": "Sac de couchage",
+      "active": "Actif",
+      "inactive": "Inactif"
+    }
+  },
+  "errors": {
+    "http": {
+      "badRequest": "Requête invalide. \nVeuillez vérifier votre saisie.",
+      "unauthorized": "Non autorisé. \nVeuillez vous reconnecter.",
+      "forbidden": "Accès refusé. \nVous n'avez pas la permission.",
+      "notFound": "Introuvable. \nLa ressource n'existe pas.",
+      "serverError": "Erreur serveur. \nQuelque chose s'est mal passé de notre côté.",
+      "timeout": "Délai de requête dépassé. \nVeuillez vérifier votre connexion."
+    }
+  },
+  "layout": {
+    "header": {
+      "expandMenu": "Développer le menu",
+      "collapseMenu": "Réduire le menu",
+      "switchLang": "Changer de langue",
+      "fullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran",
+      "themeConfiguration": "Configuration du thème",
+      "github": "GitHub",
+      "community": "Communauté",
+      "userMenu": "Menu utilisateur",
+      "logout": "Déconnexion",
+      "appearance": "Apparence",
+      "layout": "Mise en page",
+      "general": "Général",
+      "preset": "Préréglage",
+      "themeScheme": "Schéma thématique",
+      "grayscale": "Niveaux de gris",
+      "colorWeakness": "Faiblesse des couleurs",
+      "themeColor": "Couleur du thème",
+      "primaryColor": "Couleur primaire",
+      "infoColor": "Couleur d'information",
+      "successColor": "Couleur du succès",
+      "warningColor": "Couleur d'avertissement",
+      "dangerColor": "Couleur de danger",
+      "surfaceColor": "Couleur de la surface",
+      "layoutMode": "Mode de mise en page",
+      "verticalMode": "Mode vertical",
+      "horizontalMode": "Mode horizontal",
+      "headerSettings": "Paramètres d'en-tête",
+      "headerHeight": "Hauteur de l'en-tête",
+      "showLogo": "Afficher le logo",
+      "showTitle": "Afficher le titre",
+      "showMenuCollapseBtn": "Afficher le bouton de réduction du menu",
+      "showBreadcrumb": "Afficher le fil d'Ariane",
+      "showBreadcrumbIcon": "Afficher l'icône du fil d'Ariane",
+      "topMenuAlignment": "Alignement du menu supérieur",
+      "left": "Gauche",
+      "center": "Centre",
+      "right": "Droite",
+      "showFullscreenBtn": "Afficher le bouton plein écran",
+      "showLanguageSwitchBtn": "Afficher le bouton de changement de langue",
+      "showThemeConfigBtn": "Afficher le bouton de configuration du thème",
+      "sidebarSettings": "Paramètres de la barre latérale",
+      "sidebarWidth": "Largeur de la barre latérale",
+      "sidebarCollapsedWidth": "Largeur réduite de la barre latérale",
+      "tabSettings": "Paramètres des onglets",
+      "showTab": "Afficher l'onglet",
+      "tabHeight": "Hauteur de l'onglet",
+      "showTabIcon": "Afficher l'icône de l'onglet",
+      "tabStyle": "Style d'onglet",
+      "googleStyle": "Style Google",
+      "buttonStyle": "Style de bouton",
+      "smoothStyle": "Style fluide",
+      "footerSettings": "Paramètres du pied de page",
+      "showFooter": "Afficher le pied de page",
+      "footerHeight": "Hauteur du pied de page",
+      "presets": {
+        "blue": {
+          "name": "Bleu classique",
+          "description": "La norme professionnelle. \nUne palette de couleurs fiable et équilibrée pour les applications d'entreprise."
+        },
+        "violet": {
+          "name": "Violette moderne",
+          "description": "Une palette élégante et avant-gardiste qui apporte une sensation vibrante et sophistiquée à votre interface."
+        },
+        "teal": {
+          "name": "Sarcelle fraîche",
+          "description": "Une esthétique calme et inspirée de la nature qui favorise la clarté et une expérience utilisateur rafraîchissante."
+        },
+        "pink": {
+          "name": "Rose vif",
+          "description": "Chaleureux et énergique. \nUne palette de couleurs passionnée conçue pour inspirer la créativité et l’engagement."
+        },
+        "tan": {
+          "name": "Bronzage rétro",
+          "description": "Une palette terreuse et organique avec une sensation vintage haut de gamme, parfaite pour le branding artisanal ou haut de gamme."
+        },
+        "zinc": {
+          "name": "Zinc minimal",
+          "description": "Une esthétique raffinée en niveaux de gris axée sur la précision industrielle et le minimalisme professionnel."
+        }
+      },
+      "showTransitionAnimation": "Afficher l'animation de transition",
+      "tableSize": "Taille du tableau",
+      "small": "Petit",
+      "default": "Défaut",
+      "large": "Grand",
+      "scrollMode": "Mode défilement",
+      "outerScroll": "Parchemin extérieur",
+      "innerScroll": "Parchemin intérieur",
+      "contextMenuStyle": "Cliquez avec le bouton droit sur Style de menu",
+      "defaultStyle": "Style par défaut",
+      "flatStyle": "Style plat",
+      "win10Style": "Style Windows 10",
+      "macStyle": "Style Mac",
+      "popBoxStyle": "Style de boîte contextuelle",
+      "elementPlusStyle": "Style Element Plus",
+      "sweetAlert2Style": "Style SweetAlert2",
+      "bootstrap5Style": "Style Bootstrap 5",
+      "bootstrap4Style": "Style Bootstrap 4",
+      "materialUIStyle": "Style Material UI",
+      "bulmaStyle": "Style Bulma"
+    },
+    "tabs": {
+      "close": "Fermer",
+      "closeOthers": "Fermer les autres",
+      "closeLeft": "Fermer à gauche",
+      "closeRight": "Fermer à droite",
+      "closeAll": "Tout fermer"
+    }
+  },
+  "ui": {
+    "dialog": {
+      "warningTitle": "Avertissement",
+      "confirmButtonText": "D'ACCORD",
+      "cancelButtonText": "Annuler",
+      "warningText": "Êtes-vous sûr de vouloir continuer ?"
+    }
+  },
+  "views": {
+    "login": {
+      "failedTitle": "La connexion a échoué!",
+      "password": "Mot de passe",
+      "username": "Nom d'utilisateur",
+      "submit": "Se connecter",
+      "forgotPassword": "Mot de passe oublié ?",
+      "forgotPasswordHelpTitle": "Configuration du mot de passe",
+      "forgotPasswordHelpUnavailable": "Ce panneau ne prend pas en charge la réinitialisation du mot de passe en libre-service.",
+      "forgotPasswordHelpPathLabel": "Mettez à jour les informations d'identification dans le fichier suivant sous la racine de votre serveur 7 Days to Die :",
+      "forgotPasswordHelpFieldsLabel": "Enregistrez la configuration après avoir mis à jour les champs {usernameField} et {passwordField}.",
+      "forgotPasswordHelpRestartHint": "Si le serveur ne recharge pas automatiquement la configuration, redémarrez le serveur ou rechargez le mod.",
+      "rememberMe": "Souviens-toi de moi",
+      "successTitle": "Content de te revoir!",
+      "failedMessage": "Le nom d'utilisateur ou le mot de passe est incorrect, veuillez réessayer",
+      "successMessage": "Vous avez été connecté avec succès."
+    },
+    "dashboard": {
+      "headers": {
+        "overview": "Aperçu",
+        "status": "Statut",
+        "monitor": "Moniteur",
+        "quickActions": "Actions rapides",
+        "recentActivity": "Activité récente",
+        "systemPlatformInfo": "Informations sur la plate-forme système",
+        "historyPlayers": "Joueurs d'histoire",
+        "entities": "Entités",
+        "fps": "FPS",
+        "residentSetSize": "RSS",
+        "heap": "Tas",
+        "chunks": "Morceaux",
+        "chunkGameObjects": "CGO",
+        "items": "Articles"
+      },
+      "overview": {
+        "serverName": "Nom du serveur",
+        "region": "Région du serveur",
+        "language": "Langue du serveur",
+        "serverIp": "IP du serveur",
+        "uptime": "Disponibilité du serveur",
+        "gameTime": "Temps de jeu",
+        "serverPort": "Port du serveur",
+        "gameName": "Nom du jeu",
+        "gameMode": "Mode de jeu",
+        "serverVersion": "Version du serveur",
+        "gameWorld": "Monde du jeu",
+        "gameDifficulty": "Difficulté du jeu",
+        "gameDifficultys": {
+          "0": "Charognard",
+          "1": "Aventurier",
+          "2": "Nomade",
+          "3": "Guerrier",
+          "4": "Survivaliste",
+          "5": "Fou"
+        },
+        "uptimeFormat": "{hours} : {minutes} : {seconds} | \n{days} : {hours} : {minutes} : {seconds}",
+        "gameTimeFormat": "Jour {days}, {hours} : {minutes}"
+      },
+      "status": {
+        "freeSlots": "Machines à sous gratuites",
+        "players": "Joueurs",
+        "onlinePlayers": "Joueurs en ligne",
+        "maxOnlinePlayers": "Nombre maximum de joueurs en ligne",
+        "zombies": "Zombis",
+        "activeZombies": "Zombies actifs",
+        "maxZombies": "Max Zombies",
+        "animals": "Animaux",
+        "activeAnimals": "Animaux actifs",
+        "maxAnimals": "Max animaux",
+        "memory": "Mémoire",
+        "usedMemory": "Mémoire utilisée",
+        "freeMemory": "Mémoire libre",
+        "totalMemory": "Mémoire totale",
+        "disk": "Disque",
+        "usedDisk": "Disque utilisé",
+        "freeDisk": "Disque libre",
+        "totalDisk": "Disque total"
+      },
+      "monitor": {
+        "cpu": "Processeur",
+        "ram": "BÉLIER",
+        "usage": "Utilisation (%)",
+        "time": "Temps",
+        "network": "Réseau",
+        "trafficIn": "Trafic entrant",
+        "trafficOut": "Trafic sortant"
+      },
+      "quickActions": {
+        "restartTitle": "Redémarrer le serveur",
+        "shutdownTitle": "Arrêter le serveur",
+        "restartButton": "Redémarrer le serveur",
+        "shutdownButton": "Arrêter le serveur",
+        "restartConfirm": "Êtes-vous sûr de vouloir redémarrer le serveur ? \nLes joueurs connectés peuvent être déconnectés.",
+        "shutdownConfirm": "Êtes-vous sûr de vouloir arrêter le serveur ? \nCela interrompra le service en cours.",
+        "restartSuccess": "Commande de redémarrage envoyée",
+        "shutdownSuccess": "Commande d'arrêt envoyée",
+        "restartError": "Échec de l'envoi de la commande de redémarrage",
+        "shutdownError": "Échec de l'envoi de la commande d'arrêt",
+        "hint": "Opération à haut risque. \nAssurez-vous que personne n’effectue d’actions critiques avant de continuer.",
+        "nextRestart": "Prochain redémarrage programmé"
+      },
+      "systemInfo": {
+        "deviceName": "Nom de l'appareil",
+        "deviceModel": "Modèle d'appareil",
+        "deviceType": "Type d'appareil",
+        "deviceUniqueIdentifier": "Identifiant unique de l'appareil",
+        "operatingSystem": "Système opérateur",
+        "processorType": "Type de processeur",
+        "processorCount": "Nombre de processeurs",
+        "processorFrequency": "Fréquence du processeur",
+        "systemMemorySize": "Taille de la mémoire système",
+        "userName": "Nom d'utilisateur"
+      },
+      "recentActivity": {
+        "login": "Connexion réussie",
+        "playerEnterGame": "Joueur : {0} partie entrée",
+        "playerLeaveGame": "Joueur : {0} Partie gauche"
+      }
+    },
+    "playerList": {
+      "onlinePlayers": "Joueurs en ligne",
+      "historyPlayers": "Joueurs d'histoire",
+      "playerName": "Nom du joueur",
+      "status": "Statut",
+      "entityId": "ID d'entité",
+      "playerId": "Identifiant du joueur",
+      "platformId": "ID de plateforme",
+      "playGroup": "Jouer en groupe",
+      "position": "Position",
+      "lastLogin": "Dernière connexion",
+      "bedroll": "Sac de couchage",
+      "permissionLevel": "Niveau d'autorisation",
+      "ip": "Adresse IP",
+      "ping": "Ping",
+      "twitchEnabled": "Twitch activé",
+      "zombieKills": "Les zombies tuent",
+      "playerKills": "Joueur tue",
+      "deaths": "Décès",
+      "level": "Niveau",
+      "expToNextLevel": "Exp au niveau suivant",
+      "skillPoints": "Points de compétence",
+      "gameStage": "Étape de jeu",
+      "admin": "Administrateur",
+      "viewInventory": "Voir l'inventaire",
+      "viewSkills": "Voir les compétences",
+      "viewDetails": "Afficher les détails",
+      "kick": "Joueur de coup de pied",
+      "kickReason": "Raison du coup de pied (facultatif)",
+      "ban": "Interdire un joueur",
+      "banDuration": "Durée de l'interdiction (minutes)",
+      "banReason": "Raison de l'interdiction (facultatif)",
+      "mute": "Joueur muet",
+      "muteDuration": "Durée du muet (minutes, 0 ou vide pour permanent)",
+      "muteReason": "Raison du muet (facultatif)"
+    },
+    "map": {
+      "region": "Fichier de région",
+      "landClaim": "Revendication territoriale",
+      "zombie": "Zombi",
+      "hostiles": "Hostiles",
+      "animal": "Animal",
+      "offlinePlayer": "Joueur (hors ligne)",
+      "onlinePlayer": "Joueur (en ligne)",
+      "mousePos": "Position de la souris",
+      "lastClick": "Dernier clic",
+      "renderExploredArea": "Rendu de la zone explorée",
+      "renderExploredAreaConfirm": "Êtes-vous sûr de vouloir rendre la zone explorée ? \nCela peut prendre quelques minutes, vous pouvez vérifier la progression dans la console",
+      "renderFullMap": "Explorer la carte complète",
+      "renderFullMapConfirm": "Êtes-vous sûr de vouloir explorer la carte complète ? \nCela peut prendre quelques minutes, vous pouvez vérifier la progression dans la console, cette opération n'est généralement effectuée qu'une seule fois après le démarrage du serveur",
+      "refreshMap": "Actualiser la carte",
+      "autoReload": "Recharger tous les",
+      "seconds": "secondes",
+      "landOwner": "Propriétaire foncier",
+      "removeLandClaim": "Retirer",
+      "removeLandClaimConfirm": "Êtes-vous sûr de vouloir supprimer la revendication territoriale ?",
+      "dragendTelePlayerConfirm": "Êtes-vous sûr de vouloir téléporter le joueur : {0} vers l'emplacement cible {1} ?",
+      "gameTimeLoading": "Chargement ...",
+      "gameTimeFormat": "Jour {days}, {hours} :{minutes}",
+      "claimActive": "Actif",
+      "claimInactive": "Inactif",
+      "claimStatus": "Statut de la réclamation",
+      "viewPlayerInventory": "Voir l'inventaire"
+    },
+    "gameChat": {
+      "typeMessage": "Tapez un message",
+      "send": "Envoyer",
+      "history": {
+        "columns": {
+          "createdAt": "Temps",
+          "chatType": "Canal",
+          "senderName": "Expéditeur",
+          "playerId": "Identifiant du joueur",
+          "entityId": "ID d'entité",
+          "message": "Message"
+        },
+        "filters": {
+          "senderName": "Expéditeur",
+          "playerId": "Identifiant du joueur",
+          "chatType": "Canal",
+          "timeRange": "Plage de temps"
+        },
+        "placeholders": {
+          "allChatTypes": "Toutes les chaînes",
+          "timeRange": "Sélectionnez une plage horaire"
+        },
+        "emptyPlayerId": "Système / Inconnu"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "Journaux d'audit",
+        "backupRuns": "Exécutions de sauvegarde"
+      },
+      "sources": {
+        "api": "API",
+        "chatCommand": "Commande de discussion",
+        "consoleCommand": "Commande de console",
+        "scheduler": "Planificateur",
+        "system": "Système",
+        "gameEvent": "Événement de jeu"
+      },
+      "actionTypes": {
+        "create": "Créer",
+        "update": "Mise à jour",
+        "delete": "Supprimer",
+        "enable": "Activer",
+        "disable": "Désactiver",
+        "execute": "Exécuter",
+        "send": "Envoyer",
+        "kick": "Coup",
+        "ban": "Interdire",
+        "unban": "Annuler le bannissement",
+        "restart": "Redémarrage",
+        "reload": "Recharger",
+        "grant": "Accorder",
+        "revoke": "Révoquer",
+        "import": "Importer",
+        "export": "Exporter",
+        "reset": "Réinitialiser",
+        "other": "Autre"
+      },
+      "filters": {
+        "timeRange": "Plage de temps",
+        "source": "Source",
+        "operatorId": "ID de l'opérateur",
+        "actionType": "Type d'action",
+        "resourceType": "Type de ressource",
+        "resourceId": "ID de ressource",
+        "succeeded": "Résultat"
+      },
+      "placeholders": {
+        "timeRange": "Sélectionnez une plage horaire",
+        "allSources": "Toutes les sources",
+        "allActionTypes": "Tous les types d'actions",
+        "allResults": "Tous les résultats"
+      },
+      "columns": {
+        "createdAt": "Créé à",
+        "source": "Source",
+        "operatorId": "ID de l'opérateur",
+        "operatorName": "Nom de l'opérateur",
+        "actionType": "Type d'action",
+        "resourceType": "Type de ressource",
+        "resourceId": "ID de ressource",
+        "summary": "Résumé",
+        "succeeded": "Réussi",
+        "errorMessage": "Message d'erreur"
+      },
+      "empty": {
+        "operatorId": "Anonyme ou système",
+        "operatorName": "Opérateur inconnu",
+        "source": "Source inconnue",
+        "actionType": "Action inconnue",
+        "resourceType": "Indéterminé",
+        "resourceId": "Aucun",
+        "summary": "Pas de résumé",
+        "timestamp": "Heure inconnue",
+        "details": "Aucune charge utile détaillée",
+        "errorMessage": "Aucun"
+      },
+      "detailDialog": {
+        "title": "Détails du journal d'audit",
+        "actions": {
+          "copy": "Copier les détails"
+        },
+        "messages": {
+          "copySuccess": "Détails copiés dans le presse-papiers.",
+          "copyFailed": "Échec de la copie des détails. \nVeuillez réessayer plus tard."
+        },
+        "sections": {
+          "metadata": "Métadonnées",
+          "summary": "Résultat d'exécution",
+          "details": "Contexte détaillé"
+        }
+      }
+    },
+    "serverConfig": {
+      "settings": {
+        "ServerName": {
+          "group": "Serveurs",
+          "desc": "Nom du serveur. \nRemplissez le nom de votre choix"
+        },
+        "ServerDescription": {
+          "group": "Serveurs",
+          "desc": "Description du serveur. \nRemplissez n'importe quelle description de serveur que vous aimez"
+        },
+        "ServerWebsiteURL": {
+          "group": "Serveurs",
+          "desc": "Adresse du site Web du serveur. \nSera affiché sous forme de lien cliquable dans le navigateur du serveur"
+        },
+        "ServerPassword": {
+          "group": "Serveurs",
+          "desc": "Mot de passe du serveur. \nLe mot de passe que les joueurs utilisent pour accéder au serveur de jeu"
+        },
+        "ServerLoginConfirmationText": {
+          "group": "Serveurs",
+          "desc": "Texte de confirmation de connexion au serveur. \nSi cette option est définie, les utilisateurs verront ce message lorsqu'ils rejoindront le serveur et devront le confirmer avant de continuer. \nPour des modifications plus complexes de cette fenêtre, modifiez la fenêtre de dialogue serverjoinrules dans XUi"
+        },
+        "Region": {
+          "group": "Serveurs",
+          "desc": "La région où se trouve le serveur. \nLes valeurs possibles sont : Asie, Amérique du Nord-Est, Amérique du Nord-Ouest, Amérique centrale, Amérique du Sud, Europe, Russie, Moyen-Orient, Afrique, Océanie."
+        },
+        "Language": {
+          "group": "Serveurs",
+          "desc": "La langue principale des joueurs sur le serveur. \nUtilisez le nom anglais de la langue que les joueurs souhaitent rechercher. \nLes valeurs possibles sont : anglais, allemand, espagnol, français, italien, japonais, coréen, polonais, brésilien, russe, turc, chinois, chinois"
+        },
+        "ServerPort": {
+          "group": "Réseau",
+          "desc": "Le port sur lequel le programme serveur écoute. \nSi vous souhaitez que les ordinateurs sur le même réseau local le voient comme un serveur LAN, conservez-le dans la plage 26900 à 26905 ou 27015 à 27020."
+        },
+        "ServerVisibility": {
+          "group": "Réseau",
+          "desc": "Visibilité du serveur. \n2 = public, 1 = visible uniquement par les amis, 0 = non répertorié. \nPuisque vous n'êtes jamais amis avec le serveur dédié, le mettre à 1 ne fonctionnera que si le premier joueur se connecte manuellement par IP"
+        },
+        "ServerDisabledNetworkProtocols": {
+          "group": "Réseautage",
+          "desc": "Protocoles réseau désactivés par le serveur. \nSéparés par des virgules, valeurs possibles LiteNetLib, SteamNetworking. \nLes serveurs dédiés doivent désactiver SteamNetworking s'il n'y a pas de routeur NAT entre l'utilisateur et le serveur, ou si la redirection de port est correctement configurée."
+        },
+        "ServerMaxWorldTransferSpeedKiBs": {
+          "group": "Réseautage",
+          "desc": "Vitesse de transfert mondiale maximale du serveur. \nVitesse maximale (en kiB/s) pour les transferts de monde à la première connexion si le client n'a pas encore de monde. \nLa valeur maximale est d'environ 1 300 Kio/s, même si vous la définissez sur une valeur plus élevée."
+        },
+        "ServerMaxPlayerCount": {
+          "group": "Machines à sous",
+          "desc": "Nombre maximum de joueurs sur le serveur. \nNombre maximum de joueurs autorisés en ligne à la fois"
+        },
+        "ServerReservedSlots": {
+          "group": "Machines à sous",
+          "desc": "Emplacements réservés au serveur. \nAu-delà du nombre maximum de joueurs, de nombreux emplacements ne peuvent être utilisés que par des joueurs disposant d'un certain niveau d'autorisation."
+        },
+        "ServerReservedSlotsPermission": {
+          "group": "Machines à sous",
+          "desc": "Autorisation des emplacements réservés au serveur. \nLe niveau d'autorisation requis pour utiliser les emplacements réservés ci-dessus"
+        },
+        "ServerAdminSlots": {
+          "group": "Machines à sous",
+          "desc": "Emplacements d'administrateur de serveur. \nMême si le serveur a atteint le nombre maximum de joueurs, il reste encore beaucoup d'administrateurs qui peuvent le rejoindre."
+        },
+        "ServerAdminSlotsPermission": {
+          "group": "Machines à sous",
+          "desc": "Emplacements d’autorisation d’administrateur du serveur. \nLe niveau d'autorisation requis pour utiliser les emplacements d'administrateur ci-dessus"
+        },
+        "WebDashboardEnabled": {
+          "group": "Interface administrative",
+          "desc": "Activer/désactiver le tableau de bord Web."
+        },
+        "WebDashboardPort": {
+          "group": "Interface administrative",
+          "desc": "Port pour le tableau de bord Web."
+        },
+        "WebDashboardUrl": {
+          "group": "Interface administrative",
+          "desc": "URL externe du tableau de bord Web. \n(Si vous n'utilisez pas uniquement l'adresse IP publique du serveur, par exemple, le tableau de bord Web se trouve derrière un proxy inverse). \nDoit être une URL complète, par ex. \nhttps://domainOfReverseProxy.tld:1234/. \nPeut être laissé vide si vous utilisez directement l’adresse IP publique et le port du tableau de bord."
+        },
+        "EnableMapRendering": {
+          "group": "Interface administrative",
+          "desc": "Activez le rendu de la carte. \nActiver/désactiver le rendu des cartes sous forme d'images de tuiles lors de la navigation dans les cartes. \nPar exemple, le tableau de bord Web peut l'utiliser pour afficher des vues cartographiques."
+        },
+        "TelnetEnabled": {
+          "group": "Interface administrative",
+          "desc": "Si le service Telnet est activé. \nActiver ou désactiver le service Telnet [vrai, faux]"
+        },
+        "TelnetPort": {
+          "group": "Interface administrative",
+          "desc": "Port Telnet. \nPort du serveur Telnet"
+        },
+        "TelnetPassword": {
+          "group": "Interface administrative",
+          "desc": "Mot de passe d'accès Telnet. \nSi aucun mot de passe n'est défini, le serveur écoutera uniquement l'interface de bouclage locale"
+        },
+        "TelnetFailedLoginLimit": {
+          "group": "Interface administrative",
+          "desc": "Limite d’échec de connexion Telnet. \nAprès qu'un client distant ait saisi plusieurs fois un mot de passe incorrect, le client ne pourra plus se connecter à l'interface Telnet."
+        },
+        "TelnetFailedLoginsBlocktime": {
+          "group": "Interface administrative",
+          "desc": "Temps de verrouillage en cas d'échec de connexion. \nAprès avoir dépassé la limite d'échec de connexion, combien de temps durera le blocage (en secondes)"
+        },
+        "TerminalWindowEnabled": {
+          "group": "Interface administrative",
+          "desc": "Fenêtre de terminal activée. \nAfficher la fenêtre du terminal pour la sortie du journal/l'entrée de commande (Windows uniquement)"
+        },
+        "AdminFileName": {
+          "group": "Emplacements des dossiers et des fichiers",
+          "desc": "Nom du fichier d'administration du serveur. \nChemin relatif à SaveGameFolder"
+        },
+        "UserDataFolder": {
+          "group": "Emplacements des dossiers et des fichiers",
+          "desc": "Dossier de données utilisateur. \nUtilisez-le pour remplacer l'emplacement où le serveur stocke toutes les données générées, y compris les mondes générés par RWG. \nN'oubliez pas de décommenter"
+        },
+        "SaveGameFolder": {
+          "group": "Emplacements des dossiers et des fichiers",
+          "desc": "Enregistrez le dossier du jeu. \nUtilisé uniquement pour remplacer le chemin de sauvegarde du jeu. \nN'oubliez pas de décommenter"
+        },
+        "ServerAllowCrossplay": {
+          "group": "Autres paramètres techniques",
+          "desc": "Active/désactive le jeu croisé, les serveurs de jeu croisé ne seront trouvés dans les recherches et pourront être rejoints que si les sanctions ne sont pas ignorées, et auront un nombre d'emplacements de joueur par défaut ou inférieur."
+        },
+        "EACEnabled": {
+          "group": "Autres paramètres techniques",
+          "desc": "Si l'anti-triche EAC est activé. \nS'il faut activer la fonction anti-triche (doit être désactivée pour les serveurs crackés et chinois)"
+        },
+        "IgnoreEOSSanctions": {
+          "group": "Autres paramètres techniques",
+          "desc": "Ignorez les sanctions EOS. \nIgnorer les sanctions EOS lorsque vous autorisez les joueurs à rejoindre"
+        },
+        "HideCommandExecutionLog": {
+          "group": "Autres paramètres techniques",
+          "desc": "Masquer le journal d’exécution des commandes. \n0 = Tout afficher, 1 = Masquer uniquement depuis Telnet/Panneau de configuration, 2 = Masquer également depuis les clients de jeu distants, 3 = Tout masquer"
+        },
+        "MaxUncoveredMapChunksPerPlayer": {
+          "group": "Autres paramètres techniques",
+          "desc": "La zone que chaque joueur peut explorer sur la carte du jeu. \nPar conséquent, la taille maximale du fichier de carte par joueur est limitée à (x * 512 octets) et la zone de couverture est (x * 256 mètres carrés). \nLa valeur par défaut de 131072 signifie qu'un maximum de 32 kilomètres carrés de carte peuvent être découverts à tout moment."
+        },
+        "PersistentPlayerProfiles": {
+          "group": "Autres paramètres techniques",
+          "desc": "Si le profil du joueur peut être modifié. \nS'il est désactivé, les joueurs peuvent rejoindre n'importe quel profil sélectionné. \nSi c'est vrai, ils rejoindront en utilisant le fichier de configuration avec lequel ils se sont joints pour la dernière fois"
+        },
+        "MaxChunkAge": {
+          "group": "Autres paramètres techniques",
+          "desc": "Nombre de jours dans le jeu pendant lesquels un morceau sera réinitialisé à son état d'origine après avoir été visité s'il n'a pas été revisité ou protégé (par exemple en ayant une pierre de territoire ou un sac de couchage à proximité)"
+        },
+        "SaveDataLimit": {
+          "group": "Autres paramètres techniques",
+          "desc": "Enregistrer la limite de données. \nEspace disque maximum autorisé par partie sauvegardée, en Mo. \nLorsque cette limite est atteinte, les morceaux de jeu sauvegardés peuvent être réinitialisés de force à leur état d'origine pour libérer de l'espace. \nLes valeurs négatives désactivent la limite"
+        },
+        "GameWorld": {
+          "group": "Monde du jeu",
+          "desc": "Carte du monde du jeu. \nNavezgane[Fixed Map], RWG[Random Map] (voir les options 'World Seed' et 'World Size' ci-dessous) ou tout nom de monde existant dans le dossier 'Worlds' (par exemple 'Navezgane', 'PREGEN01'...)"
+        },
+        "WorldGenSeed": {
+          "group": "Monde du jeu",
+          "desc": "Semences mondiales. \nSi RWG, c’est la graine pour générer un nouveau monde. \nSi un monde du même nom existe déjà, il sera chargé directement"
+        },
+        "WorldGenSize": {
+          "group": "Monde du jeu",
+          "desc": "Taille générée mondiale. \nSi RWG, contrôle la largeur et la hauteur du monde créé. \nLes tailles officiellement prises en charge sont comprises entre 6 144 et 10 240 et doivent être des multiples de 2 048, par ex. \n6144, 8192, 10240"
+        },
+        "GameName": {
+          "group": "Monde du jeu",
+          "desc": "Nom du jeu. \nQuel que soit le nom que vous souhaitez donner à votre partie, cela affectera le nom de la partie sauvegardée et la graine utilisée lors du placement des décorations (arbres, etc.) dans le monde. \nSi vous créez un monde RWG, cela ne contrôle pas la disposition générale du monde"
+        },
+        "GameMode": {
+          "group": "Monde du jeu",
+          "desc": "Mode Jeu. \nGameModeSurvival (multijoueur)"
+        },
+        "GameDifficulty": {
+          "group": "Difficulté du jeu",
+          "desc": "JeuDifficulté. \nDifficulté de 0 à 5, 0 est le plus facile et 5 est le plus difficile"
+        },
+        "BlockDamagePlayer": {
+          "group": "Difficulté du jeu",
+          "desc": "Le joueur bloque les dégâts. \nDégâts infligés aux blocs par le joueur (pourcentage, exprimé sous forme d'entier)"
+        },
+        "BlockDamageAI": {
+          "group": "Difficulté du jeu",
+          "desc": "L'IA bloque les dégâts. \nDégâts infligés aux blocs par l'IA (pourcentage, exprimé sous forme d'entier)"
+        },
+        "BlockDamageAIBM": {
+          "group": "Difficulté du jeu",
+          "desc": "L'IA bloque les dégâts pendant la Lune de Sang. \nDégâts causés aux blocages par l'IA pendant la Lune de Sang (pourcentage, exprimé sous forme d'entier)"
+        },
+        "XPMultiplier": {
+          "group": "Difficulté du jeu",
+          "desc": "Multiplicateur de gain XP. \nMultiplicateur de gain XP pour les joueurs (pourcentage, exprimé sous forme de nombre entier)"
+        },
+        "PlayerSafeZoneLevel": {
+          "group": "Difficulté du jeu",
+          "desc": "Niveau SafeZone pour joueur novice. \nSi le niveau du joueur est inférieur ou égal à ce niveau, il créera une zone de sécurité (sans ennemis) lors de son apparition. \nSi le joueur est en dessous de ce niveau, les zombies n'apparaîtront plus autour de lui."
+        },
+        "PlayerSafeZoneHours": {
+          "group": "Difficulté du jeu",
+          "desc": "Durée de la zone de sécurité. \nLe temps effectif de la zone de sécurité du joueur (en heures de jeu)"
+        },
+        "BuildCreate": {
+          "group": "Difficulté du jeu",
+          "desc": "Mode créatif. \nActive et désactive le mode de triche"
+        },
+        "DayNightLength": {
+          "group": "Difficulté du jeu",
+          "desc": "Temps réel d'une journée de jeu (en minutes). \nIndique combien de minutes de temps réel équivaut à une journée de jeu"
+        },
+        "DayLightLength": {
+          "group": "Difficulté du jeu",
+          "desc": "Durée de la lumière du jour dans le jeu. \nIndique combien d'heures de lumière du jour il y a dans une journée (18 heures par défaut)"
+        },
+        "BiomeProgression": {
+          "group": "Difficulté du jeu",
+          "desc": "Permet aux dangers du biome et aux plafonds de stade de butin de favoriser la progression du biome. \nLes plafonds de niveau de butin sont augmentés en complétant des défis de biome."
+        },
+        "StormFreq": {
+          "group": "Difficulté du jeu",
+          "desc": "Ajuste la fréquence des tempêtes. \n0% les désactive. \nValeurs vanille : 0, 50, 100, 150, 200, 300, 400, 500"
+        },
+        "DeathPenalty": {
+          "group": "Difficulté du jeu",
+          "desc": "Peine après la mort. \n0 = Aucun. \n1 = Par défaut : pénalité d'XP classique. \n2 = Blessé : Vous conserverez la plupart de vos debuffs. \nRéapparaissez avec un ratio de nourriture et d'eau de 50 %. \n3 = Permadeath : Votre personnage sera complètement réinitialisé. \nVous renaîtrez dans une partie sauvegardée)"
+        },
+        "DropOnDeath": {
+          "group": "Difficulté du jeu",
+          "desc": "Chute de la mort. \n0 = Aucun, 1 = Tout, 2 = Ceinture à outils uniquement, 3 = Sac à dos uniquement, 4 = Supprimer tout"
+        },
+        "DropOnQuit": {
+          "group": "Difficulté du jeu",
+          "desc": "Déconnexion. \n0 = Aucun, 1 = Tous, 2 = Ceinture à outils uniquement, 3 = Sac à dos uniquement"
+        },
+        "BedrollDeadZoneSize": {
+          "group": "Difficulté du jeu",
+          "desc": "La taille de la BedrollDeadZone (c'est-à-dire un rayon de boîte avec chaque côté deux fois la longueur de la valeur donnée) où les zombies n'apparaîtront pas. \nToutes les zones dormantes effacées qui touchent la BedrollDeadZone ne réapparaîtront pas après l'effacement."
+        },
+        "BedrollExpiryTime": {
+          "group": "Difficulté du jeu",
+          "desc": "Délai d’expiration du sac de couchage. \nLe nombre de jours réels pendant lesquels un sac de couchage restera actif après la dernière connexion de son propriétaire"
+        },
+        "AllowSpawnNearFriend": {
+          "group": "Difficulté du jeu",
+          "desc": "Les nouveaux joueurs rejoignant le serveur pour la première fois peuvent-ils choisir de rejoindre n'importe quel ami jouant en même temps ? \n0 = Désactivé, 1 = Toujours, 2 = Uniquement les amis proches dans le biome forestier"
+        },
+        "CameraRestrictionMode": {
+          "group": "Difficulté du jeu",
+          "desc": "Mode de restriction de la caméra. \n0 = Les joueurs peuvent librement basculer entre les modes caméra à la première et à la troisième personne, 1 = Limité à la première personne, 2 = Limité à la troisième personne"
+        },
+        "JarRefund": {
+          "group": "Difficulté du jeu",
+          "desc": "Pourcentage de remboursement des pots vides. \nLe pourcentage de pots vides retournés après avoir consommé un article. \nValeurs disponibles : 0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100"
+        },
+        "MaxSpawnedZombies": {
+          "group": "Performance",
+          "desc": "Nombre maximum de zombies générés. \nCe paramètre couvre toute la carte, il ne peut y avoir qu'un nombre limité de zombies sur toute la carte à la fois. \nLa modification de ce paramètre peut avoir un impact énorme sur les performances"
+        },
+        "MaxSpawnedAnimals": {
+          "group": "Performance",
+          "desc": "Nombre maximum de zombies générés. \nSi vous avez un grand nombre de joueurs sur votre serveur, vous pouvez augmenter cette limite pour ajouter plus de faune. \nLes animaux ne consomment pas beaucoup de CPU comme les zombies. \nRemarque : Cela n'entraînera pas l'apparition arbitraire d'un plus grand nombre d'animaux : le système d'apparition du biome n'engendrera qu'un certain nombre d'animaux dans une zone donnée, mais si vous disposez d'une base de joueurs importante et dispersée, vous risquez de rencontrer la limite, vous pouvez donc l'augmenter."
+        },
+        "ServerMaxAllowedViewDistance": {
+          "group": "Performance",
+          "desc": "Distance de vue maximale autorisée pour les clients (6 - 12). \nA un impact significatif sur l'utilisation de la mémoire et les performances"
+        },
+        "MaxQueuedMeshLayers": {
+          "group": "Performance",
+          "desc": "Nombre maximum de couches de maillage de fragments pouvant être mises en file d'attente pendant la génération du maillage. \nRéduire cette valeur augmentera l'utilisation de la mémoire, mais peut augmenter le temps de génération des morceaux"
+        },
+        "EnemySpawnMode": {
+          "group": "Paramètres des zombies",
+          "desc": "Activer/désactiver l'apparition d'ennemis."
+        },
+        "EnemyDifficulty": {
+          "group": "Paramètres des zombies",
+          "desc": "Intensité zombie. \n0 = normal, 1 = frénésie"
+        },
+        "ZombieFeralSense": {
+          "group": "Paramètres des zombies",
+          "desc": "Sens sauvage des zombies. \n0-3 (arrêt, jour, nuit, tout)"
+        },
+        "ZombieMove": {
+          "group": "Paramètres des zombies",
+          "desc": "Mouvement de zombie. \n0-4 (marche, jogging, course, sprint, cauchemar)"
+        },
+        "ZombieMoveNight": {
+          "group": "Paramètres des zombies",
+          "desc": "Mouvement nocturne des zombies. \n0-4 (marche, jogging, course, sprint, cauchemar)"
+        },
+        "ZombieFeralMove": {
+          "group": "Paramètres des zombies",
+          "desc": "Mouvement sauvage des zombies. \n0-4 (marche, jogging, course, sprint, cauchemar)"
+        },
+        "ZombieBMMove": {
+          "group": "Paramètres des zombies",
+          "desc": "Déplacement Zombie BM. \n0-4 (marche, jogging, course, sprint, cauchemar)"
+        },
+        "AISmellMode": {
+          "group": "Paramètres des zombies",
+          "desc": "Mode odeur AI. \n0-5 (arrêt, marche, jogging, course, sprint, cauchemar)"
+        },
+        "BloodMoonFrequency": {
+          "group": "Paramètres des zombies",
+          "desc": "Fréquence de la Lune de Sang. \nÀ quelle fréquence (en jours) une Lune de Sang apparaît. \nMettre ceci à 0 signifie pas de Lune de Sang"
+        },
+        "BloodMoonRange": {
+          "group": "Paramètres des zombies",
+          "desc": "Gamme Lune de Sang. \nLe jour réel de la Lune de Sang peut s’écarter du paramètre ci-dessus d’un nombre aléatoire de jours. \nLorsque cette valeur est réglée sur 0, la Lune de Sang apparaîtra à l'heure tous les N jours spécifiés dans la Fréquence de la Lune de Sang."
+        },
+        "BloodMoonWarning": {
+          "group": "Paramètres des zombies",
+          "desc": "Avertissement de lune de sang. \nLe nombre d'heures après le début du jour rouge de la Lune de Sang. \nLorsque celui-ci est réglé sur -1, le rouge ne sera jamais affiché."
+        },
+        "BloodMoonEnemyCount": {
+          "group": "Paramètres des zombies",
+          "desc": "Nombre d'ennemis de la Lune de Sang. \nIl s'agit du nombre de zombies qui peuvent être vivants (apparus en même temps) à tout moment pour chaque joueur d'un groupe de zombies Blood Moon, mais en multijoueur, MaxSpawnedZombies remplace ce chiffre. \nNotez également que l'étape de jeu fixe le nombre maximum de zombies par camp. \nDes valeurs d'étape de jeu faibles entraîneront un nombre de zombies inférieur au paramètre Blood Moon Enemy Count. \nLa modification de ce paramètre peut avoir un impact énorme sur les performances."
+        },
+        "LootAbundance": {
+          "group": "Butin",
+          "desc": "Pourcentage d'abondance de l'article de recherche"
+        },
+        "LootRespawnDays": {
+          "group": "Butin",
+          "desc": "Jours d'actualisation des éléments de recherche. \nCombien de jours faut-il pour actualiser les ressources des éléments consultables"
+        },
+        "AirDropFrequency": {
+          "group": "Butin",
+          "desc": "Fréquence de largage. \nIndique combien d'heures de jeu un airdrop est effectué, 0 = jamais"
+        },
+        "AirDropMarker": {
+          "group": "Butin",
+          "desc": "Affichage du largage. \nDéfinit s'il faut ajouter un marqueur sur la carte/boussole pour les parachutages"
+        },
+        "PartySharedKillRange": {
+          "group": "Multijoueur",
+          "desc": "Portée de mise à mort partagée par le groupe. \nLa distance requise pour obtenir des récompenses d'élimination partagées par le groupe et des récompenses de cible d'élimination par le groupe de mission"
+        },
+        "PlayerKillingMode": {
+          "group": "Multijoueur",
+          "desc": "Paramètres de mise à mort des joueurs (0 = pas de mise à mort, 1 = dégâts uniquement aux alliés, 2 = dégâts uniquement aux étrangers, 3 = dégâts à tout le monde)"
+        },
+        "LandClaimCount": {
+          "group": "Options de taille de LandClaim",
+          "desc": "Nombre de réclamations foncières. \nLe nombre maximum de LandClaimSize autorisé par joueur"
+        },
+        "LandClaimSize": {
+          "group": "Options de taille de LandClaim",
+          "desc": "Plage de protection LandClaimSize. \nL'unité est un bloc"
+        },
+        "LandClaimDeadZone": {
+          "group": "Options de taille de LandClaim",
+          "desc": "Plage de protection LandClaimSize. \nLa distance entre LandClaimSizes. \nLandClaimSizes doit être supérieur à cette distance pour être défini (sauf si vous êtes ami avec l'autre partie)"
+        },
+        "LandClaimExpiryTime": {
+          "group": "Options de taille de LandClaim",
+          "desc": "Nombre de jours de protection LandClaim lorsque le joueur est hors ligne. \nNombre de jours (en temps réel) pendant lesquels les LandClaimSizes sont valides après que le joueur soit hors ligne"
+        },
+        "LandClaimDecayMode": {
+          "group": "Options de taille de LandClaim",
+          "desc": "Mode de dégradation de la protection LandClaimSize. \nContrôle le mode de dégradation de la zone terrestre du joueur hors ligne. \n0 = Lent (linéaire), 1 = Rapide (Exponentiel), 2 = Aucun (Protection complète jusqu'à l'expiration)"
+        },
+        "LandClaimOnlineDurabilityModifier": {
+          "group": "Options LandStone",
+          "desc": "Le multiplicateur de protection du LandStone lorsque le joueur est en ligne. \nIndique le multiplicateur de dureté du LandStone lorsque le joueur est en ligne, 0 signifie invincibilité, par défaut 4 fois"
+        },
+        "LandClaimOfflineDurabilityModifier": {
+          "group": "Options LandStone",
+          "desc": "Le multiplicateur de protection du LandStone lorsque le joueur est hors ligne. \nIndique le multiplicateur de dureté du LandStone lorsque le joueur est hors ligne, 0 signifie invincibilité, par défaut 4 fois"
+        },
+        "LandClaimOfflineDelay": {
+          "group": "Options LandStone",
+          "desc": "Le nombre de minutes après que le joueur a quitté le jeu pour que la dureté LandStone passe de en ligne à hors ligne. \nLa valeur par défaut est 0"
+        },
+        "DynamicMeshEnabled": {
+          "group": "Autre",
+          "desc": "S'il faut activer le système de maillage dynamique"
+        },
+        "DynamicMeshLandClaimOnly": {
+          "group": "Autre",
+          "desc": "Si le système de maillage dynamique est uniquement valable dans la zone LCB du joueur"
+        },
+        "DynamicMeshLandClaimBuffer": {
+          "group": "Autre",
+          "desc": "Rayon du bloc LCB du maillage dynamique"
+        },
+        "DynamicMeshMaxItemCache": {
+          "group": "Autre",
+          "desc": "Cache d’éléments maximum de maillage dynamique. \nCombien de projets peuvent être traités simultanément, plus la valeur est élevée, plus la RAM est utilisée"
+        },
+        "TwitchServerPermission": {
+          "group": "Autre",
+          "desc": "Niveau d'autorisation requis pour utiliser l'intégration Twitch sur le serveur"
+        },
+        "TwitchBloodMoonAllowed": {
+          "group": "Autre",
+          "desc": "S'il faut autoriser Twitch Blood Moon. \nSi le serveur autorise les opérations Twitch pendant une Lune de Sang, des zombies supplémentaires peuvent apparaître pendant la Lune de Sang, provoquant un décalage du serveur."
+        },
+        "QuestProgressionDailyLimit": {
+          "group": "Autre",
+          "desc": "Limite de progression quotidienne des quêtes. \nLimite le nombre de quêtes qu'un joueur peut accomplir chaque jour pour l'aider à augmenter son niveau de quête. \nLes quêtes au-dessus de la limite peuvent toujours être complétées pour recevoir des récompenses"
+        }
+      }
+    },
+    "appSettings": {
+      "empty": "Aucun paramètre d'application disponible.",
+      "groups": {
+        "general": "Général"
+      },
+      "fields": {
+        "webUrl": "URL Web",
+        "userName": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "accessTokenExpireTime": "Heure d'expiration du jeton d'accès",
+        "refreshTokenExpireTime": "Actualiser l’heure d’expiration du jeton",
+        "serverConfigFile": "Fichier de configuration du serveur"
+      },
+      "tooltips": {
+        "webUrl": "Adresse de base utilisée par le frontend pour accéder à l'API. \nIncluez http ou https.",
+        "password": "Mot de passe utilisé pour se connecter au backend d'administration et doit correspondre au compte du serveur.",
+        "accessTokenExpireTime": "Durée de vie du jeton d'accès, en secondes.",
+        "refreshTokenExpireTime": "Durée de vie du jeton d'actualisation, en secondes.",
+        "serverConfigFile": "Chemin d'accès au fichier de configuration du serveur à modifier. \nLes chemins relatifs ou les chemins de répertoire du serveur fonctionnent tous les deux."
+      },
+      "actions": {
+        "save": "Enregistrer les paramètres",
+        "reset": "Réinitialiser"
+      },
+      "messages": {
+        "saveSuccess": "Paramètres de l'application mis à jour.",
+        "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+      }
+    },
+    "chatSettings": {
+      "fields": {
+        "isEnabled": "Activer le chat",
+        "globalServerName": "Nom de l'expéditeur global",
+        "whisperServerName": "Nom de l'expéditeur chuchoté",
+        "chatCommandPrefixes": "Préfixes de commande",
+        "allowNoPrefix": "Autoriser les commandes sans préfixe",
+        "chatCommandSeparators": "Séparateurs de commandes",
+        "historyRetentionDays": "Jours de conservation de l'historique",
+        "excludeCommandsFromHistory": "Exclure les commandes de l'historique",
+        "muteNotifyMessage": "Message de notification muet"
+      },
+      "tooltips": {
+        "isEnabled": "Le chat est un service de base requis par toutes les fonctionnalités qui enregistrent les commandes de chat. \nIl ne peut pas être désactivé.",
+        "globalServerName": "Nom d'affichage utilisé lorsque le serveur envoie un message de discussion global.",
+        "whisperServerName": "Nom d'affichage utilisé lorsque le serveur envoie un message chuchoté.",
+        "chatCommandPrefixes": "Séparez plusieurs préfixes par des virgules, par exemple /,!.",
+        "allowNoPrefix": "Lorsqu'elles sont activées, les lignes de discussion globales simples peuvent être interprétées comme des commandes.",
+        "chatCommandSeparators": "Séparez plusieurs délimiteurs par des virgules. \nUn seul espace est la valeur par défaut habituelle.",
+        "historyRetentionDays": "Nombre de jours pour conserver l'historique des discussions. \nRéglez sur 0 pour conserver pour toujours.",
+        "excludeCommandsFromHistory": "Lorsqu'ils sont activés, les messages de discussion commençant par un préfixe de commande ne seront pas enregistrés dans l'historique.",
+        "muteNotifyMessage": "Un murmure renvoyé à un joueur en sourdine lorsqu'il tente de discuter. \nLaissez vide pour n’envoyer aucune notification."
+      },
+      "actions": {
+        "save": "Enregistrer les paramètres de discussion",
+        "reset": "Restaurer les paramètres par défaut"
+      },
+      "messages": {
+        "resetSuccess": "Les paramètres par défaut du backend ont été restaurés.",
+        "saveSuccess": "Les paramètres de discussion ont été mis à jour.",
+        "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+      },
+      "preview": {
+        "title": "Aperçu de l'effet",
+        "sampleMessage": "Ceci est un exemple de message.",
+        "defaultSender": "Serveur",
+        "channels": {
+          "global": "Mondial",
+          "whisper": "Chuchoter"
+        }
+      }
+    },
+    "coloredChat": {
+      "tabs": {
+        "settings": "Paramètres",
+        "profiles": "Profils"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer le chat coloré",
+          "globalDefault": "Couleur globale par défaut",
+          "whisperDefault": "Couleur par défaut",
+          "friendsDefault": "Couleur par défaut des amis",
+          "partyDefault": "Couleur par défaut de la fête",
+          "adminDefault": "Couleur par défaut de l'administrateur",
+          "systemDefault": "Couleur par défaut du système",
+          "allowPlayerColorTags": "Autoriser les balises de couleur du joueur",
+          "playerColorTagPermission": "Autorisation de balise de couleur du joueur"
+        },
+        "tooltips": {
+          "isEnabled": "Contrôle si la fonctionnalité ColoredChat est active.",
+          "playerColorTagPermission": "Contrôle quels joueurs peuvent utiliser des balises de couleur dans le chat. \nAucun : désactivé ; \nTous : tous les joueurs ; \nAdminOnly : administrateurs uniquement.",
+          "allowPlayerColorTags": "Lorsqu'elle est activée, les joueurs peuvent utiliser la syntaxe des balises de couleur contrôlées.",
+          "hexColor": "Entrez une valeur de couleur hexadécimale à 6 chiffres telle que FFCC00."
+        },
+        "sections": {
+          "policyTitle": "Politique",
+          "policyDescription": "Contrôlez si ColoredChat est activé et si les joueurs peuvent saisir leurs propres balises de couleur.",
+          "colorsTitle": "Couleurs des canaux par défaut",
+          "colorsDescription": "Attribuez une couleur par défaut à chaque canal de discussion afin que les joueurs puissent distinguer les sources de messages en un coup d'œil.",
+          "colorsHint": "Les valeurs ci-dessous sont enregistrées sous forme de couleurs hexadécimales à 6 chiffres.",
+          "playerChannels": "Canaux de joueurs",
+          "systemChannels": "Canaux système"
+        },
+        "playerColorTagPermissions": {
+          "none": "Désactivé",
+          "all": "Tous les joueurs",
+          "adminOnly": "Administrateurs uniquement"
+        },
+        "preview": {
+          "title": "Aperçu de l'effet",
+          "samplePlayerName": "Nom du joueur",
+          "sampleMessage": "Ceci est un exemple de message.",
+          "channels": {
+            "global": "Mondial",
+            "whisper": "Chuchoter",
+            "friends": "Amis",
+            "party": "Faire la fête",
+            "admin": "Administrateur",
+            "system": "Système"
+          }
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "reset": "Restaurer les paramètres par défaut"
+        },
+        "messages": {
+          "resetSuccess": "Les paramètres par défaut du backend ont été restaurés.",
+          "saveSuccess": "Les paramètres de chat coloré ont été mis à jour.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      },
+      "profiles": {
+        "addProfile": "Ajouter un profil de discussion",
+        "editProfile": "Modifier le profil de discussion",
+        "fields": {
+          "playerId": "Identifiant du joueur",
+          "customName": "Nom personnalisé",
+          "nameColor": "Couleur du nom",
+          "textColor": "Couleur du texte",
+          "description": "Description",
+          "createdAt": "Créé à"
+        },
+        "tooltips": {
+          "playerId": "Utilisez le PlayerId multiplateforme stable, et non l’EntityId temporaire.",
+          "customName": "Laissez vide pour utiliser le nom d'affichage en direct du joueur. \nUtilisez les variables ci-dessous pour intégrer des valeurs dynamiques.",
+          "hexColor": "Entrez une valeur de couleur hexadécimale à 6 chiffres telle que FFCC00.",
+          "description": "Utilisé pour expliquer pourquoi ce profil existe."
+        },
+        "placeholders": {
+          "createdAtRange": "Sélectionnez une plage horaire de création à"
+        },
+        "availableVariables": "Variables disponibles",
+        "variables": {
+          "playerName": "Nom d'affichage en direct du joueur",
+          "playerId": "ID de joueur multiplateforme",
+          "entityId": "ID d'entité dans le jeu",
+          "chatType": "Type de canal de discussion"
+        },
+        "messages": {
+          "saveSuccess": "Profil de discussion enregistré avec succès."
+        }
+      }
+    },
+    "economy": {
+      "overview": {
+        "totalAccounts": "Total des comptes",
+        "todayNewAccounts": "Nouveaux comptes aujourd'hui",
+        "totalCirculation": "Circulation totale",
+        "todayTransactionCount": "Transactions aujourd'hui",
+        "todayRewardsAmount": "Récompenses distribuées aujourd'hui",
+        "todayDailyClaimCount": "Réclamations quotidiennes aujourd'hui",
+        "todayTaxCollected": "Impôt perçu aujourd'hui",
+        "leaderboard": "Classement de la richesse",
+        "leaderboardRank": "Rang",
+        "loading": "Chargement...",
+        "empty": "Aucune donnée disponible"
+      },
+      "tabs": {
+        "accounts": "Comptes",
+        "transactions": "Transactions",
+        "settings": "Paramètres"
+      },
+      "settings": {
+        "sections": {
+          "basic": "Devise de base",
+          "transfer": "Transferts",
+          "dailyReward": "Récompenses quotidiennes",
+          "bonus": "Récompenses bonus",
+          "shop": "Boutique"
+        },
+        "fields": {
+          "isEnabled": "Activer l’économie",
+          "currencyName": "Nom de la devise",
+          "currencySymbol": "Symbole monétaire",
+          "defaultBalance": "Solde de départ",
+          "allowTransfer": "Autoriser les transferts de joueurs",
+          "minTransferAmount": "Montant minimum de transfert",
+          "transferTaxRate": "Taux de taxe de transfert",
+          "dailyRewardAmount": "Montant de la récompense quotidienne",
+          "leaderboardSize": "Taille du classement",
+          "zombieKillRewardEnabled": "Récompense pour tuer des zombies",
+          "zombieKillRewardAmount": "Montant de la récompense Zombie Kill",
+          "dailyStreakEnabled": "Bonus de séquence quotidienne",
+          "dailyStreakBonusPercent": "Pourcentage de bonus de séquence",
+          "dailyStreakMaxDays": "Nombre maximum de jours par séquence",
+          "shopEnabled": "Activer la boutique",
+          "playerConnectedRewardEnabled": "Récompense d'adhésion du joueur",
+          "playerConnectedRewardAmount": "Montant de la récompense pour rejoindre le joueur",
+          "playerDiedPenaltyEnabled": "Activer la peine de mort",
+          "playerDiedPenaltyAmount": "Montant de la déduction en cas de décès"
+        },
+        "commands": {
+          "sectionTitle": "Noms des commandes de discussion",
+          "aliasesHelp": "Alias ​​séparés par des virgules, par ex. \nsolde, argent",
+          "fields": {
+            "balCommandName": "Commande d'équilibre",
+            "balCommandAliases": "Alias ​​de solde",
+            "payCommandName": "Commande de transfert",
+            "payCommandAliases": "Alias ​​de transfert",
+            "dailyCommandName": "Commande de récompense quotidienne",
+            "dailyCommandAliases": "Alias ​​de récompenses quotidiennes",
+            "moneyTopCommandName": "Commande de classement",
+            "moneyTopCommandAliases": "Alias ​​du classement",
+            "shopCommandName": "Commande de boutique",
+            "shopCommandAliases": "Alias ​​de boutique",
+            "buyCommandName": "Acheter la commande",
+            "buyCommandAliases": "Acheter des alias",
+            "redeemCommandName": "Commande d'échange",
+            "redeemCommandAliases": "Utiliser des alias"
+          }
+        },
+        "tips": {
+          "sectionTitle": "Messages de réponse aux commandes",
+          "sectionDescription": "Remplacez les messages d'astuces par défaut dans le jeu envoyés après l'exécution de la commande. \nLaissez vide pour utiliser les valeurs par défaut intégrées. \nPrend en charge les espaces réservés répertoriés dans l’info-bulle.",
+          "fields": {
+            "balanceTip": "Conseil d'équilibre",
+            "payUsageTip": "Conseil d'utilisation payante",
+            "payTargetNotFoundTip": "Objectif de paiement introuvable",
+            "paySuccessTip": "Conseil de réussite en matière de paiement",
+            "dailySuccessTip": "Conseil de réussite pour les récompenses quotidiennes",
+            "dailyAlreadyClaimedTip": "Pourboire quotidien déjà réclamé",
+            "shopEmptyTip": "Astuce pour magasiner vide",
+            "buyUsageTip": "Conseil d'utilisation pour l'achat",
+            "buySuccessTip": "Acheter un conseil de réussite",
+            "redeemUsageTip": "Utiliser le conseil d'utilisation",
+            "redeemSuccessTip": "Utiliser le conseil de réussite",
+            "playerDiedPenaltyTip": "Astuce sur la peine de mort"
+          },
+          "tooltips": {
+            "balanceTip": "Prise en charge : {balance}, {currency}",
+            "payUsageTip": "Prise en charge : {currency}",
+            "paySuccessTip": "Prise en charge : {amount}, {currency}, {playerName}, {tax}",
+            "dailySuccessTip": "Prise en charge : {amount}, {currency}, {streak}, {bonusPercent}",
+            "buyUsageTip": "Prise en charge : {currency}",
+            "buySuccessTip": "Prise en charge : {name}, {quantity}, {cost}, {currency}",
+            "redeemSuccessTip": "Prise en charge : {amount}, {currency}",
+            "playerDiedPenaltyTip": "Prise en charge : {amount}, {currency}"
+          }
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres d'économie",
+          "reset": "Réinitialiser les paramètres par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres d'économie enregistrés avec succès.",
+          "resetSuccess": "Les paramètres d'économie ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        },
+        "preview": {
+          "title": "Aperçu de l'effet",
+          "balance": "Solde de départ",
+          "dailyReward": "Récompense quotidienne",
+          "killReward": "Récompense de mise à mort (par zombie)",
+          "transferTax": "Taux de taxe de transfert",
+          "streakBonus": "Bonus de séquence quotidienne"
+        }
+      },
+      "accounts": {
+        "columns": {
+          "playerId": "Identifiant du joueur",
+          "playerName": "Nom du joueur",
+          "balance": "Équilibre",
+          "isFrozen": "Congelé",
+          "lastTransactionAt": "Dernière transaction"
+        },
+        "actions": {
+          "view": "Afficher les détails",
+          "adjust": "Ajuster l'équilibre",
+          "freeze": "Geler",
+          "unfreeze": "Dégeler",
+          "batchAdjust": "Subvention par lots",
+          "delete": "Supprimer"
+        },
+        "leaderboard": {
+          "title": "Classement",
+          "empty": "Aucune donnée de classement pour l'instant."
+        },
+        "detailDialog": {
+          "title": "Détails du compte",
+          "sections": {
+            "overview": "Aperçu",
+            "activity": "Activité",
+            "recentTransactions": "Transactions récentes"
+          },
+          "fields": {
+            "createdAt": "Créé à",
+            "updatedAt": "Mis à jour à",
+            "lastDailyClaimAt": "Dernière réclamation quotidienne",
+            "dailyStreak": "Série actuelle",
+            "longestStreak": "La plus longue séquence"
+          },
+          "hints": {
+            "recentTransactions": "Afficher uniquement les 5 derniers enregistrements"
+          },
+          "empty": {
+            "recentTransactions": "Aucune transaction récente pour ce compte pour l'instant.",
+            "reason": "Aucune raison fournie"
+          },
+          "messages": {
+            "loadFailed": "Échec du chargement des détails du compte.",
+            "freezeSuccess": "L'état de gel du compte a été mis à jour avec succès."
+          }
+        },
+        "adjustDialog": {
+          "title": "Ajuster le solde de {playerName}",
+          "fields": {
+            "amount": "Montant",
+            "reason": "Raison"
+          },
+          "messages": {
+            "saveSuccess": "Solde ajusté avec succès."
+          }
+        },
+        "batchAdjustDialog": {
+          "title": "Devise d'octroi par lots",
+          "fields": {
+            "scope": "Portée",
+            "amount": "Montant",
+            "reason": "Raison"
+          },
+          "scopeOptions": {
+            "allOnline": "Joueurs en ligne uniquement",
+            "allAccounts": "Tous les comptes"
+          },
+          "messages": {
+            "success": "Octroi par lots terminé : {succeeded} réussi",
+            "partialFail": ", {failed} a échoué"
+          }
+        },
+        "deleteConfirm": "Supprimer le compte de {playerName} ? \nCela ne peut pas être annulé. \nL’historique des transactions sera conservé."
+      },
+      "transactions": {
+        "columns": {
+          "playerId": "Identifiant du joueur",
+          "playerName": "Nom du joueur",
+          "type": "Taper",
+          "direction": "Direction",
+          "amount": "Montant",
+          "source": "Source",
+          "occurredAt": "Survenu à",
+          "referenceId": "Numéro de référence",
+          "operatorName": "Nom de l'opérateur",
+          "operatorId": "ID de l'opérateur",
+          "balanceBefore": "Solde avant",
+          "balanceAfter": "Solde après",
+          "reason": "Raison"
+        },
+        "placeholders": {
+          "occurredAtRange": "Sélectionnez une plage horaire"
+        },
+        "typeOptions": {
+          "adminGrant": "Subvention administrative",
+          "adminDeduct": "Déduction administrative",
+          "transferOut": "Transfert sortant",
+          "transferIn": "Transfert entrant",
+          "dailyReward": "Récompense quotidienne",
+          "tax": "Impôt"
+        },
+        "detailDialog": {
+          "title": "Détails de la transaction",
+          "sections": {
+            "primary": "Primaire",
+            "metadata": "Métadonnées"
+          }
+        },
+        "exportCsv": "Exporter au format CSV",
+        "messages": {
+          "exportSuccess": "CSV exporté avec succès",
+          "exportError": "Échec de l'exportation CSV"
+        }
+      },
+      "shop": {
+        "columns": {
+          "name": "Nom de l'article",
+          "description": "Description",
+          "itemName": "Objet de jeu",
+          "itemCount": "Qté",
+          "price": "Prix",
+          "isEnabled": "Activé",
+          "displayOrder": "Commande",
+          "stockLimit": "Limite de stock",
+          "soldCount": "Vendu"
+        },
+        "actions": {
+          "add": "Ajouter un article",
+          "edit": "Modifier",
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer cet article de la boutique ?"
+        },
+        "form": {
+          "addTitle": "Ajouter un article de boutique",
+          "editTitle": "Modifier l'article de la boutique",
+          "fields": {
+            "name": "Nom d'affichage",
+            "description": "Description",
+            "itemName": "ID de l'objet du jeu",
+            "itemCount": "Quantité par achat",
+            "price": "Prix",
+            "isEnabled": "Activé",
+            "displayOrder": "Ordre d'affichage",
+            "stockLimit": "Limite de stock (0 = illimité)"
+          }
+        },
+        "messages": {
+          "createSuccess": "Article de boutique créé.",
+          "updateSuccess": "Article de la boutique mis à jour.",
+          "deleteSuccess": "Article de la boutique supprimé."
+        }
+      },
+      "redeemCodes": {
+        "columns": {
+          "code": "Code",
+          "description": "Description",
+          "amount": "Montant de la récompense",
+          "maxUses": "Utilisations maximales",
+          "usedCount": "Utilisé",
+          "expiresAt": "Expire à",
+          "isEnabled": "Activé",
+          "createdAt": "Créé à"
+        },
+        "actions": {
+          "add": "Ajouter un code",
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer ce code d'échange et tous ses enregistrements d'échange ?",
+          "viewRedemptions": "Voir les rachats"
+        },
+        "form": {
+          "title": "Ajouter un code d'échange",
+          "fields": {
+            "code": "Code",
+            "description": "Description",
+            "amount": "Montant de la récompense",
+            "maxUses": "Utilisations maximales (0 = illimité)",
+            "expiresAt": "Expire à (facultatif)",
+            "commandRewards": "Récompenses de commandement"
+          },
+          "placeholders": {
+            "commandReward": "par ex. \ngiveself {EntityId} iron_sword 1 0 faux"
+          },
+          "actions": {
+            "addCommand": "Ajouter une commande",
+            "removeCommand": "Retirer"
+          },
+          "hints": {
+            "commandRewards": "Prend en charge les espaces réservés {EntityId}, {PlayerId} et {PlayerName}."
+          },
+          "messages": {
+            "noReward": "Fournissez un montant en devise, au moins une récompense de commande, ou les deux."
+          }
+        },
+        "redemptionsDialog": {
+          "title": "Rémunérations : {code}",
+          "columns": {
+            "playerName": "Nom du joueur",
+            "playerId": "Identifiant du joueur",
+            "redeemedAt": "Échangeé à"
+          },
+          "empty": "Aucun rachat pour l'instant."
+        },
+        "messages": {
+          "createSuccess": "Utiliser le code créé.",
+          "deleteSuccess": "Utiliser le code supprimé."
+        }
+      }
+    },
+    "teleport": {
+      "tools": {
+        "tabs": {
+          "toPosition": "Téléportation à la position",
+          "toPlayer": "Téléportation au joueur"
+        },
+        "fields": {
+          "sourcePlayer": "Joueur à téléporter",
+          "targetPlayer": "Joueur de destination",
+          "x": "Coordonnée X",
+          "y": "Coordonnée Y",
+          "z": "Coordonnée Z"
+        },
+        "placeholders": {
+          "selectPlayer": "Sélectionnez un joueur en ligne"
+        },
+        "actions": {
+          "teleport": "Téléportation"
+        },
+        "messages": {
+          "success": "Téléporté avec succès",
+          "confirmToPos": "Téléporter {name} vers ({x}, {y}, {z}) ?",
+          "confirmToPlayer": "Téléporter {source} vers l'emplacement de {target} ?",
+          "noPlayers": "Aucun joueur en ligne disponible"
+        },
+        "hints": {
+          "onlinePlayers": "Seuls les joueurs en ligne sont répertoriés"
+        }
+      },
+      "settings": {
+        "tabs": {
+          "home": "Téléportation à domicile",
+          "city": "Téléportation en ville",
+          "friend": "Téléportation d'un ami",
+          "globalCooldown": "Temps de recharge global",
+          "back": "Retour Téléportation"
+        },
+        "sections": {
+          "basic": "Paramètres de base",
+          "commands": "Commandes",
+          "tips": "Messages de conseils"
+        },
+        "fields": {
+          "isEnabled": "Activer la fonction de téléportation",
+          "home": {
+            "isEnabled": "Activer la téléportation à domicile",
+            "cooldownSeconds": "Temps de recharge (secondes)",
+            "setCurrencyRequired": "Définir le coût de la maison",
+            "teleCurrencyRequired": "Coût de la téléportation à domicile",
+            "maxHomes": "Nombre maximum de maisons par joueur",
+            "listCommandName": "Commande Liste des maisons",
+            "setCommandName": "Définir la commande Accueil",
+            "deleteCommandName": "Supprimer la commande Accueil",
+            "teleCommandName": "Téléportation au commandement principal",
+            "noHomeTip": "Aucun message de maison",
+            "setLimitTip": "Message de limite atteinte",
+            "setSuccessTip": "Définir un message de réussite",
+            "overwriteTip": "Message de confirmation d'écrasement",
+            "deleteSuccessTip": "Supprimer le message de réussite",
+            "homeNotFoundTip": "Message d'accueil introuvable",
+            "coolingTip": "Message de temps de recharge",
+            "teleSuccessTip": "Message de réussite de téléportation",
+            "setCurrencyNotEnoughTip": "Message de fonds insuffisants (ensemble)",
+            "teleCurrencyNotEnoughTip": "Message de fonds insuffisants (téléportation)",
+            "allowDuringBloodMoon": "Autoriser la téléportation pendant la Lune de Sang",
+            "bloodMoonBlockedTip": "Message bloqué par la Lune de Sang"
+          },
+          "city": {
+            "isEnabled": "Activer la téléportation en ville",
+            "cooldownSeconds": "Temps de recharge (secondes)",
+            "listCommandName": "Commande Liste des villes",
+            "teleCommandName": "Téléportation au commandement de la ville",
+            "noCitiesTip": "Pas de message sur les villes",
+            "cityNotFoundTip": "Message de ville introuvable",
+            "coolingTip": "Message de temps de recharge",
+            "teleSuccessTip": "Message de réussite de téléportation",
+            "currencyNotEnoughTip": "Message de fonds insuffisants"
+          },
+          "friend": {
+            "isEnabled": "Activer la téléportation d'un ami",
+            "cooldownSeconds": "Temps de recharge (secondes)",
+            "currencyRequired": "Coût de téléportation",
+            "requestExpirySeconds": "Expiration de la demande (secondes)",
+            "friendBypass": "Les amis ignorent le temps de recharge",
+            "requestCommandName": "Envoyer la commande de demande",
+            "acceptCommandName": "Accepter la commande de demande",
+            "rejectCommandName": "Commande Rejeter la demande",
+            "targetNotFoundTip": "Message de cible introuvable",
+            "requestSentTip": "Demande envoyée message",
+            "requestReceivedTip": "Demande reçue message",
+            "acceptedTip": "Message accepté",
+            "rejectedTip": "Message rejeté",
+            "targetRejectedTip": "Message cible rejeté",
+            "noRequestTip": "Aucun message de demande",
+            "coolingTip": "Message de temps de recharge",
+            "teleSuccessTip": "Message de réussite de téléportation",
+            "currencyNotEnoughTip": "Message de fonds insuffisants"
+          },
+          "globalCooldown": {
+            "isEnabled": "Activer le temps de recharge global",
+            "cooldownSeconds": "Temps de recharge global (secondes)"
+          },
+          "back": {
+            "isEnabled": "Activer la téléportation arrière",
+            "cooldownSeconds": "Temps de recharge (secondes)",
+            "currencyRequired": "Coût de téléportation",
+            "commandName": "Commande Retour",
+            "noPositionTip": "Aucun message de position précédente",
+            "coolingTip": "Message de temps de recharge",
+            "teleSuccessTip": "Message de réussite de téléportation",
+            "currencyNotEnoughTip": "Message de fonds insuffisants"
+          }
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "reset": "Réinitialiser aux valeurs par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres enregistrés avec succès.",
+          "resetSuccess": "Les paramètres ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      },
+      "cities": {
+        "form": {
+          "addTitle": "Ajouter une ville",
+          "editTitle": "Modifier la ville",
+          "fields": {
+            "name": "Nom de la ville",
+            "description": "Description",
+            "x": "X",
+            "y": "Oui",
+            "z": "Z",
+            "yawAngle": "Angle de lacet",
+            "currencyRequired": "Coût de téléportation",
+            "isEnabled": "Activé",
+            "sortOrder": "Ordre de tri"
+          }
+        },
+        "columns": {
+          "name": "Nom",
+          "description": "Description",
+          "x": "X",
+          "y": "Oui",
+          "z": "Z",
+          "yawAngle": "Angle de lacet",
+          "currencyRequired": "Coût",
+          "isEnabled": "Activé",
+          "sortOrder": "Commande"
+        },
+        "actions": {
+          "edit": "Modifier",
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer cette ville ?"
+        },
+        "messages": {
+          "createSuccess": "Ville créée.",
+          "updateSuccess": "Ville mise à jour.",
+          "deleteSuccess": "Ville supprimée."
+        }
+      },
+      "homes": {
+        "search": {
+          "playerIdLabel": "Identifiant du joueur",
+          "playerIdPlaceholder": "Entrez l'ID du joueur pour rechercher des maisons",
+          "button": "Recherche",
+          "emptyHint": "Entrez un identifiant de joueur ci-dessus pour voir leurs maisons."
+        },
+        "columns": {
+          "homeName": "Nom de la maison",
+          "playerName": "Nom du joueur",
+          "x": "X",
+          "y": "Oui",
+          "z": "Z",
+          "createdAt": "Créé à"
+        },
+        "actions": {
+          "delete": "Supprimer",
+          "deleteConfirm": "Supprimer la maison « {name} » ?"
+        },
+        "messages": {
+          "deleteSuccess": "Accueil supprimé."
+        }
+      },
+      "logs": {
+        "filters": {
+          "playerId": "Identifiant du joueur",
+          "timeRange": "Plage de temps"
+        },
+        "placeholders": {
+          "playerId": "Filtrer par identifiant de joueur",
+          "timeRange": "Sélectionnez une plage de dates"
+        },
+        "columns": {
+          "timestamp": "Horodatage",
+          "playerName": "Nom du joueur",
+          "subSystem": "Sous-système",
+          "fromX": "De X",
+          "fromY": "De Y",
+          "fromZ": "De Z",
+          "toX": "À X",
+          "toY": "Jouet",
+          "toZ": "À Z",
+          "costPaid": "Coût payé",
+          "remark": "Remarque"
+        }
+      }
+    },
+    "gameNotice": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer l'avis de jeu",
+          "welcomeNotices": "Avis de bienvenue",
+          "rotatingNotices": "Avis de rotation",
+          "rotatingIntervalSeconds": "Intervalle de rotation (secondes)",
+          "bloodMoonNotice1": "Avis de Lune de Sang – Étape 1",
+          "bloodMoonNotice2": "Avis de Lune de Sang – Étape 2",
+          "bloodMoonNotice3": "Avis de Lune de Sang – Étape 3"
+        },
+        "tooltips": {
+          "welcomeNotices": "Envoyé à un joueur lorsqu'il rejoint le serveur. \nPrend en charge {PlayerName}, {PlayerId}, {EntityId}. \nChaque entrée est envoyée sous forme de message distinct.",
+          "rotatingIntervalSeconds": "Intervalle en secondes entre chaque diffusion d'avis tournant.",
+          "bloodMoonNotices": "Diffusé à différentes étapes de la lune de sang. \nPrend en charge {BloodMoonDays}, {BloodMoonStartTime}, {BloodMoonEndTime}."
+        },
+        "placeholders": {
+          "welcomeNotice": "Saisissez le texte de l'avis de bienvenue…",
+          "rotatingNotice": "Saisissez le texte de l'avis…"
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "resetToDefaults": "Réinitialiser aux valeurs par défaut",
+          "addNotice": "Ajouter un avis",
+          "removeNotice": "Retirer"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres d'avis de jeu enregistrés.",
+          "resetConfirm": "Réinitialiser tous les paramètres des avis de jeu à leurs valeurs par défaut ? \nCela ne peut pas être annulé.",
+          "resetSuccess": "Les paramètres des avis de jeu ont été réinitialisés aux valeurs par défaut.",
+          "noRotatingNotices": "Aucun avis tournant configuré. \nCliquez sur « Ajouter un avis » pour en ajouter un.",
+          "noWelcomeNotices": "Aucun avis de bienvenue configuré. \nCliquez sur « Ajouter un avis » pour en ajouter un.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      }
+    },
+    "voteRestart": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer le redémarrage du vote",
+          "commandName": "Nom de la commande",
+          "commandAliases": "Alias ​​de commande",
+          "minOnlinePlayers": "Nombre minimum de joueurs en ligne",
+          "voteDurationSeconds": "Durée du vote (secondes)",
+          "passThresholdPercent": "Seuil de réussite (%)",
+          "initiatorCooldownSeconds": "Temps de recharge de l'initiateur (secondes)",
+          "globalCooldownSeconds": "Temps de recharge global (secondes)",
+          "warningLeadSeconds": "Délai d'avertissement (secondes)",
+          "voteStartedMessage": "Message de vote commencé",
+          "votePassedMessage": "Message de vote réussi",
+          "voteFailedMessage": "Message d'échec du vote",
+          "voteProgressMessage": "Message de progression du vote",
+          "alreadyVotedMessage": "Message déjà voté",
+          "initiatorCooldownMessage": "Message de temps de recharge de l'initiateur",
+          "globalCooldownMessage": "Message de temps de recharge global",
+          "notEnoughPlayersMessage": "Message Pas assez de joueurs",
+          "alreadyActiveMessage": "Message de vote déjà actif"
+        },
+        "tooltips": {
+          "commandAliases": "Liste de noms de commandes alternatives séparés par des virgules (par exemple vr, restart-vote).",
+          "minOnlinePlayers": "Nombre minimum de joueurs en ligne requis pour lancer un vote.",
+          "passThresholdPercent": "Pourcentage de votes oui requis pour que le vote soit réussi (1 à 100).",
+          "warningLeadSeconds": "Quelques secondes avant le redémarrage pour diffuser un avertissement de compte à rebours.",
+          "voteStartedMessage": "Prend en charge {Initiator}, {Duration}, {Command}.",
+          "voteProgressMessage": "Prend en charge {Yes}, {No}, {Total}, {Threshold}.",
+          "cooldownMessage": "Prend en charge {RemainingSeconds} pour le temps restant.",
+          "notEnoughPlayersMessage": "Prend en charge {MinPlayers}, {CurrentPlayers}."
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "reset": "Réinitialiser aux valeurs par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres de redémarrage du vote enregistrés.",
+          "resetSuccess": "Les paramètres de redémarrage du vote ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      }
+    },
+    "voteKick": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer le vote",
+          "commandName": "Nom de la commande",
+          "commandAliases": "Alias ​​de commande",
+          "minOnlinePlayers": "Nombre minimum de joueurs en ligne",
+          "voteDurationSeconds": "Durée du vote (secondes)",
+          "passThresholdPercent": "Seuil de réussite (%)",
+          "initiatorCooldownSeconds": "Temps de recharge de l'initiateur (secondes)",
+          "targetImmunitySeconds": "Immunité cible (secondes)",
+          "kickReason": "Raison du coup de pied",
+          "voteStartedMessage": "Message de vote commencé",
+          "votePassedMessage": "Message de vote réussi",
+          "voteFailedMessage": "Message d'échec du vote",
+          "voteProgressMessage": "Message de progression du vote",
+          "alreadyVotedMessage": "Message déjà voté",
+          "cooldownMessage": "Message de temps de recharge",
+          "cannotKickAdminMessage": "Impossible d'expulser le message de l'administrateur",
+          "targetNotFoundMessage": "Message de cible introuvable",
+          "targetAlreadyGoneMessage": "Message cible déjà disparu",
+          "alreadyActiveMessage": "Message de vote déjà actif",
+          "usageTipMessage": "Message de conseil d'utilisation",
+          "notEnoughPlayersMessage": "Message Pas assez de joueurs"
+        },
+        "tooltips": {
+          "commandAliases": "Liste de noms de commandes alternatives séparés par des virgules (par exemple vk, kick-vote).",
+          "minOnlinePlayers": "Nombre minimum de joueurs en ligne requis pour lancer un vote kick.",
+          "passThresholdPercent": "Pourcentage de votes oui requis pour que le vote soit réussi (1 à 100).",
+          "targetImmunitySeconds": "Secondes pendant lesquelles un joueur récemment expulsé est à l'abri d'être à nouveau ciblé.",
+          "kickReason": "Raison indiquée au joueur expulsé dans le message de déconnexion.",
+          "voteStartedMessage": "Prend en charge {Initiator}, {Target}, {Duration}, {Command}.",
+          "voteProgressMessage": "Prend en charge {Yes}, {No}, {Total}, {Threshold}.",
+          "cooldownMessage": "Prend en charge {RemainingSeconds} pour le temps restant.",
+          "usageTipMessage": "Affiché lorsque la commande est utilisée sans nom de cible.",
+          "notEnoughPlayersMessage": "Prend en charge {MinPlayers}, {CurrentPlayers}."
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "reset": "Réinitialiser aux valeurs par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres de kick de vote enregistrés.",
+          "resetSuccess": "Les paramètres d’envoi du vote ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      }
+    },
+    "onlineReward": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer la récompense en ligne",
+          "rewardIntervalMinutes": "Intervalle de récompense (minutes)",
+          "rewardAmount": "Montant de la récompense",
+          "rewardPartialPeriod": "Récompense Période Partielle",
+          "playerMessage": "Message du joueur",
+          "playerMessageHint": "Message privé facultatif envoyé au joueur après avoir reçu une récompense. \nPrend en charge {amount}, {currency}, {totalMinutes}."
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "reset": "Réinitialiser aux valeurs par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres de récompense en ligne enregistrés.",
+          "resetSuccess": "Les paramètres des récompenses en ligne ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      }
+    },
+    "achievement": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer le système de réussite"
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres",
+          "reset": "Réinitialiser aux valeurs par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres de réussite enregistrés.",
+          "resetSuccess": "Les paramètres de réussite ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      },
+      "definitions": {
+        "columns": {
+          "name": "Nom",
+          "triggerType": "Type de déclencheur",
+          "threshold": "Seuil",
+          "economyReward": "Récompense économique",
+          "isEnabled": "Activé",
+          "sortOrder": "Ordre de tri"
+        },
+        "triggerTypes": {
+          "level": "Niveau",
+          "zombieKills": "Les zombies tuent",
+          "playerKills": "Joueur tue",
+          "deaths": "Décès",
+          "gameStage": "Étape de jeu"
+        },
+        "form": {
+          "addTitle": "Ajouter une réussite",
+          "editTitle": "Modifier le succès",
+          "fields": {
+            "name": "Nom",
+            "description": "Description",
+            "isEnabled": "Activé",
+            "triggerType": "Type de déclencheur",
+            "threshold": "Seuil",
+            "economyReward": "Récompense économique",
+            "consoleCommands": "Commandes de la console",
+            "playerMessage": "Message du joueur",
+            "broadcastMessage": "Message diffusé",
+            "sortOrder": "Ordre de tri"
+          },
+          "tooltips": {
+            "economyReward": "Monnaie accordée au joueur lorsque le succès est obtenu. \nRéglez sur 0 pour sauter.",
+            "playerMessage": "Message privé envoyé au joueur qui remporte le succès. \nPrend en charge {achievementName}, {playerName}, {threshold}.",
+            "broadcastMessage": "Message diffusé à tous les joueurs en ligne lorsqu'un succès est obtenu. \nPrend en charge {achievementName}, {playerName}, {threshold}.",
+            "consoleCommands": "Commandes de console exécutées lorsque le succès est obtenu, une par ligne. \nPrend en charge {playerId}, {playerName}."
+          }
+        },
+        "actions": {
+          "deleteConfirm": "Supprimer cette définition de réussite et tous ses enregistrements de gains ?"
+        },
+        "messages": {
+          "createSuccess": "Définition de réalisation créée.",
+          "updateSuccess": "Définition des réalisations mise à jour.",
+          "deleteSuccess": "Définition de réussite supprimée."
+        }
+      },
+      "records": {
+        "columns": {
+          "achievementName": "Réalisation",
+          "playerName": "Nom du joueur",
+          "playerId": "Identifiant du joueur",
+          "economyRewarded": "L'économie récompensée",
+          "createdAt": "Gagné à"
+        },
+        "actions": {
+          "deleteConfirm": "Supprimer cet enregistrement de gains ? \nLe succès sera réattribué au joueur la prochaine fois que la condition sera remplie."
+        },
+        "messages": {
+          "deleteSuccess": "Gagnez un enregistrement supprimé."
+        }
+      }
+    },
+    "backup": {
+      "tabs": {
+        "config": "Configuration",
+        "files": "Fichiers"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer la fonctionnalité de sauvegarde",
+          "timeZoneId": "Fuseau horaire de Cron",
+          "historyRetentionDays": "Conservation de l'historique d'exécution (jours)"
+        },
+        "tooltips": {
+          "timeZoneId": "Identifiant de fuseau horaire IANA (par exemple Asia/Shanghai, UTC). \nLaissez vide pour utiliser le fuseau horaire local du serveur. \nS'applique à toutes les planifications cron de sauvegarde."
+        },
+        "actions": {
+          "save": "Sauvegarder",
+          "reset": "Réinitialiser"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres de sauvegarde enregistrés.",
+          "resetSuccess": "Paramètres de sauvegarde restaurés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      },
+      "tooltips": {
+        "cronExpression": "Expression cron standard à 5 champs évaluée dans le fuseau horaire configuré.",
+        "destinationRoot": "Dossier absolu ou relatif dans lequel les sorties de sauvegarde sont écrites.",
+        "retentionCount": "Sauvegardes maximales conservées. \nUtilisez 0 pour n’en garder aucun, -1 pour désactiver l’élagage.",
+        "broadcastMessage": "Prise en charge : {taskName}, {status}"
+      },
+      "fields": {
+        "broadcastOnStart": "Diffusion au démarrage",
+        "broadcastStartMessage": "Message de début de diffusion",
+        "broadcastOnComplete": "Diffusion sur Complete",
+        "broadcastCompleteMessage": "Diffusion du message terminé"
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "Activer la sauvegarde mondiale",
+          "cronExpression": "Expression Cron",
+          "destinationRoot": "Racine de destination",
+          "compressToZip": "Compresser pour compresser",
+          "retentionCount": "Nombre de rétention",
+          "saveWorldBeforeBackup": "Sauver le monde avant la sauvegarde"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "Exécutez une commande de console « saveworld » et attendez la fin avant de prendre un instantané."
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "Activer la sauvegarde de la base de données",
+          "cronExpression": "Expression Cron",
+          "destinationRoot": "Racine de destination",
+          "compressToZip": "Compresser pour compresser",
+          "retentionCount": "Nombre de rétention"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "Activer la sauvegarde de la configuration du serveur",
+          "cronExpression": "Expression Cron",
+          "destinationRoot": "Racine de destination",
+          "compressToZip": "Compresser pour compresser",
+          "retentionCount": "Nombre de rétention"
+        }
+      },
+      "actions": {
+        "runNow": "Courez maintenant",
+        "runNowConfirm": "Déclencher cette sauvegarde immédiatement ?",
+        "runNowReason": "Raison (facultatif)",
+        "runNowSuccess": "La sauvegarde s'est terminée avec succès.",
+        "runNowFailed": "La sauvegarde a échoué.",
+        "download": "Télécharger",
+        "delete": "Supprimer"
+      },
+      "files": {
+        "columns": {
+          "fileName": "Nom de fichier",
+          "size": "Taille",
+          "createdAt": "Créé à"
+        },
+        "messages": {
+          "confirmDelete": "Supprimer le fichier de sauvegarde « {name} » ? \nCela ne peut pas être annulé.",
+          "deleteSuccess": "Fichier de sauvegarde supprimé.",
+          "deleteError": "Échec de la suppression du fichier de sauvegarde. \nVeuillez réessayer.",
+          "downloadError": "Échec du téléchargement du fichier de sauvegarde. \nVeuillez réessayer.",
+          "directoryDownloadUnsupported": "Les téléchargements de dossiers ne sont pas pris en charge. \nActivez la compression zip pour télécharger en tant qu'archive unique."
+        }
+      },
+      "taskTypes": {
+        "world": "Sauvegarde mondiale",
+        "database": "Sauvegarde de base de données",
+        "serverConfig": "Sauvegarde de la configuration du serveur"
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "Paramètres",
+        "tasks": "Tâches",
+        "history": "Historique d'exécution"
+      },
+      "triggerSources": {
+        "cron": "Cron",
+        "manual": "Manuel",
+        "system": "Système"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer le planificateur",
+          "defaultTimeZoneId": "Fuseau horaire par défaut",
+          "defaultAllowConcurrentExecution": "Autoriser l'exécution simultanée par défaut",
+          "historyRetentionDays": "Jours de conservation de l'historique",
+          "failureNotifyEnabled": "Notification d'échec",
+          "failureNotifyMessage": "Message de notification d'échec"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "Utilisez un identifiant de fuseau horaire de plateforme tel que UTC, Asia/Shanghai ou Pacific Standard Time.",
+          "failureNotifyEnabled": "Lorsqu'il est activé, un message sera diffusé à tous les joueurs lorsqu'une commande planifiée échoue.",
+          "failureNotifyMessage": "Prise en charge : {taskName}, {error}"
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres du planificateur",
+          "reset": "Réinitialiser les paramètres par défaut"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres du planificateur enregistrés avec succès.",
+          "resetSuccess": "Les paramètres du planificateur ont été réinitialisés aux valeurs par défaut.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      },
+      "tasks": {
+        "columns": {
+          "name": "Nom",
+          "isEnabled": "Activé",
+          "cronExpression": "Expression Cron",
+          "timeZoneId": "Fuseau horaire",
+          "allowConcurrentExecution": "Concurrent",
+          "lastRunAt": "Dernière exécution",
+          "nextRunAt": "Prochaine exécution",
+          "lastStatus": "Dernier statut",
+          "updatedAt": "Mis à jour à"
+        },
+        "filters": {
+          "isEnabled": "Activé"
+        },
+        "placeholders": {
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
+        },
+        "actions": {
+          "add": "Ajouter une tâche",
+          "edit": "Modifier la tâche",
+          "run": "Courez maintenant",
+          "delete": "Supprimer"
+        },
+        "status": {
+          "success": "Succès",
+          "failed": "Échoué",
+          "skipped": "Sauté",
+          "running": "En cours d'exécution"
+        },
+        "hints": {
+          "defaultSettings": "Fuseau horaire par défaut : {timeZone}."
+        },
+        "messages": {
+          "runConfirm": "Exécuter la tâche {name} immédiatement ?",
+          "deleteSuccess": "Tâche du planificateur supprimée avec succès."
+        },
+        "dialog": {
+          "createTitle": "Créer une tâche de planificateur",
+          "editTitle": "Modifier la tâche du planificateur",
+          "fields": {
+            "name": "Nom",
+            "isEnabled": "Activé",
+            "cronExpression": "Expression Cron",
+            "timeZoneId": "Fuseau horaire",
+            "allowConcurrentExecution": "Exécution simultanée",
+            "executeOnMainThread": "Exécuter sur le thread principal",
+            "requireGameStartDone": "Exiger que le jeu soit démarré",
+            "captureOutput": "Capturer la sortie",
+            "commands": "Commandes de la console",
+            "description": "Description"
+          },
+          "tooltips": {
+            "cronExpression": "Utilisez une expression cron avec une seconde précision pour que le backend puisse planifier la tâche avec précision.",
+            "timeZoneId": "Laissez-le sur UTC, sauf si le calendrier doit suivre un serveur spécifique ou un fuseau horaire régional."
+          },
+          "placeholders": {
+            "command": "Entrez une commande de console, par ex. \ndis bonjour"
+          },
+          "actions": {
+            "addCommand": "Ajouter une commande",
+            "removeCommand": "Supprimer la commande"
+          },
+          "messages": {
+            "noCommands": "Veuillez ajouter au moins une commande de console.",
+            "saveSuccess": "Tâche du planificateur enregistrée avec succès."
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "Nom de la tâche",
+          "taskType": "Type de tâche",
+          "triggerSource": "Déclenchement",
+          "startedAt": "Commencé à",
+          "endedAt": "Terminé à",
+          "succeeded": "Réussi",
+          "durationMs": "Durée",
+          "summary": "Résumé",
+          "errorMessage": "Erreur",
+          "operatorName": "Opérateur",
+          "sourceIp": "Adresse IP source"
+        },
+        "filters": {
+          "taskType": "Type de tâche",
+          "triggerSource": "Source de déclenchement",
+          "succeeded": "Résultat",
+          "timeRange": "Plage de temps"
+        },
+        "placeholders": {
+          "timeRange": "Sélectionnez une plage horaire"
+        },
+        "actions": {
+          "viewDetails": "Afficher les détails"
+        },
+        "detailDialog": {
+          "title": "Détails de l'exécution",
+          "titleWithName": "Détails de l'exécution - {name}",
+          "details": "Détails"
+        }
+      }
+    },
+    "restart": {
+      "tabs": {
+        "settings": "Paramètres",
+        "run": "Exécution manuelle"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Activer le redémarrage programmé",
+          "cronExpression": "Expression Cron",
+          "timeZoneId": "Fuseau horaire",
+          "warningLeadSeconds": "Délai d'avertissement (secondes)",
+          "warningMessage": "Message d'avertissement",
+          "saveWorldBeforeRestart": "Sauver le monde avant de redémarrer",
+          "restartMode": "Mode de redémarrage",
+          "restartCommand": "Commande de redémarrage personnalisée",
+          "deferScheduledRestartDuringBloodMoonWindow": "Différer le redémarrage programmé pendant la fenêtre de la Lune de Sang",
+          "bloodMoonPreDuskProtectionHours": "Heures de protection avant le crépuscule de la Lune de Sang",
+          "bloodMoonDeferMinutes": "Minutes de report par tentative",
+          "historyRetentionDays": "Jours de conservation de l'historique"
+        },
+        "tooltips": {
+          "timeZoneId": "Utilisez un identifiant de fuseau horaire de plateforme tel que UTC ou Asia/Shanghai.",
+          "warningMessage": "Prend en charge l'espace réservé {minutes}, remplacé par le temps d'attente restant en minutes.",
+          "restartCommand": "Commande de console facultative pour lancer le redémarrage. \nRemplace le pipeline de redémarrage intégré lorsqu'il est défini.",
+          "restartMode": "Graceful : vider les opérations en attente avant de s'arrêter. \nForce : arrêt immédiat.",
+          "deferScheduledRestartDuringBloodMoonWindow": "Lorsqu'ils sont activés, les redémarrages déclenchés par cron sont reportés pendant que la lune de sang est active ou pendant la fenêtre de protection avant le crépuscule le jour de la lune de sang.",
+          "bloodMoonPreDuskProtectionHours": "Les heures de jeu avant le crépuscule le jour de la lune de sang sont traitées comme une fenêtre protégée. \nRéglez sur 0 pour désactiver la protection avant le crépuscule.",
+          "bloodMoonDeferMinutes": "Minutes réelles pour reporter chaque tentative de redémarrage différé de cron."
+        },
+        "restartModes": {
+          "graceful": "Gracieux",
+          "force": "Forcer"
+        },
+        "warningStages": {
+          "sectionTitle": "Calendrier d'avertissement en plusieurs étapes",
+          "description": "Définissez plusieurs avertissements de compte à rebours à différents délais. \nUne fois configurées, ces étapes remplacent le seul avertissement ci-dessus. \nLes étapes sont automatiquement triées par délai.",
+          "empty": "Aucune étape d'avertissement définie. \nEn utilisant le seul avertissement ci-dessus.",
+          "add": "Ajouter une étape",
+          "leadSeconds": "Délai(s)",
+          "message": "Message",
+          "messagePlaceholder": "Le serveur redémarrera dans {minutes} minutes."
+        },
+        "actions": {
+          "save": "Enregistrer les paramètres de redémarrage",
+          "cancelPending": "Annuler le redémarrage en attente"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres de redémarrage enregistrés.",
+          "cancelSuccess": "Le redémarrage en attente a été annulé.",
+          "cancelNoActive": "Aucun redémarrage actif à annuler.",
+          "unsavedChanges": "Vous avez des modifications non enregistrées. \nÊtes-vous sûr de vouloir partir ?"
+        }
+      },
+      "run": {
+        "description": "Déclenchez un redémarrage immédiat du serveur. \nLes champs de remplacement sont facultatifs et reviennent aux valeurs par défaut configurées s’ils sont laissés vides.",
+        "fields": {
+          "reason": "Raison",
+          "warningLeadSecondsOverride": "Annulation du délai d'avertissement (secondes)",
+          "restartModeOverride": "Annulation du mode de redémarrage"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "Laissez vide pour utiliser la valeur par défaut configurée.",
+          "restartModeOverride": "Laissez vide pour utiliser la valeur par défaut configurée."
+        },
+        "restartModeOptions": {
+          "graceful": "Gracieux",
+          "force": "Forcer"
+        },
+        "actions": {
+          "run": "Courez maintenant"
+        },
+        "messages": {
+          "runConfirm": "Déclencher un redémarrage immédiat du serveur ? \nLes joueurs connectés peuvent être déconnectés.",
+          "runSuccess": "Le redémarrage du serveur a été demandé.",
+          "runFailed": "La demande de redémarrage a échoué."
+        },
+        "result": {
+          "title": "Résultat de la dernière exécution",
+          "succeeded": "Réussi",
+          "failed": "Échoué",
+          "summary": "Résumé",
+          "durationMs": "Durée",
+          "errorMessage": "Message d'erreur",
+          "startedAt": "Commencé à",
+          "endedAt": "Terminé à"
+        }
+      }
+    },
+    "modManagement": {
+      "columns": {
+        "displayName": "Mod",
+        "author": "Auteur",
+        "version": "Version",
+        "website": "Site web",
+        "loaded": "Chargé",
+        "uninstalled": "Désinstallé",
+        "actions": "Actes"
+      },
+      "status": {
+        "loaded": "Chargé",
+        "unloaded": "Déchargé",
+        "installed": "Installé",
+        "uninstalled": "Désinstallé"
+      },
+      "actions": {
+        "install": "Installer",
+        "uninstall": "Désinstaller"
+      },
+      "toast": {
+        "title": "Gestion des modules",
+        "toggleSuccess": "Statut du module actualisé."
+      }
+    },
+    "console": {
+      "invalidCommand": {
+        "title": "Commande invalide",
+        "text": "Veuillez entrer une commande valide."
+      },
+      "send": "Envoyer"
+    },
+    "banWhitelist": {
+      "ban": "Interdire",
+      "whitelist": "Liste blanche",
+      "mute": "Muet",
+      "playerId": "Identifiant du joueur",
+      "displayName": "Nom d'affichage",
+      "playerName": "Nom du joueur",
+      "bannedUntil": "Interdit jusqu'à",
+      "mutedUntil": "Muet jusqu'à",
+      "permanent": "Permanent",
+      "reason": "Raison",
+      "muteReason": "Raison muette",
+      "addBan": "Ajouter une interdiction",
+      "editBan": "Modifier l'interdiction",
+      "addWhitelist": "Ajouter une liste blanche",
+      "editWhitelist": "Modifier la liste blanche",
+      "addMute": "Ajouter muet",
+      "editMute": "Modifier le mode muet",
+      "createdAt": "Créé à",
+      "tooltips": {
+        "playerId": "Identifiant unique du joueur, généralement un SteamID64.",
+        "displayName": "Le nom affiché dans la liste afin que les opérateurs puissent identifier rapidement la cible.",
+        "bannedUntil": "Laissez ce champ vide pour une interdiction permanente ; \nsinon, réglez l’heure d’expiration.",
+        "reason": "Enregistrez pourquoi le lecteur a été banni ou supprimé pour un audit et un dépannage ultérieurs.",
+        "mutedUntil": "Laissez vide pour une sourdine permanente ; \nfixer une date pour une mise en sourdine temporaire."
+      }
+    },
+    "permission": {
+      "adminUser": "Utilisateur administrateur",
+      "addAdminUser": "Ajouter un utilisateur administrateur",
+      "editAdminUser": "Modifier l'utilisateur administrateur",
+      "addCommandPermission": "Ajouter une autorisation de commande",
+      "editCommandPermission": "Modifier l'autorisation de commande",
+      "commandPermission": "Autorisation de commande",
+      "command": "Commande",
+      "description": "Description",
+      "permissionLevel": "Niveau d'autorisation",
+      "tooltips": {
+        "playerId": "Identifiant unique du joueur auquel accorder des autorisations, généralement un SteamID64.",
+        "displayName": "Nom d'affichage utilisé pour reconnaître ce compte dans le panneau d'administration.",
+        "permissionLevel": "Niveau d'autorisation du serveur. \nDes valeurs plus élevées signifient généralement plus de privilèges.",
+        "command": "Nom de la commande de console auquel cette règle s'applique.",
+        "description": "Note facultative décrivant le but ou la contrainte de cette règle de commande."
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "Temps",
+        "eventType": "Type d'événement",
+        "playerName": "Joueur",
+        "targetPlayerName": "Joueur cible",
+        "entityType": "Type d'entité"
+      },
+      "eventTypes": {
+        "PlayerJoined": "Joueur rejoint",
+        "PlayerLeft": "Joueur gauche",
+        "PlayerDied": "Joueur décédé",
+        "PlayerKilledZombie": "Zombi tué",
+        "PlayerKilledPlayer": "Tuer un joueur"
+      },
+      "filters": {
+        "eventType": "Type d'événement",
+        "timeRange": "Plage de temps"
+      },
+      "placeholders": {
+        "allEventTypes": "Tous les événements",
+        "timeRange": "Sélectionnez une plage horaire"
+      }
+    },
+    "gameItems": {
+      "searchPlaceholder": "Rechercher par nom...",
+      "all": "Tous",
+      "items": "Articles",
+      "blocks": "Blocs",
+      "itemTag": "Article",
+      "blockTag": "Bloc",
+      "totalCount": "{0} entrées",
+      "stackValue": "×{0}",
+      "showUserHidden": "Afficher masqué",
+      "copyName": "Copier le nom",
+      "copyLocalizedName": "Copier le nom localisé"
+    }
+  }
+}

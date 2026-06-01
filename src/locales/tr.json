@@ -1,0 +1,2390 @@
+{
+  "common": {
+    "projectName": "7 Days to Die Sunucu Yöneticisi",
+    "unknown": "Bilinmiyor",
+    "yes": "Evet",
+    "no": "Hayır",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "day": "Gün | Gün | Günler",
+    "hour": "Saat | Saat | Saatler",
+    "minute": "Dakika | Dakika | Dakikalar",
+    "second": "Saniye | Saniye | Saniyeler",
+    "lessThan": "Daha az",
+    "moreThan": "Bundan fazla",
+    "equal": "Eşit",
+    "confirm": "Onayla",
+    "cancel": "İptal",
+    "update": "Güncelle",
+    "save": "Kaydet",
+    "batchDelete": "Toplu Silme",
+    "backToHome": "Ana sayfaya dön",
+    "delete": "Sil",
+    "deleteSuccess": "Başarıyla silindi.",
+    "confirmDelete": "Silmek istediğinizden emin misiniz?",
+    "apply": "Uygula",
+    "reset": "Sıfırla",
+    "close": "Kapat",
+    "edit": "Düzenle",
+    "player": "Oyuncu",
+    "serverLocalTime": "Sunucu Yerel Saati"
+  },
+  "menus": {
+    "login": "Giriş yap",
+    "dashboard": "Kontrol Paneli",
+    "playerList": "Oyuncu Listesi",
+    "gpsMap": "GPS Haritası",
+    "gameChat": "Oyun Sohbeti",
+    "liveChat": "Canlı Sohbet",
+    "chatHistory": "Sohbet Geçmişi",
+    "chatSettings": "Sohbet Ayarları",
+    "coloredChat": "Renkli Sohbet",
+    "auditLogs": "Denetim Günlükleri",
+    "serverConfig": "Sunucu Yapılandırması",
+    "appSettings": "Uygulama Ayarları",
+    "banWhitelist": "Ban / beyaz liste",
+    "permission": "İzinler",
+    "modManagement": "Mod Yönetimi",
+    "economy": "Ekonomi",
+    "restart": "Sunucu Yeniden Başlatma",
+    "scheduler": "Görev Zamanlayıcı",
+    "backup": "Yedekleme",
+    "backupSettings": "Yedekleme Ayarları",
+    "worldBackup": "Dünya Yedekleme",
+    "databaseBackup": "Veritabanı Yedekleme",
+    "serverConfigBackup": "Sunucu Yapılandırması Yedekleme",
+    "console": "Konsol",
+    "apiDocumentation": "API Dokümantasyonu",
+    "schedulerTasks": "Görevler",
+    "schedulerHistory": "Geçmiş",
+    "schedulerSettings": "Ayarlar",
+    "groups": {
+      "monitoring": "İzleme",
+      "gameFeatures": "Oyun Özellikleri",
+      "serverManagement": "Sunucu Yönetimi",
+      "operations": "Operasyonlar",
+      "system": "Sistem"
+    },
+    "restartSettings": "Ayarlar",
+    "restartRun": "Manuel Yeniden Başlatma",
+    "economyOverview": "Genel Bakış",
+    "economyAccounts": "Hesaplar",
+    "economyTransactions": "İşlemler",
+    "economySettings": "Ayarlar",
+    "economyShop": "Mağaza",
+    "economyRedeemCodes": "Kodları Kullan",
+    "backupTasks": "Yedekleme Görevleri",
+    "backupHistory": "Geçmiş",
+    "restartHistory": "Geçmiş",
+    "teleport": "Işınlanma",
+    "teleportTools": "Aletler",
+    "teleportSettings": "Ayarlar",
+    "teleportCities": "Şehirler",
+    "teleportHomes": "Oyuncu Evleri",
+    "teleportLogs": "Işınlanma Günlükleri",
+    "gameNotice": "Oyun Bildirimi",
+    "voteRestart": "Oylamayla yeniden başlat",
+    "voteRestartSettings": "Ayarlar",
+    "voteKick": "Oylamayla çıkarma",
+    "voteKickSettings": "Ayarlar",
+    "achievement": "Başarı",
+    "achievementDefinitions": "Tanımlar",
+    "achievementRecords": "Kayıtlar",
+    "achievementSettings": "Ayarlar",
+    "onlineReward": "Çevrimiçi Ödül",
+    "onlineRewardSettings": "Ayarlar",
+    "gameEventLogs": "Oyun Olay Günlükleri",
+    "gameItems": "Öğeler / bloklar"
+  },
+  "components": {
+    "myTable": {
+      "total": "Toplam {0}",
+      "keywordSearch": "Anahtar Kelime Arama",
+      "view": "Görüntüle",
+      "batch": "Toplu",
+      "refresh": "Yenile",
+      "noData": "Veri Yok",
+      "exportCSV": "CSV'yi dışa aktar",
+      "add": "Ekle",
+      "search": "Aramak",
+      "reset": "Sıfırla",
+      "autoRefresh": "Otomatik Yenileme",
+      "refreshInterval": "Yenileme Aralığı",
+      "secondsUnit": "saniye",
+      "pleaseInput": "Lütfen girin",
+      "operation": "İşlem",
+      "batchActions": "Toplu İşlemler",
+      "moreActions": "Daha fazla işlem",
+      "filters": "Filtreler",
+      "collapse": "Daralt",
+      "expand": "Genişlet",
+      "edit": "Düzenle"
+    },
+    "myForm": {
+      "pleaseInput": "Lütfen Giriş Yapın",
+      "pleaseSelect": "Lütfen Seçiniz"
+    },
+    "colorPicker": {
+      "placeholder": "6 haneli bir renk değeri girin",
+      "clear": "Temizle",
+      "presets": "Önceden ayarlanmış renkler",
+      "hint": "Değerler 6 haneli onaltılık renkler olarak kaydedilir."
+    },
+    "playerInventoryDialog": {
+      "header": "Oyuncu Envanteri",
+      "grid": "Izgara",
+      "list": "Liste",
+      "bag": "Çanta",
+      "belt": "Kemer",
+      "equipment": "Ekipman",
+      "itemName": "Öğe Adı",
+      "icon": "Simge",
+      "iconName": "Simge Adı",
+      "iconColor": "Simge Rengi",
+      "localizationName": "Yerelleştirme Adı",
+      "count": "Adet",
+      "maxStackAllowed": "İzin Verilen Maksimum Yığın",
+      "quality": "Kalite",
+      "qualityColor": "Kalite rengi",
+      "useTimes": "Kullanım sayısı",
+      "maxUseTimes": "Maksimum kullanım sayısı",
+      "mod": "Mod",
+      "block": "Engelle"
+    },
+    "playerSkillsDialog": {
+      "header": "Oyuncu Becerileri",
+      "collapse": "Tümünü Daralt",
+      "expand": "Tümünü Genişlet",
+      "name": "İsim",
+      "icon": "Simge",
+      "localizationName": "Yerelleştirme Adı",
+      "level": "Seviye",
+      "maxLevel": "Maksimum Seviye",
+      "costForNextLevel": "Sonraki Seviyenin Maliyeti",
+      "type": "Tür",
+      "localizationDesc": "Tanım"
+    },
+    "playerDetailsDialog": {
+      "header": "Oyuncu Detayları",
+      "playerName": "Oyuncu Adı",
+      "entityId": "Varlık Kimliği",
+      "playerId": "Oyuncu Kimliği",
+      "platformId": "Platform Kimliği",
+      "playGroup": "Oyun Grubu",
+      "admin": "Yönetici",
+      "online": "Çevrimiçi",
+      "ip": "IP Adresi",
+      "ping": "Ping",
+      "position": "Konum",
+      "lastSpawnPosition": "Son Doğma Konumu",
+      "gameStage": "Oyun Aşaması",
+      "lastLogin": "Son Giriş",
+      "playerKills": "Oyuncu Öldürmeleri",
+      "zombieKills": "Zombi öldürmeleri",
+      "deaths": "Ölümler",
+      "score": "Puan",
+      "health": "Sağlık",
+      "stamina": "Dayanıklılık",
+      "food": "Yiyecek",
+      "water": "Su",
+      "level": "Seviye",
+      "expToNextLevel": "Sonraki seviyeye deneyim",
+      "skillPoints": "Beceri Puanları",
+      "isLandProtectionActive": "Arazi koruması aktif mi?",
+      "distanceWalked": "Yürünen Mesafe",
+      "totalItemsCrafted": "Üretilen Toplam Öğe",
+      "totalTimePlayed": "Oynanan Toplam Süre",
+      "currentLife": "Mevcut hayat",
+      "longestLife": "En uzun hayat",
+      "alreadyCraftedList": "Zaten üretilmiş öğeler",
+      "unlockedRecipeList": "Açılmış tarifler",
+      "rentedVMPosition": "Kiralama konumu",
+      "rentalEndDayTime": "Kiralama bitiş zamanı",
+      "bedroll": "Uyku tulumu",
+      "active": "Aktif",
+      "inactive": "Etkin değil"
+    }
+  },
+  "errors": {
+    "http": {
+      "badRequest": "Geçersiz istek. \nLütfen girişinizi doğrulayın.",
+      "unauthorized": "Yetkisiz erişim. \nLütfen tekrar giriş yapın.",
+      "forbidden": "Erişim engellendi. \nİzniniz yok.",
+      "notFound": "Bulunamadı. \nKaynak mevcut değil.",
+      "serverError": "Sunucu Hatası. \nBizim açımızdan bir şeyler ters gitti.",
+      "timeout": "İstek zaman aşımına uğradı. \nLütfen bağlantınızı kontrol edin."
+    }
+  },
+  "layout": {
+    "header": {
+      "expandMenu": "Menüyü Genişlet",
+      "collapseMenu": "Menüyü Daralt",
+      "switchLang": "Dili Değiştir",
+      "fullscreen": "Tam ekran",
+      "exitFullscreen": "Tam Ekrandan Çık",
+      "themeConfiguration": "Tema Yapılandırması",
+      "github": "GitHub",
+      "community": "Toplum",
+      "userMenu": "Kullanıcı Menüsü",
+      "logout": "Oturumu kapat",
+      "appearance": "Dış görünüş",
+      "layout": "Düzen",
+      "general": "Genel",
+      "preset": "Ön ayar",
+      "themeScheme": "Tema Şeması",
+      "grayscale": "Gri tonlamalı",
+      "colorWeakness": "Renk Zayıflığı",
+      "themeColor": "Tema Rengi",
+      "primaryColor": "Ana Renk",
+      "infoColor": "Bilgi Rengi",
+      "successColor": "Başarı Rengi",
+      "warningColor": "Uyarı Rengi",
+      "dangerColor": "Tehlike Rengi",
+      "surfaceColor": "Yüzey Rengi",
+      "layoutMode": "Düzen Modu",
+      "verticalMode": "Dikey Mod",
+      "horizontalMode": "Yatay Mod",
+      "headerSettings": "Başlık Ayarları",
+      "headerHeight": "Başlık Yüksekliği",
+      "showLogo": "Logoyu Göster",
+      "showTitle": "Başlığı Göster",
+      "showMenuCollapseBtn": "Menüyü Daralt Düğmesini Göster",
+      "showBreadcrumb": "İçerik Haritasını Göster",
+      "showBreadcrumbIcon": "İçerik Kırıntısı Simgesini Göster",
+      "topMenuAlignment": "Üst Menü Hizalaması",
+      "left": "Sol",
+      "center": "Merkez",
+      "right": "Sağ",
+      "showFullscreenBtn": "Tam Ekran Düğmesini Göster",
+      "showLanguageSwitchBtn": "Dil Değiştirme Düğmesini Göster",
+      "showThemeConfigBtn": "Tema Yapılandırma Düğmesini Göster",
+      "sidebarSettings": "Kenar Çubuğu Ayarları",
+      "sidebarWidth": "Kenar Çubuğu Genişliği",
+      "sidebarCollapsedWidth": "Kenar Çubuğu Daraltılmış Genişlik",
+      "tabSettings": "Sekme Ayarları",
+      "showTab": "Sekmeyi Göster",
+      "tabHeight": "Sekme Yüksekliği",
+      "showTabIcon": "Sekme Simgesini Göster",
+      "tabStyle": "Sekme Stili",
+      "googleStyle": "Google Stili",
+      "buttonStyle": "Düğme Stili",
+      "smoothStyle": "Pürüzsüz Stil",
+      "footerSettings": "Alt Bilgi Ayarları",
+      "showFooter": "Alt Bilgiyi Göster",
+      "footerHeight": "Alt Bilgi Yüksekliği",
+      "presets": {
+        "blue": {
+          "name": "Klasik Mavi",
+          "description": "Profesyonel standart. \nKurumsal uygulamalar için güvenilir ve dengeli bir renk şeması."
+        },
+        "violet": {
+          "name": "Modern Menekşe",
+          "description": "Arayüzünüze canlı ve sofistike bir his katan zarif, ileri teknolojiye sahip bir palet."
+        },
+        "teal": {
+          "name": "Taze Deniz Mavisi",
+          "description": "Netliği ve canlandırıcı bir kullanıcı deneyimini destekleyen sakin, doğadan ilham alan bir estetik."
+        },
+        "pink": {
+          "name": "Canlı Pembe",
+          "description": "Sıcak ve enerjik. \nYaratıcılığa ve etkileşime ilham vermek için tasarlanmış tutkulu bir renk paleti."
+        },
+        "tan": {
+          "name": "Retro Bronzluk",
+          "description": "Zanaatkarlık veya üst düzey markalama için mükemmel, birinci sınıf vintage hissi veren dünyevi, organik bir palet."
+        },
+        "zinc": {
+          "name": "Minimal Çinko",
+          "description": "Endüstriyel hassasiyete ve profesyonel minimalizme odaklanan rafine gri tonlamalı estetik."
+        }
+      },
+      "showTransitionAnimation": "Geçiş Animasyonunu Göster",
+      "tableSize": "Masa Boyutu",
+      "small": "Küçük",
+      "default": "Varsayılan",
+      "large": "Büyük",
+      "scrollMode": "Kaydırma Modu",
+      "outerScroll": "Dış Kaydırma",
+      "innerScroll": "İç Kaydırma",
+      "contextMenuStyle": "Menü Stili'ne sağ tıklayın",
+      "defaultStyle": "Varsayılan Stil",
+      "flatStyle": "Düz Stil",
+      "win10Style": "Windows 10 Stili",
+      "macStyle": "Mac Stili",
+      "popBoxStyle": "Açılır Kutu Stili",
+      "elementPlusStyle": "Eleman Artı Stili",
+      "sweetAlert2Style": "SweetAlert2 Stili",
+      "bootstrap5Style": "Bootstrap 5 Stili",
+      "bootstrap4Style": "Bootstrap 4 Stili",
+      "materialUIStyle": "Malzeme Kullanıcı Arayüzü Stili",
+      "bulmaStyle": "Bulma Stili"
+    },
+    "tabs": {
+      "close": "Kapalı",
+      "closeOthers": "Diğerlerini Kapat",
+      "closeLeft": "Solu Kapat",
+      "closeRight": "Sağa Kapat",
+      "closeAll": "Tümünü Kapat"
+    }
+  },
+  "ui": {
+    "dialog": {
+      "warningTitle": "Uyarı",
+      "confirmButtonText": "TAMAM",
+      "cancelButtonText": "İptal etmek",
+      "warningText": "Devam etmek istediğinizden emin misiniz?"
+    }
+  },
+  "views": {
+    "login": {
+      "failedTitle": "Giriş başarısız oldu!",
+      "password": "Şifre",
+      "username": "Kullanıcı adı",
+      "submit": "Oturum aç",
+      "forgotPassword": "Parolanızı mı unuttunuz?",
+      "forgotPasswordHelpTitle": "Şifre Yapılandırması",
+      "forgotPasswordHelpUnavailable": "Bu panel self servis parola sıfırlamayı desteklemez.",
+      "forgotPasswordHelpPathLabel": "7 Days to Die sunucu kökünüzün altındaki aşağıdaki dosyada yer alan kimlik bilgilerini güncelleyin:",
+      "forgotPasswordHelpFieldsLabel": "{usernameField} ve {passwordField} alanlarını güncelledikten sonra yapılandırmayı kaydedin.",
+      "forgotPasswordHelpRestartHint": "Sunucu yapılandırmayı otomatik olarak yeniden yüklemezse sunucuyu yeniden başlatın veya modu yeniden yükleyin.",
+      "rememberMe": "Beni Hatırla",
+      "successTitle": "Tekrar hoşgeldiniz!",
+      "failedMessage": "Kullanıcı adı veya şifre hatalı, lütfen tekrar deneyin",
+      "successMessage": "Başarıyla oturum açtınız."
+    },
+    "dashboard": {
+      "headers": {
+        "overview": "Genel Bakış",
+        "status": "Durum",
+        "monitor": "Monitör",
+        "quickActions": "Hızlı Eylemler",
+        "recentActivity": "Son Etkinlik",
+        "systemPlatformInfo": "Sistem Platformu Bilgileri",
+        "historyPlayers": "Tarih Oyuncuları",
+        "entities": "Varlıklar",
+        "fps": "FPS",
+        "residentSetSize": "RSS",
+        "heap": "Yığın",
+        "chunks": "Parçalar",
+        "chunkGameObjects": "CGO",
+        "items": "Öğeler"
+      },
+      "overview": {
+        "serverName": "Sunucu Adı",
+        "region": "Sunucu Bölgesi",
+        "language": "Sunucu Dili",
+        "serverIp": "Sunucu IP'si",
+        "uptime": "Sunucu Çalışma Süresi",
+        "gameTime": "Oyun Zamanı",
+        "serverPort": "Sunucu Bağlantı Noktası",
+        "gameName": "Oyun Adı",
+        "gameMode": "Oyun Modu",
+        "serverVersion": "Sunucu Sürümü",
+        "gameWorld": "Oyun Dünyası",
+        "gameDifficulty": "Oyun Zorluğu",
+        "gameDifficultys": {
+          "0": "Çöpçü",
+          "1": "Maceracı",
+          "2": "Göçebe",
+          "3": "Savaşçı",
+          "4": "Hayatta kalma yanlısı",
+          "5": "İnanılmaz"
+        },
+        "uptimeFormat": "{hours} : {minutes} : {seconds} | \n{days} : {hours} : {minutes} : {seconds}",
+        "gameTimeFormat": "Gün {days}, {hours} : {minutes}"
+      },
+      "status": {
+        "freeSlots": "Ücretsiz Slotlar",
+        "players": "Oyuncular",
+        "onlinePlayers": "Çevrimiçi Oyuncular",
+        "maxOnlinePlayers": "Maksimum Çevrimiçi Oyuncu",
+        "zombies": "zombiler",
+        "activeZombies": "Aktif Zombiler",
+        "maxZombies": "Maksimum Zombi",
+        "animals": "Hayvanlar",
+        "activeAnimals": "Aktif Hayvanlar",
+        "maxAnimals": "Maksimum Hayvanlar",
+        "memory": "Hafıza",
+        "usedMemory": "Kullanılan Bellek",
+        "freeMemory": "Boş Bellek",
+        "totalMemory": "Toplam Bellek",
+        "disk": "Disk",
+        "usedDisk": "Kullanılan Disk",
+        "freeDisk": "Boş Disk",
+        "totalDisk": "Toplam Disk"
+      },
+      "monitor": {
+        "cpu": "İşlemci",
+        "ram": "Veri deposu",
+        "usage": "Kullanım (%)",
+        "time": "Zaman",
+        "network": "Ağ",
+        "trafficIn": "Trafik Girişi",
+        "trafficOut": "Trafik Çıkışı"
+      },
+      "quickActions": {
+        "restartTitle": "Sunucuyu Yeniden Başlat",
+        "shutdownTitle": "Sunucuyu Kapat",
+        "restartButton": "Sunucuyu Yeniden Başlat",
+        "shutdownButton": "Sunucuyu Kapat",
+        "restartConfirm": "Sunucuyu yeniden başlatmak istediğinizden emin misiniz? \nBağlı oyuncuların bağlantısı kesilebilir.",
+        "shutdownConfirm": "Sunucuyu kapatmak istediğinizden emin misiniz? \nBu mevcut hizmeti kesintiye uğratacaktır.",
+        "restartSuccess": "Yeniden başlatma komutu gönderildi",
+        "shutdownSuccess": "Kapatma komutu gönderildi",
+        "restartError": "Yeniden başlatma komutu gönderilemedi",
+        "shutdownError": "Kapatma komutu gönderilemedi",
+        "hint": "Yüksek riskli operasyon. \nDevam etmeden önce kimsenin kritik eylemler gerçekleştirmediğinden emin olun.",
+        "nextRestart": "Sonraki planlanmış yeniden başlatma"
+      },
+      "systemInfo": {
+        "deviceName": "Cihaz Adı",
+        "deviceModel": "Cihaz Modeli",
+        "deviceType": "Cihaz Türü",
+        "deviceUniqueIdentifier": "Cihaz Benzersiz Tanımlayıcısı",
+        "operatingSystem": "İşletim Sistemi",
+        "processorType": "İşlemci Türü",
+        "processorCount": "İşlemci Sayısı",
+        "processorFrequency": "İşlemci Frekansı",
+        "systemMemorySize": "Sistem Bellek Boyutu",
+        "userName": "Kullanıcı adı"
+      },
+      "recentActivity": {
+        "login": "Giriş Başarılı",
+        "playerEnterGame": "Oyuncu: {0} Oyuna Girildi",
+        "playerLeaveGame": "Oyuncu: {0} Oyundan Ayrıldı"
+      }
+    },
+    "playerList": {
+      "onlinePlayers": "Çevrimiçi Oyuncular",
+      "historyPlayers": "Tarih Oyuncuları",
+      "playerName": "Oyuncu Adı",
+      "status": "Durum",
+      "entityId": "Varlık Kimliği",
+      "playerId": "Oyuncu Kimliği",
+      "platformId": "Platform Kimliği",
+      "playGroup": "Oyun Grubu",
+      "position": "Konum",
+      "lastLogin": "Son Giriş",
+      "bedroll": "Yatak Örtüsü",
+      "permissionLevel": "İzin Düzeyi",
+      "ip": "IP Adresi",
+      "ping": "ping",
+      "twitchEnabled": "Seğirme Etkin",
+      "zombieKills": "Zombi Öldürür",
+      "playerKills": "Oyuncu Öldürmeleri",
+      "deaths": "Ölümler",
+      "level": "Seviye",
+      "expToNextLevel": "Sonraki Seviyeye Tecrübe",
+      "skillPoints": "Beceri Puanları",
+      "gameStage": "Oyun Aşaması",
+      "admin": "Yönetici",
+      "viewInventory": "Envanteri Görüntüle",
+      "viewSkills": "Becerileri Görüntüle",
+      "viewDetails": "Ayrıntıları Görüntüle",
+      "kick": "Oyuncuyu Tekmele",
+      "kickReason": "Vuruş Nedeni (İsteğe bağlı)",
+      "ban": "Oyuncuyu Yasakla",
+      "banDuration": "Yasaklama Süresi (Dakika)",
+      "banReason": "Yasaklanma Nedeni (İsteğe Bağlı)",
+      "mute": "Oyuncunun Sesini Kapat",
+      "muteDuration": "Sessize Alma Süresi (Dakika, 0 veya kalıcı olarak boş)",
+      "muteReason": "Sessize Alma Nedeni (İsteğe Bağlı)"
+    },
+    "map": {
+      "region": "Bölge Dosyası",
+      "landClaim": "Arazi Talebi",
+      "zombie": "Zombi",
+      "hostiles": "Düşmanlar",
+      "animal": "Hayvan",
+      "offlinePlayer": "Oyuncu (Çevrimdışı)",
+      "onlinePlayer": "Oyuncu (Çevrimiçi)",
+      "mousePos": "Fare konumu",
+      "lastClick": "Son tıklama",
+      "renderExploredArea": "Keşfedilen Alanı Renderle",
+      "renderExploredAreaConfirm": "Keşfedilen alanı oluşturmak istediğinizden emin misiniz? \nBu işlem birkaç dakika sürebilir; ilerlemeyi konsoldan kontrol edebilirsiniz",
+      "renderFullMap": "Tam Haritayı Keşfedin",
+      "renderFullMapConfirm": "Haritanın tamamını keşfetmek istediğinizden emin misiniz? \nBu işlem birkaç dakika sürebilir, ilerlemeyi konsoldan kontrol edebilirsiniz, bu işlem genellikle sunucu başlatıldıktan sonra yalnızca bir kez gerçekleştirilir.",
+      "refreshMap": "Haritayı Yenile",
+      "autoReload": "Her birini yeniden yükle",
+      "seconds": "saniye",
+      "landOwner": "Arsa Sahibi",
+      "removeLandClaim": "Kaldırmak",
+      "removeLandClaimConfirm": "Arazi talebini kaldırmak istediğinizden emin misiniz?",
+      "dragendTelePlayerConfirm": "{0} adlı oyuncuyu hedef konuma {1} ışınlamak istediğinizden emin misiniz?",
+      "gameTimeLoading": "Yükleniyor...",
+      "gameTimeFormat": "Gün {days}, {hours}:{minutes}",
+      "claimActive": "Aktif",
+      "claimInactive": "Etkin değil",
+      "claimStatus": "Talep Durumu",
+      "viewPlayerInventory": "Envanteri Görüntüle"
+    },
+    "gameChat": {
+      "typeMessage": "Bir mesaj yazın",
+      "send": "Göndermek",
+      "history": {
+        "columns": {
+          "createdAt": "Zaman",
+          "chatType": "Kanal",
+          "senderName": "Gönderen",
+          "playerId": "Oyuncu Kimliği",
+          "entityId": "Varlık Kimliği",
+          "message": "Mesaj"
+        },
+        "filters": {
+          "senderName": "Gönderen",
+          "playerId": "Oyuncu Kimliği",
+          "chatType": "Kanal",
+          "timeRange": "Zaman Aralığı"
+        },
+        "placeholders": {
+          "allChatTypes": "Tüm Kanallar",
+          "timeRange": "Zaman aralığını seçin"
+        },
+        "emptyPlayerId": "Sistem / Bilinmiyor"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "Denetim Günlükleri",
+        "backupRuns": "Yedekleme Çalıştırmaları"
+      },
+      "sources": {
+        "api": "API'si",
+        "chatCommand": "Sohbet Komutu",
+        "consoleCommand": "Konsol Komutu",
+        "scheduler": "Zamanlayıcı",
+        "system": "Sistem",
+        "gameEvent": "Oyun Etkinliği"
+      },
+      "actionTypes": {
+        "create": "Yaratmak",
+        "update": "Güncelleme",
+        "delete": "Silmek",
+        "enable": "Olanak vermek",
+        "disable": "Devre dışı bırakmak",
+        "execute": "Uygulamak",
+        "send": "Göndermek",
+        "kick": "Tekme atmak",
+        "ban": "Yasak",
+        "unban": "Yasağı kaldır",
+        "restart": "Tekrar başlat",
+        "reload": "Yeniden yükle",
+        "grant": "Hibe etmek",
+        "revoke": "Geri çekmek",
+        "import": "İçe aktarmak",
+        "export": "İhracat",
+        "reset": "Sıfırla",
+        "other": "Diğer"
+      },
+      "filters": {
+        "timeRange": "Zaman Aralığı",
+        "source": "Kaynak",
+        "operatorId": "Operatör Kimliği",
+        "actionType": "Eylem Türü",
+        "resourceType": "Kaynak Türü",
+        "resourceId": "Kaynak Kimliği",
+        "succeeded": "Sonuç"
+      },
+      "placeholders": {
+        "timeRange": "Bir zaman aralığı seçin",
+        "allSources": "Tüm kaynaklar",
+        "allActionTypes": "Tüm eylem türleri",
+        "allResults": "Tüm sonuçlar"
+      },
+      "columns": {
+        "createdAt": "Oluşturulma Tarihi",
+        "source": "Kaynak",
+        "operatorId": "Operatör Kimliği",
+        "operatorName": "Operatör Adı",
+        "actionType": "Eylem Türü",
+        "resourceType": "Kaynak Türü",
+        "resourceId": "Kaynak Kimliği",
+        "summary": "Özet",
+        "succeeded": "Başarılı",
+        "errorMessage": "Hata Mesajı"
+      },
+      "empty": {
+        "operatorId": "Anonim veya sistem",
+        "operatorName": "Bilinmeyen operatör",
+        "source": "Bilinmeyen kaynak",
+        "actionType": "Bilinmeyen eylem",
+        "resourceType": "belirtilmemiş",
+        "resourceId": "Hiçbiri",
+        "summary": "Özet yok",
+        "timestamp": "Bilinmeyen zaman",
+        "details": "Ayrıntı yükü yok",
+        "errorMessage": "Hiçbiri"
+      },
+      "detailDialog": {
+        "title": "Denetim Günlüğü Ayrıntıları",
+        "actions": {
+          "copy": "Ayrıntıları Kopyala"
+        },
+        "messages": {
+          "copySuccess": "Ayrıntılar panoya kopyalandı.",
+          "copyFailed": "Ayrıntılar kopyalanamadı. \nLütfen daha sonra tekrar deneyin."
+        },
+        "sections": {
+          "metadata": "Meta veriler",
+          "summary": "Yürütme Sonucu",
+          "details": "Ayrıntılı Bağlam"
+        }
+      }
+    },
+    "serverConfig": {
+      "settings": {
+        "ServerName": {
+          "group": "Sunucular",
+          "desc": "Sunucu adı. \nİstediğiniz ismi girin"
+        },
+        "ServerDescription": {
+          "group": "Sunucular",
+          "desc": "Sunucu açıklaması. \nİstediğiniz herhangi bir sunucu açıklamasını girin"
+        },
+        "ServerWebsiteURL": {
+          "group": "Sunucular",
+          "desc": "Sunucu web sitesi adresi. \nSunucu tarayıcısında tıklanabilir bir bağlantı olarak görüntülenecektir"
+        },
+        "ServerPassword": {
+          "group": "Sunucular",
+          "desc": "Sunucu şifresi. \nOyuncuların oyun sunucusuna girmek için kullandıkları şifre"
+        },
+        "ServerLoginConfirmationText": {
+          "group": "Sunucular",
+          "desc": "Sunucu giriş onay metni. \nBu seçenek ayarlanırsa kullanıcılar sunucuya katılırken bu mesajı görecek ve devam etmeden önce bunu onaylamaları gerekecektir. \nBu pencerede daha karmaşık değişiklikler yapmak için XUi'deki serverjoinrulesdialog penceresini değiştirin"
+        },
+        "Region": {
+          "group": "Sunucular",
+          "desc": "Sunucunun bulunduğu bölge. \nOlası değerler şunlardır: Asya, Kuzey AmerikaDoğu, Kuzey Amerika Batı, Orta Amerika, Güney Amerika, Avrupa, Rusya, Orta Doğu, Afrika, Okyanusya"
+        },
+        "Language": {
+          "group": "Sunucular",
+          "desc": "Sunucudaki oyuncuların birincil dili. \nOyuncuların aramak istediği herhangi bir dilin İngilizce adını kullanın. \nOlası değerler şunlardır: ingilizce, almanca, ispanyolca, fransızca, italyanca, japonca, koreana, lehçe, brezilyaca, rusça, türkçe, çince, çince"
+        },
+        "ServerPort": {
+          "group": "Ağ",
+          "desc": "Sunucu programının dinlediği bağlantı noktası. \nAynı LAN üzerindeki bilgisayarların bunu bir LAN sunucusu olarak görmesini istiyorsanız, bunu 26900 ila 26905 veya 27015 ila 27020 aralığında tutun."
+        },
+        "ServerVisibility": {
+          "group": "Ağ",
+          "desc": "Sunucunun görünürlüğü. \n2 = herkese açık, 1 = yalnızca arkadaşlara görünür, 0 = liste dışı. \nÖzel sunucuyla hiçbir zaman arkadaş olmayacağınız için, bunu 1'e ayarlamak yalnızca ilk oyuncunun IP yoluyla manuel olarak bağlanması durumunda işe yarayacaktır."
+        },
+        "ServerDisabledNetworkProtocols": {
+          "group": "Ağ oluşturma",
+          "desc": "Ağ protokolleri sunucu tarafından devre dışı bırakıldı. \nVirgülle ayrılmış, olası değerler LiteNetLib, SteamNetworking. \nKullanıcı ile sunucu arasında NAT yönlendirici yoksa veya bağlantı noktası yönlendirme doğru şekilde ayarlanmışsa, özel sunucular SteamNetworking'i devre dışı bırakmalıdır."
+        },
+        "ServerMaxWorldTransferSpeedKiBs": {
+          "group": "Ağ oluşturma",
+          "desc": "Sunucu maksimum dünya aktarım hızı. \nİstemcinin henüz bir dünyası yoksa, ilk bağlantıda dünya aktarımları için maksimum hız (kiB/s cinsinden). \nDaha yükseğe ayarlasanız bile maksimum değer yaklaşık 1300 kiB/s'dir"
+        },
+        "ServerMaxPlayerCount": {
+          "group": "Yuvalar",
+          "desc": "Sunucudaki maksimum oyuncu sayısı. \nAynı anda çevrimiçi olarak izin verilen maksimum oyuncu sayısı"
+        },
+        "ServerReservedSlots": {
+          "group": "Yuvalar",
+          "desc": "Sunucuya ayrılmış yuvalar. \nMaksimum oyuncu sayısının ötesinde birçok slot yalnızca belirli bir izin seviyesine sahip oyuncular tarafından kullanılabilir."
+        },
+        "ServerReservedSlotsPermission": {
+          "group": "Yuvalar",
+          "desc": "Sunucuya ayrılmış yuva izni. \nYukarıda ayrılmış alanları kullanmak için gereken izin düzeyi"
+        },
+        "ServerAdminSlots": {
+          "group": "Yuvalar",
+          "desc": "Sunucu yönetici yuvaları. \nSunucu maksimum oyuncu sayısına ulaşmış olsa bile hâlâ katılabilecek çok sayıda yönetici var"
+        },
+        "ServerAdminSlotsPermission": {
+          "group": "Yuvalar",
+          "desc": "Sunucu yöneticisi izin yuvaları. \nYukarıdaki yönetici yuvalarını kullanmak için gereken izin düzeyi"
+        },
+        "WebDashboardEnabled": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Web kontrol panelini etkinleştirin/devre dışı bırakın."
+        },
+        "WebDashboardPort": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Web kontrol paneli için bağlantı noktası."
+        },
+        "WebDashboardUrl": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Web kontrol panelinin harici URL'si. \n(Sunucunun yalnızca genel IP'si kullanılmıyorsa, örneğin web kontrol paneli ters proxy'nin arkasındaysa). \nTam URL olması gerekiyor, ör. \nhttps://domainOfReverseProxy.tld:1234/. \nDoğrudan genel IP ve kontrol paneli bağlantı noktası kullanılıyorsa boş bırakılabilir."
+        },
+        "EnableMapRendering": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Harita oluşturmayı etkinleştirin. \nHaritalara göz atarken haritaların döşeme görüntüleri olarak oluşturulmasını etkinleştirin/devre dışı bırakın. \nÖrneğin, web kontrol paneli bunu harita görünümlerini görüntülemek için kullanabilir."
+        },
+        "TelnetEnabled": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Telnet hizmetinin etkin olup olmadığı. \nTelnet hizmetini etkinleştirme veya devre dışı bırakma [doğru, yanlış]"
+        },
+        "TelnetPort": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Telnet bağlantı noktası. \nTelnet sunucusu bağlantı noktası"
+        },
+        "TelnetPassword": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Telnet erişim şifresi. \nŞifre ayarlanmadıysa sunucu yalnızca yerel geridöngü arayüzünü dinleyecektir."
+        },
+        "TelnetFailedLoginLimit": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Telnet oturum açma hatası sınırı. \nUzak istemcinin birden çok kez yanlış parola girmesi durumunda istemcinin Telnet arayüzüne bağlanması engellenir."
+        },
+        "TelnetFailedLoginsBlocktime": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Oturum açma hatası kilitlenme süresi. \nGiriş hatası limiti aşıldıktan sonra blokaj ne kadar sürecek (saniye olarak)"
+        },
+        "TerminalWindowEnabled": {
+          "group": "Yönetim Arayüzü",
+          "desc": "Terminal penceresi etkinleştirildi. \nGünlük çıkışı/komut girişi için terminal penceresini göster (yalnızca Windows)"
+        },
+        "AdminFileName": {
+          "group": "Klasör ve Dosya Konumları",
+          "desc": "Sunucu yöneticisi dosya adı. \nSaveGameFolder'a göre yol"
+        },
+        "UserDataFolder": {
+          "group": "Klasör ve Dosya Konumları",
+          "desc": "Kullanıcı verileri klasörü. \nRWG tarafından oluşturulan dünyalar da dahil olmak üzere, sunucunun oluşturulan tüm verileri depoladığı yeri geçersiz kılmak için bunu kullanın. \nYorumları bırakmayı unutmayın"
+        },
+        "SaveGameFolder": {
+          "group": "Klasör ve Dosya Konumları",
+          "desc": "Oyun klasörünü kaydedin. \nYalnızca oyun kaydetme yolunu geçersiz kılmak için kullanılır. \nYorumları bırakmayı unutmayın"
+        },
+        "ServerAllowCrossplay": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "Çapraz oynatmayı etkinleştirir/devre dışı bırakır, çapraz oyun sunucuları yalnızca yaptırımlar göz ardı edilmezse ve varsayılan veya daha az oyuncu yuvası sayısına sahipse aramalarda bulunur ve birleştirilebilir"
+        },
+        "EACEnabled": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "EAC hile önlemenin etkin olup olmadığı. \nHile önleme fonksiyonunun etkinleştirilip etkinleştirilmeyeceği (crack ve Çin sunucuları için kapatılması gerekir)"
+        },
+        "IgnoreEOSSanctions": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "EOS yaptırımlarını göz ardı edin. \nOyuncuların katılmasına izin verirken EOS yaptırımlarını göz ardı edin"
+        },
+        "HideCommandExecutionLog": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "Komut yürütme günlüğünü gizle. \n0 = Her şeyi göster, 1 = Yalnızca Telnet/Kontrol Panelinden gizle, 2 = Uzak oyun istemcilerinden de gizle, 3 = Her şeyi gizle"
+        },
+        "MaxUncoveredMapChunksPerPlayer": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "Her oyuncunun oyun haritasında keşfedebileceği alan. \nBu nedenle, oyuncu başına maksimum harita dosyası boyutu (x * 512 bayt) ve kapsama alanı (x * 256 metrekare) ile sınırlıdır. \nVarsayılan 131072 değeri, herhangi bir zamanda maksimum 32 kilometre karelik bir haritanın ortaya çıkarılabileceği anlamına gelir"
+        },
+        "PersistentPlayerProfiles": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "Oyuncu profilinin değiştirilip değiştirilemeyeceği. \nDevre dışı bırakılırsa oyuncular seçilen herhangi bir profille katılabilir. \nDoğruysa, en son katıldıkları yapılandırma dosyasını kullanarak katılacaklar"
+        },
+        "MaxChunkAge": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "Bir parçanın tekrar ziyaret edilmemesi veya korunmaması durumunda (örneğin yakınlarda bir bölge taşı veya uyku tulumu bulundurularak) ziyaret edildikten sonra orijinal durumuna sıfırlanacağı oyundaki gün sayısı"
+        },
+        "SaveDataLimit": {
+          "group": "Diğer Teknik Ayarlar",
+          "desc": "Veri sınırını kaydedin. \nKaydedilen oyun başına izin verilen maksimum disk alanı, MB cinsinden. \nBu sınıra ulaşıldığında, kaydedilen oyun parçaları yer açmak için zorla orijinal durumlarına sıfırlanabilir. \nNegatif değerler sınırı devre dışı bırakır"
+        },
+        "GameWorld": {
+          "group": "Oyun Dünyası",
+          "desc": "Oyun dünya haritası. \nNavezgane[Sabit Harita], RWG[Rastgele Harita] (aşağıdaki 'Dünya Tohumu' ve 'Dünya Boyutu' seçeneklerine bakın) veya 'Dünyalar' klasöründeki mevcut herhangi bir dünya adı (örn. 'Navezgane', 'PREGEN01'...)"
+        },
+        "WorldGenSeed": {
+          "group": "Oyun Dünyası",
+          "desc": "Dünya Tohumu. \nEğer RWG ise, bu yeni bir dünya yaratmanın tohumudur. \nAynı ada sahip bir dünya zaten mevcutsa doğrudan yüklenecektir"
+        },
+        "WorldGenSize": {
+          "group": "Oyun Dünyası",
+          "desc": "Dünyanın Oluşturduğu Boyut. \nRWG ise yaratılan dünyanın genişliğini ve yüksekliğini kontrol eder. \nResmi olarak desteklenen boyutlar 6144 ile 10240 arasındadır ve 2048'in katları olmalıdır; \n6144, 8192, 10240"
+        },
+        "GameName": {
+          "group": "Oyun Dünyası",
+          "desc": "OyunAdı. \nOyununuzun adının ne olmasını istiyorsanız bu, kaydedilen oyunun adını ve dünyaya dekorasyonlar (ağaçlar vb.) yerleştirirken kullanılan tohumu etkileyecektir. \nBir RWG dünyası yaratılıyorsa dünyanın genel düzenini kontrol etmez"
+        },
+        "GameMode": {
+          "group": "Oyun Dünyası",
+          "desc": "Oyun Modu. \nGameModeSurvival (çok oyunculu)"
+        },
+        "GameDifficulty": {
+          "group": "Oyun Zorluğu",
+          "desc": "Oyun Zorluğu. \n0'dan 5'e kadar zorluk, 0 en kolay ve 5 en zor"
+        },
+        "BlockDamagePlayer": {
+          "group": "Oyun Zorluğu",
+          "desc": "Oyuncu Blok Hasarı. \nOyuncunun bloklara verdiği hasar (yüzde, tamsayı olarak ifade edilir)"
+        },
+        "BlockDamageAI": {
+          "group": "Oyun Zorluğu",
+          "desc": "AI Blok Hasarı. \nYapay zeka tarafından bloklara verilen hasar (yüzde, tamsayı olarak ifade edilir)"
+        },
+        "BlockDamageAIBM": {
+          "group": "Oyun Zorluğu",
+          "desc": "Kanlı Ay sırasında AI Blok Hasarı. \nKanlı Ay sırasında bloklarda yapay zekanın neden olduğu hasar (yüzde, tamsayı olarak ifade edilir)"
+        },
+        "XPMultiplier": {
+          "group": "Oyun Zorluğu",
+          "desc": "XP Kazanç Çarpanı. \nOyuncular için XP Kazanç Çarpanı (yüzde, tamsayı olarak ifade edilir)"
+        },
+        "PlayerSafeZoneLevel": {
+          "group": "Oyun Zorluğu",
+          "desc": "Acemi Oyuncu SafeZone Seviyesi. \nOyuncunun seviyesi bu seviyeye eşit veya daha azsa, doğduğunda güvenli bir bölge (düşmanların olmadığı) oluşturacaktır. \nOyuncu bu seviyenin altındaysa artık onun etrafında zombiler ortaya çıkmayacak"
+        },
+        "PlayerSafeZoneHours": {
+          "group": "Oyun Zorluğu",
+          "desc": "Güvenli Bölge Süresi. \nOyuncunun güvenli bölgesinin etkin olma süresi (oyun saatlerinde)"
+        },
+        "BuildCreate": {
+          "group": "Oyun Zorluğu",
+          "desc": "Yaratıcı mod. \nHile modunu açar ve kapatır"
+        },
+        "DayNightLength": {
+          "group": "Oyun Zorluğu",
+          "desc": "Oyundaki bir günün gerçek zamanı (dakika cinsinden). \nOyunda kaç dakikalık gerçek zamanın bir güne eşdeğer olduğunu gösterir"
+        },
+        "DayLightLength": {
+          "group": "Oyun Zorluğu",
+          "desc": "Oyunda Gün Işığı Uzunluğu. \nBir günde kaç saat gün ışığı olduğunu gösterir (varsayılan 18 saat)"
+        },
+        "BiomeProgression": {
+          "group": "Oyun Zorluğu",
+          "desc": "Biyomun ilerlemesini teşvik etmek için biyom tehlikelerini ve yağma aşaması sınırlarını etkinleştirir. \nYağma aşaması sınırları, biyom zorlukları tamamlanarak artırılır."
+        },
+        "StormFreq": {
+          "group": "Oyun Zorluğu",
+          "desc": "Fırtınaların sıklığını ayarlar. \n%0 bunları kapatır. \nVanilya değerleri: 0, 50, 100, 150, 200, 300, 400, 500"
+        },
+        "DeathPenalty": {
+          "group": "Oyun Zorluğu",
+          "desc": "Ölümden sonra ceza. \n0 = Yok. \n1 = Varsayılan: Klasik XP cezası. \n2 = Yaralı: Debuff'larınızın çoğunu koruyacaksınız. \n%50 yiyecek ve su oranıyla yeniden doğar. \n3 = Kalıcı Ölüm: Karakteriniz tamamen sıfırlanacaktır. \nKaydedilmiş bir oyunda yeniden doğacaksınız)"
+        },
+        "DropOnDeath": {
+          "group": "Oyun Zorluğu",
+          "desc": "Ölüm düşüşü. \n0 = Yok, 1 = Tümü, 2 = Yalnızca Alet Kemeri, 3 = Yalnızca Sırt Çantası, 4 = Tümünü Sil"
+        },
+        "DropOnQuit": {
+          "group": "Oyun Zorluğu",
+          "desc": "Çıkış bırakma. \n0 = Yok, 1 = Hepsi, 2 = Yalnızca Alet Kemeri, 3 = Yalnızca Sırt Çantası"
+        },
+        "BedrollDeadZoneSize": {
+          "group": "Oyun Zorluğu",
+          "desc": "Zombilerin ortaya çıkmayacağı BedrollDeadZone'un boyutu (yani her tarafı verilen değerin iki katı uzunlukta olan bir kutu yarıçapı). \nBedrollDeadZone'a dokunan temizlenmiş uyuyan bölgeler temizlendikten sonra tekrar ortaya çıkmayacak"
+        },
+        "BedrollExpiryTime": {
+          "group": "Oyun Zorluğu",
+          "desc": "Yatak örtüsünün sona erme süresi. \nBir uyku tulumunun gerçek hayatta, sahibinin en son çevrimiçi olmasından sonra aktif kalacağı gün sayısı"
+        },
+        "AllowSpawnNearFriend": {
+          "group": "Oyun Zorluğu",
+          "desc": "Sunucuya ilk kez katılan yeni oyuncular, aynı anda oynayan herhangi bir arkadaşının yanında katılmayı seçebilir mi? \n0 = Devre dışı, 1 = Her zaman, 2 = Yalnızca orman biyomunda yakın arkadaşlar"
+        },
+        "CameraRestrictionMode": {
+          "group": "Oyun Zorluğu",
+          "desc": "Kamera kısıtlama modu. \n0 = Oyuncular birinci ve üçüncü şahıs kamera modları arasında serbestçe geçiş yapabilir, 1 = Birinci şahısla sınırlıdır, 2 = Üçüncü şahısla sınırlıdır"
+        },
+        "JarRefund": {
+          "group": "Oyun Zorluğu",
+          "desc": "Boş kavanoz iade yüzdesi. \nBir ürünü tükettikten sonra geri dönen boş kavanozların yüzdesi. \nMevcut değerler: 0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100"
+        },
+        "MaxSpawnedZombies": {
+          "group": "Performans",
+          "desc": "Maksimum üretilen zombi sayısı. \nBu ayar tüm haritayı kapsar, tüm haritada aynı anda yalnızca belirli sayıda zombi bulunabilir. \nBu ayarın değiştirilmesinin performans üzerinde büyük etkisi olabilir"
+        },
+        "MaxSpawnedAnimals": {
+          "group": "Performans",
+          "desc": "Maksimum üretilen zombi sayısı. \nSunucunuzda çok sayıda oyuncu varsa daha fazla yaban hayatı eklemek için bu sınırı artırabilirsiniz. \nHayvanlar zombiler gibi çok fazla CPU tüketmezler. \nNot: Bu, keyfi olarak daha fazla hayvanın ortaya çıkmasına neden olmayacaktır: biyom yumurtlama sistemi, belirli bir alanda yalnızca belirli sayıda hayvanı doğuracaktır, ancak geniş ve yayılmış bir oyuncu tabanınız varsa, sınıra düşebilirsiniz, böylece onu artırabilirsiniz."
+        },
+        "ServerMaxAllowedViewDistance": {
+          "group": "Performans",
+          "desc": "İstemciler için izin verilen maksimum görüş mesafesi (6 - 12). \nBellek kullanımı ve performansı üzerinde önemli bir etkiye sahiptir"
+        },
+        "MaxQueuedMeshLayers": {
+          "group": "Performans",
+          "desc": "Mesh oluşturma sırasında kuyruğa alınabilecek maksimum Chunk mesh katmanı sayısı. \nBu değerin azaltılması bellek kullanımını artıracaktır ancak Parça oluşturma süresini uzatabilir"
+        },
+        "EnemySpawnMode": {
+          "group": "Zombi Ayarları",
+          "desc": "Düşmanın ortaya çıkmasını etkinleştirin/devre dışı bırakın."
+        },
+        "EnemyDifficulty": {
+          "group": "Zombi Ayarları",
+          "desc": "Zombi yoğunluğu. \n0 = normal, 1 = çılgınlık"
+        },
+        "ZombieFeralSense": {
+          "group": "Zombi Ayarları",
+          "desc": "Zombi Vahşi Duyusu. \n0-3 (kapalı, gündüz, gece, tümü)"
+        },
+        "ZombieMove": {
+          "group": "Zombi Ayarları",
+          "desc": "Zombi hareketi. \n0-4 (yürüyüş, koşu, koşu, sürat koşusu, kabus)"
+        },
+        "ZombieMoveNight": {
+          "group": "Zombi Ayarları",
+          "desc": "Zombi gecesi hareketi. \n0-4 (yürüyüş, koşu, koşu, sürat koşusu, kabus)"
+        },
+        "ZombieFeralMove": {
+          "group": "Zombi Ayarları",
+          "desc": "Zombi Vahşi Hareketi. \n0-4 (Yürüyüş, Jog, Koş, Sprint, Kabus)"
+        },
+        "ZombieBMMove": {
+          "group": "Zombi Ayarları",
+          "desc": "Zombi BM Hareketi. \n0-4 (Yürüyüş, Jog, Koş, Sprint, Kabus)"
+        },
+        "AISmellMode": {
+          "group": "Zombi Ayarları",
+          "desc": "AI koku modu. \n0-5 (kapalı, yürüyüş, koşu, koşu, sürat koşusu, kabus)"
+        },
+        "BloodMoonFrequency": {
+          "group": "Zombi Ayarları",
+          "desc": "Kanlı Ay Frekansı. \nKanlı Ay'ın ne sıklıkta (gün olarak) ortaya çıktığı. \nBunu 0'a ayarlamak Kanlı Ay olmayacağı anlamına gelir"
+        },
+        "BloodMoonRange": {
+          "group": "Zombi Ayarları",
+          "desc": "Kanlı Ay Aralığı. \nGerçek Kanlı Ay günü yukarıdaki ayardan rastgele sayıda gün sapabilir. \nBu değer 0 olarak ayarlandığında Kanlı Ay Frekansında belirtilen her N günde bir Kanlı Ay zamanında görünecektir."
+        },
+        "BloodMoonWarning": {
+          "group": "Zombi Ayarları",
+          "desc": "Kanlı Ay Uyarısı. \nKanlı Ay gününün kırmızı gününden sonraki saat sayısı başlar. \nBu -1'e ayarlandığında Kırmızı hiçbir zaman görüntülenmez."
+        },
+        "BloodMoonEnemyCount": {
+          "group": "Zombi Ayarları",
+          "desc": "Kanlı Ay Düşman Sayısı. \nBu, Kanlı Ay Zombi Grubundaki her oyuncu için herhangi bir zamanda hayatta olabilecek (aynı anda ortaya çıkabilecek) zombilerin sayısıdır, ancak çok oyunculu modda MaxSpawnedZombies bunu geçersiz kılar. \nAyrıca oyun aşamasının taraf başına maksimum zombi sayısını belirlediğini unutmayın. \nDüşük oyun aşaması değerleri, zombi sayısının Kanlı Ay Düşman Sayısı ayarından daha düşük olmasına neden olur. \nBu ayarın değiştirilmesinin performans üzerinde büyük etkisi olabilir."
+        },
+        "LootAbundance": {
+          "group": "Yağma",
+          "desc": "Arama Öğesi Bolluk Yüzdesi"
+        },
+        "LootRespawnDays": {
+          "group": "Yağma",
+          "desc": "Arama Öğesi Yenileme Günleri. \nAranabilir öğe kaynaklarının yenilenmesi kaç gün sürer?"
+        },
+        "AirDropFrequency": {
+          "group": "Yağma",
+          "desc": "Hava indirme sıklığı. \nBir airdrop'un kaç oyun saati boyunca yapıldığını gösterir, 0 = asla"
+        },
+        "AirDropMarker": {
+          "group": "Yağma",
+          "desc": "Airdrop gösterimi. \nAirdrop'lar için haritaya/pusulaya bir işaret eklenip eklenmeyeceğini ayarlar"
+        },
+        "PartySharedKillRange": {
+          "group": "Çok Oyunculu",
+          "desc": "Parti, öldürme menzilini paylaştı. \nParti paylaşımlı öldürme ödüllerini ve görev partisi öldürme hedefi ödüllerini almak için gereken mesafe"
+        },
+        "PlayerKillingMode": {
+          "group": "Çok Oyunculu",
+          "desc": "Oyuncu öldürme ayarları (0 = öldürme yok, 1 = yalnızca müttefiklere zarar ver, 2 = yalnızca yabancılara zarar ver, 3 = herkese zarar ver)"
+        },
+        "LandClaimCount": {
+          "group": "ArsaTalepBoyut Seçenekleri",
+          "desc": "Arsa İddiası Sayısı. \nOyuncu başına izin verilen maksimum LandClaimSize sayısı"
+        },
+        "LandClaimSize": {
+          "group": "ArsaTalepBoyut Seçenekleri",
+          "desc": "LandClaimSize koruma aralığı. \nBirim bloktur"
+        },
+        "LandClaimDeadZone": {
+          "group": "ArsaTalepBoyut Seçenekleri",
+          "desc": "LandClaimSize koruma aralığı. \nLandClaimSizes arasındaki mesafe. \nLandClaimSizes'ın ayarlanabilmesi için bu mesafeden daha büyük olması gerekir (karşı tarafla arkadaş olmadığınız sürece)"
+        },
+        "LandClaimExpiryTime": {
+          "group": "ArsaTalepBoyut Seçenekleri",
+          "desc": "Oyuncunun çevrimdışı olduğu LandClaim korumasının gün sayısı. \nOyuncu çevrimdışı olduktan sonra LandClaimSizes'ın geçerli olduğu gün sayısı (gerçek zamanlı olarak)"
+        },
+        "LandClaimDecayMode": {
+          "group": "ArsaTalepBoyut Seçenekleri",
+          "desc": "LandClaimSize koruma azalma modu. \nÇevrimdışı oyuncunun kara menzilinin bozulma modunu kontrol eder. \n0 = Yavaş (Doğrusal), 1 = Hızlı (Üstel), 2 = Yok (Sona kadar tam koruma)"
+        },
+        "LandClaimOnlineDurabilityModifier": {
+          "group": "Kara Taşı Seçenekleri",
+          "desc": "Oyuncu çevrimiçi olduğunda LandStone'un koruma çarpanı. \nOyuncu çevrimiçi olduğunda LandStone'un sertlik çarpanını gösterir, 0 yenilmezlik anlamına gelir, varsayılan 4 kez"
+        },
+        "LandClaimOfflineDurabilityModifier": {
+          "group": "Kara Taşı Seçenekleri",
+          "desc": "Oyuncu çevrimdışıyken LandStone'un koruma çarpanı. \nOyuncu çevrimdışıyken LandStone'un sertlik çarpanını gösterir, 0 yenilmezlik anlamına gelir, varsayılan 4 kez"
+        },
+        "LandClaimOfflineDelay": {
+          "group": "Kara Taşı Seçenekleri",
+          "desc": "LandStone sertliğinin çevrimiçinden çevrimdışına geçmesi için oyuncunun oyundan çıkmasından sonraki dakika sayısı. \nVarsayılan 0'dır"
+        },
+        "DynamicMeshEnabled": {
+          "group": "Diğer",
+          "desc": "Dinamik ağ sisteminin etkinleştirilip etkinleştirilmeyeceği"
+        },
+        "DynamicMeshLandClaimOnly": {
+          "group": "Diğer",
+          "desc": "Dinamik mesh sisteminin yalnızca oyuncu LCB alanında geçerli olup olmadığı"
+        },
+        "DynamicMeshLandClaimBuffer": {
+          "group": "Diğer",
+          "desc": "Dinamik örgü LCB blok yarıçapı"
+        },
+        "DynamicMeshMaxItemCache": {
+          "group": "Diğer",
+          "desc": "Dinamik ağ maksimum öğe önbelleği. \nAynı anda kaç proje işlenebilir, değer ne kadar yüksek olursa o kadar fazla RAM kullanılır"
+        },
+        "TwitchServerPermission": {
+          "group": "Diğer",
+          "desc": "Sunucuda Twitch entegrasyonunu kullanmak için gereken izin düzeyi"
+        },
+        "TwitchBloodMoonAllowed": {
+          "group": "Diğer",
+          "desc": "Twitch Kanlı Ay'a izin verilip verilmeyeceği. \nSunucu Kanlı Ay sırasında Twitch işlemlerine izin veriyorsa Kanlı Ay sırasında ek zombiler ortaya çıkabilir ve bu durum sunucu gecikmesine neden olabilir"
+        },
+        "QuestProgressionDailyLimit": {
+          "group": "Diğer",
+          "desc": "Günlük görev ilerleme sınırı. \nGörev seviyelerini artırmaya yardımcı olmak için bir oyuncunun her gün tamamlayabileceği görev sayısını sınırlar. \nSınırın üzerindeki görevler ödül almak için hâlâ tamamlanabilir"
+        }
+      }
+    },
+    "appSettings": {
+      "empty": "Uygulama ayarları mevcut değil.",
+      "groups": {
+        "general": "Genel"
+      },
+      "fields": {
+        "webUrl": "Web URL'si",
+        "userName": "Kullanıcı adı",
+        "password": "Şifre",
+        "accessTokenExpireTime": "Erişim Belirteci Sona Erme Süresi",
+        "refreshTokenExpireTime": "Jeton Sona Erme Süresini Yenile",
+        "serverConfigFile": "Sunucu Yapılandırma Dosyası"
+      },
+      "tooltips": {
+        "webUrl": "API'ye ulaşmak için ön uç tarafından kullanılan temel adres. \nhttp veya https ekleyin.",
+        "password": "Yönetici arka ucunda oturum açmak için kullanılan şifre, sunucu hesabıyla eşleşmelidir.",
+        "accessTokenExpireTime": "Erişim belirtecinin saniye cinsinden ömrü.",
+        "refreshTokenExpireTime": "Yenileme jetonunun saniye cinsinden ömrü.",
+        "serverConfigFile": "Düzenlenecek sunucu yapılandırma dosyasının yolu. \nGöreli yollar veya sunucu dizini yollarının her ikisi de çalışır."
+      },
+      "actions": {
+        "save": "Ayarları Kaydet",
+        "reset": "Sıfırla"
+      },
+      "messages": {
+        "saveSuccess": "Uygulama ayarları güncellendi.",
+        "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+      }
+    },
+    "chatSettings": {
+      "fields": {
+        "isEnabled": "Sohbeti Etkinleştir",
+        "globalServerName": "Küresel Gönderenin Adı",
+        "whisperServerName": "Fısıltı Gönderenin Adı",
+        "chatCommandPrefixes": "Komut Önekleri",
+        "allowNoPrefix": "Öneksiz Komutlara İzin Ver",
+        "chatCommandSeparators": "Komut Ayırıcılar",
+        "historyRetentionDays": "Geçmiş Saklama Günleri",
+        "excludeCommandsFromHistory": "Komutları Geçmişten Hariç Tut",
+        "muteNotifyMessage": "Bildirim Mesajını Sessize Al"
+      },
+      "tooltips": {
+        "isEnabled": "Sohbet, sohbet komutlarını kaydeden tüm özelliklerin gerektirdiği temel bir hizmettir. \nDevre dışı bırakılamaz.",
+        "globalServerName": "Sunucu genel sohbet mesajı gönderdiğinde kullanılan görünen ad.",
+        "whisperServerName": "Sunucu fısıltı mesajı gönderdiğinde kullanılan görünen ad.",
+        "chatCommandPrefixes": "Birden fazla öneki virgülle ayırın, örneğin /,!.",
+        "allowNoPrefix": "Etkinleştirildiğinde, düz genel sohbet hatları komutlar olarak yorumlanabilir.",
+        "chatCommandSeparators": "Birden çok sınırlayıcıyı virgülle ayırın. \nTek bir boşluk olağan varsayılandır.",
+        "historyRetentionDays": "Sohbet geçmişinin tutulacağı gün sayısı. \nSonsuza kadar tutmak için 0'a ayarlayın.",
+        "excludeCommandsFromHistory": "Etkinleştirildiğinde, komut önekiyle başlayan sohbet mesajları geçmişe kaydedilmeyecektir.",
+        "muteNotifyMessage": "Sesi kapatılan bir oyuncu sohbet etmeye çalıştığında ona gönderilen bir fısıltı. \nBildirim göndermemek için boş bırakın."
+      },
+      "actions": {
+        "save": "Sohbet Ayarlarını Kaydet",
+        "reset": "Varsayılan Ayarları Geri Yükle"
+      },
+      "messages": {
+        "resetSuccess": "Arka uç varsayılan ayarları geri yüklendi.",
+        "saveSuccess": "Sohbet ayarları güncellendi.",
+        "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+      },
+      "preview": {
+        "title": "Efekt Önizlemesi",
+        "sampleMessage": "Bu bir örnek mesajdır.",
+        "defaultSender": "Sunucu",
+        "channels": {
+          "global": "Küresel",
+          "whisper": "Fısıltı"
+        }
+      }
+    },
+    "coloredChat": {
+      "tabs": {
+        "settings": "Ayarlar",
+        "profiles": "Profiller"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Renkli Sohbeti Etkinleştir",
+          "globalDefault": "Genel Varsayılan Renk",
+          "whisperDefault": "Fısıltı Varsayılan Rengi",
+          "friendsDefault": "Arkadaşlar Varsayılan Renk",
+          "partyDefault": "Parti Varsayılan Rengi",
+          "adminDefault": "Yönetici Varsayılan Rengi",
+          "systemDefault": "Sistem Varsayılan Rengi",
+          "allowPlayerColorTags": "Oyuncu Renk Etiketlerine İzin Ver",
+          "playerColorTagPermission": "Oyuncu Renk Etiketi İzni"
+        },
+        "tooltips": {
+          "isEnabled": "ColoredChat özelliğinin etkin olup olmadığını kontrol eder.",
+          "playerColorTagPermission": "Hangi oyuncuların sohbette renk etiketlerini kullanabileceğini kontrol eder. \nYok: devre dışı; \nHepsi: tüm oyuncular; \nYalnızca Yönetici: yalnızca yöneticiler.",
+          "allowPlayerColorTags": "Etkinleştirildiğinde, oyuncular kontrollü renk etiketi sözdizimini kullanabilir.",
+          "hexColor": "FFCC00 gibi 6 basamaklı onaltılık renk değerini girin."
+        },
+        "sections": {
+          "policyTitle": "Politika",
+          "policyDescription": "ColoredChat'in etkin olup olmadığını ve oyuncuların kendi renk etiketlerini girip giremeyeceğini kontrol edin.",
+          "colorsTitle": "Varsayılan Kanal Renkleri",
+          "colorsDescription": "Oyuncuların mesaj kaynaklarını bir bakışta ayırt edebilmesi için her sohbet kanalına varsayılan bir renk atayın.",
+          "colorsHint": "Aşağıdaki değerler 6 haneli onaltılık renkler olarak kaydedilir.",
+          "playerChannels": "Oyuncu Kanalları",
+          "systemChannels": "Sistem Kanalları"
+        },
+        "playerColorTagPermissions": {
+          "none": "Engelli",
+          "all": "Tüm Oyuncular",
+          "adminOnly": "Yalnızca Yöneticiler"
+        },
+        "preview": {
+          "title": "Efekt Önizlemesi",
+          "samplePlayerName": "OyuncuAdı",
+          "sampleMessage": "Bu bir örnek mesajdır.",
+          "channels": {
+            "global": "Küresel",
+            "whisper": "Fısıltı",
+            "friends": "Arkadaşlar",
+            "party": "Parti",
+            "admin": "Yönetici",
+            "system": "Sistem"
+          }
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "reset": "Varsayılanları Geri Yükle"
+        },
+        "messages": {
+          "resetSuccess": "Arka uç varsayılan ayarları geri yüklendi.",
+          "saveSuccess": "Renkli sohbet ayarları güncellendi.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      },
+      "profiles": {
+        "addProfile": "Sohbet Profili Ekle",
+        "editProfile": "Sohbet Profilini Düzenle",
+        "fields": {
+          "playerId": "Oyuncu Kimliği",
+          "customName": "Özel Ad",
+          "nameColor": "İsim Renk",
+          "textColor": "Metin Rengi",
+          "description": "Tanım",
+          "createdAt": "Oluşturulma Tarihi"
+        },
+        "tooltips": {
+          "playerId": "Geçici EntityId'yi değil, kararlı platformlar arası PlayerId'yi kullanın.",
+          "customName": "Oynatıcının canlı görünen adını kullanmak için boş bırakın. \nDinamik değerleri eklemek için aşağıdaki değişkenleri kullanın.",
+          "hexColor": "FFCC00 gibi 6 basamaklı onaltılık renk değerini girin.",
+          "description": "Bu profilin neden var olduğunu açıklamak için kullanılır."
+        },
+        "placeholders": {
+          "createdAtRange": "Oluşturulma tarihindeki bir zaman aralığını seçin"
+        },
+        "availableVariables": "Mevcut değişkenler",
+        "variables": {
+          "playerName": "Oyuncunun canlı görünen adı",
+          "playerId": "Platformlar arası oyuncu kimliği",
+          "entityId": "Oyun içi varlık kimliği",
+          "chatType": "Sohbet kanalı türü"
+        },
+        "messages": {
+          "saveSuccess": "Sohbet profili başarıyla kaydedildi."
+        }
+      }
+    },
+    "economy": {
+      "overview": {
+        "totalAccounts": "Toplam Hesaplar",
+        "todayNewAccounts": "Bugün Yeni Hesaplar",
+        "totalCirculation": "Toplam Sirkülasyon",
+        "todayTransactionCount": "Bugünkü İşlemler",
+        "todayRewardsAmount": "Ödüller Bugün Dağıtıldı",
+        "todayDailyClaimCount": "Bugünkü Günlük Talepler",
+        "todayTaxCollected": "Bugün Toplanan Vergi",
+        "leaderboard": "Zenginlik Liderlik Tablosu",
+        "leaderboardRank": "Rütbe",
+        "loading": "Yükleniyor...",
+        "empty": "Veri yok"
+      },
+      "tabs": {
+        "accounts": "Hesaplar",
+        "transactions": "İşlemler",
+        "settings": "Ayarlar"
+      },
+      "settings": {
+        "sections": {
+          "basic": "Temel Para Birimi",
+          "transfer": "Transferler",
+          "dailyReward": "Günlük Ödüller",
+          "bonus": "Bonus Ödüller",
+          "shop": "Mağaza"
+        },
+        "fields": {
+          "isEnabled": "Ekonomiyi Etkinleştir",
+          "currencyName": "Para Birimi Adı",
+          "currencySymbol": "Para Birimi Sembolü",
+          "defaultBalance": "Başlangıç ​​Bakiyesi",
+          "allowTransfer": "Oyuncu Transferlerine İzin Ver",
+          "minTransferAmount": "Minimum Transfer Tutarı",
+          "transferTaxRate": "Transfer Vergisi Oranı",
+          "dailyRewardAmount": "Günlük Ödül Tutarı",
+          "leaderboardSize": "Skor Tablosu Boyutu",
+          "zombieKillRewardEnabled": "Zombi Öldürme Ödülü",
+          "zombieKillRewardAmount": "Zombi Öldürme Ödül Tutarı",
+          "dailyStreakEnabled": "Günlük Seri Bonusu",
+          "dailyStreakBonusPercent": "Seri Bonus Yüzdesi",
+          "dailyStreakMaxDays": "Seri Maksimum Gün Sayısı",
+          "shopEnabled": "Mağazayı Etkinleştir",
+          "playerConnectedRewardEnabled": "Oyuncu Katılma Ödülü",
+          "playerConnectedRewardAmount": "Oyuncu Katılma Ödül Tutarı",
+          "playerDiedPenaltyEnabled": "Ölüm Cezasını Etkinleştir",
+          "playerDiedPenaltyAmount": "Ölüm Kesintisi Tutarı"
+        },
+        "commands": {
+          "sectionTitle": "Sohbet Komut Adları",
+          "aliasesHelp": "Virgülle ayrılmış takma adlar, ör. \nbakiye, para",
+          "fields": {
+            "balCommandName": "Denge Komutu",
+            "balCommandAliases": "Takma Adları Dengele",
+            "payCommandName": "Aktarım Komutu",
+            "payCommandAliases": "Takma Adları Aktar",
+            "dailyCommandName": "Günlük Ödül Komutu",
+            "dailyCommandAliases": "Günlük Ödül Takma Adları",
+            "moneyTopCommandName": "Skor Tablosu Komutanlığı",
+            "moneyTopCommandAliases": "Skor Tablosu Takma Adları",
+            "shopCommandName": "Mağaza Komutanlığı",
+            "shopCommandAliases": "Takma Adları Satın Alın",
+            "buyCommandName": "Komut Satın Al",
+            "buyCommandAliases": "Takma Adları Satın Al",
+            "redeemCommandName": "Komutu Kullan",
+            "redeemCommandAliases": "Takma Adları Kullan"
+          }
+        },
+        "tips": {
+          "sectionTitle": "Komut Yanıt Mesajları",
+          "sectionDescription": "Komutun yürütülmesinden sonra gönderilen varsayılan oyun içi ipucu mesajlarını geçersiz kılın. \nYerleşik varsayılanları kullanmak için boş bırakın. \nAraç ipucunda listelenen yer tutucuları destekler.",
+          "fields": {
+            "balanceTip": "Denge İpucu",
+            "payUsageTip": "Ödemeli Kullanım İpucu",
+            "payTargetNotFoundTip": "Ödeme Hedefi Bulunamadı İpucu",
+            "paySuccessTip": "Ödeme Başarısı İpucu",
+            "dailySuccessTip": "Günlük Ödül Başarı İpucu",
+            "dailyAlreadyClaimedTip": "Günlük Zaten Talep Edilen İpucu",
+            "shopEmptyTip": "Boş İpucu Alışverişi",
+            "buyUsageTip": "Kullanım İpucu Satın Alın",
+            "buySuccessTip": "Başarı İpucu Satın Alın",
+            "redeemUsageTip": "Kullanım İpucunu Kullanın",
+            "redeemSuccessTip": "Başarı İpucunu Kullanın",
+            "playerDiedPenaltyTip": "Ölüm Cezası İpucu"
+          },
+          "tooltips": {
+            "balanceTip": "Destekler: {balance}, {currency}",
+            "payUsageTip": "Destekler: {currency}",
+            "paySuccessTip": "Destekler: {amount}, {currency}, {playerName}, {tax}",
+            "dailySuccessTip": "Destekler: {amount}, {currency}, {streak}, {bonusPercent}",
+            "buyUsageTip": "Destekler: {currency}",
+            "buySuccessTip": "Destekler: {name}, {quantity}, {cost}, {currency}",
+            "redeemSuccessTip": "Destekler: {amount}, {currency}",
+            "playerDiedPenaltyTip": "Destekler: {amount}, {currency}"
+          }
+        },
+        "actions": {
+          "save": "Ekonomi Ayarlarını Kaydet",
+          "reset": "Varsayılanları Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Ekonomi ayarları başarıyla kaydedildi.",
+          "resetSuccess": "Ekonomi ayarları varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        },
+        "preview": {
+          "title": "Efekt Önizlemesi",
+          "balance": "Başlangıç ​​Bakiyesi",
+          "dailyReward": "Günlük Ödül",
+          "killReward": "Öldürme Ödülü (zombi başına)",
+          "transferTax": "Transfer Vergisi Oranı",
+          "streakBonus": "Günlük Seri Bonusu"
+        }
+      },
+      "accounts": {
+        "columns": {
+          "playerId": "Oyuncu Kimliği",
+          "playerName": "Oyuncu Adı",
+          "balance": "Denge",
+          "isFrozen": "Dondurulmuş",
+          "lastTransactionAt": "Son İşlem"
+        },
+        "actions": {
+          "view": "Ayrıntıları Görüntüle",
+          "adjust": "Dengeyi Ayarla",
+          "freeze": "Dondur",
+          "unfreeze": "Çöz",
+          "batchAdjust": "Toplu Hibe",
+          "delete": "Silmek"
+        },
+        "leaderboard": {
+          "title": "Liderlik tablosu",
+          "empty": "Henüz skor tablosu verisi yok."
+        },
+        "detailDialog": {
+          "title": "Hesap Detayları",
+          "sections": {
+            "overview": "Genel Bakış",
+            "activity": "Etkinlik",
+            "recentTransactions": "Son İşlemler"
+          },
+          "fields": {
+            "createdAt": "Oluşturulma Tarihi",
+            "updatedAt": "Güncelleme Tarihi:",
+            "lastDailyClaimAt": "Son Günlük Talep",
+            "dailyStreak": "Mevcut Seri",
+            "longestStreak": "En Uzun Seri"
+          },
+          "hints": {
+            "recentTransactions": "Yalnızca en son 5 kayıt gösteriliyor"
+          },
+          "empty": {
+            "recentTransactions": "Bu hesap için henüz yeni işlem yok.",
+            "reason": "Herhangi bir neden belirtilmedi"
+          },
+          "messages": {
+            "loadFailed": "Hesap ayrıntıları yüklenemedi.",
+            "freezeSuccess": "Hesabın dondurulma durumu başarıyla güncellendi."
+          }
+        },
+        "adjustDialog": {
+          "title": "{playerName} için bakiyeyi ayarlayın",
+          "fields": {
+            "amount": "Miktar",
+            "reason": "Sebep"
+          },
+          "messages": {
+            "saveSuccess": "Bakiye başarıyla ayarlandı."
+          }
+        },
+        "batchAdjustDialog": {
+          "title": "Toplu Hibe Para Birimi",
+          "fields": {
+            "scope": "Kapsam",
+            "amount": "Miktar",
+            "reason": "Sebep"
+          },
+          "scopeOptions": {
+            "allOnline": "Yalnızca Çevrimiçi Oyuncular",
+            "allAccounts": "Tüm Hesaplar"
+          },
+          "messages": {
+            "success": "Toplu hibe tamamlandı: {succeeded} başarılı oldu",
+            "partialFail": ", {failed} başarısız oldu"
+          }
+        },
+        "deleteConfirm": "{playerName}'ın hesabı silinsin mi? \nBu geri alınamaz. \nİşlem geçmişi saklanacaktır."
+      },
+      "transactions": {
+        "columns": {
+          "playerId": "Oyuncu Kimliği",
+          "playerName": "Oyuncu Adı",
+          "type": "Tip",
+          "direction": "Yön",
+          "amount": "Miktar",
+          "source": "Kaynak",
+          "occurredAt": "Meydana Gelme Tarihi",
+          "referenceId": "Referans Kimliği",
+          "operatorName": "Operatör Adı",
+          "operatorId": "Operatör Kimliği",
+          "balanceBefore": "Önceki Bakiye",
+          "balanceAfter": "Sonra Bakiye",
+          "reason": "Sebep"
+        },
+        "placeholders": {
+          "occurredAtRange": "Bir zaman aralığı seçin"
+        },
+        "typeOptions": {
+          "adminGrant": "Yönetici İzni",
+          "adminDeduct": "Yönetici Kesintisi",
+          "transferOut": "Dışarı Aktar",
+          "transferIn": "Aktarım",
+          "dailyReward": "Günlük Ödül",
+          "tax": "Vergi"
+        },
+        "detailDialog": {
+          "title": "İşlem Detayları",
+          "sections": {
+            "primary": "Öncelik",
+            "metadata": "Meta veriler"
+          }
+        },
+        "exportCsv": "CSV'yi dışa aktar",
+        "messages": {
+          "exportSuccess": "CSV başarıyla dışa aktarıldı",
+          "exportError": "CSV dışa aktarılamadı"
+        }
+      },
+      "shop": {
+        "columns": {
+          "name": "Öğe Adı",
+          "description": "Tanım",
+          "itemName": "Oyun Öğesi",
+          "itemCount": "Adet",
+          "price": "Fiyat",
+          "isEnabled": "Etkinleştirilmiş",
+          "displayOrder": "Emir",
+          "stockLimit": "Stok Limiti",
+          "soldCount": "Satılmış"
+        },
+        "actions": {
+          "add": "Öğe Ekle",
+          "edit": "Düzenlemek",
+          "delete": "Silmek",
+          "deleteConfirm": "Bu mağaza ürünü silinsin mi?"
+        },
+        "form": {
+          "addTitle": "Mağaza Öğesi Ekle",
+          "editTitle": "Mağaza Öğesini Düzenle",
+          "fields": {
+            "name": "Ekran adı",
+            "description": "Tanım",
+            "itemName": "Oyun Öğesi Kimliği",
+            "itemCount": "Satın Alma Başına Adet",
+            "price": "Fiyat",
+            "isEnabled": "Etkinleştirilmiş",
+            "displayOrder": "Görüntüleme Sırası",
+            "stockLimit": "Stok Limiti (0 = sınırsız)"
+          }
+        },
+        "messages": {
+          "createSuccess": "Mağaza öğesi oluşturuldu.",
+          "updateSuccess": "Mağaza öğesi güncellendi.",
+          "deleteSuccess": "Mağaza öğesi silindi."
+        }
+      },
+      "redeemCodes": {
+        "columns": {
+          "code": "Kod",
+          "description": "Tanım",
+          "amount": "Ödül Tutarı",
+          "maxUses": "Maksimum Kullanım",
+          "usedCount": "Kullanılmış",
+          "expiresAt": "Sona Erme Tarihi",
+          "isEnabled": "Etkinleştirilmiş",
+          "createdAt": "Oluşturulma Tarihi"
+        },
+        "actions": {
+          "add": "Kod Ekle",
+          "delete": "Silmek",
+          "deleteConfirm": "Bu kullanım kodu ve tüm kullanım kayıtları silinsin mi?",
+          "viewRedemptions": "Kullanımları Görüntüle"
+        },
+        "form": {
+          "title": "Kullanma Kodu Ekle",
+          "fields": {
+            "code": "Kod",
+            "description": "Tanım",
+            "amount": "Ödül Tutarı",
+            "maxUses": "Maksimum Kullanım (0 = sınırsız)",
+            "expiresAt": "Sona Erme Tarihi (isteğe bağlı)",
+            "commandRewards": "Komut Ödülleri"
+          },
+          "placeholders": {
+            "commandReward": "örneğin \nGiveself {EntityId} iron_sword 1 0 false"
+          },
+          "actions": {
+            "addCommand": "Komut Ekle",
+            "removeCommand": "Kaldırmak"
+          },
+          "hints": {
+            "commandRewards": "{EntityId}, {PlayerId}, {PlayerName} yer tutucularını destekler."
+          },
+          "messages": {
+            "noReward": "Bir para birimi tutarı, en az bir komut ödülü veya her ikisini de sağlayın."
+          }
+        },
+        "redemptionsDialog": {
+          "title": "Kullanımlar: {code}",
+          "columns": {
+            "playerName": "Oyuncu Adı",
+            "playerId": "Oyuncu Kimliği",
+            "redeemedAt": "Kullanıldığı Tarih"
+          },
+          "empty": "Henüz geri ödeme yok."
+        },
+        "messages": {
+          "createSuccess": "Oluşturulan kodu kullanın.",
+          "deleteSuccess": "Silinen kodu kullanın."
+        }
+      }
+    },
+    "teleport": {
+      "tools": {
+        "tabs": {
+          "toPosition": "Konuma Işınlanma",
+          "toPlayer": "Oyuncuya Işınlanma"
+        },
+        "fields": {
+          "sourcePlayer": "Işınlanacak Oyuncu",
+          "targetPlayer": "Hedef Oyuncu",
+          "x": "X Koordinatı",
+          "y": "Y Koordinatı",
+          "z": "Z Koordinatı"
+        },
+        "placeholders": {
+          "selectPlayer": "Çevrimiçi bir oynatıcı seçin"
+        },
+        "actions": {
+          "teleport": "Işınlanma"
+        },
+        "messages": {
+          "success": "Başarıyla ışınlandı",
+          "confirmToPos": "{name} ({x}, {y}, {z})'a ışınlansın mı?",
+          "confirmToPlayer": "{source}, {target}'ın konumuna ışınlansın mı?",
+          "noPlayers": "Çevrimiçi oyuncu yok"
+        },
+        "hints": {
+          "onlinePlayers": "Yalnızca çevrimiçi oyuncular listelenir"
+        }
+      },
+      "settings": {
+        "tabs": {
+          "home": "Ana Sayfa Işınlanma",
+          "city": "Şehir Işınlanması",
+          "friend": "Arkadaş Işınlanması",
+          "globalCooldown": "Küresel Bekleme Süresi",
+          "back": "Geri Işınlanma"
+        },
+        "sections": {
+          "basic": "Temel Ayarlar",
+          "commands": "Komutlar",
+          "tips": "İpucu Mesajları"
+        },
+        "fields": {
+          "isEnabled": "Işınlanma Özelliğini Etkinleştir",
+          "home": {
+            "isEnabled": "Eve Işınlanmayı Etkinleştir",
+            "cooldownSeconds": "Bekleme süresi (saniye)",
+            "setCurrencyRequired": "Ev Maliyetini Ayarla",
+            "teleCurrencyRequired": "Işınlanma Ev Maliyeti",
+            "maxHomes": "Oyuncu Başına Maksimum Ev Sayısı",
+            "listCommandName": "Evleri Listele Komutanlığı",
+            "setCommandName": "Ana Komutu Ayarla",
+            "deleteCommandName": "Ana Sayfa Komutunu Sil",
+            "teleCommandName": "Ev Komutanlığına Işınlan",
+            "noHomeTip": "Ev Yok Mesajı",
+            "setLimitTip": "Sınıra Ulaşıldı Mesajı",
+            "setSuccessTip": "Başarı Mesajını Ayarla",
+            "overwriteTip": "Onay Mesajının Üzerine Yaz",
+            "deleteSuccessTip": "Başarı Mesajını Sil",
+            "homeNotFoundTip": "Ana Sayfa Bulunamadı Mesajı",
+            "coolingTip": "Bekleme Süresi Mesajı",
+            "teleSuccessTip": "Işınlanma Başarı Mesajı",
+            "setCurrencyNotEnoughTip": "Yetersiz Fon (Set) Mesajı",
+            "teleCurrencyNotEnoughTip": "Yetersiz Fon (Teleport) Mesajı",
+            "allowDuringBloodMoon": "Kanlı Ay Sırasında Işınlanmaya İzin Ver",
+            "bloodMoonBlockedTip": "Kanlı Ay Engellenen Mesaj"
+          },
+          "city": {
+            "isEnabled": "Şehir Işınlanmasını Etkinleştir",
+            "cooldownSeconds": "Bekleme süresi (saniye)",
+            "listCommandName": "Şehirleri Listele Komutanlığı",
+            "teleCommandName": "Şehir Komutanlığına ışınlan",
+            "noCitiesTip": "Şehir Mesajı Yok",
+            "cityNotFoundTip": "Şehir Bulunamadı Mesajı",
+            "coolingTip": "Bekleme Süresi Mesajı",
+            "teleSuccessTip": "Işınlanma Başarı Mesajı",
+            "currencyNotEnoughTip": "Yetersiz Fon Mesajı"
+          },
+          "friend": {
+            "isEnabled": "Arkadaş Işınlanmasını Etkinleştir",
+            "cooldownSeconds": "Bekleme süresi (saniye)",
+            "currencyRequired": "Işınlanma Maliyeti",
+            "requestExpirySeconds": "Sona Erme İsteği (saniye)",
+            "friendBypass": "Arkadaşlar Bekleme Süresini Atla",
+            "requestCommandName": "İstek Komutunu Gönder",
+            "acceptCommandName": "İstek Komutunu Kabul Et",
+            "rejectCommandName": "İsteği Reddet Komutu",
+            "targetNotFoundTip": "Hedef Bulunamadı Mesajı",
+            "requestSentTip": "Gönderilen Mesajı İste",
+            "requestReceivedTip": "Alınan Mesajı İste",
+            "acceptedTip": "Kabul Edilen Mesaj",
+            "rejectedTip": "Reddedilen Mesaj",
+            "targetRejectedTip": "Hedef Reddedildi Mesajı",
+            "noRequestTip": "İstek Mesajı Yok",
+            "coolingTip": "Bekleme Süresi Mesajı",
+            "teleSuccessTip": "Işınlanma Başarı Mesajı",
+            "currencyNotEnoughTip": "Yetersiz Fon Mesajı"
+          },
+          "globalCooldown": {
+            "isEnabled": "Genel Bekleme Süresini Etkinleştir",
+            "cooldownSeconds": "Küresel Bekleme Süresi (saniye)"
+          },
+          "back": {
+            "isEnabled": "Geri Işınlanmayı Etkinleştir",
+            "cooldownSeconds": "Bekleme süresi (saniye)",
+            "currencyRequired": "Işınlanma Maliyeti",
+            "commandName": "Geri Komutu",
+            "noPositionTip": "Önceki Pozisyon Mesajı Yok",
+            "coolingTip": "Bekleme Süresi Mesajı",
+            "teleSuccessTip": "Işınlanma Başarı Mesajı",
+            "currencyNotEnoughTip": "Yetersiz Fon Mesajı"
+          }
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "reset": "Varsayılanlara Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Ayarlar başarıyla kaydedildi.",
+          "resetSuccess": "Ayarlar varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      },
+      "cities": {
+        "form": {
+          "addTitle": "Şehir Ekle",
+          "editTitle": "Şehri Düzenle",
+          "fields": {
+            "name": "Şehir Adı",
+            "description": "Tanım",
+            "x": "X",
+            "y": "e",
+            "z": "Z",
+            "yawAngle": "Yaw Açısı",
+            "currencyRequired": "Işınlanma Maliyeti",
+            "isEnabled": "Etkinleştirilmiş",
+            "sortOrder": "Sıralama Düzeni"
+          }
+        },
+        "columns": {
+          "name": "İsim",
+          "description": "Tanım",
+          "x": "X",
+          "y": "e",
+          "z": "Z",
+          "yawAngle": "Yaw Açısı",
+          "currencyRequired": "Maliyet",
+          "isEnabled": "Etkinleştirilmiş",
+          "sortOrder": "Emir"
+        },
+        "actions": {
+          "edit": "Düzenlemek",
+          "delete": "Silmek",
+          "deleteConfirm": "Bu şehir silinsin mi?"
+        },
+        "messages": {
+          "createSuccess": "Şehir oluşturuldu.",
+          "updateSuccess": "Şehir güncellendi.",
+          "deleteSuccess": "Şehir silindi."
+        }
+      },
+      "homes": {
+        "search": {
+          "playerIdLabel": "Oyuncu Kimliği",
+          "playerIdPlaceholder": "Ev aramak için oyuncu kimliğini girin",
+          "button": "Aramak",
+          "emptyHint": "Evlerini görüntülemek için yukarıya bir oyuncu kimliği girin."
+        },
+        "columns": {
+          "homeName": "Ev Adı",
+          "playerName": "Oyuncu Adı",
+          "x": "X",
+          "y": "e",
+          "z": "Z",
+          "createdAt": "Oluşturulma Tarihi"
+        },
+        "actions": {
+          "delete": "Silmek",
+          "deleteConfirm": "\"{name}\" adlı ev silinsin mi?"
+        },
+        "messages": {
+          "deleteSuccess": "Ev silindi."
+        }
+      },
+      "logs": {
+        "filters": {
+          "playerId": "Oyuncu Kimliği",
+          "timeRange": "Zaman Aralığı"
+        },
+        "placeholders": {
+          "playerId": "Oyuncu kimliğine göre filtrele",
+          "timeRange": "Tarih aralığını seçin"
+        },
+        "columns": {
+          "timestamp": "Zaman damgası",
+          "playerName": "Oyuncu Adı",
+          "subSystem": "Alt Sistem",
+          "fromX": "X'ten",
+          "fromY": "Y'den",
+          "fromZ": "Z'den",
+          "toX": "X'e",
+          "toY": "Y'ye",
+          "toZ": "Z'ye",
+          "costPaid": "Ödenen Maliyet",
+          "remark": "Açıklama"
+        }
+      }
+    },
+    "gameNotice": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Oyun Bildirimini Etkinleştir",
+          "welcomeNotices": "Hoş Geldiniz Bildirimleri",
+          "rotatingNotices": "Dönen Bildirimler",
+          "rotatingIntervalSeconds": "Dönme Aralığı (Saniye)",
+          "bloodMoonNotice1": "Kanlı Ay Bildirimi – 1. Aşama",
+          "bloodMoonNotice2": "Kanlı Ay Bildirimi – 2. Aşama",
+          "bloodMoonNotice3": "Kanlı Ay Bildirimi – 3. Aşama"
+        },
+        "tooltips": {
+          "welcomeNotices": "Sunucuya katılan bir oyuncuya gönderilir. \n{PlayerName}, {PlayerId}, {EntityId}'yi destekler. \nHer giriş ayrı bir mesaj olarak gönderilir.",
+          "rotatingIntervalSeconds": "Her dönüşümlü bildirim yayını arasındaki saniye cinsinden aralık.",
+          "bloodMoonNotices": "Kanlı ayın farklı aşamalarında yayın yapın. \n{BloodMoonDays}, {BloodMoonStartTime}, {BloodMoonEndTime}'ı destekler."
+        },
+        "placeholders": {
+          "welcomeNotice": "Hoş geldiniz bildirim metnini girin…",
+          "rotatingNotice": "Bildirim metnini girin…"
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "resetToDefaults": "Varsayılanlara Sıfırla",
+          "addNotice": "Bildirim Ekle",
+          "removeNotice": "Kaldırmak"
+        },
+        "messages": {
+          "saveSuccess": "Oyun bildirimi ayarları kaydedildi.",
+          "resetConfirm": "Tüm oyun bildirimi ayarları varsayılan değerlerine sıfırlansın mı? \nBu geri alınamaz.",
+          "resetSuccess": "Oyun bildirimi ayarları varsayılanlara sıfırlandı.",
+          "noRotatingNotices": "Dönen bildirim yapılandırılmadı. \nBir bildirim eklemek için \"Bildirim Ekle\"yi tıklayın.",
+          "noWelcomeNotices": "Hiçbir karşılama bildirimi yapılandırılmadı. \nBir bildirim eklemek için \"Bildirim Ekle\"yi tıklayın.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      }
+    },
+    "voteRestart": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Oylamayı Yeniden Başlatmayı Etkinleştir",
+          "commandName": "Komut Adı",
+          "commandAliases": "Komut Takma Adları",
+          "minOnlinePlayers": "Minimum Çevrimiçi Oyuncu",
+          "voteDurationSeconds": "Oylama Süresi (Saniye)",
+          "passThresholdPercent": "Geçiş Eşiği (%)",
+          "initiatorCooldownSeconds": "Başlatıcı Bekleme Süresi (Saniye)",
+          "globalCooldownSeconds": "Küresel Bekleme Süresi (Saniye)",
+          "warningLeadSeconds": "Uyarı Teslimat Süresi (Saniye)",
+          "voteStartedMessage": "Oylama Başlatıldı Mesajı",
+          "votePassedMessage": "Oy Geçti Mesajı",
+          "voteFailedMessage": "Oylama Başarısız Mesajı",
+          "voteProgressMessage": "Oy İlerleme Mesajı",
+          "alreadyVotedMessage": "Zaten Oylanmış Mesaj",
+          "initiatorCooldownMessage": "Başlatıcı Bekleme Süresi Mesajı",
+          "globalCooldownMessage": "Küresel Bekleme Süresi Mesajı",
+          "notEnoughPlayersMessage": "Yeterli Oyuncu Yok Mesajı",
+          "alreadyActiveMessage": "Oy Ver Zaten Aktif Mesaj"
+        },
+        "tooltips": {
+          "commandAliases": "Alternatif komut adlarının virgülle ayrılmış listesi (ör. vr, restart-vote).",
+          "minOnlinePlayers": "Oylamaya başlamak için gereken minimum çevrimiçi oyuncu sayısı.",
+          "passThresholdPercent": "Oylamanın geçmesi için gereken evet oylarının yüzdesi (1-100).",
+          "warningLeadSeconds": "Geri sayım uyarısı yayınlamak için yeniden başlatmadan birkaç saniye önce.",
+          "voteStartedMessage": "{Initiator}, {Duration}, {Command}'u destekler.",
+          "voteProgressMessage": "{Yes}, {No}, {Total}, {Threshold}'i destekler.",
+          "cooldownMessage": "Kalan süre için {RemainingSeconds} değerini destekler.",
+          "notEnoughPlayersMessage": "{MinPlayers}, {CurrentPlayers}'ı destekler."
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "reset": "Varsayılanlara Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Oylamayı yeniden başlatma ayarları kaydedildi.",
+          "resetSuccess": "Oylamayı yeniden başlatma ayarları varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      }
+    },
+    "voteKick": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Oy Atmayı Etkinleştir",
+          "commandName": "Komut Adı",
+          "commandAliases": "Komut Takma Adları",
+          "minOnlinePlayers": "Minimum Çevrimiçi Oyuncu",
+          "voteDurationSeconds": "Oylama Süresi (Saniye)",
+          "passThresholdPercent": "Geçiş Eşiği (%)",
+          "initiatorCooldownSeconds": "Başlatıcı Bekleme Süresi (Saniye)",
+          "targetImmunitySeconds": "Hedef Bağışıklığı (Saniye)",
+          "kickReason": "Vuruş Nedeni",
+          "voteStartedMessage": "Oylama Başlatıldı Mesajı",
+          "votePassedMessage": "Oy Geçti Mesajı",
+          "voteFailedMessage": "Oylama Başarısız Mesajı",
+          "voteProgressMessage": "Oy İlerleme Mesajı",
+          "alreadyVotedMessage": "Zaten Oylanmış Mesaj",
+          "cooldownMessage": "Bekleme Süresi Mesajı",
+          "cannotKickAdminMessage": "Yönetici Mesajı Atılamıyor",
+          "targetNotFoundMessage": "Hedef Bulunamadı Mesajı",
+          "targetAlreadyGoneMessage": "Hedef Zaten Gitti Mesajı",
+          "alreadyActiveMessage": "Oy Ver Zaten Aktif Mesaj",
+          "usageTipMessage": "Kullanım İpucu Mesajı",
+          "notEnoughPlayersMessage": "Yeterli Oyuncu Yok Mesajı"
+        },
+        "tooltips": {
+          "commandAliases": "Alternatif komut adlarının virgülle ayrılmış listesi (ör. vk, kick-vote).",
+          "minOnlinePlayers": "Tekme oyu başlatmak için gereken minimum çevrimiçi oyuncu sayısı.",
+          "passThresholdPercent": "Oylamanın geçmesi için gereken evet oylarının yüzdesi (1-100).",
+          "targetImmunitySeconds": "Saniyeler içinde yakın zamanda tekme atılan bir oyuncunun tekrar hedef alınmasına karşı bağışıklığı olur.",
+          "kickReason": "Bağlantıyı kesme mesajında ​​atılan oyuncuya gösterilen sebep.",
+          "voteStartedMessage": "{Initiator}, {Target}, {Duration}, {Command}'u destekler.",
+          "voteProgressMessage": "{Yes}, {No}, {Total}, {Threshold}'i destekler.",
+          "cooldownMessage": "Kalan süre için {RemainingSeconds} değerini destekler.",
+          "usageTipMessage": "Komut hedef adı olmadan kullanıldığında gösterilir.",
+          "notEnoughPlayersMessage": "{MinPlayers}, {CurrentPlayers}'ı destekler."
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "reset": "Varsayılanlara Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Oy verme ayarları kaydedildi.",
+          "resetSuccess": "Oy verme ayarları varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      }
+    },
+    "onlineReward": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Çevrimiçi Ödülü Etkinleştir",
+          "rewardIntervalMinutes": "Ödül Aralığı (dakika)",
+          "rewardAmount": "Ödül Tutarı",
+          "rewardPartialPeriod": "Ödül Kısmi Dönemi",
+          "playerMessage": "Oyuncu Mesajı",
+          "playerMessageHint": "Ödül aldıktan sonra oyuncuya gönderilen isteğe bağlı özel mesaj. \n{amount}, {currency}, {totalMinutes} destekler."
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "reset": "Varsayılanlara Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Çevrimiçi ödül ayarları kaydedildi.",
+          "resetSuccess": "Çevrimiçi ödül ayarları varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      }
+    },
+    "achievement": {
+      "settings": {
+        "fields": {
+          "isEnabled": "Başarı Sistemini Etkinleştir"
+        },
+        "actions": {
+          "save": "Ayarları Kaydet",
+          "reset": "Varsayılanlara Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Başarı ayarları kaydedildi.",
+          "resetSuccess": "Başarı ayarları varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      },
+      "definitions": {
+        "columns": {
+          "name": "İsim",
+          "triggerType": "Tetikleyici Türü",
+          "threshold": "Eşik",
+          "economyReward": "Ekonomi Ödülü",
+          "isEnabled": "Etkinleştirilmiş",
+          "sortOrder": "Sıralama Düzeni"
+        },
+        "triggerTypes": {
+          "level": "Seviye",
+          "zombieKills": "Zombi Öldürür",
+          "playerKills": "Oyuncu Öldürmeleri",
+          "deaths": "Ölümler",
+          "gameStage": "Oyun Aşaması"
+        },
+        "form": {
+          "addTitle": "Başarı Ekle",
+          "editTitle": "Başarıyı Düzenle",
+          "fields": {
+            "name": "İsim",
+            "description": "Tanım",
+            "isEnabled": "Etkinleştirilmiş",
+            "triggerType": "Tetikleyici Türü",
+            "threshold": "Eşik",
+            "economyReward": "Ekonomi Ödülü",
+            "consoleCommands": "Konsol Komutları",
+            "playerMessage": "Oyuncu Mesajı",
+            "broadcastMessage": "Yayın Mesajı",
+            "sortOrder": "Sıralama Düzeni"
+          },
+          "tooltips": {
+            "economyReward": "Başarı kazanıldığında oyuncuya verilen para birimi. \nAtlamak için 0'a ayarlayın.",
+            "playerMessage": "Başarıyı kazanan oyuncuya özel mesaj gönderilir. \n{achievementName}, {playerName}, {threshold}'u destekler.",
+            "broadcastMessage": "Bir başarı kazanıldığında tüm çevrimiçi oyunculara mesaj yayını yapılır. \n{achievementName}, {playerName}, {threshold}'u destekler.",
+            "consoleCommands": "Başarı kazanıldığında her satıra bir tane olmak üzere yürütülen konsol komutları. \n{playerId}, {playerName}'i destekler."
+          }
+        },
+        "actions": {
+          "deleteConfirm": "Bu başarı tanımı ve tüm kazanç kayıtları silinsin mi?"
+        },
+        "messages": {
+          "createSuccess": "Başarı tanımı oluşturuldu.",
+          "updateSuccess": "Başarı tanımı güncellendi.",
+          "deleteSuccess": "Başarı tanımı silindi."
+        }
+      },
+      "records": {
+        "columns": {
+          "achievementName": "Başarı",
+          "playerName": "Oyuncu Adı",
+          "playerId": "Oyuncu Kimliği",
+          "economyRewarded": "Ekonomi Ödüllendirildi",
+          "createdAt": "Kazanılan tarih"
+        },
+        "actions": {
+          "deleteConfirm": "Bu kazanç kaydı silinsin mi? \nBaşarı, koşulun bir sonraki karşılanmasında oyuncuya yeniden verilecektir."
+        },
+        "messages": {
+          "deleteSuccess": "Kazanç kaydı silindi."
+        }
+      }
+    },
+    "backup": {
+      "tabs": {
+        "config": "Yapılandırma",
+        "files": "Dosyalar"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Yedekleme Özelliğini Etkinleştir",
+          "timeZoneId": "Cron Saat Dilimi",
+          "historyRetentionDays": "Çalıştırma Geçmişini Saklama (Gün)"
+        },
+        "tooltips": {
+          "timeZoneId": "IANA saat dilimi kimliği (ör. Asya/Shanghai, UTC). \nSunucunun yerel saat dilimini kullanmak için boş bırakın. \nTüm yedekleme cron programları için geçerlidir."
+        },
+        "actions": {
+          "save": "Kaydetmek",
+          "reset": "Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Yedekleme ayarları kaydedildi.",
+          "resetSuccess": "Yedekleme ayarları varsayılanlara geri yüklendi.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      },
+      "tooltips": {
+        "cronExpression": "Yapılandırılmış saat diliminde değerlendirilen standart 5 alanlı cron ifadesi.",
+        "destinationRoot": "Yedekleme çıktılarının yazıldığı mutlak veya göreceli klasör.",
+        "retentionCount": "Maksimum saklanan yedeklemeler. \nHiçbirini tutmak için 0'ı, budamayı devre dışı bırakmak için -1'i kullanın.",
+        "broadcastMessage": "Destekler: {taskName}, {status}"
+      },
+      "fields": {
+        "broadcastOnStart": "Başlangıçta Yayınla",
+        "broadcastStartMessage": "Yayın Başlatma Mesajı",
+        "broadcastOnComplete": "Yayın Tamamlandığında",
+        "broadcastCompleteMessage": "Yayın Tamamlandı Mesajı"
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "Dünya Yedeklemesini Etkinleştir",
+          "cronExpression": "Cron İfadesi",
+          "destinationRoot": "Hedef Kökü",
+          "compressToZip": "Zip'e Sıkıştır",
+          "retentionCount": "Saklama Sayısı",
+          "saveWorldBeforeBackup": "Yedeklemeden Önce Dünyayı Kurtarın"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "Bir 'saveworld' konsol komutunu çalıştırın ve anlık görüntü almadan önce tamamlanmasını bekleyin."
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "Veritabanı Yedeklemeyi Etkinleştir",
+          "cronExpression": "Cron İfadesi",
+          "destinationRoot": "Hedef Kökü",
+          "compressToZip": "Zip'e Sıkıştır",
+          "retentionCount": "Saklama Sayısı"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "Sunucu Yapılandırması Yedeklemesini Etkinleştir",
+          "cronExpression": "Cron İfadesi",
+          "destinationRoot": "Hedef Kökü",
+          "compressToZip": "Zip'e Sıkıştır",
+          "retentionCount": "Saklama Sayısı"
+        }
+      },
+      "actions": {
+        "runNow": "Şimdi Çalıştır",
+        "runNowConfirm": "Bu yedekleme hemen tetiklensin mi?",
+        "runNowReason": "Sebep (isteğe bağlı)",
+        "runNowSuccess": "Yedekleme başarıyla tamamlandı.",
+        "runNowFailed": "Yedekleme başarısız oldu.",
+        "download": "İndirmek",
+        "delete": "Silmek"
+      },
+      "files": {
+        "columns": {
+          "fileName": "Dosya adı",
+          "size": "Boyut",
+          "createdAt": "Oluşturulma Tarihi"
+        },
+        "messages": {
+          "confirmDelete": "'{name}' yedekleme dosyası silinsin mi? \nBu geri alınamaz.",
+          "deleteSuccess": "Yedekleme dosyası silindi.",
+          "deleteError": "Yedekleme dosyası silinemedi. \nLütfen tekrar deneyin.",
+          "downloadError": "Yedekleme dosyası indirilemedi. \nLütfen tekrar deneyin.",
+          "directoryDownloadUnsupported": "Klasör indirmeleri desteklenmez. \nTek bir arşiv olarak indirmek için zip sıkıştırmasını etkinleştirin."
+        }
+      },
+      "taskTypes": {
+        "world": "Dünya Yedekleme",
+        "database": "Veritabanı Yedekleme",
+        "serverConfig": "Sunucu Yapılandırması Yedekleme"
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "Ayarlar",
+        "tasks": "Görevler",
+        "history": "Çalıştırma Geçmişi"
+      },
+      "triggerSources": {
+        "cron": "Cron",
+        "manual": "Manuel",
+        "system": "Sistem"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Zamanlayıcıyı Etkinleştir",
+          "defaultTimeZoneId": "Varsayılan Saat Dilimi",
+          "defaultAllowConcurrentExecution": "Varsayılan Olarak Eşzamanlı Yürütmeye İzin Ver",
+          "historyRetentionDays": "Geçmiş Saklama Günleri",
+          "failureNotifyEnabled": "Arıza Bildirimi",
+          "failureNotifyMessage": "Arıza Bildirim Mesajı"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "UTC, Asya/Şangay veya Pasifik Standart Saati gibi bir platform saat dilimi kimliği kullanın.",
+          "failureNotifyEnabled": "Etkinleştirildiğinde, planlanmış bir komut başarısız olduğunda tüm oyunculara bir mesaj yayınlanacaktır.",
+          "failureNotifyMessage": "Desteklenenler: {taskName}, {error}"
+        },
+        "actions": {
+          "save": "Zamanlayıcı Ayarlarını Kaydet",
+          "reset": "Varsayılanları Sıfırla"
+        },
+        "messages": {
+          "saveSuccess": "Zamanlayıcı ayarları başarıyla kaydedildi.",
+          "resetSuccess": "Zamanlayıcı ayarları varsayılanlara sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      },
+      "tasks": {
+        "columns": {
+          "name": "İsim",
+          "isEnabled": "Etkinleştirilmiş",
+          "cronExpression": "Cron İfadesi",
+          "timeZoneId": "Saat Dilimi",
+          "allowConcurrentExecution": "Eşzamanlı",
+          "lastRunAt": "Son Çalıştırma",
+          "nextRunAt": "Sonraki Çalıştırma",
+          "lastStatus": "Son Durum",
+          "updatedAt": "Güncelleme Tarihi:"
+        },
+        "filters": {
+          "isEnabled": "Etkinleştirilmiş"
+        },
+        "placeholders": {
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
+        },
+        "actions": {
+          "add": "Görev Ekle",
+          "edit": "Görevi Düzenle",
+          "run": "Şimdi Çalıştır",
+          "delete": "Silmek"
+        },
+        "status": {
+          "success": "Başarı",
+          "failed": "Arızalı",
+          "skipped": "Atlandı",
+          "running": "Koşma"
+        },
+        "hints": {
+          "defaultSettings": "Varsayılan saat dilimi: {timeZone}."
+        },
+        "messages": {
+          "runConfirm": "{name} görevi hemen çalıştırılsın mı?",
+          "deleteSuccess": "Zamanlayıcı görevi başarıyla silindi."
+        },
+        "dialog": {
+          "createTitle": "Zamanlayıcı Görevi Oluştur",
+          "editTitle": "Zamanlayıcı Görevini Düzenle",
+          "fields": {
+            "name": "İsim",
+            "isEnabled": "Etkinleştirilmiş",
+            "cronExpression": "Cron İfadesi",
+            "timeZoneId": "Saat Dilimi",
+            "allowConcurrentExecution": "Eşzamanlı Yürütme",
+            "executeOnMainThread": "Ana Konuda Yürüt",
+            "requireGameStartDone": "Oyunun Başlatılmasını Gerektir",
+            "captureOutput": "Çıkışı Yakala",
+            "commands": "Konsol Komutları",
+            "description": "Tanım"
+          },
+          "tooltips": {
+            "cronExpression": "Arka ucun görevi doğru şekilde planlayabilmesi için ikinci hassasiyette bir cron ifadesi kullanın.",
+            "timeZoneId": "Zamanlamanın belirli bir sunucuyu veya bölgesel saat dilimini takip etmesi gerekmediği sürece bunu UTC olarak bırakın."
+          },
+          "placeholders": {
+            "command": "Bir konsol komutu girin, ör. \nmerhaba de"
+          },
+          "actions": {
+            "addCommand": "Komut Ekle",
+            "removeCommand": "Komutu Kaldır"
+          },
+          "messages": {
+            "noCommands": "Lütfen en az bir konsol komutu ekleyin.",
+            "saveSuccess": "Zamanlayıcı görevi başarıyla kaydedildi."
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "Görev Adı",
+          "taskType": "Görev Türü",
+          "triggerSource": "Tetiklemek",
+          "startedAt": "Başlangıç ​​Tarihi",
+          "endedAt": "Sona Erme Tarihi",
+          "succeeded": "Başarılı",
+          "durationMs": "Süre",
+          "summary": "Özet",
+          "errorMessage": "Hata",
+          "operatorName": "Operatör",
+          "sourceIp": "Kaynak IP'si"
+        },
+        "filters": {
+          "taskType": "Görev Türü",
+          "triggerSource": "Tetik Kaynağı",
+          "succeeded": "Sonuç",
+          "timeRange": "Zaman Aralığı"
+        },
+        "placeholders": {
+          "timeRange": "Bir zaman aralığı seçin"
+        },
+        "actions": {
+          "viewDetails": "Ayrıntıları Görüntüle"
+        },
+        "detailDialog": {
+          "title": "Çalıştırma Ayrıntıları",
+          "titleWithName": "Çalıştırma Ayrıntıları - {name}",
+          "details": "Detaylar"
+        }
+      }
+    },
+    "restart": {
+      "tabs": {
+        "settings": "Ayarlar",
+        "run": "Manuel Çalıştırma"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Zamanlanmış Yeniden Başlatmayı Etkinleştir",
+          "cronExpression": "Cron İfadesi",
+          "timeZoneId": "Saat Dilimi",
+          "warningLeadSeconds": "Uyarı Teslimat Süresi (Saniye)",
+          "warningMessage": "Uyarı Mesajı",
+          "saveWorldBeforeRestart": "Yeniden Başlamadan Önce Dünyayı Kurtarın",
+          "restartMode": "Yeniden Başlatma Modu",
+          "restartCommand": "Özel Yeniden Başlatma Komutu",
+          "deferScheduledRestartDuringBloodMoonWindow": "Kanlı Ay Penceresi Sırasında Planlanmış Yeniden Başlatmayı Erteleyin",
+          "bloodMoonPreDuskProtectionHours": "Kanlı Ay Alacakaranlık Öncesi Koruma Saatleri",
+          "bloodMoonDeferMinutes": "Girişim Başına Erteleme Dakikası",
+          "historyRetentionDays": "Geçmiş Saklama Günleri"
+        },
+        "tooltips": {
+          "timeZoneId": "UTC veya Asia/Shanghai gibi bir platform saat dilimi kimliği kullanın.",
+          "warningMessage": "Dakika cinsinden kalan bekleme süresiyle değiştirilen {minutes} yer tutucusunu destekler.",
+          "restartCommand": "Yeniden başlatmayı başlatmak için isteğe bağlı konsol komutu. \nAyarlandığında yerleşik yeniden başlatma hattını geçersiz kılar.",
+          "restartMode": "Zarif: Kapatmadan önce bekleyen işlemleri temizleyin. \nZorla: derhal kapatma.",
+          "deferScheduledRestartDuringBloodMoonWindow": "Etkinleştirildiğinde, kanlı ay etkinken veya kanlı ay gününde alacakaranlık öncesi koruma penceresi içindeyken cron ile tetiklenen yeniden başlatmalar ertelenir.",
+          "bloodMoonPreDuskProtectionHours": "Kanlı ay gününde oyun içi gün batımından önceki saatler korumalı pencere olarak kabul edilir. \nAlacakaranlık öncesi korumayı devre dışı bırakmak için 0'a ayarlayın.",
+          "bloodMoonDeferMinutes": "Her ertelenmiş cron yeniden başlatma girişimini ertelemek için gerçek dakikalar."
+        },
+        "restartModes": {
+          "graceful": "Zarif",
+          "force": "Güç"
+        },
+        "warningStages": {
+          "sectionTitle": "Çok Aşamalı Uyarı Programı",
+          "description": "Farklı teslim sürelerinde birden fazla geri sayım uyarısı tanımlayın. \nYapılandırıldığında bu aşamalar yukarıdaki tek uyarının yerini alır. \nAşamalar teslim süresine göre otomatik olarak sıralanır.",
+          "empty": "Tanımlanmış uyarı aşaması yok. \nYukarıdaki tek uyarıyı kullanma.",
+          "add": "Aşama Ekle",
+          "leadSeconds": "Teslim Süresi (ler)",
+          "message": "Mesaj",
+          "messagePlaceholder": "Sunucu {minutes} dakika içinde yeniden başlatılacak."
+        },
+        "actions": {
+          "save": "Yeniden Başlatma Ayarlarını Kaydet",
+          "cancelPending": "Bekleyen Yeniden Başlatmayı İptal Et"
+        },
+        "messages": {
+          "saveSuccess": "Kaydedilen ayarları yeniden başlatın.",
+          "cancelSuccess": "Bekleyen yeniden başlatma iptal edildi.",
+          "cancelNoActive": "İptal edilecek aktif yeniden başlatma yok.",
+          "unsavedChanges": "Kaydedilmemiş değişiklikleriniz var. \nAyrılmak istediğinden emin misin?"
+        }
+      },
+      "run": {
+        "description": "Sunucunun anında yeniden başlatılmasını tetikleyin. \nGeçersiz kılma alanları isteğe bağlıdır ve boş bırakılırsa yapılandırılmış varsayılanlara geri döner.",
+        "fields": {
+          "reason": "Sebep",
+          "warningLeadSecondsOverride": "Uyarı Teslimat Süresini Geçersiz Kılma (Saniye)",
+          "restartModeOverride": "Modu Geçersiz Kılmayı Yeniden Başlat"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "Yapılandırılmış varsayılanı kullanmak için boş bırakın.",
+          "restartModeOverride": "Yapılandırılmış varsayılanı kullanmak için boş bırakın."
+        },
+        "restartModeOptions": {
+          "graceful": "Zarif",
+          "force": "Güç"
+        },
+        "actions": {
+          "run": "Şimdi Çalıştır"
+        },
+        "messages": {
+          "runConfirm": "Sunucunun anında yeniden başlatılması tetiklensin mi? \nBağlı oyuncuların bağlantısı kesilebilir.",
+          "runSuccess": "Sunucunun yeniden başlatılması istendi.",
+          "runFailed": "Yeniden başlatma isteği başarısız oldu."
+        },
+        "result": {
+          "title": "Son Çalıştırma Sonucu",
+          "succeeded": "Başarılı",
+          "failed": "Arızalı",
+          "summary": "Özet",
+          "durationMs": "Süre",
+          "errorMessage": "Hata Mesajı",
+          "startedAt": "Başlangıç ​​Tarihi",
+          "endedAt": "Sona Erme Tarihi"
+        }
+      }
+    },
+    "modManagement": {
+      "columns": {
+        "displayName": "Mod",
+        "author": "Yazar",
+        "version": "Sürüm",
+        "website": "Web sitesi",
+        "loaded": "Yüklendi",
+        "uninstalled": "Kaldırıldı",
+        "actions": "Eylemler"
+      },
+      "status": {
+        "loaded": "Yüklendi",
+        "unloaded": "Boşaltılmış",
+        "installed": "Yüklendi",
+        "uninstalled": "Kaldırıldı"
+      },
+      "actions": {
+        "install": "Düzenlemek",
+        "uninstall": "Kaldır"
+      },
+      "toast": {
+        "title": "Mod Yönetimi",
+        "toggleSuccess": "Mod durumu yenilendi."
+      }
+    },
+    "console": {
+      "invalidCommand": {
+        "title": "Geçersiz Komut",
+        "text": "Lütfen geçerli bir komut girin."
+      },
+      "send": "Göndermek"
+    },
+    "banWhitelist": {
+      "ban": "Yasak",
+      "whitelist": "Beyaz liste",
+      "mute": "Sesini kapatmak",
+      "playerId": "Oyuncu Kimliği",
+      "displayName": "Ekran adı",
+      "playerName": "Oyuncu Adı",
+      "bannedUntil": "Şu tarihe kadar yasaklandı:",
+      "mutedUntil": "Şu tarihe kadar sessize alındı:",
+      "permanent": "Kalıcı",
+      "reason": "Sebep",
+      "muteReason": "Sessize Alma Nedeni",
+      "addBan": "Yasak Ekle",
+      "editBan": "Yasağı Düzenle",
+      "addWhitelist": "Beyaz Liste Ekle",
+      "editWhitelist": "Beyaz Listeyi Düzenle",
+      "addMute": "Sessize Ekle",
+      "editMute": "Sessize Alma'yı Düzenle",
+      "createdAt": "Oluşturulma Tarihi",
+      "tooltips": {
+        "playerId": "Benzersiz oyuncu tanımlayıcısı, genellikle SteamID64'tür.",
+        "displayName": "Operatörlerin hedefi hızlı bir şekilde tanımlayabilmesi için listede gösterilen ad.",
+        "bannedUntil": "Kalıcı yasaklama için burayı boş bırakın; \naksi takdirde sona erme süresini ayarlayın.",
+        "reason": "Daha sonraki denetim ve sorun giderme işlemleri için oynatıcının neden yasaklandığını veya kaldırıldığını kaydedin.",
+        "mutedUntil": "Kalıcı bir sessize alma için boş bırakın; \ngeçici susturma için bir tarih belirleyin."
+      }
+    },
+    "permission": {
+      "adminUser": "Yönetici Kullanıcı",
+      "addAdminUser": "Yönetici Kullanıcı Ekle",
+      "editAdminUser": "Yönetici Kullanıcıyı Düzenle",
+      "addCommandPermission": "Komut İzni Ekle",
+      "editCommandPermission": "Komut İznini Düzenle",
+      "commandPermission": "Komut İzni",
+      "command": "Emretmek",
+      "description": "Tanım",
+      "permissionLevel": "İzin Düzeyi",
+      "tooltips": {
+        "playerId": "İzin vermek için kullanılan benzersiz oyuncu tanımlayıcı, genellikle bir SteamID64.",
+        "displayName": "Yönetici panelinde bu hesabı tanımak için kullanılan görünen ad.",
+        "permissionLevel": "Sunucu izin düzeyi. \nDaha yüksek değerler genellikle daha fazla ayrıcalık anlamına gelir.",
+        "command": "Bu kuralın geçerli olduğu konsol komut adı.",
+        "description": "Bu komut kuralının amacını veya kısıtlamasını açıklayan isteğe bağlı not."
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "Zaman",
+        "eventType": "Etkinlik Türü",
+        "playerName": "Oyuncu",
+        "targetPlayerName": "Hedef Oyuncu",
+        "entityType": "Varlık Türü"
+      },
+      "eventTypes": {
+        "PlayerJoined": "Oyuncu Katıldı",
+        "PlayerLeft": "Oyuncu Sol",
+        "PlayerDied": "Oyuncu Öldü",
+        "PlayerKilledZombie": "Öldürülen Zombi",
+        "PlayerKilledPlayer": "Oyuncu Öldürme"
+      },
+      "filters": {
+        "eventType": "Etkinlik Türü",
+        "timeRange": "Zaman Aralığı"
+      },
+      "placeholders": {
+        "allEventTypes": "Tüm Etkinlikler",
+        "timeRange": "Zaman aralığını seçin"
+      }
+    },
+    "gameItems": {
+      "searchPlaceholder": "İsme göre ara...",
+      "all": "Tüm",
+      "items": "Öğeler",
+      "blocks": "Bloklar",
+      "itemTag": "Öğe",
+      "blockTag": "Engellemek",
+      "totalCount": "{0} giriş",
+      "stackValue": "×{0}",
+      "showUserHidden": "Gizliyi Göster",
+      "copyName": "Adı Kopyala",
+      "copyLocalizedName": "Yerelleştirilmiş Adı Kopyala"
+    }
+  }
+}

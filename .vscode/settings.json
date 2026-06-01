@@ -41,6 +41,9 @@
   ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.keepFulfilled": true,
+  "i18n-ally.translate.promptSource": true,
+  "i18n-ally.translate.saveAsCandidates": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {

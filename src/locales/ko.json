@@ -1,0 +1,2390 @@
+{
+  "common": {
+    "projectName": "7 Days to Die 서버 관리자",
+    "unknown": "알 수 없음",
+    "yes": "예",
+    "no": "아니요",
+    "online": "온라인",
+    "offline": "오프라인",
+    "day": "일 | 일 | 일",
+    "hour": "시간 | 시간 | 시간",
+    "minute": "분 | 분 | 분",
+    "second": "초 | 초 | 초",
+    "lessThan": "미만",
+    "moreThan": "초과",
+    "equal": "같음",
+    "confirm": "확인",
+    "cancel": "취소",
+    "update": "업데이트",
+    "save": "저장",
+    "batchDelete": "일괄 삭제",
+    "backToHome": "홈으로 돌아가기",
+    "delete": "삭제",
+    "deleteSuccess": "삭제되었습니다.",
+    "confirmDelete": "삭제하시겠습니까?",
+    "apply": "적용",
+    "reset": "재설정",
+    "close": "닫기",
+    "edit": "편집",
+    "player": "플레이어",
+    "serverLocalTime": "서버 현지 시간"
+  },
+  "menus": {
+    "login": "로그인",
+    "dashboard": "대시보드",
+    "playerList": "플레이어 목록",
+    "gpsMap": "GPS 지도",
+    "gameChat": "게임 채팅",
+    "liveChat": "라이브 채팅",
+    "chatHistory": "채팅 기록",
+    "chatSettings": "채팅 설정",
+    "coloredChat": "컬러채팅",
+    "auditLogs": "감사 로그",
+    "serverConfig": "서버 구성",
+    "appSettings": "앱 설정",
+    "banWhitelist": "차단 / 화이트리스트",
+    "permission": "권한",
+    "modManagement": "모드 관리",
+    "economy": "경제",
+    "restart": "서버 재시작",
+    "scheduler": "작업 스케줄러",
+    "backup": "백업",
+    "backupSettings": "백업 설정",
+    "worldBackup": "월드 백업",
+    "databaseBackup": "데이터베이스 백업",
+    "serverConfigBackup": "서버 구성 백업",
+    "console": "콘솔",
+    "apiDocumentation": "API 문서",
+    "schedulerTasks": "작업",
+    "schedulerHistory": "기록",
+    "schedulerSettings": "설정",
+    "groups": {
+      "monitoring": "모니터링",
+      "gameFeatures": "게임 기능",
+      "serverManagement": "서버 관리",
+      "operations": "운영",
+      "system": "시스템"
+    },
+    "restartSettings": "설정",
+    "restartRun": "수동 재시작",
+    "economyOverview": "개요",
+    "economyAccounts": "계정",
+    "economyTransactions": "거래",
+    "economySettings": "설정",
+    "economyShop": "상점",
+    "economyRedeemCodes": "코드 교환",
+    "backupTasks": "백업 작업",
+    "backupHistory": "기록",
+    "restartHistory": "기록",
+    "teleport": "텔레포트",
+    "teleportTools": "도구",
+    "teleportSettings": "설정",
+    "teleportCities": "도시",
+    "teleportHomes": "플레이어 홈",
+    "teleportLogs": "텔레포트 로그",
+    "gameNotice": "게임 공지",
+    "voteRestart": "투표로 다시 시작",
+    "voteRestartSettings": "설정",
+    "voteKick": "투표로 추방",
+    "voteKickSettings": "설정",
+    "achievement": "업적",
+    "achievementDefinitions": "정의",
+    "achievementRecords": "기록",
+    "achievementSettings": "설정",
+    "onlineReward": "온라인 보상",
+    "onlineRewardSettings": "설정",
+    "gameEventLogs": "게임 이벤트 로그",
+    "gameItems": "아이템 / 블록"
+  },
+  "components": {
+    "myTable": {
+      "total": "총계 {0}",
+      "keywordSearch": "키워드 검색",
+      "view": "보기",
+      "batch": "일괄",
+      "refresh": "새로고침",
+      "noData": "데이터 없음",
+      "exportCSV": "CSV 내보내기",
+      "add": "추가",
+      "search": "검색",
+      "reset": "재설정",
+      "autoRefresh": "자동 새로고침",
+      "refreshInterval": "새로 고침 간격",
+      "secondsUnit": "초",
+      "pleaseInput": "입력해주세요",
+      "operation": "작업",
+      "batchActions": "일괄 작업",
+      "moreActions": "추가 작업",
+      "filters": "필터",
+      "collapse": "접기",
+      "expand": "펼치기",
+      "edit": "편집"
+    },
+    "myForm": {
+      "pleaseInput": "입력해주세요",
+      "pleaseSelect": "선택하세요"
+    },
+    "colorPicker": {
+      "placeholder": "6자리 색상 값을 입력하세요.",
+      "clear": "지우기",
+      "presets": "사전 설정된 색상",
+      "hint": "값은 6자리 16진수 색상으로 저장됩니다."
+    },
+    "playerInventoryDialog": {
+      "header": "플레이어 인벤토리",
+      "grid": "그리드",
+      "list": "목록",
+      "bag": "가방",
+      "belt": "벨트",
+      "equipment": "장비",
+      "itemName": "아이템 이름",
+      "icon": "아이콘",
+      "iconName": "아이콘 이름",
+      "iconColor": "아이콘 색상",
+      "localizationName": "현지화 이름",
+      "count": "개수",
+      "maxStackAllowed": "허용되는 최대 스택",
+      "quality": "품질",
+      "qualityColor": "품질 색상",
+      "useTimes": "사용 횟수",
+      "maxUseTimes": "최대 사용 횟수",
+      "mod": "모드",
+      "block": "차단"
+    },
+    "playerSkillsDialog": {
+      "header": "플레이어 스킬",
+      "collapse": "모두 축소",
+      "expand": "모두 확장",
+      "name": "이름",
+      "icon": "아이콘",
+      "localizationName": "현지화 이름",
+      "level": "수준",
+      "maxLevel": "최대 레벨",
+      "costForNextLevel": "다음 단계를 위한 비용",
+      "type": "유형",
+      "localizationDesc": "설명"
+    },
+    "playerDetailsDialog": {
+      "header": "플레이어 세부정보",
+      "playerName": "플레이어 이름",
+      "entityId": "엔터티 ID",
+      "playerId": "플레이어 ID",
+      "platformId": "플랫폼 ID",
+      "playGroup": "플레이 그룹",
+      "admin": "관리자",
+      "online": "온라인",
+      "ip": "IP 주소",
+      "ping": "핑",
+      "position": "위치",
+      "lastSpawnPosition": "마지막 스폰 위치",
+      "gameStage": "게임 스테이지",
+      "lastLogin": "마지막 로그인",
+      "playerKills": "플레이어 킬",
+      "zombieKills": "좀비 처치",
+      "deaths": "사망",
+      "score": "점수",
+      "health": "체력",
+      "stamina": "스태미나",
+      "food": "음식",
+      "water": "물",
+      "level": "레벨",
+      "expToNextLevel": "다음 레벨까지의 경험치",
+      "skillPoints": "스킬 포인트",
+      "isLandProtectionActive": "토지 보호가 활성화되어 있습니까?",
+      "distanceWalked": "걸은 거리",
+      "totalItemsCrafted": "제작된 총 아이템 수",
+      "totalTimePlayed": "총 플레이 시간",
+      "currentLife": "현재 생존 시간",
+      "longestLife": "최장 생존 시간",
+      "alreadyCraftedList": "이미 제작한 항목",
+      "unlockedRecipeList": "해제된 레시피 목록",
+      "rentedVMPosition": "임대 위치",
+      "rentalEndDayTime": "대여 종료 시간",
+      "bedroll": "침낭",
+      "active": "활성",
+      "inactive": "비활성"
+    }
+  },
+  "errors": {
+    "http": {
+      "badRequest": "잘못된 요청입니다. \n입력 내용을 확인하세요.",
+      "unauthorized": "인증되지 않았습니다. \n다시 로그인해주세요.",
+      "forbidden": "접근 불가. \n권한이 없습니다.",
+      "notFound": "찾을 수 없습니다. \n리소스가 존재하지 않습니다.",
+      "serverError": "서버 오류. \n문제가 발생했습니다.",
+      "timeout": "요청 시간이 초과되었습니다. \n연결을 확인해주세요."
+    }
+  },
+  "layout": {
+    "header": {
+      "expandMenu": "메뉴 펼치기",
+      "collapseMenu": "메뉴 접기",
+      "switchLang": "언어 전환",
+      "fullscreen": "전체 화면",
+      "exitFullscreen": "전체 화면 종료",
+      "themeConfiguration": "테마 구성",
+      "github": "GitHub",
+      "community": "지역 사회",
+      "userMenu": "사용자 메뉴",
+      "logout": "로그아웃",
+      "appearance": "모습",
+      "layout": "공들여 나열한 것",
+      "general": "일반적인",
+      "preset": "프리셋",
+      "themeScheme": "테마 구성표",
+      "grayscale": "그레이스케일",
+      "colorWeakness": "색약함",
+      "themeColor": "테마 색상",
+      "primaryColor": "원색",
+      "infoColor": "정보 색상",
+      "successColor": "성공 색상",
+      "warningColor": "경고 색상",
+      "dangerColor": "위험 색상",
+      "surfaceColor": "표면 색상",
+      "layoutMode": "레이아웃 모드",
+      "verticalMode": "수직 모드",
+      "horizontalMode": "수평 모드",
+      "headerSettings": "헤더 설정",
+      "headerHeight": "헤더 높이",
+      "showLogo": "로고 표시",
+      "showTitle": "제목 표시",
+      "showMenuCollapseBtn": "메뉴 축소 버튼 표시",
+      "showBreadcrumb": "탐색경로 표시",
+      "showBreadcrumbIcon": "탐색경로 아이콘 표시",
+      "topMenuAlignment": "상단 메뉴 정렬",
+      "left": "왼쪽",
+      "center": "센터",
+      "right": "오른쪽",
+      "showFullscreenBtn": "전체 화면 버튼 표시",
+      "showLanguageSwitchBtn": "언어 전환 버튼 표시",
+      "showThemeConfigBtn": "테마 구성 버튼 표시",
+      "sidebarSettings": "사이드바 설정",
+      "sidebarWidth": "사이드바 너비",
+      "sidebarCollapsedWidth": "사이드바 축소 너비",
+      "tabSettings": "탭 설정",
+      "showTab": "탭 표시",
+      "tabHeight": "탭 높이",
+      "showTabIcon": "탭 아이콘 표시",
+      "tabStyle": "탭 스타일",
+      "googleStyle": "구글 스타일",
+      "buttonStyle": "버튼 스타일",
+      "smoothStyle": "부드러운 스타일",
+      "footerSettings": "바닥글 설정",
+      "showFooter": "바닥글 표시",
+      "footerHeight": "바닥글 높이",
+      "presets": {
+        "blue": {
+          "name": "클래식블루",
+          "description": "전문적인 표준. \n엔터프라이즈 애플리케이션을 위한 신뢰할 수 있고 균형 잡힌 색상 구성표입니다."
+        },
+        "violet": {
+          "name": "모던 바이올렛",
+          "description": "인터페이스에 생생하고 세련된 느낌을 더해주는 우아하고 진보적인 기술 팔레트입니다."
+        },
+        "teal": {
+          "name": "신선한 청록",
+          "description": "명확성과 상쾌한 사용자 경험을 촉진하는 차분하고 자연에서 영감을 받은 미학입니다."
+        },
+        "pink": {
+          "name": "생기 넘치는 핑크",
+          "description": "따뜻하고 활력이 넘칩니다. \n창의성과 참여를 고취하기 위해 디자인된 열정적인 색상 팔레트입니다."
+        },
+        "tan": {
+          "name": "레트로 탄",
+          "description": "프리미엄 빈티지 느낌을 지닌 흙빛 유기농 팔레트로, 장인 정신이나 고급 브랜딩에 적합합니다."
+        },
+        "zinc": {
+          "name": "최소 아연",
+          "description": "산업적 정확성과 전문적인 미니멀리즘에 초점을 맞춘 세련된 그레이스케일 미학."
+        }
+      },
+      "showTransitionAnimation": "전환 애니메이션 표시",
+      "tableSize": "테이블 크기",
+      "small": "작은",
+      "default": "기본",
+      "large": "크기가 큰",
+      "scrollMode": "스크롤 모드",
+      "outerScroll": "외부 스크롤",
+      "innerScroll": "내부 스크롤",
+      "contextMenuStyle": "메뉴 스타일을 마우스 오른쪽 버튼으로 클릭",
+      "defaultStyle": "기본 스타일",
+      "flatStyle": "플랫 스타일",
+      "win10Style": "윈도우 10 스타일",
+      "macStyle": "맥 스타일",
+      "popBoxStyle": "팝업 상자 스타일",
+      "elementPlusStyle": "엘리먼트 플러스 스타일",
+      "sweetAlert2Style": "SweetAlert2 스타일",
+      "bootstrap5Style": "부트스트랩 5 스타일",
+      "bootstrap4Style": "부트스트랩 4 스타일",
+      "materialUIStyle": "머티리얼 UI 스타일",
+      "bulmaStyle": "부르마 스타일"
+    },
+    "tabs": {
+      "close": "닫다",
+      "closeOthers": "기타 닫기",
+      "closeLeft": "왼쪽 닫기",
+      "closeRight": "오른쪽 닫기",
+      "closeAll": "모두 닫기"
+    }
+  },
+  "ui": {
+    "dialog": {
+      "warningTitle": "경고",
+      "confirmButtonText": "좋아요",
+      "cancelButtonText": "취소",
+      "warningText": "계속하시겠습니까?"
+    }
+  },
+  "views": {
+    "login": {
+      "failedTitle": "로그인 실패!",
+      "password": "비밀번호",
+      "username": "사용자 이름",
+      "submit": "로그인",
+      "forgotPassword": "비밀번호를 잊으셨나요?",
+      "forgotPasswordHelpTitle": "비밀번호 구성",
+      "forgotPasswordHelpUnavailable": "이 패널은 셀프 서비스 비밀번호 재설정을 지원하지 않습니다.",
+      "forgotPasswordHelpPathLabel": "7 Days to Die 서버 루트 아래에 있는 다음 파일의 자격 증명을 업데이트합니다.",
+      "forgotPasswordHelpFieldsLabel": "{usernameField} 및 {passwordField} 필드를 업데이트한 후 구성을 저장합니다.",
+      "forgotPasswordHelpRestartHint": "서버가 구성을 자동으로 다시 로드하지 않으면 서버를 다시 시작하거나 모드를 다시 로드하세요.",
+      "rememberMe": "나를 기억해",
+      "successTitle": "돌아온 것을 환영합니다!",
+      "failedMessage": "사용자 이름이나 비밀번호가 올바르지 않습니다. 다시 시도해 주세요.",
+      "successMessage": "성공적으로 로그인되었습니다."
+    },
+    "dashboard": {
+      "headers": {
+        "overview": "개요",
+        "status": "상태",
+        "monitor": "감시 장치",
+        "quickActions": "빠른 작업",
+        "recentActivity": "최근 활동",
+        "systemPlatformInfo": "시스템 플랫폼 정보",
+        "historyPlayers": "역사 플레이어",
+        "entities": "엔터티",
+        "fps": "FPS",
+        "residentSetSize": "RSS",
+        "heap": "더미",
+        "chunks": "청크",
+        "chunkGameObjects": "CGO",
+        "items": "품목"
+      },
+      "overview": {
+        "serverName": "서버 이름",
+        "region": "서버 지역",
+        "language": "서버 언어",
+        "serverIp": "서버 IP",
+        "uptime": "서버 가동 시간",
+        "gameTime": "게임 시간",
+        "serverPort": "서버 포트",
+        "gameName": "게임 이름",
+        "gameMode": "게임 모드",
+        "serverVersion": "서버 버전",
+        "gameWorld": "게임월드",
+        "gameDifficulty": "게임 난이도",
+        "gameDifficultys": {
+          "0": "찾아 헤매다",
+          "1": "모험가",
+          "2": "유목민",
+          "3": "전사",
+          "4": "생존주의자",
+          "5": "정신 이상의"
+        },
+        "uptimeFormat": "{hours} : {minutes} : {seconds} | \n{days} : {hours} : {minutes} : {seconds}",
+        "gameTimeFormat": "일 {days}, {hours} : {minutes}"
+      },
+      "status": {
+        "freeSlots": "무료 슬롯",
+        "players": "플레이어",
+        "onlinePlayers": "온라인 플레이어",
+        "maxOnlinePlayers": "최대 온라인 플레이어",
+        "zombies": "좀비",
+        "activeZombies": "활성 좀비",
+        "maxZombies": "맥스 좀비",
+        "animals": "동물",
+        "activeAnimals": "활동적인 동물",
+        "maxAnimals": "맥스 애니멀스",
+        "memory": "메모리",
+        "usedMemory": "사용된 메모리",
+        "freeMemory": "여유 메모리",
+        "totalMemory": "총 메모리",
+        "disk": "디스크",
+        "usedDisk": "중고 디스크",
+        "freeDisk": "여유 디스크",
+        "totalDisk": "총 디스크"
+      },
+      "monitor": {
+        "cpu": "CPU",
+        "ram": "숫양",
+        "usage": "용법 (%)",
+        "time": "시간",
+        "network": "회로망",
+        "trafficIn": "트래픽 인",
+        "trafficOut": "트래픽 아웃"
+      },
+      "quickActions": {
+        "restartTitle": "서버 다시 시작",
+        "shutdownTitle": "서버 종료",
+        "restartButton": "서버 다시 시작",
+        "shutdownButton": "서버 종료",
+        "restartConfirm": "서버를 다시 시작하시겠습니까? \n연결된 플레이어의 연결이 끊어질 수 있습니다.",
+        "shutdownConfirm": "서버를 종료하시겠습니까? \n이로 인해 현재 서비스가 중단됩니다.",
+        "restartSuccess": "재시작 명령이 전송되었습니다.",
+        "shutdownSuccess": "종료 명령이 전송되었습니다.",
+        "restartError": "재시작 명령을 보내지 못했습니다.",
+        "shutdownError": "종료 명령을 보내지 못했습니다.",
+        "hint": "고위험 작업. \n계속하기 전에 중요한 작업을 수행하는 사람이 없는지 확인하세요.",
+        "nextRestart": "다음 예정된 재시작"
+      },
+      "systemInfo": {
+        "deviceName": "장치 이름",
+        "deviceModel": "장치 모델",
+        "deviceType": "장치 유형",
+        "deviceUniqueIdentifier": "장치 고유 식별자",
+        "operatingSystem": "운영 체제",
+        "processorType": "프로세서 유형",
+        "processorCount": "프로세서 수",
+        "processorFrequency": "프로세서 주파수",
+        "systemMemorySize": "시스템 메모리 크기",
+        "userName": "사용자 이름"
+      },
+      "recentActivity": {
+        "login": "로그인 성공",
+        "playerEnterGame": "플레이어: {0}이(가) 게임에 입장했습니다.",
+        "playerLeaveGame": "플레이어: {0} 왼쪽 게임"
+      }
+    },
+    "playerList": {
+      "onlinePlayers": "온라인 플레이어",
+      "historyPlayers": "역사 플레이어",
+      "playerName": "플레이어 이름",
+      "status": "상태",
+      "entityId": "엔터티 ID",
+      "playerId": "플레이어 ID",
+      "platformId": "플랫폼 ID",
+      "playGroup": "그룹 플레이",
+      "position": "위치",
+      "lastLogin": "마지막 로그인",
+      "bedroll": "침낭",
+      "permissionLevel": "권한 수준",
+      "ip": "IP 주소",
+      "ping": "핑",
+      "twitchEnabled": "트위치 활성화",
+      "zombieKills": "좀비 처치",
+      "playerKills": "플레이어 킬",
+      "deaths": "사망자",
+      "level": "수준",
+      "expToNextLevel": "다음 레벨로의 경험치",
+      "skillPoints": "스킬 포인트",
+      "gameStage": "게임 스테이지",
+      "admin": "관리자",
+      "viewInventory": "재고 보기",
+      "viewSkills": "스킬 보기",
+      "viewDetails": "세부정보 보기",
+      "kick": "킥 플레이어",
+      "kickReason": "킥 사유(선택사항)",
+      "ban": "플레이어 금지",
+      "banDuration": "금지 기간(분)",
+      "banReason": "차단 사유(선택사항)",
+      "mute": "플레이어 음소거",
+      "muteDuration": "음소거 기간(분, 0 또는 영구적인 경우 비어 있음)",
+      "muteReason": "음소거 이유(선택사항)"
+    },
+    "map": {
+      "region": "지역 파일",
+      "landClaim": "토지 소유권 주장",
+      "zombie": "좀비",
+      "hostiles": "적대적",
+      "animal": "동물",
+      "offlinePlayer": "플레이어(오프라인)",
+      "onlinePlayer": "플레이어(온라인)",
+      "mousePos": "마우스 위치",
+      "lastClick": "마지막 클릭",
+      "renderExploredArea": "탐색된 영역 렌더링",
+      "renderExploredAreaConfirm": "탐색한 영역을 렌더링하시겠습니까? \n이 작업은 몇 분 정도 걸릴 수 있습니다. 콘솔에서 진행 상황을 확인할 수 있습니다.",
+      "renderFullMap": "전체 지도 탐색",
+      "renderFullMapConfirm": "전체 지도를 탐색하시겠습니까? \n이 작업은 몇 분 정도 걸릴 수 있습니다. 콘솔에서 진행 상황을 확인할 수 있습니다. 이 작업은 일반적으로 서버가 시작된 후 한 번만 수행됩니다.",
+      "refreshMap": "지도 새로 고침",
+      "autoReload": "새로고침 간격",
+      "seconds": "초",
+      "landOwner": "토지 소유자",
+      "removeLandClaim": "제거하다",
+      "removeLandClaimConfirm": "토지 소유권 주장을 삭제하시겠습니까?",
+      "dragendTelePlayerConfirm": "플레이어: {0}을(를) 대상 위치 {1}로 순간이동하시겠습니까?",
+      "gameTimeLoading": "로드 중...",
+      "gameTimeFormat": "일 {days}, {hours}:{minutes}",
+      "claimActive": "활동적인",
+      "claimInactive": "비활성",
+      "claimStatus": "청구 상태",
+      "viewPlayerInventory": "재고 보기"
+    },
+    "gameChat": {
+      "typeMessage": "메시지를 입력하세요",
+      "send": "보내다",
+      "history": {
+        "columns": {
+          "createdAt": "시간",
+          "chatType": "채널",
+          "senderName": "보내는 사람",
+          "playerId": "플레이어 ID",
+          "entityId": "엔터티 ID",
+          "message": "메시지"
+        },
+        "filters": {
+          "senderName": "보내는 사람",
+          "playerId": "플레이어 ID",
+          "chatType": "채널",
+          "timeRange": "시간 범위"
+        },
+        "placeholders": {
+          "allChatTypes": "모든 채널",
+          "timeRange": "기간 선택"
+        },
+        "emptyPlayerId": "시스템 / 알 수 없음"
+      }
+    },
+    "auditLogs": {
+      "tabs": {
+        "auditLogs": "감사 로그",
+        "backupRuns": "백업 실행"
+      },
+      "sources": {
+        "api": "API",
+        "chatCommand": "채팅 명령",
+        "consoleCommand": "콘솔 명령",
+        "scheduler": "스케줄러",
+        "system": "체계",
+        "gameEvent": "게임 이벤트"
+      },
+      "actionTypes": {
+        "create": "만들다",
+        "update": "업데이트",
+        "delete": "삭제",
+        "enable": "할 수 있게 하다",
+        "disable": "장애를 입히다",
+        "execute": "실행하다",
+        "send": "보내다",
+        "kick": "차기",
+        "ban": "반",
+        "unban": "금지 해제",
+        "restart": "다시 시작",
+        "reload": "새로고침",
+        "grant": "승인하다",
+        "revoke": "취소",
+        "import": "수입",
+        "export": "내보내다",
+        "reset": "다시 놓기",
+        "other": "다른"
+      },
+      "filters": {
+        "timeRange": "시간 범위",
+        "source": "원천",
+        "operatorId": "운영자 ID",
+        "actionType": "작업 유형",
+        "resourceType": "리소스 유형",
+        "resourceId": "리소스 ID",
+        "succeeded": "결과"
+      },
+      "placeholders": {
+        "timeRange": "기간을 선택하세요",
+        "allSources": "모든 소스",
+        "allActionTypes": "모든 작업 유형",
+        "allResults": "모든 결과"
+      },
+      "columns": {
+        "createdAt": "생성 날짜",
+        "source": "원천",
+        "operatorId": "운영자 ID",
+        "operatorName": "운영자 이름",
+        "actionType": "작업 유형",
+        "resourceType": "리소스 유형",
+        "resourceId": "리소스 ID",
+        "summary": "요약",
+        "succeeded": "성공함",
+        "errorMessage": "오류 메시지"
+      },
+      "empty": {
+        "operatorId": "익명 또는 시스템",
+        "operatorName": "알 수 없는 연산자",
+        "source": "알 수 없는 출처",
+        "actionType": "알 수 없는 작업",
+        "resourceType": "지정되지 않음",
+        "resourceId": "없음",
+        "summary": "요약 없음",
+        "timestamp": "알 수 없는 시간",
+        "details": "세부 페이로드 없음",
+        "errorMessage": "없음"
+      },
+      "detailDialog": {
+        "title": "감사 로그 세부정보",
+        "actions": {
+          "copy": "세부정보 복사"
+        },
+        "messages": {
+          "copySuccess": "세부정보가 클립보드에 복사되었습니다.",
+          "copyFailed": "세부정보를 복사하지 못했습니다. \n나중에 다시 시도해 주세요."
+        },
+        "sections": {
+          "metadata": "메타데이터",
+          "summary": "실행 결과",
+          "details": "자세한 맥락"
+        }
+      }
+    },
+    "serverConfig": {
+      "settings": {
+        "ServerName": {
+          "group": "서버",
+          "desc": "서버 이름. \n원하는 이름을 입력하세요."
+        },
+        "ServerDescription": {
+          "group": "서버",
+          "desc": "서버 설명. \n원하는 서버 설명을 입력하세요."
+        },
+        "ServerWebsiteURL": {
+          "group": "서버",
+          "desc": "서버 웹사이트 주소. \n서버 브라우저에 클릭 가능한 링크로 표시됩니다."
+        },
+        "ServerPassword": {
+          "group": "서버",
+          "desc": "서버 비밀번호. \n플레이어가 게임 서버에 입장할 때 사용하는 비밀번호"
+        },
+        "ServerLoginConfirmationText": {
+          "group": "서버",
+          "desc": "서버 로그인 확인 텍스트입니다. \n이 옵션을 설정하면 사용자가 서버에 참가할 때 이 메시지가 표시되며 계속하기 전에 확인해야 합니다. \n이 창을 더 복잡하게 변경하려면 XUi에서 serverjoinrulesdialog 창을 변경하세요."
+        },
+        "Region": {
+          "group": "서버",
+          "desc": "서버가 위치한 지역입니다. \n가능한 값은 다음과 같습니다: 아시아, 북아메리카 동부, 북아메리카 서부, 중앙아메리카, 남아메리카, 유럽, 러시아, 중동, 아프리카, 오세아니아"
+        },
+        "Language": {
+          "group": "서버",
+          "desc": "서버에 있는 플레이어의 기본 언어입니다. \n검색하려는 언어 플레이어의 영어 이름을 사용하세요. \n가능한 값은 다음과 같습니다: 영어, 독일어, 스페인어, 프랑스어, 이탈리아어, 일본어, 코리아나, 폴란드어, 브라질어, 러시아어, 터키어, 중국어, 중국어"
+        },
+        "ServerPort": {
+          "group": "회로망",
+          "desc": "서버 프로그램이 수신 대기 중인 포트입니다. \n동일한 LAN에 있는 컴퓨터가 LAN 서버로 표시되도록 하려면 이 범위를 26900~26905 또는 27015~27020 범위로 유지하세요."
+        },
+        "ServerVisibility": {
+          "group": "회로망",
+          "desc": "서버의 가시성. \n2 = 공개, 1 = 친구에게만 표시, 0 = 비공개. \n당신은 전용 서버와 친구가 아니기 때문에 이 값을 1로 설정하면 첫 번째 플레이어가 IP를 통해 수동으로 연결하는 경우에만 작동합니다."
+        },
+        "ServerDisabledNetworkProtocols": {
+          "group": "네트워킹",
+          "desc": "서버에서 네트워킹 프로토콜을 비활성화했습니다. \n쉼표로 구분되며 가능한 값은 LiteNetLib, SteamNetworking입니다. \n사용자와 서버 사이에 NAT 라우터가 없거나 포트 전달이 올바르게 설정된 경우 전용 서버는 SteamNetworking을 비활성화해야 합니다."
+        },
+        "ServerMaxWorldTransferSpeedKiBs": {
+          "group": "네트워킹",
+          "desc": "서버 최대 월드 전송 속도. \n클라이언트에 아직 월드가 없는 경우 첫 번째 연결 시 월드 전송의 최대 속도(kiB/s)입니다. \n더 높게 설정하더라도 최대값은 약 1300kiB/s입니다."
+        },
+        "ServerMaxPlayerCount": {
+          "group": "슬롯",
+          "desc": "서버의 최대 플레이어 수입니다. \n한 번에 온라인으로 허용되는 최대 플레이어 수"
+        },
+        "ServerReservedSlots": {
+          "group": "슬롯",
+          "desc": "서버 예약 슬롯. \n최대 플레이어 수를 초과하는 많은 슬롯은 특정 권한 수준을 가진 플레이어만 사용할 수 있습니다."
+        },
+        "ServerReservedSlotsPermission": {
+          "group": "슬롯",
+          "desc": "서버 예약 슬롯 권한입니다. \n위 예약 슬롯을 사용하기 위해 필요한 권한 수준"
+        },
+        "ServerAdminSlots": {
+          "group": "슬롯",
+          "desc": "서버 관리 슬롯. \n서버가 최대 플레이어 수에 도달했음에도 불구하고 참여할 수 있는 관리자는 여전히 많습니다."
+        },
+        "ServerAdminSlotsPermission": {
+          "group": "슬롯",
+          "desc": "서버 관리자 권한 슬롯. \n위 관리자 슬롯을 사용하기 위해 필요한 권한 수준"
+        },
+        "WebDashboardEnabled": {
+          "group": "관리 인터페이스",
+          "desc": "웹 대시보드를 활성화/비활성화합니다."
+        },
+        "WebDashboardPort": {
+          "group": "관리 인터페이스",
+          "desc": "웹 대시보드용 포트입니다."
+        },
+        "WebDashboardUrl": {
+          "group": "관리 인터페이스",
+          "desc": "웹 대시보드의 외부 URL입니다. \n(서버의 공개 IP만 사용하지 않는 경우(예: 웹 대시보드가 ​​역방향 프록시 뒤에 있음) \n전체 URL이어야 합니다. 예: \nhttps://domainOfReverseProxy.tld:1234/. \n공인 IP 및 대시보드 포트를 직접 사용하는 경우 공백으로 둘 수 있습니다."
+        },
+        "EnableMapRendering": {
+          "group": "관리 인터페이스",
+          "desc": "지도 렌더링을 활성화합니다. \n지도를 탐색할 때 지도를 타일 이미지로 렌더링하는 기능을 활성화/비활성화합니다. \n예를 들어 웹 대시보드는 이를 사용하여 지도 보기를 표시할 수 있습니다."
+        },
+        "TelnetEnabled": {
+          "group": "관리 인터페이스",
+          "desc": "Telnet 서비스가 활성화되어 있는지 여부입니다. \nTelnet 서비스 활성화 또는 비활성화 [true,false]"
+        },
+        "TelnetPort": {
+          "group": "관리 인터페이스",
+          "desc": "텔넷 포트. \n텔넷 서버 포트"
+        },
+        "TelnetPassword": {
+          "group": "관리 인터페이스",
+          "desc": "텔넷 접속 비밀번호. \n비밀번호가 설정되지 않은 경우 서버는 로컬 루프백 인터페이스만 수신합니다."
+        },
+        "TelnetFailedLoginLimit": {
+          "group": "관리 인터페이스",
+          "desc": "Telnet 로그인 실패 제한. \n원격 클라이언트가 잘못된 비밀번호를 여러 번 입력하면 클라이언트의 텔넷 인터페이스 연결이 차단됩니다."
+        },
+        "TelnetFailedLoginsBlocktime": {
+          "group": "관리 인터페이스",
+          "desc": "로그인 실패 잠금 시간입니다. \n로그인 실패 제한을 초과한 후 차단이 지속되는 시간(초)"
+        },
+        "TerminalWindowEnabled": {
+          "group": "관리 인터페이스",
+          "desc": "터미널 창이 활성화되었습니다. \n로그 출력/명령 입력을 위한 터미널 창 표시(Windows에만 해당)"
+        },
+        "AdminFileName": {
+          "group": "폴더 및 파일 위치",
+          "desc": "서버 관리 파일 이름. \nSaveGameFolder에 상대적인 경로"
+        },
+        "UserDataFolder": {
+          "group": "폴더 및 파일 위치",
+          "desc": "사용자 데이터 폴더. \n이를 사용하여 RWG 생성 세계를 포함하여 서버가 생성된 모든 데이터를 저장하는 위치를 재정의합니다. \n주석을 제거하는 것을 잊지 마세요"
+        },
+        "SaveGameFolder": {
+          "group": "폴더 및 파일 위치",
+          "desc": "게임 폴더를 저장합니다. \n게임 저장 경로를 재정의하는 데에만 사용됩니다. \n주석을 제거하는 것을 잊지 마세요"
+        },
+        "ServerAllowCrossplay": {
+          "group": "기타 기술 설정",
+          "desc": "크로스플레이를 활성화/비활성화합니다. 크로스플레이 서버는 검색에서만 발견되며, 제재가 무시되지 않고 기본 플레이어 슬롯 수 이하인 경우 참가할 수 있습니다."
+        },
+        "EACEnabled": {
+          "group": "기타 기술 설정",
+          "desc": "EAC 치트 방지 활성화 여부. \n치트 방지 기능 활성화 여부(크랙 및 중국 서버의 경우 꺼야 함)"
+        },
+        "IgnoreEOSSanctions": {
+          "group": "기타 기술 설정",
+          "desc": "EOS 제재를 무시하세요. \n플레이어 가입 허용 시 EOS 제재 무시"
+        },
+        "HideCommandExecutionLog": {
+          "group": "기타 기술 설정",
+          "desc": "명령 실행 로그를 숨깁니다. \n0 = 모든 항목 표시, 1 = Telnet/제어판에서만 숨기기, 2 = 원격 게임 클라이언트에서도 숨기기, 3 = 모든 항목 숨기기"
+        },
+        "MaxUncoveredMapChunksPerPlayer": {
+          "group": "기타 기술 설정",
+          "desc": "게임 맵에서 각 플레이어가 탐색할 수 있는 영역입니다. \n따라서 플레이어당 최대 지도 파일 크기는 (x * 512바이트)로 제한되며 적용 범위는 (x * 256제곱미터)입니다. \n기본값 131072는 언제든지 최대 32제곱킬로미터의 지도를 발견할 수 있음을 의미합니다."
+        },
+        "PersistentPlayerProfiles": {
+          "group": "기타 기술 설정",
+          "desc": "플레이어 프로필을 변경할 수 있는지 여부입니다. \n비활성화하면 플레이어는 선택한 프로필로 참가할 수 있습니다. \ntrue인 경우 마지막으로 참가한 구성 파일을 사용하여 참가합니다."
+        },
+        "MaxChunkAge": {
+          "group": "기타 기술 설정",
+          "desc": "게임에서 청크를 다시 방문하거나 보호하지 않은 경우(예: 근처에 영토 돌이나 침낭을 두는 등의 방식으로) 청크를 방문한 후 원래 상태로 재설정되는 일수입니다."
+        },
+        "SaveDataLimit": {
+          "group": "기타 기술 설정",
+          "desc": "데이터 제한을 저장하세요. \n저장된 게임당 허용되는 최대 디스크 공간(MB)입니다. \n이 제한에 도달하면 저장된 게임 청크가 강제로 원래 상태로 재설정되어 공간을 확보할 수 있습니다. \n음수 값은 제한을 비활성화합니다."
+        },
+        "GameWorld": {
+          "group": "게임월드",
+          "desc": "게임 세계지도. \nNavezgane[고정 지도], RWG[무작위 지도](아래 'World Seed' 및 'World Size' 옵션 참조) 또는 'Worlds' 폴더에 있는 기존 세계 이름(예: 'Navezgane', 'PREGEN01'...)"
+        },
+        "WorldGenSeed": {
+          "group": "게임월드",
+          "desc": "세계씨앗. \nRWG라면 이것이 새로운 세계를 만들어내는 씨앗이다. \n같은 이름의 월드가 이미 존재하는 경우 직접 로드됩니다."
+        },
+        "WorldGenSize": {
+          "group": "게임월드",
+          "desc": "월드 생성 크기. \nRWG인 경우 생성된 세계의 너비와 높이를 제어합니다. \n공식적으로 지원되는 크기는 6144에서 10240 사이이고 2048의 배수여야 합니다. \n6144, 8192, 10240"
+        },
+        "GameName": {
+          "group": "게임월드",
+          "desc": "게임이름. \n게임 이름을 무엇으로 지정하든 저장된 게임의 이름과 세계에 장식(나무 등)을 배치할 때 사용되는 시드에 영향을 미칩니다. \nRWG 세계를 생성하는 경우 세계의 일반적인 레이아웃을 제어하지 않습니다."
+        },
+        "GameMode": {
+          "group": "게임월드",
+          "desc": "게임모드. \nGameModeSurvival(멀티플레이어)"
+        },
+        "GameDifficulty": {
+          "group": "게임 난이도",
+          "desc": "게임난이도. \n난이도는 0부터 5까지이며 0이 가장 쉽고 5가 가장 어렵습니다."
+        },
+        "BlockDamagePlayer": {
+          "group": "게임 난이도",
+          "desc": "플레이어 블록 손상. \n플레이어가 블록에 가한 피해(%, 정수로 표시)"
+        },
+        "BlockDamageAI": {
+          "group": "게임 난이도",
+          "desc": "AI 블록 손상. \nAI가 블록에 가한 피해(%, 정수로 표시)"
+        },
+        "BlockDamageAIBM": {
+          "group": "게임 난이도",
+          "desc": "블러드 문 동안 AI가 피해를 차단합니다. \n블러드 문(Blood Moon) 동안 AI가 막아낸 피해량(%, 정수로 표시)"
+        },
+        "XPMultiplier": {
+          "group": "게임 난이도",
+          "desc": "XP 획득 승수. \n플레이어의 XP 획득 배율(%, 정수로 표시)"
+        },
+        "PlayerSafeZoneLevel": {
+          "group": "게임 난이도",
+          "desc": "초보자 플레이어 SafeZone 수준. \n플레이어의 레벨이 이 레벨보다 작거나 같으면 스폰 시 안전 지대(적 없음)가 생성됩니다. \n플레이어가 이 레벨보다 낮으면 좀비가 더 이상 주변에 생성되지 않습니다."
+        },
+        "PlayerSafeZoneHours": {
+          "group": "게임 난이도",
+          "desc": "안전지대 기간. \n플레이어의 안전지대 유효 시간(게임 시간 기준)"
+        },
+        "BuildCreate": {
+          "group": "게임 난이도",
+          "desc": "크리에이티브 모드. \n치트 모드를 켜고 끕니다."
+        },
+        "DayNightLength": {
+          "group": "게임 난이도",
+          "desc": "게임의 실제 시간(분)입니다. \n게임의 하루에 해당하는 실제 시간(분)을 나타냅니다."
+        },
+        "DayLightLength": {
+          "group": "게임 난이도",
+          "desc": "게임의 일광 길이. \n하루에 일광 시간이 몇 시간인지 나타냅니다(기본값은 18시간)."
+        },
+        "BiomeProgression": {
+          "group": "게임 난이도",
+          "desc": "생물 군계의 진행을 촉진하기 위해 생물 군계 위험 요소와 전리품 단계 제한을 활성화합니다. \n생물 군계 챌린지를 완료하면 전리품 단계 상한선이 늘어납니다."
+        },
+        "StormFreq": {
+          "group": "게임 난이도",
+          "desc": "폭풍의 빈도를 조정합니다. \n0%는 해당 기능을 끕니다. \n바닐라 값: 0, 50, 100, 150, 200, 300, 400, 500"
+        },
+        "DeathPenalty": {
+          "group": "게임 난이도",
+          "desc": "사망 후 처벌. \n0 = 없음. \n1 = 기본값: 클래식 XP 페널티. \n2 = 부상: 대부분의 디버프가 유지됩니다. \n음식과 물 비율이 50%인 상태로 부활합니다. \n3 = 영구 사망: 캐릭터가 완전히 재설정됩니다. \n당신은 저장된 게임에서 다시 태어납니다)"
+        },
+        "DropOnDeath": {
+          "group": "게임 난이도",
+          "desc": "죽음의 하락. \n0 = 없음, 1 = 모두, 2 = 도구 벨트만, 3 = 백팩만, 4 = 모두 삭제"
+        },
+        "DropOnQuit": {
+          "group": "게임 난이도",
+          "desc": "로그아웃 드롭. \n0 = 없음, 1 = 모두, 2 = 도구 벨트만, 3 = 배낭만"
+        },
+        "BedrollDeadZoneSize": {
+          "group": "게임 난이도",
+          "desc": "좀비가 스폰되지 않는 BedrollDeadZone의 크기(즉, 각 측면의 길이가 주어진 값의 두 배인 상자 반경)입니다. \nBedrollDeadZone에 닿는 지워진 수면 영역은 지워진 후에 다시 생성되지 않습니다."
+        },
+        "BedrollExpiryTime": {
+          "group": "게임 난이도",
+          "desc": "침낭 만료 시간. \n소유자가 마지막으로 온라인에 접속한 후 침낭이 활성 상태로 유지되는 실제 일수"
+        },
+        "AllowSpawnNearFriend": {
+          "group": "게임 난이도",
+          "desc": "서버에 처음으로 참가하는 신규 플레이어가 동시에 플레이하는 친구 근처에 참가하도록 선택할 수 있나요? \n0 = 비활성화됨, 1 = 항상, 2 = 숲 생물 군계의 친구 근처에만 있음"
+        },
+        "CameraRestrictionMode": {
+          "group": "게임 난이도",
+          "desc": "카메라 제한 모드. \n0 = 플레이어는 1인칭과 3인칭 카메라 모드를 자유롭게 전환할 수 있습니다. 1 = 1인칭으로 ​​제한됨, 2 = 3인칭으로 제한됩니다."
+        },
+        "JarRefund": {
+          "group": "게임 난이도",
+          "desc": "빈 병 환불 비율입니다. \n아이템을 소비한 후 반환된 빈 병의 비율입니다. \n사용 가능한 값: 0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100"
+        },
+        "MaxSpawnedZombies": {
+          "group": "성능",
+          "desc": "생성된 좀비의 최대 수입니다. \n이 설정은 전체 맵에 적용되므로 전체 맵에 한 번에 너무 많은 좀비가 있을 수 있습니다. \n이 설정을 변경하면 성능에 큰 영향을 미칠 수 있습니다."
+        },
+        "MaxSpawnedAnimals": {
+          "group": "성능",
+          "desc": "생성된 좀비의 최대 수입니다. \n서버에 플레이어 수가 많으면 이 제한을 늘려 더 많은 야생 동물을 추가할 수 있습니다. \n동물은 좀비처럼 CPU를 많이 소모하지 않습니다. \n참고: 이로 인해 임의로 더 많은 동물이 스폰되지는 않습니다. 생물 군계 스폰 시스템은 특정 지역에 특정 수의 동물만 스폰하지만, 플레이어 기반이 크고 분산된 경우 한계에 부딪힐 수 있으므로 늘릴 수 있습니다."
+        },
+        "ServerMaxAllowedViewDistance": {
+          "group": "성능",
+          "desc": "클라이언트(6~12)에게 허용되는 최대 시청 거리입니다. \n메모리 사용량과 성능에 큰 영향을 미칩니다."
+        },
+        "MaxQueuedMeshLayers": {
+          "group": "성능",
+          "desc": "메시 생성 중에 대기열에 들어갈 수 있는 최대 청크 메시 레이어 수입니다. \n이 값을 줄이면 메모리 사용량이 늘어나지만 청크 생성 시간이 늘어날 수 있습니다."
+        },
+        "EnemySpawnMode": {
+          "group": "좀비 설정",
+          "desc": "적 생성을 활성화/비활성화합니다."
+        },
+        "EnemyDifficulty": {
+          "group": "좀비 설정",
+          "desc": "좀비 강렬함. \n0 = 정상, 1 = 광란"
+        },
+        "ZombieFeralSense": {
+          "group": "좀비 설정",
+          "desc": "좀비 야생 감각. \n0-3(꺼짐, 낮, 밤, 모두)"
+        },
+        "ZombieMove": {
+          "group": "좀비 설정",
+          "desc": "좀비 이동. \n0-4(걷기, 조깅, 달리기, 질주, 악몽)"
+        },
+        "ZombieMoveNight": {
+          "group": "좀비 설정",
+          "desc": "좀비 나이트 이동. \n0-4(걷기, 조깅, 달리기, 질주, 악몽)"
+        },
+        "ZombieFeralMove": {
+          "group": "좀비 설정",
+          "desc": "좀비 야생 이동. \n0-4(걷기, 조깅, 달리기, 질주, 악몽)"
+        },
+        "ZombieBMMove": {
+          "group": "좀비 설정",
+          "desc": "좀비BM 무브. \n0-4(걷기, 조깅, 달리기, 질주, 악몽)"
+        },
+        "AISmellMode": {
+          "group": "좀비 설정",
+          "desc": "AI 냄새 모드. \n0-5(오프, 걷기, 조깅, 달리기, 질주, 악몽)"
+        },
+        "BloodMoonFrequency": {
+          "group": "좀비 설정",
+          "desc": "블러드 문 주파수. \n블러드문이 나타나는 빈도(일수)입니다. \n이것을 0으로 설정하면 블러드 문이 없음을 의미합니다."
+        },
+        "BloodMoonRange": {
+          "group": "좀비 설정",
+          "desc": "블러드문 산맥. \n실제 블러드문 날짜는 위의 설정과 임의의 일수만큼 다를 수 있습니다. \n이 값을 0으로 설정하면 블러드 문 빈도에 지정된 N일마다 블러드 문이 시간에 나타납니다."
+        },
+        "BloodMoonWarning": {
+          "group": "좀비 설정",
+          "desc": "블러드 문 경고. \n블러드 문 데이의 레드 데이가 시작된 후 몇 시간이 지난 후의 시간입니다. \n-1로 설정하면 빨간색이 표시되지 않습니다."
+        },
+        "BloodMoonEnemyCount": {
+          "group": "좀비 설정",
+          "desc": "블러드 문 적수. \n이는 Blood Moon 좀비 그룹의 각 플레이어에 대해 언제든지 살아 있을 수 있는(동시에 생성되는) 좀비의 수이지만, 멀티플레이어에서는 MaxSpawnedZombies가 이를 무시합니다. \n또한 게임 단계에서는 측면당 최대 좀비 수를 설정합니다. \n게임 단계 값이 낮으면 좀비 수가 블러드 문 적 수 설정보다 낮아집니다. \n이 설정을 변경하면 성능에 큰 영향을 미칠 수 있습니다."
+        },
+        "LootAbundance": {
+          "group": "전리품",
+          "desc": "검색 항목 풍부 비율"
+        },
+        "LootRespawnDays": {
+          "group": "전리품",
+          "desc": "검색 항목 새로 고침 일. \n검색 가능한 항목 리소스를 새로 고치는 데 걸리는 일수"
+        },
+        "AirDropFrequency": {
+          "group": "전리품",
+          "desc": "에어드롭 빈도. \n에어드랍이 이루어진 게임 시간을 나타냅니다. 0 = 없음"
+        },
+        "AirDropMarker": {
+          "group": "전리품",
+          "desc": "에어드랍 디스플레이. \n에어드랍을 위해 지도/나침반에 마커 추가 여부를 설정합니다."
+        },
+        "PartySharedKillRange": {
+          "group": "멀티플레이어",
+          "desc": "파티 공유 킬 범위. \n파티 공유 킬 보상과 미션 파티 킬 목표 보상을 받기 위해 필요한 거리"
+        },
+        "PlayerKillingMode": {
+          "group": "멀티플레이어",
+          "desc": "플레이어 살해 설정(0 = 죽이지 않음, 1 = 아군에게만 피해, 2 = 낯선 사람에게만 피해, 3 = 모든 사람에게 피해)"
+        },
+        "LandClaimCount": {
+          "group": "LandClaimSize 옵션",
+          "desc": "토지청구 건수. \n플레이어당 허용되는 최대 LandClaimSize 수"
+        },
+        "LandClaimSize": {
+          "group": "LandClaimSize 옵션",
+          "desc": "LandClaimSize 보호 범위. \n단위는 블록입니다."
+        },
+        "LandClaimDeadZone": {
+          "group": "LandClaimSize 옵션",
+          "desc": "LandClaimSize 보호 범위. \nLandClaimSizes 간의 거리입니다. \nLandClaimSizes는 이 거리보다 커야 설정됩니다(상대방과 친구가 아닌 경우)."
+        },
+        "LandClaimExpiryTime": {
+          "group": "LandClaimSize 옵션",
+          "desc": "플레이어가 오프라인일 때 LandClaim 보호를 위한 일수입니다. \n플레이어가 오프라인 상태가 된 후 LandClaimSize가 유효한 일수(실시간)"
+        },
+        "LandClaimDecayMode": {
+          "group": "LandClaimSize 옵션",
+          "desc": "LandClaimSize 보호 붕괴 모드. \n오프라인 플레이어의 토지 범위의 붕괴 모드를 제어합니다. \n0 = 느림(선형), 1 = 빠름(지수), 2 = 없음(만료될 때까지 전체 보호)"
+        },
+        "LandClaimOnlineDurabilityModifier": {
+          "group": "LandStone 옵션",
+          "desc": "플레이어가 온라인일 때 LandStone의 보호 승수입니다. \n플레이어가 온라인일 때 LandStone의 경도 승수를 나타냅니다. 0은 무적을 의미하며 기본값은 4번입니다."
+        },
+        "LandClaimOfflineDurabilityModifier": {
+          "group": "LandStone 옵션",
+          "desc": "플레이어가 오프라인일 때 LandStone의 보호 승수입니다. \n플레이어가 오프라인일 때 LandStone의 경도 승수를 나타냅니다. 0은 무적을 의미하며 기본값은 4번입니다."
+        },
+        "LandClaimOfflineDelay": {
+          "group": "LandStone 옵션",
+          "desc": "플레이어가 게임을 종료한 후 LandStone 경도가 온라인에서 오프라인으로 변경되는 데 걸리는 시간(분)입니다. \n기본값은 0입니다."
+        },
+        "DynamicMeshEnabled": {
+          "group": "다른",
+          "desc": "동적 메시 시스템 활성화 여부"
+        },
+        "DynamicMeshLandClaimOnly": {
+          "group": "다른",
+          "desc": "동적 메시 시스템이 플레이어 LCB 영역에서만 유효한지 여부"
+        },
+        "DynamicMeshLandClaimBuffer": {
+          "group": "다른",
+          "desc": "동적 메쉬 LCB 블록 반경"
+        },
+        "DynamicMeshMaxItemCache": {
+          "group": "다른",
+          "desc": "동적 메쉬 최대 항목 캐시. \n동시에 처리할 수 있는 프로젝트 수, 값이 높을수록 더 많은 RAM이 사용됩니다."
+        },
+        "TwitchServerPermission": {
+          "group": "다른",
+          "desc": "서버에서 트위치 통합을 사용하기 위해 필요한 권한 수준"
+        },
+        "TwitchBloodMoonAllowed": {
+          "group": "다른",
+          "desc": "Twitch Blood Moon 허용 여부입니다. \n블러드 문 기간 동안 서버에서 트위치 운영을 허용하는 경우, 블러드 문 기간 동안 추가 좀비가 생성되어 서버 지연이 발생할 수 있습니다."
+        },
+        "QuestProgressionDailyLimit": {
+          "group": "다른",
+          "desc": "일일 퀘스트 진행 제한입니다. \n퀘스트 레벨을 높이는 데 도움이 되도록 플레이어가 매일 완료할 수 있는 퀘스트 수를 제한합니다. \n한도를 초과하는 퀘스트도 완료하여 보상을 받을 수 있습니다."
+        }
+      }
+    },
+    "appSettings": {
+      "empty": "사용 가능한 애플리케이션 설정이 없습니다.",
+      "groups": {
+        "general": "일반적인"
+      },
+      "fields": {
+        "webUrl": "웹 URL",
+        "userName": "사용자 이름",
+        "password": "비밀번호",
+        "accessTokenExpireTime": "액세스 토큰 만료 시간",
+        "refreshTokenExpireTime": "새로 고침 토큰 만료 시간",
+        "serverConfigFile": "서버 구성 파일"
+      },
+      "tooltips": {
+        "webUrl": "API에 도달하기 위해 프런트엔드에서 사용하는 기본 주소입니다. \nhttp 또는 https를 포함합니다.",
+        "password": "관리자 백엔드에 로그인하는 데 사용되는 비밀번호는 서버 계정과 일치해야 합니다.",
+        "accessTokenExpireTime": "액세스 토큰의 수명(초)입니다.",
+        "refreshTokenExpireTime": "새로 고침 토큰의 수명(초)입니다.",
+        "serverConfigFile": "편집할 서버 구성 파일의 경로입니다. \n상대 경로 또는 서버 디렉터리 경로가 모두 작동합니다."
+      },
+      "actions": {
+        "save": "설정 저장",
+        "reset": "다시 놓기"
+      },
+      "messages": {
+        "saveSuccess": "애플리케이션 설정이 업데이트되었습니다.",
+        "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+      }
+    },
+    "chatSettings": {
+      "fields": {
+        "isEnabled": "채팅 활성화",
+        "globalServerName": "전역 발신자 이름",
+        "whisperServerName": "귓속말 보낸 사람 이름",
+        "chatCommandPrefixes": "명령 접두사",
+        "allowNoPrefix": "접두사가 없는 명령 허용",
+        "chatCommandSeparators": "명령 구분 기호",
+        "historyRetentionDays": "기록 보관 일수",
+        "excludeCommandsFromHistory": "기록에서 명령 제외",
+        "muteNotifyMessage": "음소거 알림 메시지"
+      },
+      "tooltips": {
+        "isEnabled": "채팅은 채팅 명령어를 등록하는 모든 기능에 필요한 핵심 서비스입니다. \n비활성화할 수 없습니다.",
+        "globalServerName": "서버가 글로벌 채팅 메시지를 보낼 때 사용되는 표시 이름입니다.",
+        "whisperServerName": "서버가 속삭임 메시지를 보낼 때 사용되는 표시 이름입니다.",
+        "chatCommandPrefixes": "여러 개의 접두사는 쉼표로 구분합니다(예: /,!).",
+        "allowNoPrefix": "활성화하면 일반 글로벌 채팅 라인이 명령으로 해석될 수 있습니다.",
+        "chatCommandSeparators": "여러 구분 기호는 쉼표로 구분하세요. \n단일 공백이 일반적인 기본값입니다.",
+        "historyRetentionDays": "채팅 기록을 보관하는 일수입니다. \n영원히 보관하려면 0으로 설정하세요.",
+        "excludeCommandsFromHistory": "활성화하면 명령 접두사로 시작하는 채팅 메시지가 기록에 저장되지 않습니다.",
+        "muteNotifyMessage": "음소거된 플레이어가 채팅을 시도할 때 다시 전송되는 귓속말입니다. \n알림을 보내지 않으려면 비워 두세요."
+      },
+      "actions": {
+        "save": "채팅 설정 저장",
+        "reset": "기본 설정 복원"
+      },
+      "messages": {
+        "resetSuccess": "백엔드 기본 설정이 복원되었습니다.",
+        "saveSuccess": "채팅 설정이 업데이트되었습니다.",
+        "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+      },
+      "preview": {
+        "title": "효과 미리보기",
+        "sampleMessage": "이것은 샘플 메시지입니다.",
+        "defaultSender": "섬기는 사람",
+        "channels": {
+          "global": "글로벌",
+          "whisper": "속삭임"
+        }
+      }
+    },
+    "coloredChat": {
+      "tabs": {
+        "settings": "설정",
+        "profiles": "프로필"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "컬러 채팅 활성화",
+          "globalDefault": "전역 기본 색상",
+          "whisperDefault": "속삭임 기본 색상",
+          "friendsDefault": "친구 기본 색상",
+          "partyDefault": "파티 기본 색상",
+          "adminDefault": "관리자 기본 색상",
+          "systemDefault": "시스템 기본 색상",
+          "allowPlayerColorTags": "플레이어 색상 태그 허용",
+          "playerColorTagPermission": "플레이어 색상 태그 권한"
+        },
+        "tooltips": {
+          "isEnabled": "ColoredChat 기능의 활성화 여부를 제어합니다.",
+          "playerColorTagPermission": "채팅에서 색상 태그를 사용할 수 있는 플레이어를 제어합니다. \n없음: 비활성화됨; \n전체: 모든 플레이어; \nAdminOnly: 관리자만 가능합니다.",
+          "allowPlayerColorTags": "활성화되면 플레이어는 제어된 색상 태그 구문을 사용할 수 있습니다.",
+          "hexColor": "FFCC00과 같은 6자리 16진수 색상 값을 입력하세요."
+        },
+        "sections": {
+          "policyTitle": "정책",
+          "policyDescription": "ColoredChat 활성화 여부와 플레이어가 자신의 색상 태그를 입력할 수 있는지 여부를 제어합니다.",
+          "colorsTitle": "기본 채널 색상",
+          "colorsDescription": "플레이어가 한눈에 메시지 소스를 구별할 수 있도록 각 채팅 채널에 기본 색상을 할당합니다.",
+          "colorsHint": "아래 값은 6자리 16진수 색상으로 저장됩니다.",
+          "playerChannels": "플레이어 채널",
+          "systemChannels": "시스템 채널"
+        },
+        "playerColorTagPermissions": {
+          "none": "장애가 있는",
+          "all": "모든 플레이어",
+          "adminOnly": "관리자만"
+        },
+        "preview": {
+          "title": "효과 미리보기",
+          "samplePlayerName": "플레이어 이름",
+          "sampleMessage": "이것은 샘플 메시지입니다.",
+          "channels": {
+            "global": "글로벌",
+            "whisper": "속삭임",
+            "friends": "친구",
+            "party": "파티",
+            "admin": "관리자",
+            "system": "체계"
+          }
+        },
+        "actions": {
+          "save": "설정 저장",
+          "reset": "기본값 복원"
+        },
+        "messages": {
+          "resetSuccess": "백엔드 기본 설정이 복원되었습니다.",
+          "saveSuccess": "컬러채팅 설정이 업데이트되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      },
+      "profiles": {
+        "addProfile": "채팅 프로필 추가",
+        "editProfile": "채팅 프로필 편집",
+        "fields": {
+          "playerId": "플레이어 ID",
+          "customName": "맞춤 이름",
+          "nameColor": "이름 색상",
+          "textColor": "텍스트 색상",
+          "description": "설명",
+          "createdAt": "생성 날짜"
+        },
+        "tooltips": {
+          "playerId": "임시 EntityId가 아닌 안정적인 크로스 플랫폼 PlayerId를 사용하세요.",
+          "customName": "플레이어의 실시간 표시 이름을 사용하려면 비워 두세요. \n아래 변수를 사용하여 동적 값을 삽입하세요.",
+          "hexColor": "FFCC00과 같은 6자리 16진수 색상 값을 입력하세요.",
+          "description": "이 프로필이 존재하는 이유를 설명하는 데 사용됩니다."
+        },
+        "placeholders": {
+          "createdAtRange": "생성 시간 범위를 선택하세요."
+        },
+        "availableVariables": "사용 가능한 변수",
+        "variables": {
+          "playerName": "플레이어의 실시간 표시 이름",
+          "playerId": "크로스 플랫폼 플레이어 ID",
+          "entityId": "게임 내 개체 ID",
+          "chatType": "채팅 채널 유형"
+        },
+        "messages": {
+          "saveSuccess": "채팅 프로필이 성공적으로 저장되었습니다."
+        }
+      }
+    },
+    "economy": {
+      "overview": {
+        "totalAccounts": "총계좌",
+        "todayNewAccounts": "오늘 새 계정",
+        "totalCirculation": "총 순환량",
+        "todayTransactionCount": "오늘의 거래",
+        "todayRewardsAmount": "오늘 지급된 보상",
+        "todayDailyClaimCount": "오늘의 일일 청구",
+        "todayTaxCollected": "오늘 징수된 세금",
+        "leaderboard": "자산 순위표",
+        "leaderboardRank": "계급",
+        "loading": "로드 중...",
+        "empty": "데이터가 없습니다"
+      },
+      "tabs": {
+        "accounts": "계정",
+        "transactions": "업무",
+        "settings": "설정"
+      },
+      "settings": {
+        "sections": {
+          "basic": "기본통화",
+          "transfer": "환승",
+          "dailyReward": "일일 보상",
+          "bonus": "보너스 보상",
+          "shop": "가게"
+        },
+        "fields": {
+          "isEnabled": "경제 활성화",
+          "currencyName": "통화 이름",
+          "currencySymbol": "통화 기호",
+          "defaultBalance": "시작 잔액",
+          "allowTransfer": "플레이어 이적 허용",
+          "minTransferAmount": "최소 이체 금액",
+          "transferTaxRate": "양도세율",
+          "dailyRewardAmount": "일일 보상 금액",
+          "leaderboardSize": "리더보드 크기",
+          "zombieKillRewardEnabled": "좀비 처치 보상",
+          "zombieKillRewardAmount": "좀비 처치 보상 금액",
+          "dailyStreakEnabled": "일일 연속 보너스",
+          "dailyStreakBonusPercent": "연속 보너스 비율",
+          "dailyStreakMaxDays": "연속 최대 일수",
+          "shopEnabled": "상점 활성화",
+          "playerConnectedRewardEnabled": "플레이어 가입 보상",
+          "playerConnectedRewardAmount": "플레이어 가입 보상 금액",
+          "playerDiedPenaltyEnabled": "사형 활성화",
+          "playerDiedPenaltyAmount": "사망공제금액"
+        },
+        "commands": {
+          "sectionTitle": "채팅 명령 이름",
+          "aliasesHelp": "쉼표로 구분된 별칭(예: \n균형, 돈",
+          "fields": {
+            "balCommandName": "균형 명령",
+            "balCommandAliases": "잔액 별칭",
+            "payCommandName": "전송 명령",
+            "payCommandAliases": "별칭 전송",
+            "dailyCommandName": "일일 보상 명령",
+            "dailyCommandAliases": "일일 보상 별칭",
+            "moneyTopCommandName": "리더보드 명령",
+            "moneyTopCommandAliases": "리더보드 별칭",
+            "shopCommandName": "쇼핑 명령",
+            "shopCommandAliases": "상점 별칭",
+            "buyCommandName": "구매 명령",
+            "buyCommandAliases": "별칭 구매",
+            "redeemCommandName": "구속 명령",
+            "redeemCommandAliases": "별칭 사용"
+          }
+        },
+        "tips": {
+          "sectionTitle": "명령 응답 메시지",
+          "sectionDescription": "명령 실행 후 전송되는 기본 게임 내 팁 메시지를 재정의합니다. \n내장된 기본값을 사용하려면 비워 두세요. \n도구 설명에 나열된 자리 표시자를 지원합니다.",
+          "fields": {
+            "balanceTip": "밸런스 팁",
+            "payUsageTip": "유료 사용 팁",
+            "payTargetNotFoundTip": "지불 대상을 찾을 수 없음 팁",
+            "paySuccessTip": "결제 성공 팁",
+            "dailySuccessTip": "일일 보상 성공 팁",
+            "dailyAlreadyClaimedTip": "매일 이미 받은 팁",
+            "shopEmptyTip": "빈 팁 쇼핑",
+            "buyUsageTip": "사용팁 구매",
+            "buySuccessTip": "성공 팁 구매",
+            "redeemUsageTip": "사용 팁 교환",
+            "redeemSuccessTip": "성공 팁 사용",
+            "playerDiedPenaltyTip": "사형 팁"
+          },
+          "tooltips": {
+            "balanceTip": "지원: {balance}, {currency}",
+            "payUsageTip": "지원: {currency}",
+            "paySuccessTip": "지원: {amount}, {currency}, {playerName}, {tax}",
+            "dailySuccessTip": "지원: {amount}, {currency}, {streak}, {bonusPercent}",
+            "buyUsageTip": "지원: {currency}",
+            "buySuccessTip": "지원: {name}, {quantity}, {cost}, {currency}",
+            "redeemSuccessTip": "지원: {amount}, {currency}",
+            "playerDiedPenaltyTip": "지원: {amount}, {currency}"
+          }
+        },
+        "actions": {
+          "save": "경제 설정 저장",
+          "reset": "기본값 재설정"
+        },
+        "messages": {
+          "saveSuccess": "경제 설정이 성공적으로 저장되었습니다.",
+          "resetSuccess": "절약 설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        },
+        "preview": {
+          "title": "효과 미리보기",
+          "balance": "시작 잔액",
+          "dailyReward": "일일 보상",
+          "killReward": "처치 보상(좀비당)",
+          "transferTax": "양도세율",
+          "streakBonus": "일일 연속 보너스"
+        }
+      },
+      "accounts": {
+        "columns": {
+          "playerId": "플레이어 ID",
+          "playerName": "플레이어 이름",
+          "balance": "균형",
+          "isFrozen": "언",
+          "lastTransactionAt": "마지막 거래"
+        },
+        "actions": {
+          "view": "세부정보 보기",
+          "adjust": "잔액 조정",
+          "freeze": "꼭 매달리게 하다",
+          "unfreeze": "녹이다",
+          "batchAdjust": "일괄 승인",
+          "delete": "삭제"
+        },
+        "leaderboard": {
+          "title": "리더보드",
+          "empty": "아직 리더보드 데이터가 없습니다."
+        },
+        "detailDialog": {
+          "title": "계정 세부정보",
+          "sections": {
+            "overview": "개요",
+            "activity": "활동",
+            "recentTransactions": "최근 거래"
+          },
+          "fields": {
+            "createdAt": "생성 날짜",
+            "updatedAt": "업데이트 날짜",
+            "lastDailyClaimAt": "마지막 일일 청구",
+            "dailyStreak": "현재 연속",
+            "longestStreak": "최장 연속"
+          },
+          "hints": {
+            "recentTransactions": "최근 5개 기록만 표시"
+          },
+          "empty": {
+            "recentTransactions": "이 계정에는 아직 최근 거래가 없습니다.",
+            "reason": "이유가 제공되지 않음"
+          },
+          "messages": {
+            "loadFailed": "계정 세부정보를 로드하지 못했습니다.",
+            "freezeSuccess": "계정 동결 상태가 성공적으로 업데이트되었습니다."
+          }
+        },
+        "adjustDialog": {
+          "title": "{playerName}의 잔액 조정",
+          "fields": {
+            "amount": "양",
+            "reason": "이유"
+          },
+          "messages": {
+            "saveSuccess": "밸런스가 성공적으로 조정되었습니다."
+          }
+        },
+        "batchAdjustDialog": {
+          "title": "일괄 부여 통화",
+          "fields": {
+            "scope": "범위",
+            "amount": "양",
+            "reason": "이유"
+          },
+          "scopeOptions": {
+            "allOnline": "온라인 플레이어 전용",
+            "allAccounts": "모든 계정"
+          },
+          "messages": {
+            "success": "일괄 승인 완료: {succeeded} 성공",
+            "partialFail": ", {failed} 실패"
+          }
+        },
+        "deleteConfirm": "{playerName}의 계정을 삭제하시겠습니까? \n이 작업은 취소할 수 없습니다. \n거래 내역이 유지됩니다."
+      },
+      "transactions": {
+        "columns": {
+          "playerId": "플레이어 ID",
+          "playerName": "플레이어 이름",
+          "type": "유형",
+          "direction": "방향",
+          "amount": "양",
+          "source": "원천",
+          "occurredAt": "발생 시간",
+          "referenceId": "참조 ID",
+          "operatorName": "운영자 이름",
+          "operatorId": "운영자 ID",
+          "balanceBefore": "이전 잔액",
+          "balanceAfter": "이후 잔액",
+          "reason": "이유"
+        },
+        "placeholders": {
+          "occurredAtRange": "기간을 선택하세요"
+        },
+        "typeOptions": {
+          "adminGrant": "관리자 부여",
+          "adminDeduct": "관리자 공제",
+          "transferOut": "외부로 이전",
+          "transferIn": "환승",
+          "dailyReward": "일일 보상",
+          "tax": "세"
+        },
+        "detailDialog": {
+          "title": "거래 세부정보",
+          "sections": {
+            "primary": "주요한",
+            "metadata": "메타데이터"
+          }
+        },
+        "exportCsv": "CSV 내보내기",
+        "messages": {
+          "exportSuccess": "CSV를 성공적으로 내보냈습니다.",
+          "exportError": "CSV를 내보내지 못했습니다."
+        }
+      },
+      "shop": {
+        "columns": {
+          "name": "품목 이름",
+          "description": "설명",
+          "itemName": "게임아이템",
+          "itemCount": "수량",
+          "price": "가격",
+          "isEnabled": "활성화됨",
+          "displayOrder": "주문하다",
+          "stockLimit": "재고한도",
+          "soldCount": "판매된"
+        },
+        "actions": {
+          "add": "항목 추가",
+          "edit": "편집하다",
+          "delete": "삭제",
+          "deleteConfirm": "이 상점 항목을 삭제하시겠습니까?"
+        },
+        "form": {
+          "addTitle": "상점 아이템 추가",
+          "editTitle": "상점 아이템 편집",
+          "fields": {
+            "name": "표시 이름",
+            "description": "설명",
+            "itemName": "게임 아이템 ID",
+            "itemCount": "구매당 수량",
+            "price": "가격",
+            "isEnabled": "활성화됨",
+            "displayOrder": "표시 순서",
+            "stockLimit": "재고 한도(0 = 무제한)"
+          }
+        },
+        "messages": {
+          "createSuccess": "상점 아이템이 생성되었습니다.",
+          "updateSuccess": "상점 아이템이 업데이트되었습니다.",
+          "deleteSuccess": "상점 아이템이 삭제되었습니다."
+        }
+      },
+      "redeemCodes": {
+        "columns": {
+          "code": "암호",
+          "description": "설명",
+          "amount": "보상금액",
+          "maxUses": "최대 사용",
+          "usedCount": "사용된",
+          "expiresAt": "만료 날짜",
+          "isEnabled": "활성화됨",
+          "createdAt": "생성 날짜"
+        },
+        "actions": {
+          "add": "코드 추가",
+          "delete": "삭제",
+          "deleteConfirm": "이 사용 코드와 모든 사용 기록을 삭제하시겠습니까?",
+          "viewRedemptions": "상환 보기"
+        },
+        "form": {
+          "title": "교환 코드 추가",
+          "fields": {
+            "code": "암호",
+            "description": "설명",
+            "amount": "보상금액",
+            "maxUses": "최대 사용(0 = 무제한)",
+            "expiresAt": "만료 날짜(선택 사항)",
+            "commandRewards": "명령 보상"
+          },
+          "placeholders": {
+            "commandReward": "예를 들어 \ngiveself {EntityId} iron_sword 1 0 false"
+          },
+          "actions": {
+            "addCommand": "명령 추가",
+            "removeCommand": "제거하다"
+          },
+          "hints": {
+            "commandRewards": "{EntityId}, {PlayerId}, {PlayerName} 자리 표시자를 지원합니다."
+          },
+          "messages": {
+            "noReward": "통화 금액, 최소 하나의 명령 보상 또는 둘 다를 제공하세요."
+          }
+        },
+        "redemptionsDialog": {
+          "title": "사용: {code}",
+          "columns": {
+            "playerName": "플레이어 이름",
+            "playerId": "플레이어 ID",
+            "redeemedAt": "사용 시기"
+          },
+          "empty": "아직 사용 내역이 없습니다."
+        },
+        "messages": {
+          "createSuccess": "생성된 코드를 사용하세요.",
+          "deleteSuccess": "사용 코드가 삭제되었습니다."
+        }
+      }
+    },
+    "teleport": {
+      "tools": {
+        "tabs": {
+          "toPosition": "해당 위치로 순간이동",
+          "toPlayer": "플레이어에게 순간이동"
+        },
+        "fields": {
+          "sourcePlayer": "플레이어에서 순간이동",
+          "targetPlayer": "대상 플레이어",
+          "x": "X 좌표",
+          "y": "Y 좌표",
+          "z": "Z 좌표"
+        },
+        "placeholders": {
+          "selectPlayer": "온라인 플레이어를 선택하세요"
+        },
+        "actions": {
+          "teleport": "텔레포트"
+        },
+        "messages": {
+          "success": "순간이동에 성공했습니다",
+          "confirmToPos": "{name}을({x}, {y}, {z})로 순간이동하시겠습니까?",
+          "confirmToPlayer": "{source}을(를) {target}의 위치로 순간이동하시겠습니까?",
+          "noPlayers": "사용 가능한 온라인 플레이어가 없습니다."
+        },
+        "hints": {
+          "onlinePlayers": "온라인 플레이어만 나열됩니다."
+        }
+      },
+      "settings": {
+        "tabs": {
+          "home": "홈 텔레포트",
+          "city": "도시 텔레포트",
+          "friend": "친구 텔레포트",
+          "globalCooldown": "글로벌 쿨다운",
+          "back": "뒤로 텔레포트"
+        },
+        "sections": {
+          "basic": "기본 설정",
+          "commands": "명령",
+          "tips": "팁 메시지"
+        },
+        "fields": {
+          "isEnabled": "텔레포트 기능 활성화",
+          "home": {
+            "isEnabled": "홈 텔레포트 활성화",
+            "cooldownSeconds": "쿨다운(초)",
+            "setCurrencyRequired": "주택 비용 설정",
+            "teleCurrencyRequired": "텔레포트 홈 비용",
+            "maxHomes": "플레이어당 최대 주택 수",
+            "listCommandName": "주택 나열 명령",
+            "setCommandName": "홈 명령 설정",
+            "deleteCommandName": "홈 명령 삭제",
+            "teleCommandName": "홈 커맨드로 텔레포트",
+            "noHomeTip": "집 없음 메시지",
+            "setLimitTip": "한도 도달 메시지",
+            "setSuccessTip": "성공 메시지 설정",
+            "overwriteTip": "확인 메시지 덮어쓰기",
+            "deleteSuccessTip": "성공 메시지 삭제",
+            "homeNotFoundTip": "홈을 찾을 수 없음 메시지",
+            "coolingTip": "쿨다운 메시지",
+            "teleSuccessTip": "텔레포트 성공 메시지",
+            "setCurrencyNotEnoughTip": "자금 부족(세트) 메시지",
+            "teleCurrencyNotEnoughTip": "자금 부족(텔레포트) 메시지",
+            "allowDuringBloodMoon": "블러드 문 동안 순간 이동 허용",
+            "bloodMoonBlockedTip": "블러드문 차단 메시지"
+          },
+          "city": {
+            "isEnabled": "도시 순간이동 활성화",
+            "cooldownSeconds": "쿨다운(초)",
+            "listCommandName": "도시 목록 명령",
+            "teleCommandName": "도시 사령부로 순간이동",
+            "noCitiesTip": "도시 없음 메시지",
+            "cityNotFoundTip": "도시를 찾을 수 없음 메시지",
+            "coolingTip": "쿨다운 메시지",
+            "teleSuccessTip": "텔레포트 성공 메시지",
+            "currencyNotEnoughTip": "자금 부족 메시지"
+          },
+          "friend": {
+            "isEnabled": "친구 순간이동 활성화",
+            "cooldownSeconds": "쿨다운(초)",
+            "currencyRequired": "텔레포트 비용",
+            "requestExpirySeconds": "요청 만료(초)",
+            "friendBypass": "친구 건너뛰기 쿨다운",
+            "requestCommandName": "요청 명령 보내기",
+            "acceptCommandName": "요청 명령 수락",
+            "rejectCommandName": "요청 거부 명령",
+            "targetNotFoundTip": "대상을 찾을 수 없음 메시지",
+            "requestSentTip": "보낸 메시지 요청",
+            "requestReceivedTip": "요청 수신 메시지",
+            "acceptedTip": "수락된 메시지",
+            "rejectedTip": "거부된 메시지",
+            "targetRejectedTip": "대상이 거부된 메시지",
+            "noRequestTip": "요청 메시지 없음",
+            "coolingTip": "쿨다운 메시지",
+            "teleSuccessTip": "텔레포트 성공 메시지",
+            "currencyNotEnoughTip": "자금 부족 메시지"
+          },
+          "globalCooldown": {
+            "isEnabled": "글로벌 쿨다운 활성화",
+            "cooldownSeconds": "글로벌 쿨다운(초)"
+          },
+          "back": {
+            "isEnabled": "뒤로 텔레포트 활성화",
+            "cooldownSeconds": "쿨다운(초)",
+            "currencyRequired": "텔레포트 비용",
+            "commandName": "뒤로 명령",
+            "noPositionTip": "이전 직위 메시지 없음",
+            "coolingTip": "쿨다운 메시지",
+            "teleSuccessTip": "텔레포트 성공 메시지",
+            "currencyNotEnoughTip": "자금 부족 메시지"
+          }
+        },
+        "actions": {
+          "save": "설정 저장",
+          "reset": "기본값으로 재설정"
+        },
+        "messages": {
+          "saveSuccess": "설정이 성공적으로 저장되었습니다.",
+          "resetSuccess": "설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      },
+      "cities": {
+        "form": {
+          "addTitle": "도시 추가",
+          "editTitle": "도시 편집",
+          "fields": {
+            "name": "도시 이름",
+            "description": "설명",
+            "x": "엑스",
+            "y": "와이",
+            "z": "지",
+            "yawAngle": "요 각도",
+            "currencyRequired": "텔레포트 비용",
+            "isEnabled": "활성화됨",
+            "sortOrder": "정렬 순서"
+          }
+        },
+        "columns": {
+          "name": "이름",
+          "description": "설명",
+          "x": "엑스",
+          "y": "와이",
+          "z": "지",
+          "yawAngle": "요 각도",
+          "currencyRequired": "비용",
+          "isEnabled": "활성화됨",
+          "sortOrder": "주문하다"
+        },
+        "actions": {
+          "edit": "편집하다",
+          "delete": "삭제",
+          "deleteConfirm": "이 도시를 삭제하시겠습니까?"
+        },
+        "messages": {
+          "createSuccess": "도시가 만들어졌습니다.",
+          "updateSuccess": "도시가 업데이트되었습니다.",
+          "deleteSuccess": "도시가 삭제되었습니다."
+        }
+      },
+      "homes": {
+        "search": {
+          "playerIdLabel": "플레이어 ID",
+          "playerIdPlaceholder": "집을 검색하려면 플레이어 ID를 입력하세요.",
+          "button": "찾다",
+          "emptyHint": "집을 보려면 위에 플레이어 ID를 입력하세요."
+        },
+        "columns": {
+          "homeName": "집 이름",
+          "playerName": "플레이어 이름",
+          "x": "엑스",
+          "y": "와이",
+          "z": "지",
+          "createdAt": "생성 날짜"
+        },
+        "actions": {
+          "delete": "삭제",
+          "deleteConfirm": "\"{name}\" 집을 삭제하시겠습니까?"
+        },
+        "messages": {
+          "deleteSuccess": "집이 삭제되었습니다."
+        }
+      },
+      "logs": {
+        "filters": {
+          "playerId": "플레이어 ID",
+          "timeRange": "시간 범위"
+        },
+        "placeholders": {
+          "playerId": "플레이어 ID로 필터링",
+          "timeRange": "기간 선택"
+        },
+        "columns": {
+          "timestamp": "타임스탬프",
+          "playerName": "플레이어 이름",
+          "subSystem": "하위 시스템",
+          "fromX": "X에서",
+          "fromY": "Y에서",
+          "fromZ": "Z에서",
+          "toX": "X로",
+          "toY": "Y에게",
+          "toZ": "Z로",
+          "costPaid": "지불된 비용",
+          "remark": "주목"
+        }
+      }
+    },
+    "gameNotice": {
+      "settings": {
+        "fields": {
+          "isEnabled": "게임 알림 활성화",
+          "welcomeNotices": "환영 공지",
+          "rotatingNotices": "순환 통지",
+          "rotatingIntervalSeconds": "회전 간격(초)",
+          "bloodMoonNotice1": "블러드 문 공지 — 1단계",
+          "bloodMoonNotice2": "블러드 문 공지 — 2단계",
+          "bloodMoonNotice3": "블러드 문 공지 — 3단계"
+        },
+        "tooltips": {
+          "welcomeNotices": "플레이어가 서버에 참여할 때 플레이어에게 전송됩니다. \n{PlayerName}, {PlayerId}, {EntityId}를 지원합니다. \n각 항목은 별도의 메시지로 전송됩니다.",
+          "rotatingIntervalSeconds": "각 순환 알림 방송 사이의 간격(초)입니다.",
+          "bloodMoonNotices": "블러드 문(Blood Moon)의 다양한 단계에서 방송됩니다. \n{BloodMoonDays}, {BloodMoonStartTime}, {BloodMoonEndTime}을 지원합니다."
+        },
+        "placeholders": {
+          "welcomeNotice": "환영 알림 텍스트를 입력하세요…",
+          "rotatingNotice": "공지사항 입력…"
+        },
+        "actions": {
+          "save": "설정 저장",
+          "resetToDefaults": "기본값으로 재설정",
+          "addNotice": "공지사항 추가",
+          "removeNotice": "제거하다"
+        },
+        "messages": {
+          "saveSuccess": "게임 알림 설정이 저장되었습니다.",
+          "resetConfirm": "모든 게임 알림 설정을 기본값으로 재설정하시겠습니까? \n이 작업은 취소할 수 없습니다.",
+          "resetSuccess": "게임 알림 설정이 기본값으로 재설정되었습니다.",
+          "noRotatingNotices": "순환 알림이 구성되지 않았습니다. \n공지를 추가하려면 \"공지 추가\"를 클릭하세요.",
+          "noWelcomeNotices": "구성된 환영 알림이 없습니다. \n공지를 추가하려면 \"공지 추가\"를 클릭하세요.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      }
+    },
+    "voteRestart": {
+      "settings": {
+        "fields": {
+          "isEnabled": "투표 재시작 활성화",
+          "commandName": "명령 이름",
+          "commandAliases": "명령 별칭",
+          "minOnlinePlayers": "최소 온라인 플레이어",
+          "voteDurationSeconds": "투표 기간(초)",
+          "passThresholdPercent": "통과 임계값(%)",
+          "initiatorCooldownSeconds": "개시자 쿨다운(초)",
+          "globalCooldownSeconds": "글로벌 쿨다운(초)",
+          "warningLeadSeconds": "경고 리드타임(초)",
+          "voteStartedMessage": "투표 시작 메시지",
+          "votePassedMessage": "투표 통과 메시지",
+          "voteFailedMessage": "투표 실패 메시지",
+          "voteProgressMessage": "투표 진행 메시지",
+          "alreadyVotedMessage": "이미 투표한 메시지",
+          "initiatorCooldownMessage": "개시자 쿨다운 메시지",
+          "globalCooldownMessage": "글로벌 쿨다운 메시지",
+          "notEnoughPlayersMessage": "플레이어 수가 부족하다는 메시지",
+          "alreadyActiveMessage": "이미 활성화된 메시지에 투표하세요"
+        },
+        "tooltips": {
+          "commandAliases": "쉼표로 구분된 대체 명령 이름 목록(예: vr, restart-vote)",
+          "minOnlinePlayers": "투표를 시작하는 데 필요한 최소 온라인 플레이어 수입니다.",
+          "passThresholdPercent": "투표가 통과되기 위해 필요한 찬성 투표율(1–100)입니다.",
+          "warningLeadSeconds": "카운트다운 경고를 방송하기 위해 다시 시작하기 몇 초 전입니다.",
+          "voteStartedMessage": "{Initiator}, {Duration}, {Command}를 지원합니다.",
+          "voteProgressMessage": "{Yes}, {No}, {Total}, {Threshold}을 지원합니다.",
+          "cooldownMessage": "남은 시간 동안 {RemainingSeconds}를 지원합니다.",
+          "notEnoughPlayersMessage": "{MinPlayers}, {CurrentPlayers}를 지원합니다."
+        },
+        "actions": {
+          "save": "설정 저장",
+          "reset": "기본값으로 재설정"
+        },
+        "messages": {
+          "saveSuccess": "투표 재시작 설정이 저장되었습니다.",
+          "resetSuccess": "투표 재시작 설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      }
+    },
+    "voteKick": {
+      "settings": {
+        "fields": {
+          "isEnabled": "투표 킥 활성화",
+          "commandName": "명령 이름",
+          "commandAliases": "명령 별칭",
+          "minOnlinePlayers": "최소 온라인 플레이어",
+          "voteDurationSeconds": "투표 기간(초)",
+          "passThresholdPercent": "통과 임계값(%)",
+          "initiatorCooldownSeconds": "개시자 쿨다운(초)",
+          "targetImmunitySeconds": "대상 면역(초)",
+          "kickReason": "킥 이유",
+          "voteStartedMessage": "투표 시작 메시지",
+          "votePassedMessage": "투표 통과 메시지",
+          "voteFailedMessage": "투표 실패 메시지",
+          "voteProgressMessage": "투표 진행 메시지",
+          "alreadyVotedMessage": "이미 투표한 메시지",
+          "cooldownMessage": "쿨다운 메시지",
+          "cannotKickAdminMessage": "관리자 메시지를 차단할 수 없습니다",
+          "targetNotFoundMessage": "대상을 찾을 수 없음 메시지",
+          "targetAlreadyGoneMessage": "대상이 이미 사라짐 메시지",
+          "alreadyActiveMessage": "이미 활성화된 메시지에 투표하세요",
+          "usageTipMessage": "사용법 팁 메시지",
+          "notEnoughPlayersMessage": "플레이어 수가 부족하다는 메시지"
+        },
+        "tooltips": {
+          "commandAliases": "쉼표로 구분된 대체 명령 이름 목록(예: vk, kick-vote)",
+          "minOnlinePlayers": "킥 투표를 시작하는 데 필요한 최소 온라인 플레이어 수입니다.",
+          "passThresholdPercent": "투표가 통과되기 위해 필요한 찬성 투표율(1–100)입니다.",
+          "targetImmunitySeconds": "최근에 추방된 플레이어는 다시 대상이 될 수 없습니다.",
+          "kickReason": "연결 해제 메시지를 통해 추방된 플레이어에게 표시되는 이유.",
+          "voteStartedMessage": "{Initiator}, {Target}, {Duration}, {Command}를 지원합니다.",
+          "voteProgressMessage": "{Yes}, {No}, {Total}, {Threshold}을 지원합니다.",
+          "cooldownMessage": "남은 시간 동안 {RemainingSeconds}를 지원합니다.",
+          "usageTipMessage": "대상 이름 없이 명령을 사용할 때 표시됩니다.",
+          "notEnoughPlayersMessage": "{MinPlayers}, {CurrentPlayers}를 지원합니다."
+        },
+        "actions": {
+          "save": "설정 저장",
+          "reset": "기본값으로 재설정"
+        },
+        "messages": {
+          "saveSuccess": "투표 킥 설정이 저장되었습니다.",
+          "resetSuccess": "투표 킥 설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      }
+    },
+    "onlineReward": {
+      "settings": {
+        "fields": {
+          "isEnabled": "온라인 보상 활성화",
+          "rewardIntervalMinutes": "보상 간격(분)",
+          "rewardAmount": "보상금액",
+          "rewardPartialPeriod": "보상 부분 기간",
+          "playerMessage": "플레이어 메시지",
+          "playerMessageHint": "보상을 받은 후 플레이어에게 전송되는 선택적 개인 메시지입니다. \n{amount}, {currency}, {totalMinutes}를 지원합니다."
+        },
+        "actions": {
+          "save": "설정 저장",
+          "reset": "기본값으로 재설정"
+        },
+        "messages": {
+          "saveSuccess": "온라인 보상 설정이 저장되었습니다.",
+          "resetSuccess": "온라인 보상 설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      }
+    },
+    "achievement": {
+      "settings": {
+        "fields": {
+          "isEnabled": "업적 시스템 활성화"
+        },
+        "actions": {
+          "save": "설정 저장",
+          "reset": "기본값으로 재설정"
+        },
+        "messages": {
+          "saveSuccess": "업적 설정이 저장되었습니다.",
+          "resetSuccess": "업적 설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      },
+      "definitions": {
+        "columns": {
+          "name": "이름",
+          "triggerType": "트리거 유형",
+          "threshold": "한계점",
+          "economyReward": "경제 보상",
+          "isEnabled": "활성화됨",
+          "sortOrder": "정렬 순서"
+        },
+        "triggerTypes": {
+          "level": "수준",
+          "zombieKills": "좀비 처치",
+          "playerKills": "플레이어 킬",
+          "deaths": "사망자",
+          "gameStage": "게임 스테이지"
+        },
+        "form": {
+          "addTitle": "업적 추가",
+          "editTitle": "업적 편집",
+          "fields": {
+            "name": "이름",
+            "description": "설명",
+            "isEnabled": "활성화됨",
+            "triggerType": "트리거 유형",
+            "threshold": "한계점",
+            "economyReward": "경제 보상",
+            "consoleCommands": "콘솔 명령",
+            "playerMessage": "플레이어 메시지",
+            "broadcastMessage": "방송 메시지",
+            "sortOrder": "정렬 순서"
+          },
+          "tooltips": {
+            "economyReward": "업적을 달성하면 플레이어에게 부여되는 화폐입니다. \n건너뛰려면 0으로 설정하세요.",
+            "playerMessage": "업적을 달성한 플레이어에게 비공개 메시지가 전송됩니다. \n{achievementName}, {playerName}, {threshold}을 지원합니다.",
+            "broadcastMessage": "업적을 달성하면 모든 온라인 플레이어에게 메시지가 방송됩니다. \n{achievementName}, {playerName}, {threshold}을 지원합니다.",
+            "consoleCommands": "업적을 달성하면 한 줄에 하나씩 실행되는 콘솔 명령입니다. \n{playerId}, {playerName}을(를) 지원합니다."
+          }
+        },
+        "actions": {
+          "deleteConfirm": "이 업적 정의와 모든 획득 기록을 삭제하시겠습니까?"
+        },
+        "messages": {
+          "createSuccess": "업적 정의가 생성되었습니다.",
+          "updateSuccess": "업적 정의가 업데이트되었습니다.",
+          "deleteSuccess": "업적 정의가 삭제되었습니다."
+        }
+      },
+      "records": {
+        "columns": {
+          "achievementName": "성취",
+          "playerName": "플레이어 이름",
+          "playerId": "플레이어 ID",
+          "economyRewarded": "이코노미 리워드",
+          "createdAt": "획득 시간"
+        },
+        "actions": {
+          "deleteConfirm": "이 적립 기록을 삭제하시겠습니까? \n다음에 조건이 충족되면 업적이 플레이어에게 다시 부여됩니다."
+        },
+        "messages": {
+          "deleteSuccess": "적립 기록이 삭제되었습니다."
+        }
+      }
+    },
+    "backup": {
+      "tabs": {
+        "config": "구성",
+        "files": "파일"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "백업 기능 활성화",
+          "timeZoneId": "크론 시간대",
+          "historyRetentionDays": "실행 기록 보관(일)"
+        },
+        "tooltips": {
+          "timeZoneId": "IANA 시간대 ID(예: 아시아/상하이, UTC) \n서버의 현지 시간대를 사용하려면 비워 두세요. \n모든 백업 크론 일정에 적용됩니다."
+        },
+        "actions": {
+          "save": "구하다",
+          "reset": "다시 놓기"
+        },
+        "messages": {
+          "saveSuccess": "백업 설정이 저장되었습니다.",
+          "resetSuccess": "백업 설정이 기본값으로 복원되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      },
+      "tooltips": {
+        "cronExpression": "구성된 시간대에서 평가되는 표준 5필드 cron 표현식입니다.",
+        "destinationRoot": "백업 출력이 기록되는 절대 또는 상대 폴더입니다.",
+        "retentionCount": "최대 보관 백업 수입니다. \n아무것도 유지하지 않으려면 0을 사용하고, 가지치기를 비활성화하려면 -1을 사용합니다.",
+        "broadcastMessage": "지원: {taskName}, {status}"
+      },
+      "fields": {
+        "broadcastOnStart": "시작 시 방송",
+        "broadcastStartMessage": "방송 시작 메시지",
+        "broadcastOnComplete": "완료 시 방송",
+        "broadcastCompleteMessage": "브로드캐스트 완료 메시지"
+      },
+      "world": {
+        "fields": {
+          "isEnabled": "월드 백업 활성화",
+          "cronExpression": "크론 표현",
+          "destinationRoot": "대상 루트",
+          "compressToZip": "Zip으로 압축",
+          "retentionCount": "보존 횟수",
+          "saveWorldBeforeBackup": "백업 전 세이브 월드"
+        },
+        "tooltips": {
+          "saveWorldBeforeBackup": "`saveworld` 콘솔 명령을 실행하고 스냅샷을 찍기 전에 완료될 때까지 기다립니다."
+        }
+      },
+      "database": {
+        "fields": {
+          "isEnabled": "데이터베이스 백업 활성화",
+          "cronExpression": "크론 표현",
+          "destinationRoot": "대상 루트",
+          "compressToZip": "Zip으로 압축",
+          "retentionCount": "보존 횟수"
+        }
+      },
+      "config": {
+        "fields": {
+          "isEnabled": "서버 구성 백업 활성화",
+          "cronExpression": "크론 표현",
+          "destinationRoot": "대상 루트",
+          "compressToZip": "Zip으로 압축",
+          "retentionCount": "보존 횟수"
+        }
+      },
+      "actions": {
+        "runNow": "지금 실행",
+        "runNowConfirm": "이 백업을 즉시 트리거하시겠습니까?",
+        "runNowReason": "이유(선택사항)",
+        "runNowSuccess": "백업이 성공적으로 완료되었습니다.",
+        "runNowFailed": "백업에 실패했습니다.",
+        "download": "다운로드",
+        "delete": "삭제"
+      },
+      "files": {
+        "columns": {
+          "fileName": "파일 이름",
+          "size": "크기",
+          "createdAt": "생성 날짜"
+        },
+        "messages": {
+          "confirmDelete": "'{name}' 백업 파일을 삭제하시겠습니까? \n이 작업은 취소할 수 없습니다.",
+          "deleteSuccess": "백업 파일이 삭제되었습니다.",
+          "deleteError": "백업 파일을 삭제하지 못했습니다. \n다시 시도해 주세요.",
+          "downloadError": "백업 파일을 다운로드하지 못했습니다. \n다시 시도해 주세요.",
+          "directoryDownloadUnsupported": "폴더 다운로드는 지원되지 않습니다. \n단일 아카이브로 다운로드하려면 zip 압축을 활성화하세요."
+        }
+      },
+      "taskTypes": {
+        "world": "월드 백업",
+        "database": "데이터베이스 백업",
+        "serverConfig": "서버 구성 백업"
+      }
+    },
+    "scheduler": {
+      "tabs": {
+        "settings": "설정",
+        "tasks": "작업",
+        "history": "실행 기록"
+      },
+      "triggerSources": {
+        "cron": "크론",
+        "manual": "수동",
+        "system": "체계"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "스케줄러 활성화",
+          "defaultTimeZoneId": "기본 시간대",
+          "defaultAllowConcurrentExecution": "기본적으로 동시 실행 허용",
+          "historyRetentionDays": "기록 보관 일수",
+          "failureNotifyEnabled": "실패 알림",
+          "failureNotifyMessage": "실패 알림 메시지"
+        },
+        "tooltips": {
+          "defaultTimeZoneId": "UTC, 아시아/상하이 또는 태평양 표준시와 같은 플랫폼 시간대 ID를 사용합니다.",
+          "failureNotifyEnabled": "활성화하면 예약된 명령이 실패할 때 모든 플레이어에게 메시지가 방송됩니다.",
+          "failureNotifyMessage": "지원: {taskName}, {error}"
+        },
+        "actions": {
+          "save": "스케줄러 설정 저장",
+          "reset": "기본값 재설정"
+        },
+        "messages": {
+          "saveSuccess": "스케줄러 설정이 성공적으로 저장되었습니다.",
+          "resetSuccess": "스케줄러 설정이 기본값으로 재설정되었습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      },
+      "tasks": {
+        "columns": {
+          "name": "이름",
+          "isEnabled": "활성화됨",
+          "cronExpression": "크론 표현",
+          "timeZoneId": "시간대",
+          "allowConcurrentExecution": "경쟁 상대",
+          "lastRunAt": "마지막 실행",
+          "nextRunAt": "다음 실행",
+          "lastStatus": "마지막 상태",
+          "updatedAt": "업데이트 날짜"
+        },
+        "filters": {
+          "isEnabled": "활성화됨"
+        },
+        "placeholders": {
+          "timeZoneId": "UTC",
+          "cronExpression": "0 */5 * * * *"
+        },
+        "actions": {
+          "add": "작업 추가",
+          "edit": "작업 편집",
+          "run": "지금 실행",
+          "delete": "삭제"
+        },
+        "status": {
+          "success": "성공",
+          "failed": "실패한",
+          "skipped": "건너뛰었습니다.",
+          "running": "달리기"
+        },
+        "hints": {
+          "defaultSettings": "기본 시간대: {timeZone}."
+        },
+        "messages": {
+          "runConfirm": "{name} 작업을 즉시 실행하시겠습니까?",
+          "deleteSuccess": "스케줄러 작업이 삭제되었습니다."
+        },
+        "dialog": {
+          "createTitle": "스케줄러 작업 생성",
+          "editTitle": "스케줄러 작업 편집",
+          "fields": {
+            "name": "이름",
+            "isEnabled": "활성화됨",
+            "cronExpression": "크론 표현",
+            "timeZoneId": "시간대",
+            "allowConcurrentExecution": "동시 실행",
+            "executeOnMainThread": "메인 스레드에서 실행",
+            "requireGameStartDone": "게임 시작 필요",
+            "captureOutput": "출력 캡처",
+            "commands": "콘솔 명령",
+            "description": "설명"
+          },
+          "tooltips": {
+            "cronExpression": "백엔드가 작업을 정확하게 예약할 수 있도록 cron 표현식을 두 번째 정밀도로 사용하세요.",
+            "timeZoneId": "일정이 특정 서버나 지역 시간대를 따라야 하는 경우가 아니면 이를 UTC로 두십시오."
+          },
+          "placeholders": {
+            "command": "콘솔 명령을 입력하세요. \n인사하다"
+          },
+          "actions": {
+            "addCommand": "명령 추가",
+            "removeCommand": "제거 명령"
+          },
+          "messages": {
+            "noCommands": "콘솔 명령을 하나 이상 추가하세요.",
+            "saveSuccess": "스케줄러 작업이 성공적으로 저장되었습니다."
+          }
+        }
+      },
+      "history": {
+        "columns": {
+          "taskName": "작업 이름",
+          "taskType": "작업 유형",
+          "triggerSource": "방아쇠",
+          "startedAt": "시작 시간",
+          "endedAt": "종료 시간",
+          "succeeded": "성공함",
+          "durationMs": "지속",
+          "summary": "요약",
+          "errorMessage": "오류",
+          "operatorName": "연산자",
+          "sourceIp": "소스 IP"
+        },
+        "filters": {
+          "taskType": "작업 유형",
+          "triggerSource": "트리거 소스",
+          "succeeded": "결과",
+          "timeRange": "시간 범위"
+        },
+        "placeholders": {
+          "timeRange": "기간을 선택하세요"
+        },
+        "actions": {
+          "viewDetails": "세부정보 보기"
+        },
+        "detailDialog": {
+          "title": "실행 세부정보",
+          "titleWithName": "실행 세부정보 - {name}",
+          "details": "세부"
+        }
+      }
+    },
+    "restart": {
+      "tabs": {
+        "settings": "설정",
+        "run": "수동 실행"
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "예약된 다시 시작 활성화",
+          "cronExpression": "크론 표현",
+          "timeZoneId": "시간대",
+          "warningLeadSeconds": "경고 리드타임(초)",
+          "warningMessage": "경고 메시지",
+          "saveWorldBeforeRestart": "다시 시작하기 전에 세계를 저장하세요",
+          "restartMode": "재시작 모드",
+          "restartCommand": "사용자 정의 재시작 명령",
+          "deferScheduledRestartDuringBloodMoonWindow": "Blood Moon 기간 동안 예약된 재시작 연기",
+          "bloodMoonPreDuskProtectionHours": "블러드 문 황혼 전 보호 시간",
+          "bloodMoonDeferMinutes": "시도당 지연 시간(분)",
+          "historyRetentionDays": "기록 보관 일수"
+        },
+        "tooltips": {
+          "timeZoneId": "UTC 또는 아시아/상하이와 같은 플랫폼 시간대 ID를 사용하세요.",
+          "warningMessage": "남은 대기 시간(분)으로 대체된 {minutes} 자리 표시자를 지원합니다.",
+          "restartCommand": "다시 시작을 시작하는 선택적 콘솔 명령입니다. \n설정된 경우 내장된 다시 시작 파이프라인을 재정의합니다.",
+          "restartMode": "Graceful: 종료하기 전에 보류 중인 작업을 플러시합니다. \n강제: 즉시 종료합니다.",
+          "deferScheduledRestartDuringBloodMoonWindow": "활성화되면 블러드 문이 활성화된 동안 또는 블러드 문 데이의 황혼 전 보호 기간 내에 크론으로 트리거된 다시 시작이 연기됩니다.",
+          "bloodMoonPreDuskProtectionHours": "블러드 문 데이 해질녘 전 게임 내 시간은 보호된 창으로 취급됩니다. \n황혼 전 보호를 비활성화하려면 0으로 설정합니다.",
+          "bloodMoonDeferMinutes": "지연된 각 크론 재시작 시도를 연기하는 실제 시간(분)입니다."
+        },
+        "restartModes": {
+          "graceful": "우아한",
+          "force": "힘"
+        },
+        "warningStages": {
+          "sectionTitle": "다단계 경고 일정",
+          "description": "다양한 리드 타임에 여러 카운트다운 경고를 정의합니다. \n구성된 경우 이러한 단계는 위의 단일 경고를 대체합니다. \n단계는 리드 타임에 따라 자동으로 정렬됩니다.",
+          "empty": "정의된 경고 단계가 없습니다. \n위의 단일 경고를 사용합니다.",
+          "add": "스테이지 추가",
+          "leadSeconds": "리드타임(들)",
+          "message": "메시지",
+          "messagePlaceholder": "서버가 {minutes}분 후에 다시 시작됩니다."
+        },
+        "actions": {
+          "save": "재시작 설정 저장",
+          "cancelPending": "보류 중인 재시작 취소"
+        },
+        "messages": {
+          "saveSuccess": "다시 시작 설정이 저장되었습니다.",
+          "cancelSuccess": "보류 중인 다시 시작이 취소되었습니다.",
+          "cancelNoActive": "취소할 활성 다시 시작이 없습니다.",
+          "unsavedChanges": "저장되지 않은 변경사항이 있습니다. \n정말 떠나시겠어요?"
+        }
+      },
+      "run": {
+        "description": "즉시 서버 다시 시작을 트리거합니다. \n재정의 필드는 선택 사항이며 공백으로 남겨두면 구성된 기본값으로 대체됩니다.",
+        "fields": {
+          "reason": "이유",
+          "warningLeadSecondsOverride": "경고 리드 타임 재정의(초)",
+          "restartModeOverride": "재시작 모드 재정의"
+        },
+        "tooltips": {
+          "warningLeadSecondsOverride": "구성된 기본값을 사용하려면 비워 두세요.",
+          "restartModeOverride": "구성된 기본값을 사용하려면 비워 두세요."
+        },
+        "restartModeOptions": {
+          "graceful": "우아한",
+          "force": "힘"
+        },
+        "actions": {
+          "run": "지금 실행"
+        },
+        "messages": {
+          "runConfirm": "즉시 서버를 다시 시작하시겠습니까? \n연결된 플레이어의 연결이 끊어질 수 있습니다.",
+          "runSuccess": "서버 재시작을 요청했습니다.",
+          "runFailed": "다시 시작 요청이 실패했습니다."
+        },
+        "result": {
+          "title": "마지막 실행 결과",
+          "succeeded": "성공함",
+          "failed": "실패한",
+          "summary": "요약",
+          "durationMs": "지속",
+          "errorMessage": "오류 메시지",
+          "startedAt": "시작 시간",
+          "endedAt": "종료 시간"
+        }
+      }
+    },
+    "modManagement": {
+      "columns": {
+        "displayName": "모드",
+        "author": "작가",
+        "version": "버전",
+        "website": "웹사이트",
+        "loaded": "짐을 실은",
+        "uninstalled": "제거됨",
+        "actions": "행위"
+      },
+      "status": {
+        "loaded": "짐을 실은",
+        "unloaded": "언로드됨",
+        "installed": "설치됨",
+        "uninstalled": "제거됨"
+      },
+      "actions": {
+        "install": "설치하다",
+        "uninstall": "제거"
+      },
+      "toast": {
+        "title": "모드 관리",
+        "toggleSuccess": "모드 상태가 새로 고쳐졌습니다."
+      }
+    },
+    "console": {
+      "invalidCommand": {
+        "title": "잘못된 명령",
+        "text": "올바른 명령을 입력하세요."
+      },
+      "send": "보내다"
+    },
+    "banWhitelist": {
+      "ban": "반",
+      "whitelist": "화이트리스트",
+      "mute": "무음",
+      "playerId": "플레이어 ID",
+      "displayName": "표시 이름",
+      "playerName": "플레이어 이름",
+      "bannedUntil": "금지 기간:",
+      "mutedUntil": "음소거 종료 날짜:",
+      "permanent": "영구적인",
+      "reason": "이유",
+      "muteReason": "음소거 이유",
+      "addBan": "금지 추가",
+      "editBan": "금지 편집",
+      "addWhitelist": "화이트리스트 추가",
+      "editWhitelist": "화이트리스트 편집",
+      "addMute": "음소거 추가",
+      "editMute": "음소거 수정",
+      "createdAt": "생성 날짜",
+      "tooltips": {
+        "playerId": "고유한 플레이어 식별자(일반적으로 SteamID64)입니다.",
+        "displayName": "운영자가 대상을 빠르게 식별할 수 있도록 목록에 표시되는 이름입니다.",
+        "bannedUntil": "영구적으로 금지하려면 이 항목을 비워 두세요. \n그렇지 않으면 만료 시간을 설정하십시오.",
+        "reason": "향후 감사 및 문제 해결을 위해 플레이어가 금지되거나 제거된 이유를 기록합니다.",
+        "mutedUntil": "영구적으로 음소거하려면 비워 두세요. \n임시 음소거 날짜를 설정하세요."
+      }
+    },
+    "permission": {
+      "adminUser": "관리자",
+      "addAdminUser": "관리자 추가",
+      "editAdminUser": "관리 사용자 편집",
+      "addCommandPermission": "명령 권한 추가",
+      "editCommandPermission": "명령 권한 편집",
+      "commandPermission": "명령 권한",
+      "command": "명령",
+      "description": "설명",
+      "permissionLevel": "권한 수준",
+      "tooltips": {
+        "playerId": "권한을 부여할 고유 플레이어 식별자(일반적으로 SteamID64)입니다.",
+        "displayName": "관리자 패널에서 이 계정을 인식하는 데 사용되는 표시 이름입니다.",
+        "permissionLevel": "서버 권한 수준. \n값이 높을수록 일반적으로 더 많은 권한을 의미합니다.",
+        "command": "이 규칙이 적용되는 콘솔 명령 이름입니다.",
+        "description": "이 명령 규칙의 목적이나 제약 조건을 설명하는 선택적 참고 사항입니다."
+      }
+    },
+    "gameEventLogs": {
+      "columns": {
+        "createdAt": "시간",
+        "eventType": "이벤트 유형",
+        "playerName": "플레이어",
+        "targetPlayerName": "대상 플레이어",
+        "entityType": "엔터티 유형"
+      },
+      "eventTypes": {
+        "PlayerJoined": "플레이어가 합류했습니다",
+        "PlayerLeft": "플레이어 왼쪽",
+        "PlayerDied": "플레이어 사망",
+        "PlayerKilledZombie": "살해된 좀비",
+        "PlayerKilledPlayer": "플레이어 킬"
+      },
+      "filters": {
+        "eventType": "이벤트 유형",
+        "timeRange": "시간 범위"
+      },
+      "placeholders": {
+        "allEventTypes": "모든 이벤트",
+        "timeRange": "기간 선택"
+      }
+    },
+    "gameItems": {
+      "searchPlaceholder": "이름으로 검색...",
+      "all": "모두",
+      "items": "품목",
+      "blocks": "블록",
+      "itemTag": "목",
+      "blockTag": "차단하다",
+      "totalCount": "{0}개 ​​항목",
+      "stackValue": "×{0}",
+      "showUserHidden": "숨겨진 표시",
+      "copyName": "이름 복사",
+      "copyLocalizedName": "현지화된 이름 복사"
+    }
+  }
+}
