@@ -65,8 +65,9 @@ const defaultActive = computed(() => route.name as string);
 
 <style lang="scss">
 .menu-tree {
-  height: 100%;
+  min-height: 100%;
   padding: 0.9rem 0.7rem 1rem;
+  box-sizing: border-box;
   border-right: none !important;
   border-bottom: none !important;
   background: transparent !important;
@@ -142,6 +143,7 @@ const defaultActive = computed(() => route.name as string);
 }
 
 .menu-tree[role='menubar'] {
+  min-height: auto;
   padding: 0.25rem 0.35rem;
 }
 

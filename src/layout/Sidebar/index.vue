@@ -15,7 +15,7 @@ const { menus } = useMenus();
   <!-- overflow-x-hidden: Prevent horizontal scrollbars from appearing when collapsing. -->
   <div class="sidebar-shell">
     <div class="sidebar-panel">
-      <MenuTree :menus="menus" :collapse="collapse" class="size-full" />
+      <MenuTree :menus="menus" :collapse="collapse" />
     </div>
   </div>
 </template>
@@ -25,7 +25,7 @@ const { menus } = useMenus();
   width: 100%;
   height: 100%;
   padding: 0.9rem 0.75rem 0.75rem;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .sidebar-panel {
@@ -38,6 +38,7 @@ const { menus } = useMenus();
   box-shadow:
     0 16px 40px color-mix(in srgb, var(--colors-primary) 8%, transparent),
     0 8px 20px rgba(15, 23, 42, 0.04);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>
