@@ -36,6 +36,10 @@ const LoginSchema = v.object({
 
 const rules: FormRules = generateElementRules(LoginSchema);
 
+const forgotPasswordConfigPath = 'Mods/ServerAdmin/Config/appsettings.json';
+const forgotPasswordUserField = 'UserName';
+const forgotPasswordPasswordField = 'Password';
+
 const loginForm = reactive({
   username: '',
   password: '',
@@ -95,7 +99,36 @@ async function handleLogin() {
             <label class="text-xs text-gray-500 font-semibold ml-1 cursor-pointer dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" for="rememberMe">
               {{ $t('views.login.rememberMe') }}
             </label>
-            <a class="text-xs text-gray-500 font-semibold ml-auto underline cursor-pointer dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" href="#">{{ $t('views.login.forgotPassword') }}</a>
+            <el-popover placement="top-end" trigger="click" :width="320">
+              <div class="text-xs leading-5 text-gray-500 dark:text-gray-300">
+                <p class="text-sm text-gray-700 font-semibold dark:text-gray-100">
+                  {{ $t('views.login.forgotPasswordHelpTitle') }}
+                </p>
+                <p class="mt-2">
+                  {{ $t('views.login.forgotPasswordHelpUnavailable') }}
+                </p>
+                <p class="mt-2">
+                  {{ $t('views.login.forgotPasswordHelpPathLabel') }}
+                </p>
+                <p class="mt-1 break-all rounded-md bg-gray-100 px-2 py-1 font-mono text-[11px] text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                  {{ forgotPasswordConfigPath }}
+                </p>
+                <p class="mt-2">
+                  {{ $t('views.login.forgotPasswordHelpFieldsLabel', { usernameField: forgotPasswordUserField, passwordField: forgotPasswordPasswordField }) }}
+                </p>
+                <p class="mt-2">
+                  {{ $t('views.login.forgotPasswordHelpRestartHint') }}
+                </p>
+              </div>
+              <template #reference>
+                <button
+                  type="button"
+                  class="text-xs text-gray-500 font-semibold ml-auto underline cursor-pointer border-none bg-transparent p-0 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  {{ $t('views.login.forgotPassword') }}
+                </button>
+              </template>
+            </el-popover>
           </div>
           <div class="mt-5">
             <el-button type="primary" size="large" native-type="submit" class="text-base font-semibold w-full shadow-md">
