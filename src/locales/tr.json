@@ -553,8 +553,7 @@
         "chatCommand": "Sohbet Komutu",
         "consoleCommand": "Konsol Komutu",
         "scheduler": "Zamanlayıcı",
-        "system": "Sistem",
-        "gameEvent": "Oyun Etkinliği"
+        "system": "Sistem"
       },
       "actionTypes": {
         "create": "Yaratmak",

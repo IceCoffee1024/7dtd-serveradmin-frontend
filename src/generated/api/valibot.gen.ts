@@ -154,8 +154,7 @@ export const vAuditLogSource = v.picklist([
     'ChatCommand',
     'ConsoleCommand',
     'System',
-    'Scheduler',
-    'GameEvent'
+    'Scheduler'
 ]);
 
 /**

@@ -553,8 +553,7 @@
         "chatCommand": "チャットコマンド",
         "consoleCommand": "コンソールコマンド",
         "scheduler": "スケジューラ",
-        "system": "システム",
-        "gameEvent": "ゲームイベント"
+        "system": "システム"
       },
       "actionTypes": {
         "create": "作成する",

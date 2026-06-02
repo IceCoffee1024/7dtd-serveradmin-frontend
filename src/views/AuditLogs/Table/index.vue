@@ -27,7 +27,6 @@ const sourceOptions = computed(() => [
   { label: t('views.auditLogs.sources.consoleCommand'), value: 'ConsoleCommand' },
   { label: t('views.auditLogs.sources.scheduler'), value: 'Scheduler' },
   { label: t('views.auditLogs.sources.system'), value: 'System' },
-  { label: t('views.auditLogs.sources.gameEvent'), value: 'GameEvent' },
 ]);
 
 const actionTypeOptions = computed(() => [
@@ -301,7 +300,6 @@ function toOptionalSource(value: unknown): AuditLogSource | undefined {
     case 'ChatCommand':
     case 'ConsoleCommand':
     case 'Scheduler':
-    case 'GameEvent':
     case 'System':
       return value;
     default:
@@ -366,8 +364,6 @@ function getSourceLabel(source: string): string {
       return t('views.auditLogs.sources.scheduler');
     case 'System':
       return t('views.auditLogs.sources.system');
-    case 'GameEvent':
-      return t('views.auditLogs.sources.gameEvent');
     default:
       return source;
   }

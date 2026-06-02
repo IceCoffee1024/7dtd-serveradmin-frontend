@@ -553,8 +553,7 @@
         "chatCommand": "Comando de chat",
         "consoleCommand": "Comando de consola",
         "scheduler": "Programador",
-        "system": "Sistema",
-        "gameEvent": "Evento del juego"
+        "system": "Sistema"
       },
       "actionTypes": {
         "create": "Crear",

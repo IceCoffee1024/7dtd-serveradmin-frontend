@@ -553,8 +553,7 @@
         "chatCommand": "Polecenie czatu",
         "consoleCommand": "Polecenie konsoli",
         "scheduler": "Harmonogram",
-        "system": "System",
-        "gameEvent": "Wydarzenie w grze"
+        "system": "System"
       },
       "actionTypes": {
         "create": "Tworzyć",

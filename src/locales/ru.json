@@ -553,8 +553,7 @@
         "chatCommand": "Команда чата",
         "consoleCommand": "Консольная команда",
         "scheduler": "Планировщик",
-        "system": "Система",
-        "gameEvent": "Игровое событие"
+        "system": "Система"
       },
       "actionTypes": {
         "create": "Создавать",

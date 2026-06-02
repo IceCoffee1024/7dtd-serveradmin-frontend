@@ -1819,8 +1819,7 @@
         "chatCommand": "聊天命令",
         "consoleCommand": "控制台命令",
         "scheduler": "调度任务",
-        "system": "系统",
-        "gameEvent": "游戏事件"
+        "system": "系统"
       },
       "actionTypes": {
         "create": "创建",

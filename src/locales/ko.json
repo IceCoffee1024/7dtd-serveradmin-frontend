@@ -553,8 +553,7 @@
         "chatCommand": "채팅 명령",
         "consoleCommand": "콘솔 명령",
         "scheduler": "스케줄러",
-        "system": "체계",
-        "gameEvent": "게임 이벤트"
+        "system": "체계"
       },
       "actionTypes": {
         "create": "만들다",

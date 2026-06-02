@@ -553,8 +553,7 @@
         "chatCommand": "聊天命令",
         "consoleCommand": "控制台命令",
         "scheduler": "調度程式",
-        "system": "系統",
-        "gameEvent": "遊戲活動"
+        "system": "系統"
       },
       "actionTypes": {
         "create": "創造",

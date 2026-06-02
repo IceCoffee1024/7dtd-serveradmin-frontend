@@ -553,8 +553,7 @@
         "chatCommand": "Chat-Befehl",
         "consoleCommand": "Konsolenbefehl",
         "scheduler": "Planer",
-        "system": "System",
-        "gameEvent": "Spielereignis"
+        "system": "System"
       },
       "actionTypes": {
         "create": "Erstellen",

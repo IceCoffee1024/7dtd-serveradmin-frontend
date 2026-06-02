@@ -315,7 +315,7 @@ export type AuditLogDto = {
 /**
  * Identifies the entry point that produced an audit log record.
  */
-export type AuditLogSource = 'Api' | 'ChatCommand' | 'ConsoleCommand' | 'System' | 'Scheduler' | 'GameEvent';
+export type AuditLogSource = 'Api' | 'ChatCommand' | 'ConsoleCommand' | 'System' | 'Scheduler';
 
 /**
  * Classifies the business action captured by an audit log record.
