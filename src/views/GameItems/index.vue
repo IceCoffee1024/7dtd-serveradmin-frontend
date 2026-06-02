@@ -119,7 +119,7 @@ onMounted(loadItems);
 
 <template>
   <el-card
-    class="h-full"
+    class="game-items-page h-full"
     shadow="never"
     :body-style="{ display: 'flex', flexDirection: 'column', height: '100%', padding: '12px', boxSizing: 'border-box' }"
   >
@@ -159,7 +159,7 @@ onMounted(loadItems);
 
     <!-- Grid with virtual row scrolling -->
     <div ref="gridContainerRef" v-loading="loading" class="flex-1 min-h-0">
-      <div v-bind="containerProps" class="h-full">
+      <div v-bind="containerProps" class="game-items-page__scroller h-full">
         <div v-bind="wrapperProps">
           <div
             v-for="{ index, data: row } in virtualRows"
@@ -228,3 +228,13 @@ onMounted(loadItems);
     </div>
   </el-card>
 </template>
+
+<style scoped lang="scss">
+.game-items-page {
+  overflow: hidden;
+}
+
+.game-items-page__scroller {
+  overscroll-behavior: contain;
+}
+</style>

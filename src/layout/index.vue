@@ -148,5 +148,6 @@ const isTransparentBorder = computed(() => {
 .content--inner-scroll {
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 </style>
