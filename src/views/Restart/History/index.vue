@@ -21,7 +21,6 @@ const currentRun = ref<RunRow | null>(null);
 const triggerSourceOptions = computed(() => [
   { label: t('views.scheduler.triggerSources.cron'), value: 'Cron' },
   { label: t('views.scheduler.triggerSources.manual'), value: 'Manual' },
-  { label: t('views.scheduler.triggerSources.system'), value: 'System' },
 ]);
 const succeededOptions = computed(() => [
   { label: t('common.yes'), value: true },
@@ -152,8 +151,6 @@ function resolveTriggerSourceLabel(triggerSource: string): string {
       return t('views.scheduler.triggerSources.cron');
     case 'Manual':
       return t('views.scheduler.triggerSources.manual');
-    case 'System':
-      return t('views.scheduler.triggerSources.system');
     default:
       return triggerSource;
   }

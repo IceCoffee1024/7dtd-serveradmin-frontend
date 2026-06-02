@@ -25,8 +25,6 @@ const sourceOptions = computed(() => [
   { label: t('views.auditLogs.sources.api'), value: 'Api' },
   { label: t('views.auditLogs.sources.chatCommand'), value: 'ChatCommand' },
   { label: t('views.auditLogs.sources.consoleCommand'), value: 'ConsoleCommand' },
-  { label: t('views.auditLogs.sources.scheduler'), value: 'Scheduler' },
-  { label: t('views.auditLogs.sources.system'), value: 'System' },
 ]);
 
 const actionTypeOptions = computed(() => [
@@ -41,13 +39,10 @@ const actionTypeOptions = computed(() => [
   { label: t('views.auditLogs.actionTypes.ban'), value: 'Ban' },
   { label: t('views.auditLogs.actionTypes.unban'), value: 'Unban' },
   { label: t('views.auditLogs.actionTypes.restart'), value: 'Restart' },
-  { label: t('views.auditLogs.actionTypes.reload'), value: 'Reload' },
   { label: t('views.auditLogs.actionTypes.grant'), value: 'Grant' },
   { label: t('views.auditLogs.actionTypes.revoke'), value: 'Revoke' },
-  { label: t('views.auditLogs.actionTypes.import'), value: 'Import' },
   { label: t('views.auditLogs.actionTypes.export'), value: 'Export' },
   { label: t('views.auditLogs.actionTypes.reset'), value: 'Reset' },
-  { label: t('views.auditLogs.actionTypes.other'), value: 'Other' },
 ]);
 
 const succeededOptions = computed(() => [
@@ -299,8 +294,6 @@ function toOptionalSource(value: unknown): AuditLogSource | undefined {
     case 'Api':
     case 'ChatCommand':
     case 'ConsoleCommand':
-    case 'Scheduler':
-    case 'System':
       return value;
     default:
       return undefined;
@@ -325,13 +318,10 @@ function toOptionalActionType(value: unknown): AuditActionType | undefined {
     case 'Ban':
     case 'Unban':
     case 'Restart':
-    case 'Reload':
     case 'Grant':
     case 'Revoke':
-    case 'Import':
     case 'Export':
     case 'Reset':
-    case 'Other':
       return value;
     default:
       return undefined;
@@ -360,10 +350,6 @@ function getSourceLabel(source: string): string {
       return t('views.auditLogs.sources.chatCommand');
     case 'ConsoleCommand':
       return t('views.auditLogs.sources.consoleCommand');
-    case 'Scheduler':
-      return t('views.auditLogs.sources.scheduler');
-    case 'System':
-      return t('views.auditLogs.sources.system');
     default:
       return source;
   }
@@ -398,10 +384,6 @@ function getActionTypeLabel(actionType: string): string {
       return t('views.auditLogs.actionTypes.unban');
     case 'Restart':
       return t('views.auditLogs.actionTypes.restart');
-    case 'Reload':
-      return t('views.auditLogs.actionTypes.reload');
-    case 'Import':
-      return t('views.auditLogs.actionTypes.import');
     case 'Export':
       return t('views.auditLogs.actionTypes.export');
     case 'Grant':
@@ -410,8 +392,6 @@ function getActionTypeLabel(actionType: string): string {
       return t('views.auditLogs.actionTypes.revoke');
     case 'Reset':
       return t('views.auditLogs.actionTypes.reset');
-    case 'Other':
-      return t('views.auditLogs.actionTypes.other');
     default:
       return actionType;
   }

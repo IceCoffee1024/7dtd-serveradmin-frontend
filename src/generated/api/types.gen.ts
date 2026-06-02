@@ -315,14 +315,14 @@ export type AuditLogDto = {
 /**
  * Identifies the entry point that produced an audit log record.
  */
-export type AuditLogSource = 'Api' | 'ChatCommand' | 'ConsoleCommand' | 'System' | 'Scheduler';
+export type AuditLogSource = 'Api' | 'ChatCommand' | 'ConsoleCommand' | 'System';
 
 /**
  * Classifies the business action captured by an audit log record.
  * These values are used by the management UI and downstream analytics to group operational changes
  * without depending on free-form summary text.
  */
-export type AuditActionType = 'Create' | 'Update' | 'Delete' | 'Enable' | 'Disable' | 'Execute' | 'Send' | 'Kick' | 'Ban' | 'Unban' | 'Restart' | 'Reload' | 'Import' | 'Export' | 'Grant' | 'Revoke' | 'Reset' | 'Other';
+export type AuditActionType = 'Create' | 'Update' | 'Delete' | 'Enable' | 'Disable' | 'Execute' | 'Send' | 'Kick' | 'Ban' | 'Unban' | 'Restart' | 'Export' | 'Grant' | 'Revoke' | 'Reset';
 
 /**
  * Supported sort fields for AuditLog list queries,
@@ -4353,7 +4353,7 @@ export type AuditLogsGetData = {
          */
         endTime?: string | null;
         /**
-         * Optional source filter such as Api, ChatCommand, Console, or System.
+         * Optional source filter such as Api, ChatCommand, or ConsoleCommand.
          */
         source?: AuditLogSource | null;
         /**

@@ -26,7 +26,6 @@ const taskTypeOptions = computed(() => [
 const triggerSourceOptions = computed(() => [
   { label: t('views.scheduler.triggerSources.cron'), value: 'Cron' },
   { label: t('views.scheduler.triggerSources.manual'), value: 'Manual' },
-  { label: t('views.scheduler.triggerSources.system'), value: 'System' },
 ]);
 const succeededOptions = computed(() => [
   { label: t('common.yes'), value: true },

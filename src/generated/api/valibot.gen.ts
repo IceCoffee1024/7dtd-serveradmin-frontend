@@ -153,8 +153,7 @@ export const vAuditLogSource = v.picklist([
     'Api',
     'ChatCommand',
     'ConsoleCommand',
-    'System',
-    'Scheduler'
+    'System'
 ]);
 
 /**
@@ -174,13 +173,10 @@ export const vAuditActionType = v.picklist([
     'Ban',
     'Unban',
     'Restart',
-    'Reload',
-    'Import',
     'Export',
     'Grant',
     'Revoke',
-    'Reset',
-    'Other'
+    'Reset'
 ]);
 
 /**
