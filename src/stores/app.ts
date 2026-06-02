@@ -30,7 +30,7 @@ const BASE_THEME_SETTINGS = {
       showMenuCollapseBtn: true,
       showBreadcrumb: false,
       showBreadcrumbIcon: true,
-      topMenuAlignment: 'left',
+      topMenuAlignment: 'center',
       // showGlobalSearchBtn: true,
       showFullscreenBtn: true,
       showLanguageSwitchBtn: true,

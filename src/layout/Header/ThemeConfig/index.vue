@@ -19,6 +19,12 @@ const themePresets = getThemePresets();
 const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
 const sidebarWidthMin = computed(() => getExpandedSidebarMinWidth(currentLocale.value));
 
+function setLayoutMode(mode: App.ThemeSettings['layout']['mode']) {
+  currentTheme.value.layout.mode = mode;
+  if (mode === 'top-menu' && currentTheme.value.layout.header.topMenuAlignment === 'left')
+    currentTheme.value.layout.header.topMenuAlignment = 'center';
+}
+
 function clampSettingValue(value: number | null | undefined, min: number): number {
   const numericValue = Number(value);
   return Number.isFinite(numericValue) ? Math.max(numericValue, min) : min;
@@ -162,7 +168,7 @@ const footerHeightModel = computed({
           </el-divider>
           <div class="grid grid-cols-2">
             <div class="flex-center flex-col">
-              <LayoutModeItem :active="currentTheme.layout.mode === 'side-menu'" @click="currentTheme.layout.mode = 'side-menu'">
+              <LayoutModeItem :active="currentTheme.layout.mode === 'side-menu'" @click="setLayoutMode('side-menu')">
                 <icon-custom-side-menu />
               </LayoutModeItem>
               <div class="mt-8px">
@@ -170,7 +176,7 @@ const footerHeightModel = computed({
               </div>
             </div>
             <div class="flex-center flex-col">
-              <LayoutModeItem :active="currentTheme.layout.mode === 'top-menu'" @click="currentTheme.layout.mode = 'top-menu'">
+              <LayoutModeItem :active="currentTheme.layout.mode === 'top-menu'" @click="setLayoutMode('top-menu')">
                 <icon-custom-top-menu />
               </LayoutModeItem>
               <div class="mt-8px">

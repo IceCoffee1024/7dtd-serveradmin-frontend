@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useAppStore } from '~/stores/app';
 
 const PALETTE_SHADES = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const;
+const TOP_MENU_ALIGNMENT_MIGRATION_KEY = 'app.theme-settings.top-menu-center-migrated';
 
 type PaletteVariant = '' | 'light-3' | 'light-5' | 'light-7' | 'light-8' | 'light-9' | 'dark-2';
 type PaletteShade = typeof PALETTE_SHADES[number];
@@ -34,6 +35,19 @@ const ELEMENT_DARK_PALETTE_MAP = [
 
 export const useTheme = createSharedComposable(() => {
   const { themeSettings: currentTheme } = storeToRefs(useAppStore());
+
+  const normalizeThemeSettings = () => {
+    if (localStorage.getItem(TOP_MENU_ALIGNMENT_MIGRATION_KEY) === '1')
+      return;
+
+    const { layout } = currentTheme.value;
+    if (layout.mode === 'top-menu' && layout.header.topMenuAlignment === 'left')
+      layout.header.topMenuAlignment = 'center';
+
+    localStorage.setItem(TOP_MENU_ALIGNMENT_MIGRATION_KEY, '1');
+  };
+
+  normalizeThemeSettings();
 
   const preferredDark = usePreferredDark();
 

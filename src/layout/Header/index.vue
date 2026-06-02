@@ -57,7 +57,12 @@ async function handleCommand(command: string) {
     </div>
 
     <div v-if="isTopMenu" class="header-menu" :class="topMenuAlignmentClass">
-      <MenuTree :menus="menus" mode="horizontal" :ellipsis="false" />
+      <MenuTree
+        :menus="menus"
+        mode="horizontal"
+        :ellipsis="false"
+        :alignment="currentTheme.layout.header.topMenuAlignment"
+      />
     </div>
 
     <div class="header-actions" :class="{ 'header-actions--stretch': !isTopMenu }">
@@ -122,6 +127,7 @@ async function handleCommand(command: string) {
 
 .header-brand {
   display: flex;
+  flex: 0 1 auto;
   align-items: center;
   justify-content: flex-start;
   gap: 0.25rem;
@@ -139,17 +145,25 @@ async function handleCommand(command: string) {
 }
 
 .header-menu {
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
   min-width: 0;
   margin-inline: 0.25rem;
+  overflow: hidden;
+}
+
+.header-menu :deep(.menu-tree) {
+  width: 100%;
+  min-width: 0;
 }
 
 .header-actions {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .header-actions--stretch {

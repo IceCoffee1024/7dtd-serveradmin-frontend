@@ -1,16 +1,26 @@
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import MenuItem from './MenuItem.vue';
 
 interface Props {
   menus: App.Menu[];
   collapse?: boolean;
+  mode?: 'vertical' | 'horizontal';
+  ellipsis?: boolean;
+  alignment?: 'left' | 'center' | 'right';
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  collapse: false,
+  mode: 'vertical',
+  ellipsis: true,
+  alignment: 'left',
+});
 
 const route = useRoute();
 const router = useRouter();
+const { width: windowWidth } = useWindowSize();
 
 interface MenuGroup {
   label?: string;
@@ -47,18 +57,67 @@ function handleSelectMenu(index: string) {
 }
 
 const defaultActive = computed(() => route.name as string);
+
+const horizontalVisibleRootCount = computed(() => {
+  if (windowWidth.value >= 1400)
+    return 5;
+  if (windowWidth.value >= 1240)
+    return 4;
+  if (windowWidth.value >= 1040)
+    return 3;
+  if (windowWidth.value >= 940)
+    return 2;
+  if (windowWidth.value >= 820)
+    return 1;
+  return 0;
+});
+
+const horizontalMenus = computed(() => groupedMenus.value.flatMap(group => group.items));
+const visibleHorizontalMenus = computed(() => horizontalMenus.value.slice(0, horizontalVisibleRootCount.value));
+const overflowHorizontalMenus = computed(() => horizontalMenus.value.slice(horizontalVisibleRootCount.value));
 </script>
 
 <template>
-  <el-menu :default-active="defaultActive" :collapse="collapse" class="menu-tree" :class="{ 'menu-tree--collapsed': collapse }" @select="handleSelectMenu">
-    <template v-for="(group, i) in groupedMenus" :key="i">
-      <div
-        v-if="group.label && !collapse"
-        class="menu-tree__group-label"
+  <el-menu
+    :default-active="defaultActive"
+    :collapse="collapse"
+    :mode="mode"
+    :ellipsis="ellipsis"
+    class="menu-tree"
+    :class="{
+      'menu-tree--collapsed': collapse,
+      'menu-tree--horizontal': mode === 'horizontal',
+      [`menu-tree--align-${alignment}`]: mode === 'horizontal',
+    }"
+    @select="handleSelectMenu"
+  >
+    <template v-if="mode === 'horizontal'">
+      <MenuItem v-for="item in visibleHorizontalMenus" :key="item.index" :menu="item" />
+      <el-sub-menu
+        v-if="overflowHorizontalMenus.length"
+        index="__top-menu-more"
+        class="menu-tree__more-menu"
       >
-        {{ group.label }}
-      </div>
-      <MenuItem v-for="item in group.items" :key="item.index" :menu="item" />
+        <template #title>
+          <el-icon>
+            <icon-ic:baseline-more-horiz />
+          </el-icon>
+          <span class="sr-only">More</span>
+        </template>
+        <MenuItem v-for="item in overflowHorizontalMenus" :key="item.index" :menu="item" />
+      </el-sub-menu>
+    </template>
+
+    <template v-else>
+      <template v-for="(group, i) in groupedMenus" :key="i">
+        <div
+          v-if="group.label && !collapse"
+          class="menu-tree__group-label"
+        >
+          {{ group.label }}
+        </div>
+        <MenuItem v-for="item in group.items" :key="item.index" :menu="item" />
+      </template>
     </template>
   </el-menu>
 </template>
@@ -142,20 +201,69 @@ const defaultActive = computed(() => route.name as string);
   margin-right: 0;
 }
 
-.menu-tree[role='menubar'] {
+.menu-tree.menu-tree--horizontal {
+  display: flex;
+  align-items: center;
   min-height: auto;
   padding: 0.25rem 0.35rem;
+  width: 100%;
+  min-width: 0;
 }
 
-.menu-tree[role='menubar'] .el-menu-item,
-.menu-tree[role='menubar'] .el-sub-menu__title {
+.menu-tree.menu-tree--horizontal.menu-tree--align-left {
+  justify-content: flex-start;
+}
+
+.menu-tree.menu-tree--horizontal.menu-tree--align-center {
+  justify-content: center;
+}
+
+.menu-tree.menu-tree--horizontal.menu-tree--align-right {
+  justify-content: flex-end;
+}
+
+.menu-tree.menu-tree--horizontal .el-menu-item,
+.menu-tree.menu-tree--horizontal .el-sub-menu__title {
+  max-width: 148px;
   margin-bottom: 0;
-  margin-right: 0.35rem;
+  margin-right: 0.2rem;
+  padding-inline: 0.55rem !important;
   border-radius: 999px;
   height: 38px;
 }
 
-.menu-tree[role='menubar'] .el-menu-item.is-active {
+.menu-tree.menu-tree--horizontal .el-menu-item .el-icon,
+.menu-tree.menu-tree--horizontal .el-sub-menu__title .el-icon {
+  flex-shrink: 0;
+  margin-right: 0.35rem;
+}
+
+.menu-tree.menu-tree--horizontal .menu-item__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-tree.menu-tree--horizontal .el-menu-item.is-active {
   box-shadow: none;
+}
+
+.menu-tree.menu-tree--horizontal > .el-sub-menu > .el-sub-menu__title .el-sub-menu__icon-arrow {
+  display: none;
+}
+
+.menu-tree.menu-tree--horizontal .menu-tree__more-menu > .el-sub-menu__title {
+  width: 44px;
+  padding-inline: 0 !important;
+  justify-content: center;
+}
+
+.menu-tree.menu-tree--horizontal .menu-tree__more-menu > .el-sub-menu__title .el-icon {
+  margin-right: 0;
+}
+
+.menu-tree.menu-tree--horizontal .el-menu--popup {
+  min-width: 180px;
 }
 </style>
