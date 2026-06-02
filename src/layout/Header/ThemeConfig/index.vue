@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useTheme } from '~/composables';
+import { getExpandedSidebarMinWidth, LAYOUT_LIMITS } from '~/constants/layout';
 import { useAppStore } from '~/stores/app';
+import { useLocaleStore } from '~/stores/locale';
 import ColorPalette from './ColorPalette/index.vue';
 import LayoutModeItem from './LayoutModeItem/index.vue';
 import PresetItem from './PresetItem/index.vue';
@@ -10,9 +13,51 @@ const activeTabName = ref('first');
 
 const { getThemePresets } = useAppStore();
 const { currentTheme } = useTheme();
+const { currentLocale } = storeToRefs(useLocaleStore());
 const themePresets = getThemePresets();
 
 const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
+const sidebarWidthMin = computed(() => getExpandedSidebarMinWidth(currentLocale.value));
+
+function clampSettingValue(value: number | null | undefined, min: number): number {
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? Math.max(numericValue, min) : min;
+}
+
+const headerHeightModel = computed({
+  get: () => clampSettingValue(currentTheme.value.layout.header.height, LAYOUT_LIMITS.minHeaderHeight),
+  set: (value) => {
+    currentTheme.value.layout.header.height = clampSettingValue(value, LAYOUT_LIMITS.minHeaderHeight);
+  },
+});
+
+const sidebarWidthModel = computed({
+  get: () => clampSettingValue(currentTheme.value.layout.sidebar.width, sidebarWidthMin.value),
+  set: (value) => {
+    currentTheme.value.layout.sidebar.width = clampSettingValue(value, sidebarWidthMin.value);
+  },
+});
+
+const sidebarCollapsedWidthModel = computed({
+  get: () => clampSettingValue(currentTheme.value.layout.sidebar.collapsedWidth, LAYOUT_LIMITS.minSidebarCollapsedWidth),
+  set: (value) => {
+    currentTheme.value.layout.sidebar.collapsedWidth = clampSettingValue(value, LAYOUT_LIMITS.minSidebarCollapsedWidth);
+  },
+});
+
+const tabHeightModel = computed({
+  get: () => clampSettingValue(currentTheme.value.layout.tab.height, LAYOUT_LIMITS.minTabHeight),
+  set: (value) => {
+    currentTheme.value.layout.tab.height = clampSettingValue(value, LAYOUT_LIMITS.minTabHeight);
+  },
+});
+
+const footerHeightModel = computed({
+  get: () => clampSettingValue(currentTheme.value.layout.footer.height, LAYOUT_LIMITS.minFooterHeight),
+  set: (value) => {
+    currentTheme.value.layout.footer.height = clampSettingValue(value, LAYOUT_LIMITS.minFooterHeight);
+  },
+});
 </script>
 
 <template>
@@ -141,7 +186,7 @@ const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
               <div>
                 {{ $t('layout.header.headerHeight') }}
               </div>
-              <el-input-number v-model="currentTheme.layout.header.height" :min="0" />
+              <el-input-number v-model="headerHeightModel" :min="LAYOUT_LIMITS.minHeaderHeight" />
             </div>
             <div>
               <div>
@@ -210,13 +255,13 @@ const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
               <div>
                 {{ $t('layout.header.sidebarWidth') }}
               </div>
-              <el-input-number v-model="currentTheme.layout.sidebar.width" :min="0" />
+              <el-input-number v-model="sidebarWidthModel" :min="sidebarWidthMin" />
             </div>
             <div>
               <div>
                 {{ $t('layout.header.sidebarCollapsedWidth') }}
               </div>
-              <el-input-number v-model="currentTheme.layout.sidebar.collapsedWidth" :min="0" />
+              <el-input-number v-model="sidebarCollapsedWidthModel" :min="LAYOUT_LIMITS.minSidebarCollapsedWidth" />
             </div>
           </div>
           <el-divider>
@@ -233,7 +278,7 @@ const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
               <div>
                 {{ $t('layout.header.tabHeight') }}
               </div>
-              <el-input-number v-model="currentTheme.layout.tab.height" :min="0" />
+              <el-input-number v-model="tabHeightModel" :min="LAYOUT_LIMITS.minTabHeight" />
             </div>
             <div>
               <div>
@@ -266,7 +311,7 @@ const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
               <div>
                 {{ $t('layout.header.footerHeight') }}
               </div>
-              <el-input-number v-model="currentTheme.layout.footer.height" :min="0" />
+              <el-input-number v-model="footerHeightModel" :min="LAYOUT_LIMITS.minFooterHeight" />
             </div>
           </div>
         </el-tab-pane>

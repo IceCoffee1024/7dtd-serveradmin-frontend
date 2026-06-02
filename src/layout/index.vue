@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core';
 import { addUnit } from 'element-plus/es/utils/index';
+import { storeToRefs } from 'pinia';
 import { useTheme } from '~/composables';
+import { LAYOUT_LIMITS, resolveExpandedSidebarWidth } from '~/constants/layout';
+import { useLocaleStore } from '~/stores/locale';
 import Footer from './Footer/index.vue';
 import Header from './Header/index.vue';
 import Main from './Main/index.vue';
@@ -12,31 +15,41 @@ const { y: windowScrollY } = useWindowScroll();
 const isScrolled = computed(() => windowScrollY.value > 0);
 
 const { currentTheme } = useTheme();
+const { currentLocale } = storeToRefs(useLocaleStore());
 
-const FOOTER_VISUAL_MIN_HEIGHT = 96;
+const headerHeightValue = computed(() =>
+  Math.max(currentTheme.value.layout.header.height, LAYOUT_LIMITS.minHeaderHeight),
+);
+
+const tabHeightValue = computed(() =>
+  Math.max(currentTheme.value.layout.tab.height, LAYOUT_LIMITS.minTabHeight),
+);
 
 const sidebarWidth = computed(() => {
   if (currentTheme.value.layout.sidebar.collapsed) {
-    return addUnit(currentTheme.value.layout.sidebar.collapsedWidth);
+    return addUnit(Math.max(
+      currentTheme.value.layout.sidebar.collapsedWidth,
+      LAYOUT_LIMITS.minSidebarCollapsedWidth,
+    ));
   }
-  return addUnit(currentTheme.value.layout.sidebar.width);
+  return addUnit(resolveExpandedSidebarWidth(currentTheme.value.layout.sidebar.width, currentLocale.value));
 });
 
 const headerHeight = computed(() => {
-  return addUnit(currentTheme.value.layout.header.height);
+  return addUnit(headerHeightValue.value);
 });
 
 const headerContainerHeight = computed(() => {
   return currentTheme.value.layout.tab.visible
-    ? addUnit(currentTheme.value.layout.header.height + currentTheme.value.layout.tab.height)
-    : addUnit(currentTheme.value.layout.header.height);
+    ? addUnit(headerHeightValue.value + tabHeightValue.value)
+    : addUnit(headerHeightValue.value);
 });
 
 const contentOffsetTop = computed(() => headerContainerHeight.value);
 
 const footerHeight = computed(() => {
   return currentTheme.value.layout.footer.visible
-    ? addUnit(Math.max(currentTheme.value.layout.footer.height, FOOTER_VISUAL_MIN_HEIGHT))
+    ? addUnit(Math.max(currentTheme.value.layout.footer.height, LAYOUT_LIMITS.minFooterHeight))
     : '0px';
 });
 
@@ -62,7 +75,7 @@ const isTransparentBorder = computed(() => {
         v-if="currentTheme.layout.tab.visible" class="nav-tab" :style="{
           marginLeft: isTopMenu ? 0 : sidebarWidth,
           width: isTopMenu ? '100%' : `calc(100% - ${sidebarWidth})`,
-          height: addUnit(currentTheme.layout.tab.height),
+          height: addUnit(tabHeightValue),
         }"
         :tab-style="currentTheme.layout.tab.style"
         :show-icon="currentTheme.layout.tab.showIcon"
