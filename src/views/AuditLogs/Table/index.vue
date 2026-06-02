@@ -50,6 +50,10 @@ const succeededOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
+const basicInputSpan = { xs: 24, sm: 24, md: 12, lg: 6, xl: 6 };
+const basicTimeRangeSpan = { xs: 24, sm: 24, md: 12, lg: 8, xl: 8 };
+const basicSelectSpan = { xs: 24, sm: 24, md: 12, lg: 5, xl: 5 };
+
 const overviewItems = computed(() => [
   {
     label: t('views.auditLogs.columns.source'),
@@ -78,6 +82,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
       el: 'el-input',
       props: { clearable: true },
       order: 0,
+      span: basicInputSpan,
     },
   },
   {
@@ -95,7 +100,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
         endPlaceholder: t('views.auditLogs.placeholders.timeRange'),
       },
       order: 1,
-      span: 12,
+      span: basicTimeRangeSpan,
       transform: (value: string[] | undefined) => ({
         startTime: value?.[0],
         endTime: value?.[1],
@@ -115,6 +120,7 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
         placeholder: t('views.auditLogs.placeholders.allSources'),
       },
       order: 2,
+      span: basicSelectSpan,
     },
   },
   {
@@ -125,7 +131,8 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     search: {
       el: 'el-input',
       props: { clearable: true },
-      order: 3,
+      order: 10,
+      advanced: true,
     },
   },
   {
@@ -140,7 +147,8 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
         clearable: true,
         placeholder: t('views.auditLogs.placeholders.allActionTypes'),
       },
-      order: 4,
+      order: 3,
+      span: basicSelectSpan,
     },
   },
   {
@@ -150,7 +158,8 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     search: {
       el: 'el-input',
       props: { clearable: true },
-      order: 5,
+      order: 11,
+      advanced: true,
     },
   },
   {
@@ -161,8 +170,9 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     search: {
       el: 'el-input',
       props: { clearable: true },
-      order: 6,
+      order: 12,
       span: 12,
+      advanced: true,
     },
   },
   {
@@ -177,8 +187,9 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
         clearable: true,
         placeholder: t('views.auditLogs.placeholders.allResults'),
       },
-      order: 7,
+      order: 13,
       span: 12,
+      advanced: true,
     },
   },
   {

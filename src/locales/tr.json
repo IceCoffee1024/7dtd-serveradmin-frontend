@@ -116,6 +116,7 @@
       "batchActions": "Toplu İşlemler",
       "moreActions": "Daha fazla işlem",
       "filters": "Filtreler",
+      "advancedFilters": "Gelişmiş Filtreler",
       "collapse": "Daralt",
       "expand": "Genişlet",
       "edit": "Düzenle"

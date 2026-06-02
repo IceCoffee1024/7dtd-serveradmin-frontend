@@ -43,7 +43,7 @@ const footerHeight = computed(() => {
 const contentHeight = computed(() => `calc(100vh - ${contentOffsetTop.value})`);
 
 const mainAvailableHeight = computed(() =>
-  `calc(100vh - ${contentOffsetTop.value} - ${footerHeight.value} - 32px)`,
+  `calc(100vh - ${contentOffsetTop.value} - 32px)`,
 );
 
 const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');

@@ -5,7 +5,5 @@ defineOptions({ name: 'AuditLogs' });
 </script>
 
 <template>
-  <el-card class="h-full" shadow="never">
-    <AuditLogTable />
-  </el-card>
+  <AuditLogTable class="h-full" />
 </template>

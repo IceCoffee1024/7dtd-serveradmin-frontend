@@ -116,6 +116,7 @@
       "batchActions": "一括操作",
       "moreActions": "その他の操作",
       "filters": "フィルター",
+      "advancedFilters": "詳細フィルター",
       "collapse": "折りたたむ",
       "expand": "展開",
       "edit": "編集"

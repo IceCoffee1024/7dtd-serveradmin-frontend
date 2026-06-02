@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
 import type { MyTableColumn } from '~/composables/table';
 import type { MyFormField, OptionItem } from '~/composables/useMyForm';
-import { computed, toValue } from 'vue';
+import { computed, ref, toValue } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MyForm from '~/components/MyForm/index.vue';
 import { applySearchTransform } from '~/composables/table';
@@ -25,6 +25,7 @@ const emits = defineEmits<{
 }>();
 
 const { t } = useI18n();
+type SearchFormField = MyFormField<any> & { advanced?: boolean };
 
 const searchParam = defineModel<Record<string, any>>('modelValue', {
   default: () => ({}),
@@ -32,11 +33,11 @@ const searchParam = defineModel<Record<string, any>>('modelValue', {
 
 // Core mapping from table columns to MyForm fields.
 
-const searchFields = computed<MyFormField<any>[]>(() =>
+const searchFields = computed<SearchFormField[]>(() =>
   props.columns
     .filter(col => col.search?.el && col.prop != null)
     .sort((a, b) => (a.search!.order ?? 0) - (b.search!.order ?? 0))
-    .map((col): MyFormField<any> => {
+    .map((col): SearchFormField => {
       // Option priority: search.props.options > col.enum > undefined.
       const searchPropsOptions = (col.search?.props as any)?.options;
       const enumOptions = col.enum
@@ -60,9 +61,14 @@ const searchFields = computed<MyFormField<any>[]>(() =>
         },
         options: searchPropsOptions ?? enumOptions,
         span: col.search!.span ?? props.defaultSpan,
+        advanced: col.search?.advanced ?? false,
       };
     }),
 );
+
+const basicSearchFields = computed(() => searchFields.value.filter(field => !field.advanced));
+const advancedSearchFields = computed(() => searchFields.value.filter(field => field.advanced));
+const advancedCollapsed = ref(true);
 
 const isCompactKeywordSearch = computed(() =>
   searchFields.value.length === 1 && searchFields.value[0]?.el === 'el-input',
@@ -112,22 +118,54 @@ function onReset() {
     </div>
 
     <template v-else>
-      <MyForm
-        v-model="searchParam"
-        :fields="searchFields"
-        label-position="top"
-        label-width="auto"
-        :gutter="12"
-      />
-      <div class="search-panel__footer">
-        <el-button class="search-panel__action" :size="size" type="primary" :loading="loading" @click="onSearch">
-          <icon-mdi:magnify class="mr-1" />
-          {{ t('components.myTable.search') }}
-        </el-button>
-        <el-button class="search-panel__action" :size="size" @click="onReset">
-          <icon-mdi:restore class="mr-1" />
-          {{ t('components.myTable.reset') }}
-        </el-button>
+      <div class="search-panel">
+        <div class="search-panel__fields">
+          <MyForm
+            v-if="basicSearchFields.length"
+            v-model="searchParam"
+            :fields="basicSearchFields"
+            label-position="top"
+            label-width="auto"
+            :gutter="12"
+          />
+
+          <div v-if="advancedSearchFields.length" class="search-panel__advanced">
+            <button
+              type="button"
+              class="search-panel__advanced-toggle"
+              @click="advancedCollapsed = !advancedCollapsed"
+            >
+              <span>{{ t('components.myTable.advancedFilters') }}</span>
+              <el-icon
+                class="search-panel__advanced-icon"
+                :class="{ 'search-panel__advanced-icon--collapsed': advancedCollapsed }"
+              >
+                <icon-mdi:chevron-up />
+              </el-icon>
+            </button>
+
+            <div v-show="!advancedCollapsed" class="search-panel__advanced-body">
+              <MyForm
+                v-model="searchParam"
+                :fields="advancedSearchFields"
+                label-position="top"
+                label-width="auto"
+                :gutter="12"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="search-panel__footer">
+          <el-button class="search-panel__action" :size="size" type="primary" :loading="loading" @click="onSearch">
+            <icon-mdi:magnify class="mr-1" />
+            {{ t('components.myTable.search') }}
+          </el-button>
+          <el-button class="search-panel__action" :size="size" @click="onReset">
+            <icon-mdi:restore class="mr-1" />
+            {{ t('components.myTable.reset') }}
+          </el-button>
+        </div>
       </div>
     </template>
   </template>
@@ -186,12 +224,63 @@ function onReset() {
   padding-inline: 0.9rem;
 }
 
+.search-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.search-panel__fields {
+  min-height: 0;
+}
+
 .search-panel__footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 8px;
-  padding-top: 8px;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.15rem;
+  border-top: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 94%, transparent), var(--el-bg-color));
+}
+
+.search-panel__advanced {
+  margin-top: 0.15rem;
+}
+
+.search-panel__advanced-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 30px;
+  padding: 0;
+  border: 0;
+  color: var(--colors-primary);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-panel__advanced-icon {
+  transition: transform 0.2s ease;
+}
+
+.search-panel__advanced-icon--collapsed {
+  transform: rotate(180deg);
+}
+
+.search-panel__advanced-body {
+  max-height: min(24vh, 220px);
+  padding-top: 0.7rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 @media (max-width: 640px) {

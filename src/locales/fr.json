@@ -116,6 +116,7 @@
       "batchActions": "Actions groupées",
       "moreActions": "Plus d'actions",
       "filters": "Filtres",
+      "advancedFilters": "Filtres avancés",
       "collapse": "Réduire",
       "expand": "Développer",
       "edit": "Modifier"

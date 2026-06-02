@@ -86,6 +86,9 @@ const props = withDefaults(defineProps<Props>(), {
   operationColumnWidth: 160,
   autoColumnWidth: true,
   searchCollapsible: false,
+  searchDefaultCollapsed: true,
+  tableMinHeight: 260,
+  searchPanelMaxHeight: 'min(42vh, 360px)',
 });
 
 const emits = defineEmits<{
@@ -159,6 +162,12 @@ interface Props {
    * When enabled, the panel shows a title bar and a collapse toggle.
    */
   searchCollapsible?: boolean;
+  /** Initial collapsed state for the collapsible search panel. */
+  searchDefaultCollapsed?: boolean;
+  /** Minimum usable height reserved for the table body region. */
+  tableMinHeight?: number | string;
+  /** Maximum height for the expanded filter body before it scrolls internally. */
+  searchPanelMaxHeight?: number | string;
 }
 
 const NON_LATIN_CHAR_PATTERN = /[\u4E00-\u9FA5\uFF00-\uFFEF]/g;
@@ -173,6 +182,15 @@ const resolvedTableSize = computed<TableSize>(() =>
 );
 
 const resolvedSelectable = computed(() => props.isSelectable ?? props.selectable);
+
+function toCssLength(value: number | string): string {
+  return typeof value === 'number' ? `${value}px` : value;
+}
+
+const rootStyle = computed(() => ({
+  '--my-table-main-min-height': toCssLength(props.tableMinHeight),
+  '--my-table-search-max-height': toCssLength(props.searchPanelMaxHeight),
+}));
 
 // ─────────────────────────────────────────────────────────────────────────────
 // v-model:selection - selected-row binding
@@ -426,7 +444,7 @@ watch(selectedColumns, () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Collapsible filter panel state; unused when searchCollapsible is false.
-const searchCollapsed = ref(true);
+const searchCollapsed = ref(props.searchDefaultCollapsed);
 
 defineExpose({
   currentRow,
@@ -437,7 +455,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="my-table-root flex flex-col size-full min-h-0">
+  <div class="my-table-root flex flex-col size-full min-h-0" :style="rootStyle">
     <el-card
       shadow="never"
       class="table-main-card flex-1 min-h-0"
@@ -446,6 +464,7 @@ defineExpose({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'auto',
       }"
     >
       <!-- Search panel wrapper adds visual separation from the table below. -->
@@ -730,6 +749,7 @@ defineExpose({
 .table-main-card :deep(.el-card__body) {
   height: 100%;
   min-height: 0;
+  overflow: auto;
 }
 
 .table-main-card {
@@ -746,6 +766,7 @@ defineExpose({
 }
 
 .table-search-panel {
+  flex: 0 0 auto;
   margin-bottom: 0.9rem;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
@@ -791,10 +812,14 @@ defineExpose({
 }
 
 .table-search-panel__body {
+  max-height: var(--my-table-search-max-height);
   padding: 1rem 1rem 0.9rem;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .table-toolbar {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -822,6 +847,8 @@ defineExpose({
 }
 
 .table-main-region {
+  flex: 1 0 var(--my-table-main-min-height);
+  min-height: var(--my-table-main-min-height);
   overflow: hidden;
 }
 
@@ -861,6 +888,7 @@ defineExpose({
 }
 
 .table-footer {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;

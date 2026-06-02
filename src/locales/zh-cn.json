@@ -116,6 +116,7 @@
       "batchActions": "批量操作",
       "moreActions": "更多操作",
       "filters": "筛选条件",
+      "advancedFilters": "高级筛选",
       "collapse": "收起",
       "expand": "展开",
       "edit": "编辑"

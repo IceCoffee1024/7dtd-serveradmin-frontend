@@ -1,6 +1,6 @@
 import type { DatePickerProps, InputProps, SelectProps, SwitchProps, TableColumnCtx } from 'element-plus';
 import type { MaybeRef } from 'vue';
-import type { FormElType, MyFormFieldTooltip, OptionItem } from '~/composables/useMyForm';
+import type { FormElType, MyFormFieldTooltip, OptionItem, ResponsiveSpan } from '~/composables/useMyForm';
 
 /**
  * Each search component exposes a slightly different props surface.
@@ -28,7 +28,8 @@ export interface SearchProps<El extends SearchElType = SearchElType> {
   defaultValue?: any;
   order?: number;
   tooltip?: string | MyFormFieldTooltip;
-  span?: number;
+  span?: ResponsiveSpan;
+  advanced?: boolean;
   transform?: (val: any) => Record<string, any>;
 }
 

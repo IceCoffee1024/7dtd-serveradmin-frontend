@@ -116,6 +116,7 @@
       "batchActions": "일괄 작업",
       "moreActions": "추가 작업",
       "filters": "필터",
+      "advancedFilters": "고급 필터",
       "collapse": "접기",
       "expand": "펼치기",
       "edit": "편집"

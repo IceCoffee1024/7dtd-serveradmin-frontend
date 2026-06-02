@@ -116,6 +116,7 @@
       "batchActions": "Batch Actions",
       "moreActions": "More Actions",
       "filters": "Filters",
+      "advancedFilters": "Advanced Filters",
       "collapse": "Collapse",
       "expand": "Expand",
       "edit": "Edit"
