@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import logoImg from '~/assets/images/logo.png';
+
 withDefaults(defineProps<Props>(), {
   showLogo: true,
   showTitle: true,
@@ -14,7 +16,7 @@ interface Props {
 
 <template>
   <RouterLink to="/" class="logo-link">
-    <el-image v-if="showLogo" src="src/assets/images/logo.png" class="logo-link__image" />
+    <el-image v-if="showLogo" :src="logoImg" class="logo-link__image" />
     <h2 v-if="showTitle" class="logo-link__title">
       {{ $t('common.projectName') }}
     </h2>

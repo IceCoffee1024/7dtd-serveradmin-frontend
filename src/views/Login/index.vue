@@ -2,6 +2,7 @@
 import type { FormInstance, FormRules } from 'element-plus';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import steamIcon from '~/assets/images/steam-svgrepo-com.svg';
 import { usePopup } from '~/composables/usePopup.ts';
 import { disposeAllStores } from '~/plugins/pinia';
 import v from '~/plugins/valibot';
@@ -100,7 +101,7 @@ async function handleLogin() {
               {{ $t('views.login.rememberMe') }}
             </label>
             <el-popover placement="top-end" trigger="click" :width="320">
-              <div class="text-xs leading-5 text-gray-500 dark:text-gray-300">
+              <div class="text-xs text-gray-500 leading-5 dark:text-gray-300">
                 <p class="text-sm text-gray-700 font-semibold dark:text-gray-100">
                   {{ $t('views.login.forgotPasswordHelpTitle') }}
                 </p>
@@ -110,7 +111,7 @@ async function handleLogin() {
                 <p class="mt-2">
                   {{ $t('views.login.forgotPasswordHelpPathLabel') }}
                 </p>
-                <p class="mt-1 break-all rounded-md bg-gray-100 px-2 py-1 font-mono text-[11px] text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                <p class="text-[11px] text-gray-700 font-mono mt-1 px-2 py-1 rounded-md bg-gray-100 break-all dark:text-gray-200 dark:bg-gray-800">
                   {{ forgotPasswordConfigPath }}
                 </p>
                 <p class="mt-2">
@@ -123,7 +124,7 @@ async function handleLogin() {
               <template #reference>
                 <button
                   type="button"
-                  class="text-xs text-gray-500 font-semibold ml-auto underline cursor-pointer border-none bg-transparent p-0 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  class="text-xs text-gray-500 font-semibold ml-auto p-0 border-none bg-transparent underline cursor-pointer dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                 >
                   {{ $t('views.login.forgotPassword') }}
                 </button>
@@ -145,7 +146,7 @@ async function handleLogin() {
               :href="steamLoginUrl"
               class="text-white font-semibold mt-4 rounded-lg border-none no-underline flex h-11 w-full cursor-pointer shadow-md transition duration-200 ease-in items-center justify-center from-[#72A233] to-[#599342] bg-gradient-to-r hover:opacity-90"
             >
-              <img class="w-8" src="../../assets/images/steam-svgrepo-com.svg">
+              <img class="w-8" :src="steamIcon">
               <span class="text-base ml-2">Sign in with Steam</span>
             </a>
           </div>
