@@ -559,7 +559,11 @@
         "chatCommandSeparators": "命令参数分隔符",
         "historyRetentionDays": "聊天记录保留天数",
         "excludeCommandsFromHistory": "排除命令消息",
-        "muteNotifyMessage": "禁言提示消息"
+        "muteNotifyMessage": "禁言提示消息",
+        "muteAppliedPrivateMessage": "禁言时私聊通知",
+        "muteAppliedBroadcastMessage": "禁言时全服通知",
+        "muteRemovedPrivateMessage": "解除禁言时私聊通知",
+        "muteRemovedBroadcastMessage": "解除禁言时全服通知"
       },
       "tooltips": {
         "isEnabled": "聊天功能是系统核心服务，所有依赖聊天命令的功能均通过它注册和分发命令，不可禁用。",
@@ -570,7 +574,11 @@
         "chatCommandSeparators": "多个分隔符使用逗号分隔，通常保留空格即可。",
         "historyRetentionDays": "聊天记录保留天数，0 表示永久保留。",
         "excludeCommandsFromHistory": "启用后，以命令前缀开头的消息不会被保存到历史记录中。",
-        "muteNotifyMessage": "被禁言玩家尝试发送聊天时收到的私聊提示，为空则不发送任何提示。"
+        "muteNotifyMessage": "被禁言玩家尝试发送聊天时收到的私聊提示，为空则不发送任何提示。",
+        "muteAppliedPrivateMessage": "管理员禁言玩家后立即发送给该玩家的私聊消息。为空则不发送。可用占位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。",
+        "muteAppliedBroadcastMessage": "管理员禁言玩家后立即发送给全服的广播消息。为空则不广播。可用占位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。",
+        "muteRemovedPrivateMessage": "管理员解除禁言后立即发送给该玩家的私聊消息。为空则不发送。可用占位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。",
+        "muteRemovedBroadcastMessage": "管理员解除禁言后立即发送给全服的广播消息。为空则不广播。可用占位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。"
       },
       "actions": {
         "save": "保存聊天配置",

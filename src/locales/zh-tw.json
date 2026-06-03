@@ -1071,7 +1071,11 @@
         "chatCommandSeparators": "命令分隔符",
         "historyRetentionDays": "歷史保留天數",
         "excludeCommandsFromHistory": "從歷史記錄中排除命令",
-        "muteNotifyMessage": "靜音通知訊息"
+        "muteNotifyMessage": "靜音通知訊息",
+        "muteAppliedPrivateMessage": "禁言時私聊通知",
+        "muteAppliedBroadcastMessage": "禁言時全服通知",
+        "muteRemovedPrivateMessage": "解除禁言時私聊通知",
+        "muteRemovedBroadcastMessage": "解除禁言時全服通知"
       },
       "tooltips": {
         "isEnabled": "聊天是所有註冊聊天命令的功能所需的核心服務。它不能被禁用。",
@@ -1082,7 +1086,11 @@
         "chatCommandSeparators": "用逗號分隔多個分隔符號。單一空格是通常的預設設定。",
         "historyRetentionDays": "保留聊天記錄的天數。設定為 0 以永久保留。",
         "excludeCommandsFromHistory": "啟用後，以命令前綴開頭的聊天訊息將不會儲存在歷史記錄中。",
-        "muteNotifyMessage": "當靜音玩家嘗試聊天時，會向他們發回耳語。留空則不發送通知。"
+        "muteNotifyMessage": "當靜音玩家嘗試聊天時，會向他們發回耳語。留空則不發送通知。",
+        "muteAppliedPrivateMessage": "管理員禁言玩家後立即發送給該玩家的私聊訊息。留空則不發送。可用佔位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。",
+        "muteAppliedBroadcastMessage": "管理員禁言玩家後立即發送給全服的廣播訊息。留空則不廣播。可用佔位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。",
+        "muteRemovedPrivateMessage": "管理員解除禁言後立即發送給該玩家的私聊訊息。留空則不發送。可用佔位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。",
+        "muteRemovedBroadcastMessage": "管理員解除禁言後立即發送給全服的廣播訊息。留空則不廣播。可用佔位符：{player}、{playerName}、{playerId}、{reason}、{mutedUntil}。"
       },
       "actions": {
         "save": "儲存聊天設定",

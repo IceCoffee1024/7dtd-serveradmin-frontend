@@ -369,7 +369,11 @@ export const vChatFeatureSettingsDto = v.strictObject({
     chatCommandSeparators: v.nullish(v.array(v.string())),
     historyRetentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     excludeCommandsFromHistory: v.optional(v.boolean()),
-    muteNotifyMessage: v.nullish(v.string())
+    muteNotifyMessage: v.nullish(v.string()),
+    muteAppliedPrivateMessage: v.nullish(v.string()),
+    muteAppliedBroadcastMessage: v.nullish(v.string()),
+    muteRemovedPrivateMessage: v.nullish(v.string()),
+    muteRemovedBroadcastMessage: v.nullish(v.string())
 });
 
 /**

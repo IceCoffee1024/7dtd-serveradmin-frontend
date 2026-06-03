@@ -1071,7 +1071,11 @@
         "chatCommandSeparators": "Separadores de comando",
         "historyRetentionDays": "Dias de retenção de histórico",
         "excludeCommandsFromHistory": "Excluir comandos do histórico",
-        "muteNotifyMessage": "Silenciar mensagem de notificação"
+        "muteNotifyMessage": "Silenciar mensagem de notificação",
+        "muteAppliedPrivateMessage": "Mute Applied Whisper",
+        "muteAppliedBroadcastMessage": "Mute Applied Broadcast",
+        "muteRemovedPrivateMessage": "Mute Removed Whisper",
+        "muteRemovedBroadcastMessage": "Mute Removed Broadcast"
       },
       "tooltips": {
         "isEnabled": "O chat é um serviço essencial exigido por todos os recursos que registram comandos de chat. \nNão pode ser desativado.",
@@ -1082,7 +1086,11 @@
         "chatCommandSeparators": "Separe vários delimitadores com vírgulas. \nUm único espaço é o padrão usual.",
         "historyRetentionDays": "Número de dias para manter o histórico de bate-papo. \nDefina como 0 para manter para sempre.",
         "excludeCommandsFromHistory": "Quando ativado, as mensagens de bate-papo que começam com um prefixo de comando não serão salvas no histórico.",
-        "muteNotifyMessage": "Um sussurro enviado de volta para um jogador silenciado quando ele tenta conversar. \nDeixe em branco para não enviar nenhuma notificação."
+        "muteNotifyMessage": "Um sussurro enviado de volta para um jogador silenciado quando ele tenta conversar. \nDeixe em branco para não enviar nenhuma notificação.",
+        "muteAppliedPrivateMessage": "Whisper sent to the player immediately after an admin mutes them. Leave empty to send nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteAppliedBroadcastMessage": "Global broadcast sent immediately after an admin mutes a player. Leave empty to broadcast nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteRemovedPrivateMessage": "Whisper sent to the player immediately after an admin removes their mute. Leave empty to send nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteRemovedBroadcastMessage": "Global broadcast sent immediately after an admin removes a player's mute. Leave empty to broadcast nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}."
       },
       "actions": {
         "save": "Salvar configurações de bate-papo",

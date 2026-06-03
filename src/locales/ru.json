@@ -1071,7 +1071,11 @@
         "chatCommandSeparators": "Разделители команд",
         "historyRetentionDays": "Дни хранения истории",
         "excludeCommandsFromHistory": "Исключить команды из истории",
-        "muteNotifyMessage": "Отключить уведомляющее сообщение"
+        "muteNotifyMessage": "Отключить уведомляющее сообщение",
+        "muteAppliedPrivateMessage": "Mute Applied Whisper",
+        "muteAppliedBroadcastMessage": "Mute Applied Broadcast",
+        "muteRemovedPrivateMessage": "Mute Removed Whisper",
+        "muteRemovedBroadcastMessage": "Mute Removed Broadcast"
       },
       "tooltips": {
         "isEnabled": "Чат — это основная служба, необходимая для всех функций, регистрирующих команды чата. \nЕго нельзя отключить.",
@@ -1082,7 +1086,11 @@
         "chatCommandSeparators": "Разделяйте несколько разделителей запятыми. \nОдин пробел является обычным значением по умолчанию.",
         "historyRetentionDays": "Количество дней хранения истории чата. \nУстановите значение 0, чтобы сохранить навсегда.",
         "excludeCommandsFromHistory": "Если этот параметр включен, сообщения чата, начинающиеся с префикса команды, не будут сохраняться в истории.",
-        "muteNotifyMessage": "Шепот, отправленный обратно игроку, у которого отключен звук, когда он пытается поговорить. \nОставьте пустым, чтобы не отправлять уведомления."
+        "muteNotifyMessage": "Шепот, отправленный обратно игроку, у которого отключен звук, когда он пытается поговорить. \nОставьте пустым, чтобы не отправлять уведомления.",
+        "muteAppliedPrivateMessage": "Whisper sent to the player immediately after an admin mutes them. Leave empty to send nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteAppliedBroadcastMessage": "Global broadcast sent immediately after an admin mutes a player. Leave empty to broadcast nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteRemovedPrivateMessage": "Whisper sent to the player immediately after an admin removes their mute. Leave empty to send nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteRemovedBroadcastMessage": "Global broadcast sent immediately after an admin removes a player's mute. Leave empty to broadcast nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}."
       },
       "actions": {
         "save": "Сохранить настройки чата",

@@ -1071,7 +1071,11 @@
         "chatCommandSeparators": "Komut Ayırıcılar",
         "historyRetentionDays": "Geçmiş Saklama Günleri",
         "excludeCommandsFromHistory": "Komutları Geçmişten Hariç Tut",
-        "muteNotifyMessage": "Bildirim Mesajını Sessize Al"
+        "muteNotifyMessage": "Bildirim Mesajını Sessize Al",
+        "muteAppliedPrivateMessage": "Mute Applied Whisper",
+        "muteAppliedBroadcastMessage": "Mute Applied Broadcast",
+        "muteRemovedPrivateMessage": "Mute Removed Whisper",
+        "muteRemovedBroadcastMessage": "Mute Removed Broadcast"
       },
       "tooltips": {
         "isEnabled": "Sohbet, sohbet komutlarını kaydeden tüm özelliklerin gerektirdiği temel bir hizmettir. \nDevre dışı bırakılamaz.",
@@ -1082,7 +1086,11 @@
         "chatCommandSeparators": "Birden çok sınırlayıcıyı virgülle ayırın. \nTek bir boşluk olağan varsayılandır.",
         "historyRetentionDays": "Sohbet geçmişinin tutulacağı gün sayısı. \nSonsuza kadar tutmak için 0'a ayarlayın.",
         "excludeCommandsFromHistory": "Etkinleştirildiğinde, komut önekiyle başlayan sohbet mesajları geçmişe kaydedilmeyecektir.",
-        "muteNotifyMessage": "Sesi kapatılan bir oyuncu sohbet etmeye çalıştığında ona gönderilen bir fısıltı. \nBildirim göndermemek için boş bırakın."
+        "muteNotifyMessage": "Sesi kapatılan bir oyuncu sohbet etmeye çalıştığında ona gönderilen bir fısıltı. \nBildirim göndermemek için boş bırakın.",
+        "muteAppliedPrivateMessage": "Whisper sent to the player immediately after an admin mutes them. Leave empty to send nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteAppliedBroadcastMessage": "Global broadcast sent immediately after an admin mutes a player. Leave empty to broadcast nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteRemovedPrivateMessage": "Whisper sent to the player immediately after an admin removes their mute. Leave empty to send nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}.",
+        "muteRemovedBroadcastMessage": "Global broadcast sent immediately after an admin removes a player's mute. Leave empty to broadcast nothing. Placeholders: {player}, {playerName}, {playerId}, {reason}, {mutedUntil}."
       },
       "actions": {
         "save": "Sohbet Ayarlarını Kaydet",

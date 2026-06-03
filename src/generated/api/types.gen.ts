@@ -645,6 +645,26 @@ export type ChatFeatureSettingsDto = {
      * Leave null or empty to send no notification.
      */
     muteNotifyMessage?: string | null;
+    /**
+     * Private message sent to the target player when a mute is applied.
+     * Supports {player}, {playerName}, {playerId}, {reason}, and {mutedUntil}.
+     */
+    muteAppliedPrivateMessage?: string | null;
+    /**
+     * Global message broadcast when a mute is applied.
+     * Supports {player}, {playerName}, {playerId}, {reason}, and {mutedUntil}.
+     */
+    muteAppliedBroadcastMessage?: string | null;
+    /**
+     * Private message sent to the target player when a mute is removed.
+     * Supports {player}, {playerName}, {playerId}, {reason}, and {mutedUntil}.
+     */
+    muteRemovedPrivateMessage?: string | null;
+    /**
+     * Global message broadcast when a mute is removed.
+     * Supports {player}, {playerName}, {playerId}, {reason}, and {mutedUntil}.
+     */
+    muteRemovedBroadcastMessage?: string | null;
 };
 
 /**

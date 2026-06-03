@@ -29,6 +29,10 @@ interface FormModel {
   historyRetentionDays: number;
   excludeCommandsFromHistory: boolean;
   muteNotifyMessage: string;
+  muteAppliedPrivateMessage: string;
+  muteAppliedBroadcastMessage: string;
+  muteRemovedPrivateMessage: string;
+  muteRemovedBroadcastMessage: string;
 }
 
 interface FormExpose {
@@ -52,6 +56,10 @@ function buildDefaults(): FormModel {
     historyRetentionDays: 0,
     excludeCommandsFromHistory: false,
     muteNotifyMessage: '',
+    muteAppliedPrivateMessage: '',
+    muteAppliedBroadcastMessage: '',
+    muteRemovedPrivateMessage: '',
+    muteRemovedBroadcastMessage: '',
   };
 }
 
@@ -69,6 +77,10 @@ const schema = v.object({
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
   excludeCommandsFromHistory: v.boolean(),
   muteNotifyMessage: v.optional(v.string()),
+  muteAppliedPrivateMessage: v.optional(v.string()),
+  muteAppliedBroadcastMessage: v.optional(v.string()),
+  muteRemovedPrivateMessage: v.optional(v.string()),
+  muteRemovedBroadcastMessage: v.optional(v.string()),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -152,6 +164,38 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     tooltip: t('views.chatSettings.tooltips.muteNotifyMessage'),
     span: { xs: 24, md: 12 },
   },
+  {
+    prop: 'muteAppliedPrivateMessage',
+    label: t('views.chatSettings.fields.muteAppliedPrivateMessage'),
+    el: 'el-input',
+    props: { type: 'textarea', rows: 2 },
+    tooltip: t('views.chatSettings.tooltips.muteAppliedPrivateMessage'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'muteAppliedBroadcastMessage',
+    label: t('views.chatSettings.fields.muteAppliedBroadcastMessage'),
+    el: 'el-input',
+    props: { type: 'textarea', rows: 2 },
+    tooltip: t('views.chatSettings.tooltips.muteAppliedBroadcastMessage'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'muteRemovedPrivateMessage',
+    label: t('views.chatSettings.fields.muteRemovedPrivateMessage'),
+    el: 'el-input',
+    props: { type: 'textarea', rows: 2 },
+    tooltip: t('views.chatSettings.tooltips.muteRemovedPrivateMessage'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'muteRemovedBroadcastMessage',
+    label: t('views.chatSettings.fields.muteRemovedBroadcastMessage'),
+    el: 'el-input',
+    props: { type: 'textarea', rows: 2 },
+    tooltip: t('views.chatSettings.tooltips.muteRemovedBroadcastMessage'),
+    span: { xs: 24, md: 12 },
+  },
 ]);
 
 const previewChannels = computed(() => [
@@ -193,6 +237,10 @@ function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel
     historyRetentionDays: 0,
     excludeCommandsFromHistory: false,
     muteNotifyMessage: null,
+    muteAppliedPrivateMessage: null,
+    muteAppliedBroadcastMessage: null,
+    muteRemovedPrivateMessage: null,
+    muteRemovedBroadcastMessage: null,
   };
   return {
     isEnabled: true,
@@ -204,6 +252,10 @@ function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel
     historyRetentionDays: source.historyRetentionDays ?? 0,
     excludeCommandsFromHistory: source.excludeCommandsFromHistory ?? false,
     muteNotifyMessage: source.muteNotifyMessage ?? '',
+    muteAppliedPrivateMessage: source.muteAppliedPrivateMessage ?? '',
+    muteAppliedBroadcastMessage: source.muteAppliedBroadcastMessage ?? '',
+    muteRemovedPrivateMessage: source.muteRemovedPrivateMessage ?? '',
+    muteRemovedBroadcastMessage: source.muteRemovedBroadcastMessage ?? '',
   };
 }
 
@@ -217,6 +269,10 @@ function applyFormValues(values: FormModel): void {
   form.historyRetentionDays = values.historyRetentionDays;
   form.excludeCommandsFromHistory = values.excludeCommandsFromHistory;
   form.muteNotifyMessage = values.muteNotifyMessage;
+  form.muteAppliedPrivateMessage = values.muteAppliedPrivateMessage;
+  form.muteAppliedBroadcastMessage = values.muteAppliedBroadcastMessage;
+  form.muteRemovedPrivateMessage = values.muteRemovedPrivateMessage;
+  form.muteRemovedBroadcastMessage = values.muteRemovedBroadcastMessage;
 }
 
 function splitCommaSeparated(value: string, trimItems: boolean = true): string[] {
@@ -294,6 +350,10 @@ function toPayload(values: FormModel): ChatFeatureSettingsDto {
     historyRetentionDays: Number(values.historyRetentionDays ?? 0),
     excludeCommandsFromHistory: values.excludeCommandsFromHistory,
     muteNotifyMessage: values.muteNotifyMessage || null,
+    muteAppliedPrivateMessage: values.muteAppliedPrivateMessage || null,
+    muteAppliedBroadcastMessage: values.muteAppliedBroadcastMessage || null,
+    muteRemovedPrivateMessage: values.muteRemovedPrivateMessage || null,
+    muteRemovedBroadcastMessage: values.muteRemovedBroadcastMessage || null,
   };
 }
 
