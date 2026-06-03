@@ -102,6 +102,13 @@ export function setupGeneratedApiClient() {
   client.interceptors.error.use((error, response) => {
     nProgress.done();
 
+    // AbortError is fired by the browser when a request is cancelled — either because
+    // navigation occurred, or because Pinia Colada superseded it with a newer request.
+    // It is not a server error and must not surface a toast to the user.
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return error;
+    }
+
     const data = normalizeError(error, response);
     const serverMessage = getErrorMessage(data);
     const { toast } = usePopup();

@@ -47,6 +47,9 @@ export function useTableData<T extends Record<string, any>>(options: UseTableDat
       }
     }
     catch (fetchError) {
+      // AbortError is expected when navigation or a newer fetch supersedes this request.
+      if (fetchError instanceof DOMException && fetchError.name === 'AbortError')
+        return;
       console.error('[useMyTable] fetchData error:', fetchError);
     }
     finally {
