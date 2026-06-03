@@ -5,6 +5,7 @@ export const LAYOUT_LIMITS = {
   minHeaderHeight: 48,
   minSidebarWidth: 220,
   minNonChineseSidebarWidth: 280,
+  minLongTextSidebarWidth: 320,
   minSidebarCollapsedWidth: 56,
   minTabHeight: 32,
   minFooterHeight: 96,
@@ -14,10 +15,18 @@ export function isChineseLocale(locale: LocaleType): boolean {
   return locale === LOCALE_TYPE.ZH_CN || locale === LOCALE_TYPE.ZH_TW;
 }
 
+export function isLongTextSidebarLocale(locale: LocaleType): boolean {
+  return locale === LOCALE_TYPE.DE || locale === LOCALE_TYPE.RU || locale === LOCALE_TYPE.TR;
+}
+
 export function getExpandedSidebarMinWidth(locale: LocaleType): number {
-  return isChineseLocale(locale)
-    ? LAYOUT_LIMITS.minSidebarWidth
-    : LAYOUT_LIMITS.minNonChineseSidebarWidth;
+  if (isChineseLocale(locale))
+    return LAYOUT_LIMITS.minSidebarWidth;
+
+  if (isLongTextSidebarLocale(locale))
+    return LAYOUT_LIMITS.minLongTextSidebarWidth;
+
+  return LAYOUT_LIMITS.minNonChineseSidebarWidth;
 }
 
 export function resolveExpandedSidebarWidth(width: number | string, locale: LocaleType): number | string {
