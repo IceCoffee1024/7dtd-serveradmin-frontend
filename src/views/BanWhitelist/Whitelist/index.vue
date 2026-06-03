@@ -110,6 +110,8 @@ function onSaved() {
       :batch-menu-items="batchMenuItems"
       :show-index="true"
       :auto-column-width="true"
+      show-edit-btn
+      show-delete-btn
       @add="onAdd"
       @edit="onEdit"
       @delete="onDelete"
