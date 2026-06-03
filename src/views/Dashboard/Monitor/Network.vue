@@ -4,6 +4,7 @@ import type { NetworkInfoDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useTheme } from '~/composables/useTheme';
+import { withAlpha } from '~/utils';
 
 interface Props {
   timestamp?: string;
@@ -38,24 +39,6 @@ function formatBytesToSpeed(bits: number, precision = 1) {
   const value = bits / k ** finalUnitIndex;
 
   return `${Number.parseFloat(value.toFixed(precision))} ${UNITS[finalUnitIndex]}`;
-}
-
-function withAlpha(color: string, alpha: number): string {
-  const normalized = color.trim();
-  if (normalized.startsWith('#')) {
-    let hex = normalized.slice(1);
-    if (hex.length === 3) {
-      hex = hex.split('').map(char => char + char).join('');
-    }
-    if (hex.length === 6) {
-      const r = Number.parseInt(hex.slice(0, 2), 16);
-      const g = Number.parseInt(hex.slice(2, 4), 16);
-      const b = Number.parseInt(hex.slice(4, 6), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-  }
-
-  return normalized;
 }
 
 function getDynamicYAxisOptions(maxBits: number): { unit: string; stepSize: number } {

@@ -59,6 +59,43 @@ export function bytesToMB(bytes: number, decimalPlaces = 0) {
   return Number(megabytes.toFixed(decimalPlaces));
 }
 
+export function withAlpha(color: string, alpha: number): string {
+  const normalized = color.trim();
+
+  if (normalized.startsWith('#')) {
+    let hex = normalized.slice(1);
+    if (hex.length === 3) {
+      hex = hex.split('').map(char => char + char).join('');
+    }
+    if (hex.length === 6) {
+      const r = Number.parseInt(hex.slice(0, 2), 16);
+      const g = Number.parseInt(hex.slice(2, 4), 16);
+      const b = Number.parseInt(hex.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+  }
+
+  const rgbMatch = normalized.match(/^rgba?\(\s*([.\d]+)\s*,\s*([.\d]+)\s*,\s*([.\d]+)(?:\s*,\s*[.\d]+)?\s*\)$/i);
+  if (rgbMatch) {
+    const [, r, g, b] = rgbMatch;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  const modernRgbMatch = normalized.match(/^rgba?\(\s*([.\d]+)\s+([.\d]+)\s+([.\d]+)(?:\s*\/\s*[.\d]+%?)?\s*\)$/i);
+  if (modernRgbMatch) {
+    const [, r, g, b] = modernRgbMatch;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  const srgbMatch = normalized.match(/^color\(\s*srgb\s+([.\d]+)\s+([.\d]+)\s+([.\d]+)(?:\s*\/\s*[.\d]+%?)?\s*\)$/i);
+  if (srgbMatch) {
+    const [, r, g, b] = srgbMatch;
+    return `rgba(${Math.round(Number(r) * 255)}, ${Math.round(Number(g) * 255)}, ${Math.round(Number(b) * 255)}, ${alpha})`;
+  }
+
+  return `rgba(107, 114, 128, ${alpha})`;
+}
+
 export function formatPosition(position: PositionDto | null | undefined) {
   if (!position)
     return '';
