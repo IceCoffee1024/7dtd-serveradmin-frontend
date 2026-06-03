@@ -80,21 +80,13 @@ export const useTheme = createSharedComposable(() => {
     });
   };
 
-  const updateDom = () => {
+  const updateDom = (skipColorVars = false) => {
     const theme = currentTheme.value;
-
     const html = document.documentElement;
-    isDark.value
-      ? html.classList.add('dark')
-      : html.classList.remove('dark');
 
-    theme.appearance.grayscale
-      ? html.classList.add('app-grayscale')
-      : html.classList.remove('app-grayscale');
-
-    theme.appearance.colorWeakness
-      ? html.classList.add('app-color-weak')
-      : html.classList.remove('app-color-weak');
+    html.classList.toggle('dark', isDark.value);
+    html.classList.toggle('app-grayscale', theme.appearance.grayscale);
+    html.classList.toggle('app-color-weak', theme.appearance.colorWeakness);
 
     const colors = theme.appearance.colors;
     setElementColorPalette('primary', colors.primary);
@@ -102,15 +94,25 @@ export const useTheme = createSharedComposable(() => {
     setElementColorPalette('warning', colors.warning);
     setElementColorPalette('success', colors.success);
     setElementColorPalette('danger', colors.danger);
-    setColorVariables('primary', colors.primary);
-    setColorVariables('surface', colors.surface);
+
+    if (!skipColorVars) {
+      setColorVariables('primary', colors.primary);
+      setColorVariables('surface', colors.surface);
+    }
   };
 
+  // Fast path: dark/light toggle only needs Element palette remapping (35 setProperty calls).
+  // --colors-primary-* and --colors-surface-* are shade aliases that don't change between modes.
+  watch(isDark, () => updateDom(true));
+
+  // Full update when colors, grayscale, or colorWeakness change.
   watch(
-    [currentTheme, isDark],
-    () => {
-      updateDom();
-    },
+    () => ({
+      colors: currentTheme.value.appearance.colors,
+      grayscale: currentTheme.value.appearance.grayscale,
+      colorWeakness: currentTheme.value.appearance.colorWeakness,
+    }),
+    () => updateDom(false),
     { deep: true },
   );
 

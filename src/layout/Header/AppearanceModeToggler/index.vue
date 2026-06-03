@@ -55,6 +55,9 @@ function beforeChange() {
     const referR = Math.hypot(innerWidth, innerHeight) / Math.SQRT2;
     const ratioR = (100 * endRadius) / referR;
 
+    // Capture the target mode at click time before the async transition mutates state.
+    const targetIsDark = !isDark.value;
+
     const transition = document.startViewTransition(async () => {
       resolve(true);
       await nextTick();
@@ -66,13 +69,13 @@ function beforeChange() {
       ];
       document.documentElement.animate(
         {
-          clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
+          clipPath: targetIsDark ? [...clipPath].reverse() : clipPath,
         },
         {
           duration: 400,
           easing: 'ease-in',
           fill: 'both',
-          pseudoElement: isDark.value
+          pseudoElement: targetIsDark
             ? '::view-transition-old(root)'
             : '::view-transition-new(root)',
         },
