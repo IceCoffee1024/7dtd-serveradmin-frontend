@@ -185,9 +185,14 @@ const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.economy.settings.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
+    span: { xs: 24, md: 24 },
   },
 ]);
 
@@ -831,8 +836,7 @@ onBeforeRouteLeave(async () => {
         :gutter="16"
       />
 
-      <!-- All setting cards: disabled when economy is off -->
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }" class="mt-4 space-y-4">
+      <div class="mt-4 space-y-4">
         <!-- Row 1: Basic currency + Transfers -->
         <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
           <el-card shadow="never">

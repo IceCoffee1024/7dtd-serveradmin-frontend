@@ -238,9 +238,14 @@ const masterFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.teleport.settings.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
+    span: { xs: 24, md: 24 },
   },
 ]);
 
@@ -703,7 +708,15 @@ onBeforeRouteLeave(async (_to, _from, next) => {
       </el-skeleton>
     </div>
     <template v-else>
-      <el-card shadow="never" class="teleport-settings-page__master-card mb-4">
+      <div class="teleport-settings-page__master-card mb-4">
+        <div class="teleport-settings-page__policy-copy">
+          <p class="teleport-settings-page__policy-label">
+            {{ t('views.teleport.settings.fields.isEnabled') }}
+          </p>
+          <p class="teleport-settings-page__policy-state" :class="{ 'is-active': form.isEnabled }">
+            {{ form.isEnabled ? t('common.yes') : t('common.no') }}
+          </p>
+        </div>
         <MyForm
           ref="formRef"
           v-model="form"
@@ -712,9 +725,9 @@ onBeforeRouteLeave(async (_to, _from, next) => {
           label-position="top"
           :gutter="16"
         />
-      </el-card>
+      </div>
 
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+      <div>
         <el-tabs type="border-card" class="teleport-settings-page__tabs">
           <!-- ==================== Home Tab ==================== -->
           <el-tab-pane :label="t('views.teleport.settings.tabs.home')">
@@ -931,12 +944,60 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 }
 
 .teleport-settings-page__master-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding: 1.1rem 1.25rem 0.4rem;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 72%, white 28%);
   border-radius: 28px;
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--colors-primary) 6%, transparent), transparent 34%),
     linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
   box-shadow: 0 16px 34px rgba(15, 23, 42, 0.05);
+
+  :deep(.my-form) {
+    flex: 0 0 auto;
+    min-width: 220px;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 0;
+  }
+
+  :deep(.el-form-item__label) {
+    display: none;
+  }
+}
+
+.teleport-settings-page__policy-copy {
+  display: flex;
+  flex: 1 1 280px;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.teleport-settings-page__policy-label,
+.teleport-settings-page__policy-state {
+  margin: 0;
+}
+
+.teleport-settings-page__policy-label {
+  color: var(--el-text-color-regular);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.teleport-settings-page__policy-state {
+  color: var(--el-text-color-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.teleport-settings-page__policy-state.is-active {
+  color: var(--el-color-success);
 }
 
 .teleport-settings-page__tabs {
@@ -962,6 +1023,17 @@ onBeforeRouteLeave(async (_to, _from, next) => {
 @media (min-width: 1280px) {
   .teleport-settings-page__panel-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .teleport-settings-page__master-card {
+    align-items: stretch;
+  }
+
+  .teleport-settings-page__master-card :deep(.my-form) {
+    min-width: 0;
+    width: 100%;
   }
 }
 </style>

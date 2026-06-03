@@ -76,7 +76,18 @@ const booleanOptions = computed(() => [
 ]);
 
 const policyFields = computed<MyFormField<FormModel>[]>(() => [
-  { prop: 'isEnabled', label: t('views.backup.database.fields.isEnabled'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
+  {
+    prop: 'isEnabled',
+    label: t('views.backup.database.fields.isEnabled'),
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
+    span: { xs: 24, md: 24 },
+  },
 ]);
 
 const settingsFields = computed<MyFormField<FormModel>[]>(() => [
@@ -225,7 +236,7 @@ async function onRunNow() {
       :gutter="16"
     />
 
-    <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+    <div>
       <MyForm
         id="databaseBackupConfigForm"
         ref="formRef"

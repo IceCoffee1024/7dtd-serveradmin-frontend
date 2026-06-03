@@ -71,11 +71,6 @@ const schema = v.object({
 
 const rules: FormRules = generateElementRules(schema);
 
-const booleanOptions = computed(() => [
-  { label: t('common.yes'), value: true },
-  { label: t('common.no'), value: false },
-]);
-
 const playerColorTagPermissionOptions = computed(() => [
   { label: t('views.coloredChat.settings.playerColorTagPermissions.none'), value: 'None' },
   { label: t('views.coloredChat.settings.playerColorTagPermissions.all'), value: 'All' },
@@ -88,8 +83,13 @@ const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.coloredChat.settings.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
     tooltip: t('views.coloredChat.settings.tooltips.isEnabled'),
     span: { xs: 24, md: 12 },
   },
@@ -362,8 +362,7 @@ onBeforeRouteLeave(async () => {
         </div>
       </div>
 
-      <!-- Color fields: disabled overlay when feature is off (#1) -->
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+      <div>
         <!-- Player channels group (#4) -->
         <p class="text-xs text-gray-400 tracking-wide font-semibold mb-3 uppercase dark:text-gray-500">
           {{ t('views.coloredChat.settings.sections.playerChannels') }}

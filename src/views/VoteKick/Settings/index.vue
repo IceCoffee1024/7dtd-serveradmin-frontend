@@ -109,18 +109,18 @@ const schema = v.object({
 
 const rules: FormRules = generateElementRules(schema);
 
-const booleanOptions = computed(() => [
-  { label: t('common.yes'), value: true },
-  { label: t('common.no'), value: false },
-]);
-
 const policyFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.voteKick.settings.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
+    span: { xs: 24, md: 24 },
   },
 ]);
 
@@ -463,7 +463,7 @@ onBeforeRouteLeave(async () => {
         :gutter="16"
       />
 
-      <div :class="{ 'opacity-40 pointer-events-none select-none': !form.isEnabled }">
+      <div>
         <MyForm
           id="voteKickSettingsForm"
           ref="formRef"
