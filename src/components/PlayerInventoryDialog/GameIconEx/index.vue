@@ -65,6 +65,9 @@ const fontSizePx = computed(() => {
 const { t } = useI18n();
 const isMod = computed(() => props.isMod || props.mod);
 const isBlock = computed(() => props.isBlock || props.block);
+const tooltipVisible = ref(false);
+const previewVisible = ref(false);
+
 const tooltipContent = computed(() => {
   return `
 ${t('components.playerInventoryDialog.localizationName')}: ${props.localizationName} <br />
@@ -79,12 +82,37 @@ ${t('components.playerInventoryDialog.maxUseTimes')}: ${props.maxUseTimes} <br /
 ${t('components.playerInventoryDialog.mod')}: ${isMod.value ? t('common.yes') : t('common.no')} <br />
 ${t('components.playerInventoryDialog.block')}: ${isBlock.value ? t('common.yes') : t('common.no')}`;
 });
+
+function onPreviewShow() {
+  previewVisible.value = true;
+  tooltipVisible.value = false;
+}
+
+function onPreviewClose() {
+  previewVisible.value = false;
+  tooltipVisible.value = false;
+}
 </script>
 
 <template>
-  <el-tooltip :content="tooltipContent" placement="top" effect="dark" :show-after="200" popper-class="inventory-icon-tooltip" raw-content>
+  <el-tooltip
+    v-model:visible="tooltipVisible"
+    :content="tooltipContent"
+    :disabled="previewVisible"
+    placement="top"
+    effect="dark"
+    :show-after="200"
+    popper-class="inventory-icon-tooltip"
+    raw-content
+  >
     <div class="game-icon-ex" :style="{ backgroundColor }">
-      <GameIcon :icon-name="iconName" :icon-color="iconColor" :size="size" />
+      <GameIcon
+        :icon-name="iconName"
+        :icon-color="iconColor"
+        :size="size"
+        @show="onPreviewShow"
+        @close="onPreviewClose"
+      />
       <template v-if="quality">
         <span :style="qualityColor" />
         <span class="quality-number">

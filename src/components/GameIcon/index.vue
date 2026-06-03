@@ -17,6 +17,11 @@ const props = withDefaults(defineProps<Props>(), {
   preview: true,
 });
 
+const emit = defineEmits<{
+  show: [];
+  close: [];
+}>();
+
 function getIconUrl(category: 'UiIcons' | 'ItemIcons', iconName: string, iconColor?: string | null): string | null {
   if (!iconName) {
     return null;
@@ -45,6 +50,8 @@ const previewSrcList = computed<string[]>(() => {
     :preview-src-list="previewSrcList"
     :style="{ width: `${size}px`, height: `${size}px` }"
     fit="contain"
+    @show="emit('show')"
+    @close="emit('close')"
   />
 </template>
 
