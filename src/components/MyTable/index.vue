@@ -170,8 +170,6 @@ interface Props {
   searchPanelMaxHeight?: number | string;
 }
 
-const NON_LATIN_CHAR_PATTERN = /[\u4E00-\u9FA5\uFF00-\uFFEF]/g;
-
 const { confirm } = usePopup();
 const { currentTheme } = useTheme();
 const { t } = useI18n();
@@ -359,25 +357,34 @@ const isCompactSearch = computed(() => {
 const dynamicColumnWidths = ref<Record<string, string>>({});
 
 /**
- * Estimates the visual width of a string.
- * Chinese and full-width characters count as two units; other characters count as one.
+ * Estimates the pixel width of a string based on character script.
+ *
+ * Weight factors per character type (relative to one Latin character):
+ *   CJK / fullwidth  →  2.0  (ideographs are square, roughly double Latin width)
+ *   Cyrillic         →  1.2  (slightly wider strokes than Latin at the same size)
+ *   other            →  1.0
+ *
+ * Scale (px per Latin-equivalent unit):
+ *   small   → 7.0  (intentionally compact; padding is reduced but font-size is the same)
+ *   default → 8.3  (calibrated for 14 px cell text and 0.76 rem bold-uppercase headers)
+ *   large   → 8.3  (El-Plus large size only increases row padding, not font-size)
  */
-function estimateCharWidth(str: string): number {
-  // \u4e00-\u9fa5 covers basic CJK characters; \uff00-\uffef covers full-width forms.
-
-  let scale: number; // Smaller table sizes use slightly tighter spacing.
-  switch (resolvedTableSize.value) {
-    case 'small':
-      scale = 7;
-      break;
-    case 'large':
-      scale = 8.3;
-      break;
-    default:
-      scale = 8.3;
-      break;
+function estimateCharWidth(str: string, size: string): number {
+  const scale = size === 'small' ? 7 : 8.3;
+  let units = 0;
+  for (const char of str) {
+    const cp = char.codePointAt(0)!;
+    if ((cp >= 0x4E00 && cp <= 0x9FA5) || (cp >= 0xFF00 && cp <= 0xFFEF)) {
+      units += 2; // CJK / fullwidth
+    }
+    else if (cp >= 0x0400 && cp <= 0x04FF) {
+      units += 1.2; // Cyrillic
+    }
+    else {
+      units += 1; // Latin, numbers, symbols
+    }
   }
-  return str.replace(NON_LATIN_CHAR_PATTERN, 'aa').length * scale;
+  return units * scale;
 }
 
 /**
@@ -390,14 +397,8 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
     && (props.autoColumnWidth || c.autoWidth)
     && !c.width);
 
-  // Clear cached widths when the current page becomes empty.
-  if (!autoCols.length || !newData.length) {
-    autoCols.forEach((c) => {
-      if (c.prop)
-        delete dynamicColumnWidths.value[c.prop as string];
-    });
+  if (!autoCols.length)
     return;
-  }
 
   const paddingMap = {
     small: 16,
@@ -411,7 +412,7 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
     const minPx = 80;
 
     // Header width: text estimate + sort icon + horizontal padding.
-    let maxWidth = estimateCharWidth(col.label) + (col.sortable ? 24 : 0) + paddingMap[newSize];
+    let maxWidth = estimateCharWidth(col.label, newSize) + (col.sortable ? 24 : 0) + paddingMap[newSize] + 8;
 
     // Inspect the current page and measure the widest cell value.
     for (const row of newData) {
@@ -420,8 +421,7 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
         ? getEnumLabel(col, (row as any)[prop])
         : String((row as any)[prop] ?? '');
 
-      // Cell padding contributes roughly 32px.
-      const cellWidth = estimateCharWidth(cellText) + paddingMap[resolvedTableSize.value];
+      const cellWidth = estimateCharWidth(cellText, newSize) + paddingMap[newSize];
       if (cellWidth > maxWidth)
         maxWidth = cellWidth;
     }
@@ -431,12 +431,9 @@ watch([tableData, resolvedTableSize], ([newData, newSize]) => {
 }, { immediate: true });
 
 // Recalculate widths when the visible column set changes.
+// Always retrigger even when data is empty so header-based widths are recomputed.
 watch(selectedColumns, () => {
-  // Reuse the same calculation path by nudging the tableData watcher.
-  if (tableData.value.length) {
-    // Shallow clone to retrigger the tableData watcher.
-    tableData.value = [...tableData.value];
-  }
+  tableData.value = [...tableData.value];
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
