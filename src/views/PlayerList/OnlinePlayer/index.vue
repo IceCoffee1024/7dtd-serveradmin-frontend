@@ -13,6 +13,7 @@ import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { usePopup } from '~/composables/usePopup';
 import {
   chatAddOrUpdateMuteMutation,
+  chatRemoveMutesMutation,
   gameServerCreateBanMutation,
   gameServerGetOnlinePlayersQuery,
   gameServerKickPlayerMutation,
@@ -39,6 +40,12 @@ const banPlayerMutation = useMutation({
 });
 const addMuteMutation = useMutation({
   ...chatAddOrUpdateMuteMutation(),
+  async onSettled() {
+    await invalidateGeneratedQueries('Chat');
+  },
+});
+const removeMuteMutation = useMutation({
+  ...chatRemoveMutesMutation(),
   async onSettled() {
     await invalidateGeneratedQueries('Chat');
   },
@@ -212,6 +219,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
   },
   {
     label: t('views.playerList.mute'),
+    disabled: (row) => !!row?.isMuted,
     command: async (row) => {
       if (!row)
         return;
@@ -228,6 +236,21 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
           body: { playerId: row.playerId, playerName: row.playerName, mutedUntil, reason: reason || null },
         });
         toast({ type: 'success', title: t('views.playerList.mute') });
+      }
+      catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  {
+    label: t('views.playerList.unmute'),
+    disabled: (row) => !row?.isMuted,
+    command: async (row) => {
+      if (!row)
+        return;
+      try {
+        await removeMuteMutation.mutateAsync({ body: [row.playerId] });
+        toast({ type: 'success', title: t('views.playerList.unmute') });
       }
       catch (error) {
         console.error(error);

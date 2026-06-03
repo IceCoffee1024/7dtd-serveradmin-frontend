@@ -489,7 +489,8 @@
       "banReason": "Powód bana (opcjonalnie)",
       "mute": "Wycisz gracza",
       "muteDuration": "Czas wyciszenia (minuty, 0 lub pusty na stałe)",
-      "muteReason": "Powód wyciszenia (opcjonalnie)"
+      "muteReason": "Powód wyciszenia (opcjonalnie)",
+      "unmute": "Cofnij wyciszenie"
     },
     "map": {
       "region": "Plik regionu",

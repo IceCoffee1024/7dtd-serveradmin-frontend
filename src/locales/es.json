@@ -489,7 +489,8 @@
       "banReason": "Motivo de prohibición (opcional)",
       "mute": "Silenciar jugador",
       "muteDuration": "Duración del silencio (minutos, 0 o vacío para permanente)",
-      "muteReason": "Motivo del silencio (opcional)"
+      "muteReason": "Motivo del silencio (opcional)",
+      "unmute": "Quitar silencio"
     },
     "map": {
       "region": "Archivo de región",

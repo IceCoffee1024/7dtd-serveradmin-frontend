@@ -489,7 +489,8 @@
       "banReason": "Yasaklanma Nedeni (İsteğe Bağlı)",
       "mute": "Oyuncunun Sesini Kapat",
       "muteDuration": "Sessize Alma Süresi (Dakika, 0 veya kalıcı olarak boş)",
-      "muteReason": "Sessize Alma Nedeni (İsteğe Bağlı)"
+      "muteReason": "Sessize Alma Nedeni (İsteğe Bağlı)",
+      "unmute": "Sessizliği Kaldır"
     },
     "map": {
       "region": "Bölge Dosyası",

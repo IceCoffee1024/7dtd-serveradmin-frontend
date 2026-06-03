@@ -489,7 +489,8 @@
       "banReason": "Ban Reason (Optional)",
       "mute": "Mute Player",
       "muteDuration": "Mute Duration (Minutes, 0 or empty for permanent)",
-      "muteReason": "Mute Reason (Optional)"
+      "muteReason": "Mute Reason (Optional)",
+      "unmute": "Unmute Player"
     },
     "map": {
       "region": "Region File",

@@ -489,7 +489,8 @@
       "banReason": "Sperrgrund (optional)",
       "mute": "Spieler stumm schalten",
       "muteDuration": "Stummschaltungsdauer (Minuten, 0 oder leer für dauerhaft)",
-      "muteReason": "Grund für Stummschaltung (optional)"
+      "muteReason": "Grund für Stummschaltung (optional)",
+      "unmute": "Stummschaltung aufheben"
     },
     "map": {
       "region": "Regionsdatei",

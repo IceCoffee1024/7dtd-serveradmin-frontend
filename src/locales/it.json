@@ -489,7 +489,8 @@
       "banReason": "Motivo del ban (facoltativo)",
       "mute": "Disattiva l'audio del lettore",
       "muteDuration": "Durata disattivazione audio (Minuti, 0 o vuoto per permanente)",
-      "muteReason": "Motivo disattivazione audio (facoltativo)"
+      "muteReason": "Motivo disattivazione audio (facoltativo)",
+      "unmute": "Rimuovi muto"
     },
     "map": {
       "region": "Fascicolo della regione",

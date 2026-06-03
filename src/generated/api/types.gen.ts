@@ -2233,6 +2233,10 @@ export type OnlinePlayerDto = PlayerBasicInfoDto & {
      * Current game stage value used for difficulty scaling.
      */
     gameStage: number;
+    /**
+     * Whether the player currently has an active chat mute (permanent or not-yet-expired temporary).
+     */
+    isMuted: boolean;
 };
 
 /**

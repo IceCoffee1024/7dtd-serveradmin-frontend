@@ -489,7 +489,8 @@
       "banReason": "Motivo do banimento (opcional)",
       "mute": "Silenciar jogador",
       "muteDuration": "Duração do silenciamento (minutos, 0 ou vazio para permanente)",
-      "muteReason": "Motivo do silenciamento (opcional)"
+      "muteReason": "Motivo do silenciamento (opcional)",
+      "unmute": "Desfazer silenciamento"
     },
     "map": {
       "region": "Arquivo de região",

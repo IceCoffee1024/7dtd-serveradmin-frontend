@@ -489,7 +489,8 @@
       "banReason": "禁止原因（可選）",
       "mute": "靜音播放器",
       "muteDuration": "靜音持續時間（分鐘，0 或為空表示永久）",
-      "muteReason": "靜音原因（可選）"
+      "muteReason": "靜音原因（可選）",
+      "unmute": "解除靜音"
     },
     "map": {
       "region": "區域文件",

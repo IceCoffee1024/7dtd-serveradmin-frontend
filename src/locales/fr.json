@@ -489,7 +489,8 @@
       "banReason": "Raison de l'interdiction (facultatif)",
       "mute": "Joueur muet",
       "muteDuration": "Durée du muet (minutes, 0 ou vide pour permanent)",
-      "muteReason": "Raison du muet (facultatif)"
+      "muteReason": "Raison du muet (facultatif)",
+      "unmute": "Annuler la mise en sourdine"
     },
     "map": {
       "region": "Fichier de région",
