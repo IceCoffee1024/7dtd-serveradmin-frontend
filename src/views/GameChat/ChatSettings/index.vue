@@ -82,11 +82,16 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.chatSettings.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
     tooltip: t('views.chatSettings.tooltips.isEnabled'),
     disabled: () => true,
-    span: { xs: 24, md: 12 },
+    span: { xs: 24, md: 24 },
   },
   {
     prop: 'globalServerName',

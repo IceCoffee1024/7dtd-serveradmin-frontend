@@ -73,9 +73,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'isEnabled',
     label: t('views.scheduler.settings.fields.isEnabled'),
-    el: 'el-select',
-    options: booleanOptions.value,
-    span: { xs: 24, md: 12 },
+    el: 'el-switch',
+    props: {
+      inlinePrompt: true,
+      activeText: t('common.yes'),
+      inactiveText: t('common.no'),
+      size: 'large',
+    },
+    span: { xs: 24, md: 24 },
   },
   {
     prop: 'defaultTimeZoneId',
