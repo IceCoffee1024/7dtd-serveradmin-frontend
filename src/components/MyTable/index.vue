@@ -838,7 +838,7 @@ defineExpose({
 
 .table-toolbar__column-select {
   :deep(.el-select__wrapper) {
-    border-radius: 14px;
+    border-radius: 10px;
     box-shadow: none;
   }
 }

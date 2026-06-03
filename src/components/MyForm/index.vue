@@ -167,7 +167,7 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
   :deep(.el-textarea__inner),
   :deep(.el-select__wrapper),
   :deep(.el-date-editor.el-input__wrapper) {
-    border-radius: 14px;
+    border-radius: 10px;
     background: var(--my-form-control-bg);
     box-shadow: var(--my-form-control-shadow);
     transition:
@@ -176,7 +176,22 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
   }
 
   :deep(.el-input-number) {
-    border-radius: 14px;
+    border-radius: 10px;
+    overflow: visible;
+  }
+
+  :deep(.el-input-number .el-input__wrapper) {
+    border-radius: 10px;
+  }
+
+  :deep(.el-input-number__decrease) {
+    border-radius: 9px 0 0 9px;
+    background: color-mix(in srgb, var(--el-fill-color-light) 78%, var(--el-bg-color) 22%);
+  }
+
+  :deep(.el-input-number__increase) {
+    border-radius: 0 9px 9px 0;
+    background: color-mix(in srgb, var(--el-fill-color-light) 78%, var(--el-bg-color) 22%);
   }
 
   :deep(.el-input__wrapper:hover),
@@ -200,6 +215,7 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
   }
 
   :deep(.el-input.is-disabled .el-input__wrapper),
+  :deep(.el-input-number.is-disabled .el-input__wrapper),
   :deep(.el-select__wrapper.is-disabled),
   :deep(.el-textarea__inner:disabled) {
     background: color-mix(in srgb, var(--el-fill-color-light) 72%, var(--el-bg-color) 28%);

@@ -193,7 +193,7 @@ function onReset() {
 }
 
 .search-toolbar__input :deep(.el-input__wrapper) {
-  border-radius: 14px;
+  border-radius: 10px;
   background: var(--search-control-bg);
   box-shadow:
     0 0 0 1px var(--search-control-border) inset,
