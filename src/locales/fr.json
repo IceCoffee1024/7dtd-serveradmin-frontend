@@ -490,7 +490,17 @@
       "mute": "Joueur muet",
       "muteDuration": "Durée du muet (minutes, 0 ou vide pour permanent)",
       "muteReason": "Raison du muet (facultatif)",
-      "unmute": "Annuler la mise en sourdine"
+      "unmute": "Annuler la mise en sourdine",
+      "giveItem": {
+        "title": "Donner un objet",
+        "target": "Joueur cible",
+        "qualityHint": "La qualité ne s'applique qu'aux objets prenant en charge les niveaux de qualité. Elle est ignorée pour les objets empilables ordinaires et les blocs.",
+        "fields": {
+          "itemName": "Objet du jeu",
+          "count": "Quantité",
+          "quality": "Qualité"
+        }
+      }
     },
     "map": {
       "region": "Fichier de région",

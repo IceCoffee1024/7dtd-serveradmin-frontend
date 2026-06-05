@@ -490,7 +490,17 @@
       "mute": "플레이어 음소거",
       "muteDuration": "음소거 기간(분, 0 또는 영구적인 경우 비어 있음)",
       "muteReason": "음소거 이유(선택사항)",
-      "unmute": "음소거 해제"
+      "unmute": "음소거 해제",
+      "giveItem": {
+        "title": "아이템 지급",
+        "target": "대상 플레이어",
+        "qualityHint": "품질은 품질 등급을 지원하는 아이템에만 적용됩니다. 일반 중첩 아이템과 블록에는 적용되지 않습니다.",
+        "fields": {
+          "itemName": "게임 아이템",
+          "count": "수량",
+          "quality": "품질"
+        }
+      }
     },
     "map": {
       "region": "지역 파일",

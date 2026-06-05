@@ -66,6 +66,7 @@ declare module 'vue' {
     ExceptionPage: typeof import('./components/ExceptionPage/index.vue')['default']
     FieldRenderer: typeof import('./components/FieldRenderer/index.vue')['default']
     GameIcon: typeof import('./components/GameIcon/index.vue')['default']
+    GameItemSelect: typeof import('./components/GameItemSelect/index.vue')['default']
     IconButton: typeof import('./components/IconButton/index.vue')['default']
     IconCustomNoPermission: typeof import('~icons/custom/no-permission')['default']
     IconCustomNotFound: typeof import('~icons/custom/not-found')['default']

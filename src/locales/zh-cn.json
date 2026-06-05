@@ -490,7 +490,17 @@
       "mute": "禁言玩家",
       "muteDuration": "禁言时长（分钟，0 或留空为永久）",
       "muteReason": "禁言原因（可选）",
-      "unmute": "解除禁言"
+      "unmute": "解除禁言",
+      "giveItem": {
+        "title": "发放物品",
+        "target": "目标玩家",
+        "qualityHint": "仅支持品质的物品会使用该值，普通堆叠物品和方块会忽略品质。",
+        "fields": {
+          "itemName": "游戏物品",
+          "count": "数量",
+          "quality": "品质"
+        }
+      }
     },
     "map": {
       "region": "区域文件",

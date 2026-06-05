@@ -490,7 +490,17 @@
       "mute": "Silenciar jugador",
       "muteDuration": "Duración del silencio (minutos, 0 o vacío para permanente)",
       "muteReason": "Motivo del silencio (opcional)",
-      "unmute": "Quitar silencio"
+      "unmute": "Quitar silencio",
+      "giveItem": {
+        "title": "Entregar objeto",
+        "target": "Jugador objetivo",
+        "qualityHint": "La calidad solo se aplica a objetos que admiten niveles de calidad. Se ignora en objetos apilables normales y bloques.",
+        "fields": {
+          "itemName": "Objeto del juego",
+          "count": "Cantidad",
+          "quality": "Calidad"
+        }
+      }
     },
     "map": {
       "region": "Archivo de región",

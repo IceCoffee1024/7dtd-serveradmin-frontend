@@ -490,7 +490,17 @@
       "mute": "Mute Player",
       "muteDuration": "Mute Duration (Minutes, 0 or empty for permanent)",
       "muteReason": "Mute Reason (Optional)",
-      "unmute": "Unmute Player"
+      "unmute": "Unmute Player",
+      "giveItem": {
+        "title": "Give Item",
+        "target": "Target Player",
+        "qualityHint": "Quality only applies to items that support quality tiers. It is ignored for normal stackable items and blocks.",
+        "fields": {
+          "itemName": "Game Item",
+          "count": "Quantity",
+          "quality": "Quality"
+        }
+      }
     },
     "map": {
       "region": "Region File",

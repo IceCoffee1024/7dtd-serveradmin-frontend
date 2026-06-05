@@ -490,7 +490,17 @@
       "mute": "Spieler stumm schalten",
       "muteDuration": "Stummschaltungsdauer (Minuten, 0 oder leer für dauerhaft)",
       "muteReason": "Grund für Stummschaltung (optional)",
-      "unmute": "Stummschaltung aufheben"
+      "unmute": "Stummschaltung aufheben",
+      "giveItem": {
+        "title": "Gegenstand geben",
+        "target": "Zielspieler",
+        "qualityHint": "Qualität gilt nur für Gegenstände, die Qualitätsstufen unterstützen. Bei normalen stapelbaren Gegenständen und Blöcken wird sie ignoriert.",
+        "fields": {
+          "itemName": "Spielgegenstand",
+          "count": "Anzahl",
+          "quality": "Qualität"
+        }
+      }
     },
     "map": {
       "region": "Regionsdatei",

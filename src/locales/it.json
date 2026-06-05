@@ -490,7 +490,17 @@
       "mute": "Disattiva l'audio del lettore",
       "muteDuration": "Durata disattivazione audio (Minuti, 0 o vuoto per permanente)",
       "muteReason": "Motivo disattivazione audio (facoltativo)",
-      "unmute": "Rimuovi muto"
+      "unmute": "Rimuovi muto",
+      "giveItem": {
+        "title": "Assegna oggetto",
+        "target": "Giocatore destinatario",
+        "qualityHint": "La qualità si applica solo agli oggetti che supportano livelli di qualità. Viene ignorata per i normali oggetti impilabili e per i blocchi.",
+        "fields": {
+          "itemName": "Oggetto di gioco",
+          "count": "Quantità",
+          "quality": "Qualità"
+        }
+      }
     },
     "map": {
       "region": "Fascicolo della regione",

@@ -490,7 +490,17 @@
       "mute": "Silenciar jogador",
       "muteDuration": "Duração do silenciamento (minutos, 0 ou vazio para permanente)",
       "muteReason": "Motivo do silenciamento (opcional)",
-      "unmute": "Desfazer silenciamento"
+      "unmute": "Desfazer silenciamento",
+      "giveItem": {
+        "title": "Dar item",
+        "target": "Jogador alvo",
+        "qualityHint": "A qualidade só se aplica a itens que oferecem suporte a níveis de qualidade. Ela é ignorada para itens empilháveis comuns e blocos.",
+        "fields": {
+          "itemName": "Item do jogo",
+          "count": "Quantidade",
+          "quality": "Qualidade"
+        }
+      }
     },
     "map": {
       "region": "Arquivo de região",

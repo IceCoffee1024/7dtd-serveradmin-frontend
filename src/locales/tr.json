@@ -490,7 +490,17 @@
       "mute": "Oyuncunun Sesini Kapat",
       "muteDuration": "Sessize Alma Süresi (Dakika, 0 veya kalıcı olarak boş)",
       "muteReason": "Sessize Alma Nedeni (İsteğe Bağlı)",
-      "unmute": "Sessizliği Kaldır"
+      "unmute": "Sessizliği Kaldır",
+      "giveItem": {
+        "title": "Eşya Ver",
+        "target": "Hedef Oyuncu",
+        "qualityHint": "Kalite yalnızca kalite seviyesi destekleyen eşyalara uygulanır. Normal istiflenebilir eşyalar ve bloklar için yok sayılır.",
+        "fields": {
+          "itemName": "Oyun Eşyası",
+          "count": "Miktar",
+          "quality": "Kalite"
+        }
+      }
     },
     "map": {
       "region": "Bölge Dosyası",

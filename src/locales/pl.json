@@ -490,7 +490,17 @@
       "mute": "Wycisz gracza",
       "muteDuration": "Czas wyciszenia (minuty, 0 lub pusty na stałe)",
       "muteReason": "Powód wyciszenia (opcjonalnie)",
-      "unmute": "Cofnij wyciszenie"
+      "unmute": "Cofnij wyciszenie",
+      "giveItem": {
+        "title": "Daj przedmiot",
+        "target": "Gracz docelowy",
+        "qualityHint": "Jakość dotyczy tylko przedmiotów obsługujących poziomy jakości. Jest ignorowana dla zwykłych przedmiotów stackowalnych i bloków.",
+        "fields": {
+          "itemName": "Przedmiot z gry",
+          "count": "Ilość",
+          "quality": "Jakość"
+        }
+      }
     },
     "map": {
       "region": "Plik regionu",

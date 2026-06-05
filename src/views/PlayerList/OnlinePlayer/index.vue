@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { FormRules } from 'element-plus';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type { MyFormField } from '~/composables/useMyForm';
 import type {
+  GameItemDto,
+  GiveItemToPlayerRequestDto,
   OnlinePlayerDto,
   OnlinePlayerQueryOrder,
   PositionDto,
@@ -10,18 +14,34 @@ import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
+import GameItemSelect from '~/components/GameItemSelect/index.vue';
+import MyDialog from '~/components/MyDialog/index.vue';
+import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables/usePopup';
 import {
   chatAddOrUpdateMuteMutation,
   chatRemoveMutesMutation,
   gameServerCreateBanMutation,
   gameServerGetOnlinePlayersQuery,
+  gameServerGiveItemToOnlinePlayerMutation,
   gameServerKickPlayerMutation,
 } from '~/generated/api/@pinia/colada.gen';
+import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
-import { formatPosition, showCommandResult } from '~/utils';
+import { formatPosition, generateElementRules, showCommandResult } from '~/utils';
 
 type OnlinePlayerRow = OnlinePlayerDto;
+
+interface FormExpose {
+  validate: () => Promise<boolean | undefined>;
+  clearValidate: (props?: string | string[]) => void;
+}
+
+interface GiveItemFormModel {
+  itemName: string;
+  count: number;
+  quality: number;
+}
 
 const { t } = useI18n();
 const { confirm: confirmPopup, prompt, toast } = usePopup();
@@ -50,6 +70,10 @@ const removeMuteMutation = useMutation({
     await invalidateGeneratedQueries('Chat');
   },
 });
+const giveItemMutation = useMutation({
+  ...gameServerGiveItemToOnlinePlayerMutation(),
+});
+const isGivingItem = computed(() => giveItemMutation.isLoading.value);
 
 const isAutoRefreshEnabled = ref(true);
 const autoRefreshInterval = ref(10);
@@ -95,6 +119,47 @@ const columns = computed<MyTableColumn<OnlinePlayerRow>[]>(() => [
 const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
 const playerSkillsDialogRef = useTemplateRef('playerSkillsDialogRef');
 const playerDetailsDialogRef = useTemplateRef('playerDetailsDialogRef');
+const giveItemDialogRef = useTemplateRef('giveItemDialogRef');
+const giveItemFormRef = useTemplateRef<FormExpose>('giveItemFormRef');
+const giveItemTarget = ref<OnlinePlayerRow | null>(null);
+const selectedGameItem = ref<GameItemDto | null>(null);
+const giveItemForm = reactive<GiveItemFormModel>({
+  itemName: '',
+  count: 1,
+  quality: 1,
+});
+const selectedItemAcceptsQuality = computed(() => selectedGameItem.value?.hasQuality === true);
+
+const giveItemSchema = v.object({
+  itemName: v.pipe(v.string(), v.minLength(1)),
+  count: v.pipe(v.number(), v.minValue(1), v.maxValue(999999)),
+  quality: v.pipe(v.number(), v.minValue(1), v.maxValue(6)),
+});
+const giveItemRules: FormRules = generateElementRules(giveItemSchema);
+const giveItemFields = computed<MyFormField<GiveItemFormModel>[]>(() => [
+  {
+    prop: 'itemName',
+    label: t('views.playerList.giveItem.fields.itemName'),
+    el: 'custom',
+    span: { xs: 24 },
+  },
+  {
+    prop: 'count',
+    label: t('views.playerList.giveItem.fields.count'),
+    el: 'el-input-number',
+    props: { min: 1, max: 999999, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'quality',
+    label: t('views.playerList.giveItem.fields.quality'),
+    el: 'el-input-number',
+    props: { min: 1, max: 6, precision: 0, class: 'w-full' },
+    disabled: () => !selectedItemAcceptsQuality.value,
+    tooltip: t('views.playerList.giveItem.qualityHint'),
+    span: { xs: 24, md: 12 },
+  },
+]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<OnlinePlayerRow>> {
   const options = gameServerGetOnlinePlayersQuery({
@@ -138,6 +203,52 @@ function toOrder(sortField: string | undefined): OnlinePlayerQueryOrder | undefi
   }
 }
 
+function openGiveItemDialog(row: OnlinePlayerRow) {
+  giveItemTarget.value = row;
+  giveItemForm.itemName = '';
+  giveItemForm.count = 1;
+  giveItemForm.quality = 1;
+  selectedGameItem.value = null;
+  giveItemDialogRef.value?.open();
+  nextTick(() => giveItemFormRef.value?.clearValidate());
+}
+
+function onSelectedGameItemChange(item: GameItemDto | null) {
+  selectedGameItem.value = item;
+  if (item?.hasQuality !== true) {
+    giveItemForm.quality = 1;
+  }
+}
+
+async function onGiveItemConfirm(): Promise<boolean | void> {
+  if (!giveItemTarget.value) {
+    return false;
+  }
+
+  const valid = await giveItemFormRef.value?.validate().catch(() => false);
+  if (!valid) {
+    return false;
+  }
+
+  const body: GiveItemToPlayerRequestDto = {
+    itemName: giveItemForm.itemName.trim(),
+    count: Number(giveItemForm.count),
+    quality: selectedItemAcceptsQuality.value ? Number(giveItemForm.quality) : null,
+  };
+
+  try {
+    const result = await giveItemMutation.mutateAsync({
+      path: { playerId: giveItemTarget.value.playerId },
+      body,
+    });
+    showCommandResult(result ?? undefined, t('views.playerList.giveItem.title'));
+  }
+  catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
   {
     label: t('views.playerList.viewInventory'),
@@ -164,8 +275,16 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
     },
   },
   {
-    label: t('views.playerList.kick'),
+    label: t('views.playerList.giveItem.title'),
     divided: true,
+    command: (row) => {
+      if (!row)
+        return;
+      openGiveItemDialog(row);
+    },
+  },
+  {
+    label: t('views.playerList.kick'),
     command: async (row) => {
       if (!row)
         return;
@@ -219,7 +338,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
   },
   {
     label: t('views.playerList.mute'),
-    disabled: (row) => !!row?.isMuted,
+    disabled: row => !!row?.isMuted,
     command: async (row) => {
       if (!row)
         return;
@@ -244,7 +363,7 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
   },
   {
     label: t('views.playerList.unmute'),
-    disabled: (row) => !row?.isMuted,
+    disabled: row => !row?.isMuted,
     command: async (row) => {
       if (!row)
         return;
@@ -315,6 +434,36 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       </template>
       <template #operation />
     </MyTable>
+    <MyDialog
+      ref="giveItemDialogRef"
+      :title="t('views.playerList.giveItem.title')"
+      :loading="isGivingItem"
+      :on-confirm="onGiveItemConfirm"
+    >
+      <div v-if="giveItemTarget" class="text-sm mb-3 px-3 py-2 border border-gray-200 rounded bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60">
+        <span class="text-gray-500 dark:text-gray-400">{{ t('views.playerList.giveItem.target') }}</span>
+        <span class="font-semibold ml-2">{{ giveItemTarget.playerName }}</span>
+        <span class="text-gray-400 font-mono ml-2">{{ giveItemTarget.playerId }}</span>
+      </div>
+      <MyForm
+        ref="giveItemFormRef"
+        v-model="giveItemForm"
+        :fields="giveItemFields"
+        :rules="giveItemRules"
+        label-position="top"
+        label-width="auto"
+        :gutter="16"
+      >
+        <template #itemName>
+          <GameItemSelect
+            v-model="giveItemForm.itemName"
+            include-blocks
+            :placeholder="t('views.playerList.giveItem.fields.itemName')"
+            @selected-change="onSelectedGameItemChange"
+          />
+        </template>
+      </MyForm>
+    </MyDialog>
     <PlayerInventoryDialog ref="playerInventoryDialogRef" />
     <PlayerSkillsDialog ref="playerSkillsDialogRef" />
     <PlayerDetailsDialog ref="playerDetailsDialogRef" />

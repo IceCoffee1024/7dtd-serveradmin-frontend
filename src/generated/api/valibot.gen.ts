@@ -1284,7 +1284,8 @@ export const vOnlinePlayerDto = v.intersect([vPlayerBasicInfoDto, v.strictObject
         level: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
         expToNextLevel: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
         skillPoints: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
-        gameStage: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+        gameStage: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+        isMuted: v.optional(v.boolean())
     })]);
 
 /**
@@ -1547,6 +1548,7 @@ export const vGameItemDto = v.strictObject({
     iconName: v.nullish(v.string()),
     iconTintColor: v.nullish(v.string()),
     maxStackAllowed: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    hasQuality: v.optional(v.boolean()),
     isBlock: v.optional(v.boolean())
 });
 
@@ -1586,6 +1588,15 @@ export const vModInfoDto = v.strictObject({
 export const vKickPlayerRequestDto = v.strictObject({
     playerId: v.string(),
     reason: v.nullish(v.string())
+});
+
+/**
+ * Request body for granting an item directly to an online player's inventory.
+ */
+export const vGiveItemToPlayerRequestDto = v.strictObject({
+    itemName: v.pipe(v.string(), v.minLength(1)),
+    count: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(999999))),
+    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(6)))
 });
 
 /**
@@ -2590,6 +2601,15 @@ export const vGameServerToggleModStatusQuery = v.object({
  * Kick request containing the player's cross-platform ID and an optional reason.
  */
 export const vGameServerKickPlayerBody = vKickPlayerRequestDto;
+
+/**
+ * Item grant payload containing item id, count, and optional quality.
+ */
+export const vGameServerGiveItemToOnlinePlayerBody = vGiveItemToPlayerRequestDto;
+
+export const vGameServerGiveItemToOnlinePlayerPath = v.object({
+    playerId: v.string()
+});
 
 /**
  * Teleport request containing the target entity id and coordinates.

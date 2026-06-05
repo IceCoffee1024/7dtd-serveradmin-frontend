@@ -2256,7 +2256,7 @@ export type OnlinePlayerDto = PlayerBasicInfoDto & {
     /**
      * Whether the player currently has an active chat mute (permanent or not-yet-expired temporary).
      */
-    isMuted: boolean;
+    isMuted?: boolean;
 };
 
 /**
@@ -2887,6 +2887,10 @@ export type GameItemDto = {
      */
     maxStackAllowed?: number;
     /**
+     * Whether this item accepts a quality tier when granted to a player.
+     */
+    hasQuality?: boolean;
+    /**
      * Whether this entry represents a placeable block rather than a held item.
      * Blocks have IDs below Block.ItemsStartHere; items are at or above it.
      */
@@ -2977,6 +2981,24 @@ export type KickPlayerRequestDto = {
      * Optional reason message shown to the player on disconnect.
      */
     reason?: string | null;
+};
+
+/**
+ * Request body for granting an item directly to an online player's inventory.
+ */
+export type GiveItemToPlayerRequestDto = {
+    /**
+     * Internal 7 Days to Die item identifier.
+     */
+    itemName: string;
+    /**
+     * Number of item units to grant.
+     */
+    count?: number;
+    /**
+     * Optional quality tier for quality-based items.
+     */
+    quality?: number | null;
 };
 
 /**
@@ -4377,7 +4399,7 @@ export type AuditLogsGetData = {
          */
         endTime?: string | null;
         /**
-         * Optional source filter such as Api, ChatCommand, or ConsoleCommand.
+         * Optional source filter such as Api, ChatCommand, Console, or System.
          */
         source?: AuditLogSource | null;
         /**
@@ -7071,6 +7093,37 @@ export type GameServerKickPlayerResponses = {
 };
 
 export type GameServerKickPlayerResponse = GameServerKickPlayerResponses[keyof GameServerKickPlayerResponses];
+
+export type GameServerGiveItemToOnlinePlayerData = {
+    /**
+     * Item grant payload containing item id, count, and optional quality.
+     */
+    body: GiveItemToPlayerRequestDto;
+    path: {
+        /**
+         * Cross-platform player identifier of the online target player.
+         */
+        playerId: string;
+    };
+    query?: never;
+    url: '/api/GameServer/OnlinePlayers/{playerId}/Items';
+};
+
+export type GameServerGiveItemToOnlinePlayerErrors = {
+    400: ProblemDetailsDto;
+    404: ProblemDetailsDto;
+};
+
+export type GameServerGiveItemToOnlinePlayerError = GameServerGiveItemToOnlinePlayerErrors[keyof GameServerGiveItemToOnlinePlayerErrors];
+
+export type GameServerGiveItemToOnlinePlayerResponses = {
+    /**
+     * Console output from the item grant command pipeline.
+     */
+    200: Array<string>;
+};
+
+export type GameServerGiveItemToOnlinePlayerResponse = GameServerGiveItemToOnlinePlayerResponses[keyof GameServerGiveItemToOnlinePlayerResponses];
 
 export type GameServerTeleportToPositionData = {
     /**
