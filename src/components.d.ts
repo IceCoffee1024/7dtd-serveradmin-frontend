@@ -91,6 +91,7 @@ declare module 'vue' {
     'IconMdi:filterOutline': typeof import('~icons/mdi/filter-outline')['default']
     'IconMdi:fullscreen': typeof import('~icons/mdi/fullscreen')['default']
     'IconMdi:fullscreenExit': typeof import('~icons/mdi/fullscreen-exit')['default']
+    'IconMdi:gift': typeof import('~icons/mdi/gift')['default']
     'IconMdi:github': typeof import('~icons/mdi/github')['default']
     'IconMdi:helpCircleOutline': typeof import('~icons/mdi/help-circle-outline')['default']
     'IconMdi:language': typeof import('~icons/mdi/language')['default']
