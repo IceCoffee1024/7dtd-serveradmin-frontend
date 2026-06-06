@@ -531,6 +531,7 @@
       "landOwner": "Właściciel gruntu",
       "removeLandClaim": "Usunąć",
       "removeLandClaimConfirm": "Czy na pewno chcesz usunąć roszczenie do gruntu?",
+      "dragTeleportHint": "Przeciągnij znacznik gracza online, aby go teleportować.",
       "dragendTelePlayerConfirm": "Czy na pewno chcesz teleportować gracza: {0} do lokalizacji docelowej {1}?",
       "gameTimeLoading": "Ładowanie...",
       "gameTimeFormat": "Dzień {days}, {hours}:{minutes}",

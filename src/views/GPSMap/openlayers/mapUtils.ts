@@ -2,7 +2,7 @@ import type { ClusterOptions } from 'ol-ext/layer/AnimatedCluster';
 import type { FeatureLike } from 'ol/Feature';
 import type { Geometry, LineString, Polygon } from 'ol/geom';
 import type { Options } from 'ol/layer/BaseVector';
-import type { EntityInfoFeatureData, EntityLayerOptions, MapPointFeatureData, OpenLayersModuleContext, PointLocationLayerOptions } from '../types';
+import type { EntityInfoFeatureData, EntityLayerOptions, MapPointFeatureData, OpenLayersModuleContext, PointLocationLayerHandle, PointLocationLayerOptions } from '../types';
 import { useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
 import AnimatedCluster from 'ol-ext/layer/AnimatedCluster';
@@ -54,7 +54,7 @@ export function getFeatureCenter(feature: Feature): number[] {
 export function setupPointLocationLayer<TData extends MapPointFeatureData>(
   context: OpenLayersModuleContext,
   options: PointLocationLayerOptions<TData>,
-) {
+): PointLocationLayerHandle<TData> {
   const { map, mapInfo } = context;
 
   const distance = 40;
@@ -122,6 +122,10 @@ export function setupPointLocationLayer<TData extends MapPointFeatureData>(
     feature.set('layerId', options.layerId);
     feature.setStyle(options.iconStyle);
     return feature;
+  }
+
+  function getFeatureData(feature: Feature<Point>): TData | undefined {
+    return feature.get('data') as TData | undefined;
   }
 
   map.on('singleclick', (event) => {
@@ -203,7 +207,14 @@ export function setupPointLocationLayer<TData extends MapPointFeatureData>(
     }
   });
 
-  return clusterLayer;
+  return {
+    layer: clusterLayer,
+    source: pointSource,
+    refresh: refreshData,
+    pauseRefresh: pause,
+    resumeRefresh: resume,
+    getFeatureData,
+  };
 }
 
 /**
@@ -211,7 +222,10 @@ export function setupPointLocationLayer<TData extends MapPointFeatureData>(
  * @param context - Shared OpenLayers module context.
  * @param options - Configuration options for the entity layer.
  */
-export function setupEntityLocationLayer(context: OpenLayersModuleContext, options: EntityLayerOptions) {
+export function setupEntityLocationLayer(
+  context: OpenLayersModuleContext,
+  options: EntityLayerOptions,
+): PointLocationLayerHandle<EntityInfoFeatureData> {
   const queryCache = useQueryCache();
 
   return setupPointLocationLayer<EntityInfoFeatureData>(context, {

@@ -531,6 +531,7 @@
       "landOwner": "토지 소유자",
       "removeLandClaim": "제거하다",
       "removeLandClaimConfirm": "토지 소유권 주장을 삭제하시겠습니까?",
+      "dragTeleportHint": "온라인 플레이어 마커를 드래그하여 순간이동합니다.",
       "dragendTelePlayerConfirm": "플레이어: {0}을(를) 대상 위치 {1}로 순간이동하시겠습니까?",
       "gameTimeLoading": "로드 중...",
       "gameTimeFormat": "일 {days}, {hours}:{minutes}",

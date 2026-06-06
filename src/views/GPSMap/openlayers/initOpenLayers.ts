@@ -18,6 +18,7 @@ import { setupHostilesLayer } from './layers/hostiles';
 import { setupLandClaimsLayer } from './layers/landClaims';
 import { setupOfflinePlayersLayer } from './layers/offlinePlayers';
 import { setupOnlinePlayersLayer } from './layers/onlinePlayers';
+import { setupPlayerDragTeleportControl } from './playerDragTeleport';
 import { setupRegionGridLayer } from './layers/regionGrid';
 import { createSdtdTileLayer } from './layers/sdtdTiles';
 import { setupTradersLayer } from './layers/traders';
@@ -83,21 +84,26 @@ export function initOpenLayers(
   setupAnimalsLayer(context);
   setupHostilesLayer(context);
   setupOfflinePlayersLayer(context);
-  setupOnlinePlayersLayer(context);
+  const onlinePlayersLayer = setupOnlinePlayersLayer(context);
   setupTradersLayer(context);
 
   setupGameTimeControl(map);
-  setupRenderActionsControl(map, sdtdTileSource);
+  const renderActionsElement = setupRenderActionsControl(map, sdtdTileSource);
   setupMinimapControl(map, sdtdTileSource);
   setupCoordinatesControl(map);
 
   setupGlobalTooltipOverlay(context);
   setupGlobalSelectCluster(context);
+  setupPlayerDragTeleportControl(map, onlinePlayersLayer, renderActionsElement);
   setupGlobalPopupOverlay(context, popupContainer);
 
   setupLayerSwitcherControl(map);
 
   map.on('pointermove', (event) => {
+    if (map.getViewport().classList.contains('is-player-drag-mode')) {
+      return;
+    }
+
     if (event.dragging) {
       mapContainer.style.cursor = 'grabbing';
       return;

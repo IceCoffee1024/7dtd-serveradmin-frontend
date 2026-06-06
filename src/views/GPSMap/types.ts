@@ -1,5 +1,9 @@
 import type { Coordinate } from 'ol/coordinate';
+import type Feature from 'ol/Feature';
 import type Map from 'ol/Map';
+import type { Point } from 'ol/geom';
+import type BaseLayer from 'ol/layer/Base';
+import type VectorSource from 'ol/source/Vector';
 import type { Style } from 'ol/style';
 import type { LAYER_ID } from './constants';
 import type { EntityBasicInfoDto, EntityType, PositionDto } from '~/generated/api/types.gen';
@@ -115,4 +119,16 @@ export interface PointLocationLayerOptions<TData extends MapPointFeatureData> {
   zIndex: number;
   fetchLocations: () => Promise<TData[]>;
   getTooltipLabel: (data: TData) => string;
+}
+
+/**
+ * Runtime handle returned by clustered point layers for feature-level interactions.
+ */
+export interface PointLocationLayerHandle<TData extends MapPointFeatureData> {
+  layer: BaseLayer;
+  source: VectorSource<Feature<Point>>;
+  refresh: () => Promise<void>;
+  pauseRefresh: () => void;
+  resumeRefresh: () => void;
+  getFeatureData: (feature: Feature<Point>) => TData | undefined;
 }

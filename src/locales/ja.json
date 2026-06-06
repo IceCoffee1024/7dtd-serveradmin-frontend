@@ -531,6 +531,7 @@
       "landOwner": "土地所有者",
       "removeLandClaim": "取り除く",
       "removeLandClaimConfirm": "土地の所有権を削除してもよろしいですか?",
+      "dragTeleportHint": "オンラインプレイヤーのマーカーをドラッグしてテレポートします。",
       "dragendTelePlayerConfirm": "プレーヤー: {0} をターゲットの場所 {1} にテレポートしてもよろしいですか?",
       "gameTimeLoading": "読み込み中...",
       "gameTimeFormat": "日 {days}、{hours}:{minutes}",

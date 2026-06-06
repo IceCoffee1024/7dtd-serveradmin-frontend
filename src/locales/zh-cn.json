@@ -531,6 +531,7 @@
       "landOwner": "领地所有者",
       "removeLandClaim": "移除领地石",
       "removeLandClaimConfirm": "您确定要移除领地石吗?",
+      "dragTeleportHint": "拖动在线玩家标记即可传送。",
       "dragendTelePlayerConfirm": "确定将玩家: {0} 传送到目标地点 {1} 吗?",
       "gameTimeLoading": "加载中...",
       "gameTimeFormat": "第 {days} 天 {hours}:{minutes}",

@@ -531,6 +531,7 @@
       "landOwner": "Владелец земли",
       "removeLandClaim": "Удалить",
       "removeLandClaimConfirm": "Вы уверены, что хотите удалить земельный участок?",
+      "dragTeleportHint": "Перетащите маркер онлайн-игрока, чтобы телепортировать его.",
       "dragendTelePlayerConfirm": "Вы уверены, что хотите телепортировать игрока: {0} в заданное место {1}?",
       "gameTimeLoading": "Загрузка...",
       "gameTimeFormat": "День {days}, {hours}:{minutes}",

@@ -11,7 +11,7 @@ import { i18n } from '~/plugins/i18n';
  * @param map - OpenLayers map instance.
  * @param sdtdTileSource - SDTD tile source instance.
  */
-export function setupRenderActionsControl(map: Map, sdtdTileSource: TileSource) {
+export function setupRenderActionsControl(map: Map, sdtdTileSource: TileSource): HTMLElement {
   const { confirm } = usePopup();
   const renderFullMapMutation = useMutation({
     ...gameServerRenderFullMapMutation(),
@@ -55,4 +55,6 @@ export function setupRenderActionsControl(map: Map, sdtdTileSource: TileSource) 
 
   const control = new Control({ element });
   map.addControl(control);
+
+  return element;
 }

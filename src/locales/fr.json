@@ -531,6 +531,7 @@
       "landOwner": "Propriétaire foncier",
       "removeLandClaim": "Retirer",
       "removeLandClaimConfirm": "Êtes-vous sûr de vouloir supprimer la revendication territoriale ?",
+      "dragTeleportHint": "Faites glisser un marqueur de joueur en ligne pour le téléporter.",
       "dragendTelePlayerConfirm": "Êtes-vous sûr de vouloir téléporter le joueur : {0} vers l'emplacement cible {1} ?",
       "gameTimeLoading": "Chargement ...",
       "gameTimeFormat": "Jour {days}, {hours} :{minutes}",

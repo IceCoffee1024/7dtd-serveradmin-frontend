@@ -154,6 +154,7 @@ onDeactivated(() => {
         @extend .ol-custom-control;
         left: 8px;
         bottom: 64px;
+
         & > button {
           background: none;
           border: none;
@@ -161,6 +162,13 @@ onDeactivated(() => {
           width: auto;
           height: 20px;
           text-shadow: inherit;
+
+          &.ol-player-drag-button.is-active {
+            color: #67e8f9;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+          }
         }
       }
 

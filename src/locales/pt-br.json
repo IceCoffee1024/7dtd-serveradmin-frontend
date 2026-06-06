@@ -531,6 +531,7 @@
       "landOwner": "Proprietário do terreno",
       "removeLandClaim": "Remover",
       "removeLandClaimConfirm": "Tem certeza de que deseja remover a reivindicação de terra?",
+      "dragTeleportHint": "Arraste um marcador de jogador online para teletransportá-lo.",
       "dragendTelePlayerConfirm": "Tem certeza de que deseja teletransportar o jogador: {0} para o local de destino {1}?",
       "gameTimeLoading": "Carregando ...",
       "gameTimeFormat": "Dia {days}, {hours}:{minutes}",

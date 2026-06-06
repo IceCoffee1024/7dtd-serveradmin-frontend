@@ -10,7 +10,7 @@ import { setupEntityLocationLayer } from '../mapUtils';
  * @param context - Shared OpenLayers module context.
  */
 export function setupOnlinePlayersLayer(context: OpenLayersModuleContext) {
-  setupEntityLocationLayer(context, {
+  return setupEntityLocationLayer(context, {
     layerId: LAYER_ID.ONLINE_PLAYERS_CLUSTER_LAYER,
     layerTitle: i18n.global.t('views.map.onlinePlayer'),
     entityType: 'OnlinePlayer',

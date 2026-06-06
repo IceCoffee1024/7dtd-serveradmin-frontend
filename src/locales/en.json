@@ -531,6 +531,7 @@
       "landOwner": "Land Owner",
       "removeLandClaim": "Remove",
       "removeLandClaimConfirm": "Are you sure you want to remove the land claim?",
+      "dragTeleportHint": "Drag an online player marker to teleport them.",
       "dragendTelePlayerConfirm": "Are you sure you want to teleport player: {0} to the target location {1}?",
       "gameTimeLoading": "Loading ...",
       "gameTimeFormat": "Day {days}, {hours}:{minutes}",

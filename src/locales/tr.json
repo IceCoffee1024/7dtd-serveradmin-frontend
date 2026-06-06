@@ -531,6 +531,7 @@
       "landOwner": "Arsa Sahibi",
       "removeLandClaim": "Kaldırmak",
       "removeLandClaimConfirm": "Arazi talebini kaldırmak istediğinizden emin misiniz?",
+      "dragTeleportHint": "Çevrimiçi oyuncu işaretçisini sürükleyerek ışınlayın.",
       "dragendTelePlayerConfirm": "{0} adlı oyuncuyu hedef konuma {1} ışınlamak istediğinizden emin misiniz?",
       "gameTimeLoading": "Yükleniyor...",
       "gameTimeFormat": "Gün {days}, {hours}:{minutes}",

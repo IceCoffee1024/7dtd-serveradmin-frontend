@@ -531,6 +531,7 @@
       "landOwner": "土地所有者",
       "removeLandClaim": "消除",
       "removeLandClaimConfirm": "您確定要取消土地所有權嗎？",
+      "dragTeleportHint": "拖曳線上玩家標記即可傳送。",
       "dragendTelePlayerConfirm": "您確定要將玩家 {0} 傳送到目標位置 {1} 嗎？",
       "gameTimeLoading": "載入中 ...",
       "gameTimeFormat": "第 {days}，{hours}：{minutes}",
