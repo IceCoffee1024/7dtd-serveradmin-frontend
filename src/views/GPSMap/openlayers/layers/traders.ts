@@ -2,6 +2,7 @@ import type { OpenLayersModuleContext, TraderLocationFeatureData } from '../../t
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style';
 import { i18n } from '~/plugins/i18n';
 import { client } from '~/generated/api/client.gen';
+import { useLocaleStore } from '~/stores/locale';
 import { LAYER_ID } from '../../constants';
 import { setupPointLocationLayer } from '../mapUtils';
 
@@ -10,18 +11,23 @@ import { setupPointLocationLayer } from '../mapUtils';
  * @param context - Shared OpenLayers module context.
  */
 export function setupTradersLayer(context: OpenLayersModuleContext) {
+  const localeStore = useLocaleStore();
+
   setupPointLocationLayer<TraderLocationFeatureData>(context, {
     layerId: LAYER_ID.TRADERS_CLUSTER_LAYER,
     layerTitle: i18n.global.t('views.map.trader'),
     fetchLocations: async () => {
       const { data } = await client.get<TraderLocationFeatureData[], unknown, true>({
         security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+        query: {
+          language: localeStore.languageEnglishName,
+        },
         url: '/api/GameServer/TraderLocations',
         throwOnError: true,
       });
       return data ?? [];
     },
-    getTooltipLabel: data => data.name,
+    getTooltipLabel: data => data.localizedName ?? data.name,
     iconStyle: new Style({
       image: new CircleStyle({
         radius: 13,

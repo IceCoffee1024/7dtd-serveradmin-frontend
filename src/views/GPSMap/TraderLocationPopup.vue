@@ -12,7 +12,7 @@ defineProps<Props>();
 <template>
   <div>
     <div>
-      {{ $t('views.map.trader') }}: {{ data.name }}
+      {{ $t('views.map.trader') }}: {{ data.localizedName ?? data.name }}
       <br>
       {{ $t('components.playerDetailsDialog.position') }}: {{ formatPosition(data.position) }}
       <br>

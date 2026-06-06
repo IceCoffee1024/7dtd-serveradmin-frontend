@@ -66,6 +66,8 @@ export interface MapPointFeatureData {
 export interface TraderLocationFeatureData extends MapPointFeatureData {
   id: number;
   name: string;
+  localizationKey?: string | null;
+  localizedName?: string | null;
   prefabName?: string | null;
   position: PositionDto;
   areaPosition: PositionDto;
