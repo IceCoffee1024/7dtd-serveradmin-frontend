@@ -499,7 +499,9 @@
           "itemName": "Objet du jeu",
           "count": "Quantité",
           "quality": "Qualité"
-        }
+        },
+        "allOnline": "Tous les joueurs en ligne",
+        "onlineCount": "En ligne : {0}"
       }
     },
     "map": {

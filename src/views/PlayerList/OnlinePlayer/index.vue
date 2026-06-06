@@ -18,6 +18,7 @@ import GameItemSelect from '~/components/GameItemSelect/index.vue';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables/usePopup';
+import { client } from '~/generated/api/client.gen';
 import {
   chatAddOrUpdateMuteMutation,
   chatRemoveMutesMutation,
@@ -31,6 +32,7 @@ import { invalidateGeneratedQueries } from '~/queries/generated';
 import { formatPosition, generateElementRules, showCommandResult } from '~/utils';
 
 type OnlinePlayerRow = OnlinePlayerDto;
+type GiveItemMode = 'single' | 'allOnline';
 
 interface FormExpose {
   validate: () => Promise<boolean | undefined>;
@@ -73,7 +75,21 @@ const removeMuteMutation = useMutation({
 const giveItemMutation = useMutation({
   ...gameServerGiveItemToOnlinePlayerMutation(),
 });
-const isGivingItem = computed(() => giveItemMutation.isLoading.value);
+const giveItemToAllOnlinePlayersMutation = useMutation({
+  mutation: async (body: GiveItemToPlayerRequestDto) => {
+    const { data } = await client.post<string[], unknown, true>({
+      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+      url: '/api/GameServer/OnlinePlayers/Items',
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      throwOnError: true,
+    });
+    return data;
+  },
+});
+const isGivingItem = computed(() => giveItemMutation.isLoading.value || giveItemToAllOnlinePlayersMutation.isLoading.value);
 
 const isAutoRefreshEnabled = ref(true);
 const autoRefreshInterval = ref(10);
@@ -122,7 +138,9 @@ const playerDetailsDialogRef = useTemplateRef('playerDetailsDialogRef');
 const giveItemDialogRef = useTemplateRef('giveItemDialogRef');
 const giveItemFormRef = useTemplateRef<FormExpose>('giveItemFormRef');
 const giveItemTarget = ref<OnlinePlayerRow | null>(null);
+const giveItemMode = ref<GiveItemMode>('single');
 const selectedGameItem = ref<GameItemDto | null>(null);
+const onlinePlayerTotal = ref(0);
 const giveItemForm = reactive<GiveItemFormModel>({
   itemName: '',
   count: 1,
@@ -179,6 +197,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
   }
 
   const response = state.data;
+  onlinePlayerTotal.value = response?.total ?? 0;
 
   return {
     list: response?.items ?? [],
@@ -204,7 +223,19 @@ function toOrder(sortField: string | undefined): OnlinePlayerQueryOrder | undefi
 }
 
 function openGiveItemDialog(row: OnlinePlayerRow) {
+  giveItemMode.value = 'single';
   giveItemTarget.value = row;
+  giveItemForm.itemName = '';
+  giveItemForm.count = 1;
+  giveItemForm.quality = 1;
+  selectedGameItem.value = null;
+  giveItemDialogRef.value?.open();
+  nextTick(() => giveItemFormRef.value?.clearValidate());
+}
+
+function openGiveItemDialogForAllOnlinePlayers() {
+  giveItemMode.value = 'allOnline';
+  giveItemTarget.value = null;
   giveItemForm.itemName = '';
   giveItemForm.count = 1;
   giveItemForm.quality = 1;
@@ -221,7 +252,7 @@ function onSelectedGameItemChange(item: GameItemDto | null) {
 }
 
 async function onGiveItemConfirm(): Promise<boolean | void> {
-  if (!giveItemTarget.value) {
+  if (giveItemMode.value === 'single' && !giveItemTarget.value) {
     return false;
   }
 
@@ -237,10 +268,12 @@ async function onGiveItemConfirm(): Promise<boolean | void> {
   };
 
   try {
-    const result = await giveItemMutation.mutateAsync({
-      path: { playerId: giveItemTarget.value.playerId },
-      body,
-    });
+    const result = giveItemMode.value === 'allOnline'
+      ? await giveItemToAllOnlinePlayersMutation.mutateAsync(body)
+      : await giveItemMutation.mutateAsync({
+          path: { playerId: giveItemTarget.value!.playerId },
+          body,
+        });
     showCommandResult(result ?? undefined, t('views.playerList.giveItem.title'));
   }
   catch (error) {
@@ -392,6 +425,17 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       :operation-column-width="110"
       :auto-column-width="true"
     >
+      <template #toolbar-right="{ tableSize }">
+        <el-button
+          type="primary"
+          :size="tableSize"
+          :loading="isGivingItem"
+          @click="openGiveItemDialogForAllOnlinePlayers"
+        >
+          <icon-mdi:gift class="mr-1" />
+          {{ t('views.playerList.giveItem.allOnline') }}
+        </el-button>
+      </template>
       <template #footer-left="{ tableSize }">
         <div class="footer-refresh-row">
           <el-checkbox v-model="isAutoRefreshEnabled" :size="tableSize">
@@ -440,10 +484,16 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       :loading="isGivingItem"
       :on-confirm="onGiveItemConfirm"
     >
-      <div v-if="giveItemTarget" class="text-sm mb-3 px-3 py-2 border border-gray-200 rounded bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60">
+      <div class="text-sm mb-3 px-3 py-2 border border-gray-200 rounded bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60">
         <span class="text-gray-500 dark:text-gray-400">{{ t('views.playerList.giveItem.target') }}</span>
-        <span class="font-semibold ml-2">{{ giveItemTarget.playerName }}</span>
-        <span class="text-gray-400 font-mono ml-2">{{ giveItemTarget.playerId }}</span>
+        <template v-if="giveItemMode === 'allOnline'">
+          <span class="font-semibold ml-2">{{ t('views.playerList.giveItem.allOnline') }}</span>
+          <span class="text-gray-400 ml-2">{{ t('views.playerList.giveItem.onlineCount', [onlinePlayerTotal]) }}</span>
+        </template>
+        <template v-else-if="giveItemTarget">
+          <span class="font-semibold ml-2">{{ giveItemTarget.playerName }}</span>
+          <span class="text-gray-400 font-mono ml-2">{{ giveItemTarget.playerId }}</span>
+        </template>
       </div>
       <MyForm
         ref="giveItemFormRef"

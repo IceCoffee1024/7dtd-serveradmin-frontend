@@ -499,7 +499,9 @@
           "itemName": "Oyun Eşyası",
           "count": "Miktar",
           "quality": "Kalite"
-        }
+        },
+        "allOnline": "Tüm çevrimiçi oyuncular",
+        "onlineCount": "Çevrimiçi: {0}"
       }
     },
     "map": {

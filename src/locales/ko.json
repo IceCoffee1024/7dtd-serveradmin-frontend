@@ -499,7 +499,9 @@
           "itemName": "게임 아이템",
           "count": "수량",
           "quality": "품질"
-        }
+        },
+        "allOnline": "모든 온라인 플레이어",
+        "onlineCount": "온라인: {0}"
       }
     },
     "map": {
