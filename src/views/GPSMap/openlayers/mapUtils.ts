@@ -2,7 +2,7 @@ import type { ClusterOptions } from 'ol-ext/layer/AnimatedCluster';
 import type { FeatureLike } from 'ol/Feature';
 import type { Geometry, LineString, Polygon } from 'ol/geom';
 import type { Options } from 'ol/layer/BaseVector';
-import type { EntityInfoFeatureData, EntityLayerOptions, OpenLayersModuleContext } from '../types';
+import type { EntityInfoFeatureData, EntityLayerOptions, MapPointFeatureData, OpenLayersModuleContext, PointLocationLayerOptions } from '../types';
 import { useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
 import AnimatedCluster from 'ol-ext/layer/AnimatedCluster';
@@ -47,13 +47,15 @@ export function getFeatureCenter(feature: Feature): number[] {
 }
 
 /**
- * Sets up an entity location layer with clustering and popups.
+ * Sets up a point location layer with clustering and popups.
  * @param context - Shared OpenLayers module context.
- * @param options - Configuration options for the entity layer.
+ * @param options - Configuration options for the point layer.
  */
-export function setupEntityLocationLayer(context: OpenLayersModuleContext, options: EntityLayerOptions) {
+export function setupPointLocationLayer<TData extends MapPointFeatureData>(
+  context: OpenLayersModuleContext,
+  options: PointLocationLayerOptions<TData>,
+) {
   const { map, mapInfo } = context;
-  const queryCache = useQueryCache();
 
   const distance = 40;
   const scaledDistance = distance / (2 ** mapInfo.extraZoom);
@@ -109,14 +111,14 @@ export function setupEntityLocationLayer(context: OpenLayersModuleContext, optio
 
   const { show: showPopup } = useMapPopup();
   clusterLayer.set('onFeatureSelected', (feature: Feature, geometry: Geometry) => {
-    const data = feature.get('data') as EntityInfoFeatureData;
+    const data = feature.get('data') as TData;
     showPopup(options.layerId, data, (geometry as Point).getCoordinates());
   });
 
-  function createPlayerMarker(entityInfo: EntityInfoFeatureData): Feature<Point> {
-    const { position } = entityInfo;
+  function createLocationMarker(data: TData): Feature<Point> {
+    const { position } = data;
     const feature = new Feature<Point>(new Point([position.x, position.z]));
-    feature.set('data', entityInfo);
+    feature.set('data', data);
     feature.set('layerId', options.layerId);
     feature.setStyle(options.iconStyle);
     return feature;
@@ -161,16 +163,8 @@ export function setupEntityLocationLayer(context: OpenLayersModuleContext, optio
 
     isRefreshing = true;
     try {
-      const queryOptions = gameServerGetLocationsQuery({ query: { entityType: options.entityType } });
-      const entry = queryCache.ensure(queryOptions);
-      const state = await queryCache.fetch(entry);
-
-      if (state.status === 'error') {
-        throw state.error;
-      }
-
-      const data = state.data ?? [];
-      const features = data.map(item => createPlayerMarker(item));
+      const data = await options.fetchLocations();
+      const features = data.map(item => createLocationMarker(item));
       pointSource.clear(true);
       pointSource.addFeatures(features);
 
@@ -190,8 +184,8 @@ export function setupEntityLocationLayer(context: OpenLayersModuleContext, optio
   const getTooltipHTML = (featureLike: FeatureLike) => {
     const feature = featureLike.get('features') as Feature<Point>[] | undefined;
     if (feature?.length === 1) {
-      const data = feature[0].get('data') as EntityInfoFeatureData;
-      return `${options.layerTitle}: <strong>${data.entityName}</strong>`;
+      const data = feature[0].get('data') as TData;
+      return `${options.layerTitle}: <strong>${options.getTooltipLabel(data)}</strong>`;
     }
     else {
       return `${options.layerTitle} (${feature?.length ?? 0})`;
@@ -210,4 +204,29 @@ export function setupEntityLocationLayer(context: OpenLayersModuleContext, optio
   });
 
   return clusterLayer;
+}
+
+/**
+ * Sets up an entity location layer with clustering and popups.
+ * @param context - Shared OpenLayers module context.
+ * @param options - Configuration options for the entity layer.
+ */
+export function setupEntityLocationLayer(context: OpenLayersModuleContext, options: EntityLayerOptions) {
+  const queryCache = useQueryCache();
+
+  return setupPointLocationLayer<EntityInfoFeatureData>(context, {
+    ...options,
+    fetchLocations: async () => {
+      const queryOptions = gameServerGetLocationsQuery({ query: { entityType: options.entityType } });
+      const entry = queryCache.ensure(queryOptions);
+      const state = await queryCache.fetch(entry);
+
+      if (state.status === 'error') {
+        throw state.error;
+      }
+
+      return state.data ?? [];
+    },
+    getTooltipLabel: data => data.entityName,
+  });
 }

@@ -20,6 +20,7 @@ import { setupOfflinePlayersLayer } from './layers/offlinePlayers';
 import { setupOnlinePlayersLayer } from './layers/onlinePlayers';
 import { setupRegionGridLayer } from './layers/regionGrid';
 import { createSdtdTileLayer } from './layers/sdtdTiles';
+import { setupTradersLayer } from './layers/traders';
 import 'ol/ol.css';
 import 'ol-layerswitcher/dist/ol-layerswitcher.css';
 import 'ol-ext/dist/ol-ext.css';
@@ -83,6 +84,7 @@ export function initOpenLayers(
   setupHostilesLayer(context);
   setupOfflinePlayersLayer(context);
   setupOnlinePlayersLayer(context);
+  setupTradersLayer(context);
 
   setupGameTimeControl(map);
   setupRenderActionsControl(map, sdtdTileSource);

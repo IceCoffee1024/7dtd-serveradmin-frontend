@@ -53,6 +53,28 @@ export interface LandClaimFeatureData {
 export interface EntityInfoFeatureData extends EntityBasicInfoDto {
 }
 
+/**
+ * Defines the minimum shape for point features rendered by clustered map layers.
+ */
+export interface MapPointFeatureData {
+  position: PositionDto;
+}
+
+/**
+ * Defines the structure of trader POI data stored in OpenLayers features.
+ */
+export interface TraderLocationFeatureData extends MapPointFeatureData {
+  id: number;
+  name: string;
+  prefabName?: string | null;
+  position: PositionDto;
+  areaPosition: PositionDto;
+  areaSize: PositionDto;
+  protectPosition: PositionDto;
+  protectSize: PositionDto;
+  isClosed: boolean;
+}
+
 export type OverlayLayerId = (typeof LAYER_ID)[keyof typeof LAYER_ID];
 
 /**
@@ -78,4 +100,17 @@ export interface EntityLayerOptions {
   iconStyle: Style;
   clusterFillColor: string;
   zIndex: number;
+}
+
+/**
+ * Defines the options for setting up a generic clustered point location layer.
+ */
+export interface PointLocationLayerOptions<TData extends MapPointFeatureData> {
+  layerId: OverlayLayerId;
+  layerTitle: string;
+  iconStyle: Style;
+  clusterFillColor: string;
+  zIndex: number;
+  fetchLocations: () => Promise<TData[]>;
+  getTooltipLabel: (data: TData) => string;
 }
