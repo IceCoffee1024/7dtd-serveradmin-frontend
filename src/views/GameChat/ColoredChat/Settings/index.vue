@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
+import type { ChatEffectPreviewRow } from '../../components/ChatEffectPreview.vue';
 import type { MyFormField } from '~/composables/useMyForm';
 import type { ColoredChatFeatureSettingsDto } from '~/generated/api/types.gen';
 import { useMutation, useQuery } from '@pinia/colada';
@@ -17,6 +18,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
+import ChatEffectPreview from '../../components/ChatEffectPreview.vue';
 
 defineOptions({ name: 'ColoredChatSettingsPage' });
 
@@ -169,6 +171,23 @@ const previewChannels = computed(() => [
 function previewColor(hex: string): string {
   return hex ? `#${hex}` : 'inherit';
 }
+
+const previewRows = computed<ChatEffectPreviewRow[]>(() =>
+  previewChannels.value.map((ch) => {
+    const isSystemChannel = ch.key === 'system';
+    return {
+      key: ch.key,
+      channel: ch.label,
+      sender: isSystemChannel
+        ? t('views.chatSettings.preview.defaultSender')
+        : t('views.coloredChat.settings.preview.samplePlayerName'),
+      message: t('views.coloredChat.settings.preview.sampleMessage'),
+      channelColor: previewColor(ch.color),
+      senderColor: previewColor(ch.color),
+      messageColor: previewColor(ch.color),
+    };
+  }),
+);
 
 const settingsQuery = useQuery(coloredChatGetSettingsQuery());
 const updateSettingsMutation = useMutation({
@@ -389,19 +408,11 @@ onBeforeRouteLeave(async () => {
       </div>
 
       <!-- Effect preview (#2) -->
-      <div class="pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
-        <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
-          {{ t('views.coloredChat.settings.preview.title') }}
-        </h3>
-        <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
-          <span
-            v-for="ch in previewChannels"
-            :key="ch.key"
-            :style="{ color: previewColor(ch.color) }"
-          >
-            [{{ ch.label }}] {{ t('views.coloredChat.settings.preview.samplePlayerName') }}: {{ t('views.coloredChat.settings.preview.sampleMessage') }}
-          </span>
-        </div>
+      <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+        <ChatEffectPreview
+          :title="t('views.coloredChat.settings.preview.title')"
+          :rows="previewRows"
+        />
       </div>
 
       <!-- Buttons -->

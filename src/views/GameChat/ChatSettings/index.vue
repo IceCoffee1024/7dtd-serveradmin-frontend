@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
+import type { ChatEffectPreviewRow } from '../components/ChatEffectPreview.vue';
 import type { MyFormField } from '~/composables/useMyForm';
 import type { ChatFeatureSettingsDto } from '~/generated/api/types.gen';
 import { useMutation, useQuery } from '@pinia/colada';
@@ -16,6 +17,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
+import ChatEffectPreview from '../components/ChatEffectPreview.vue';
 
 defineOptions({ name: 'ChatSettingsPage' });
 
@@ -198,16 +200,24 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-const previewChannels = computed(() => [
+const previewRows = computed<ChatEffectPreviewRow[]>(() => [
   {
     key: 'global',
-    label: t('views.chatSettings.preview.channels.global'),
+    channel: t('views.chatSettings.preview.channels.global'),
     sender: form.globalServerName || t('views.chatSettings.preview.defaultSender'),
+    message: t('views.chatSettings.preview.sampleMessage'),
+    channelColor: 'rgba(203, 213, 225, 0.76)',
+    senderColor: '#facc15',
+    messageColor: 'rgba(255, 255, 255, 0.86)',
   },
   {
     key: 'whisper',
-    label: t('views.chatSettings.preview.channels.whisper'),
+    channel: t('views.chatSettings.preview.channels.whisper'),
     sender: form.whisperServerName || t('views.chatSettings.preview.defaultSender'),
+    message: t('views.chatSettings.preview.sampleMessage'),
+    channelColor: 'rgba(203, 213, 225, 0.76)',
+    senderColor: '#eab308',
+    messageColor: 'rgba(255, 255, 255, 0.86)',
   },
 ]);
 
@@ -414,17 +424,11 @@ onBeforeRouteLeave(async () => {
         @submit.prevent="onSubmit"
       />
 
-      <div class="mt-4 pt-4 border-t border-gray-200 flex flex-col gap-2 dark:border-gray-700">
-        <h3 class="text-sm text-gray-900 font-semibold dark:text-gray-100">
-          {{ t('views.chatSettings.preview.title') }}
-        </h3>
-        <div class="text-sm leading-6 font-mono px-4 py-3 rounded-3 bg-gray-950 flex flex-col gap-1">
-          <span v-for="ch in previewChannels" :key="ch.key">
-            <span class="text-gray-500">[{{ ch.label }}]</span>
-            <span class="text-yellow-400"> {{ ch.sender }}</span>
-            <span class="text-gray-300">: {{ t('views.chatSettings.preview.sampleMessage') }}</span>
-          </span>
-        </div>
+      <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <ChatEffectPreview
+          :title="t('views.chatSettings.preview.title')"
+          :rows="previewRows"
+        />
       </div>
 
       <div class="mt-4 flex gap-2 justify-end">
