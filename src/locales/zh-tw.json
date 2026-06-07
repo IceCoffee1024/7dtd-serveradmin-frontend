@@ -94,7 +94,8 @@
     "onlineReward": "線上獎勵",
     "onlineRewardSettings": "設定",
     "gameEventLogs": "遊戲事件日誌",
-    "gameItems": "物品 / 方塊"
+    "gameItems": "物品 / 方塊",
+    "featureModules": "功能模組"
   },
   "components": {
     "myTable": {
@@ -2425,6 +2426,31 @@
       "showUserHidden": "顯示隱藏",
       "copyName": "複製姓名",
       "copyLocalizedName": "複製本地化名稱"
+    },
+    "featureModules": {
+      "description": "查看伺服器遊戲功能模組的執行狀態和既有設定入口。",
+      "summary": {
+        "total": "模組總數",
+        "enabled": "已啟用",
+        "disabled": "已停用",
+        "unavailable": "不可用"
+      },
+      "columns": {
+        "module": "模組",
+        "key": "識別碼",
+        "status": "狀態",
+        "enabled": "啟用",
+        "settingsType": "設定類型",
+        "subModules": "子模組",
+        "actions": "操作"
+      },
+      "status": {
+        "healthy": "正常",
+        "disabled": "已停用",
+        "unavailable": "不可用"
+      },
+      "emptySubModules": "無子模組",
+      "unknownModule": "未知模組"
     }
   }
 }

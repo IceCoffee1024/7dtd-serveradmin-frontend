@@ -94,7 +94,8 @@
     "onlineReward": "온라인 보상",
     "onlineRewardSettings": "설정",
     "gameEventLogs": "게임 이벤트 로그",
-    "gameItems": "아이템 / 블록"
+    "gameItems": "아이템 / 블록",
+    "featureModules": "Feature Modules"
   },
   "components": {
     "myTable": {
@@ -2425,6 +2426,31 @@
       "showUserHidden": "숨겨진 표시",
       "copyName": "이름 복사",
       "copyLocalizedName": "현지화된 이름 복사"
+    },
+    "featureModules": {
+      "description": "View runtime status and existing configuration entry points for server gameplay modules.",
+      "summary": {
+        "total": "Total Modules",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "unavailable": "Unavailable"
+      },
+      "columns": {
+        "module": "Module",
+        "key": "Key",
+        "status": "Status",
+        "enabled": "Enabled",
+        "settingsType": "Settings Type",
+        "subModules": "Sub-modules",
+        "actions": "Actions"
+      },
+      "status": {
+        "healthy": "Healthy",
+        "disabled": "Disabled",
+        "unavailable": "Unavailable"
+      },
+      "emptySubModules": "No sub-modules",
+      "unknownModule": "Unknown Module"
     }
   }
 }

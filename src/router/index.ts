@@ -92,6 +92,16 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'FeatureModules',
+        path: 'feature-modules',
+        component: () => import('../views/FeatureModules/index.vue'),
+        meta: {
+          title: () => t('menus.featureModules'),
+          icon: markIcon(() => import('~icons/mdi/puzzle')),
+          groupLabel: () => t('menus.groups.gameFeatures'),
+        },
+      },
+      {
         name: 'GameChat',
         path: 'game-chat',
         redirect: { name: 'LiveChat' },

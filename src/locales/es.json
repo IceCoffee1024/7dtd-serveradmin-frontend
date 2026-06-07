@@ -94,7 +94,8 @@
     "onlineReward": "Recompensa en línea",
     "onlineRewardSettings": "Ajustes",
     "gameEventLogs": "Registros de eventos del juego",
-    "gameItems": "Objetos / bloques"
+    "gameItems": "Objetos / bloques",
+    "featureModules": "Feature Modules"
   },
   "components": {
     "myTable": {
@@ -2425,6 +2426,31 @@
       "showUserHidden": "Mostrar oculto",
       "copyName": "Copiar nombre",
       "copyLocalizedName": "Copiar nombre localizado"
+    },
+    "featureModules": {
+      "description": "View runtime status and existing configuration entry points for server gameplay modules.",
+      "summary": {
+        "total": "Total Modules",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "unavailable": "Unavailable"
+      },
+      "columns": {
+        "module": "Module",
+        "key": "Key",
+        "status": "Status",
+        "enabled": "Enabled",
+        "settingsType": "Settings Type",
+        "subModules": "Sub-modules",
+        "actions": "Actions"
+      },
+      "status": {
+        "healthy": "Healthy",
+        "disabled": "Disabled",
+        "unavailable": "Unavailable"
+      },
+      "emptySubModules": "No sub-modules",
+      "unknownModule": "Unknown Module"
     }
   }
 }

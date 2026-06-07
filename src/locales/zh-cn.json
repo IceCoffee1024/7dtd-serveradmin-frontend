@@ -94,7 +94,8 @@
     "onlineReward": "在线时长奖励",
     "onlineRewardSettings": "设置",
     "gameEventLogs": "游戏事件日志",
-    "gameItems": "物品/方块"
+    "gameItems": "物品/方块",
+    "featureModules": "功能模块"
   },
   "components": {
     "myTable": {
@@ -2425,6 +2426,31 @@
       "showUserHidden": "显示隐藏物品",
       "copyName": "复制物品名",
       "copyLocalizedName": "复制本地化名"
+    },
+    "featureModules": {
+      "description": "查看服务端游戏功能模块的运行状态和已有配置入口。",
+      "summary": {
+        "total": "模块总数",
+        "enabled": "已启用",
+        "disabled": "已禁用",
+        "unavailable": "不可用"
+      },
+      "columns": {
+        "module": "模块",
+        "key": "标识",
+        "status": "状态",
+        "enabled": "启用",
+        "settingsType": "设置类型",
+        "subModules": "子模块",
+        "actions": "操作"
+      },
+      "status": {
+        "healthy": "正常",
+        "disabled": "已禁用",
+        "unavailable": "不可用"
+      },
+      "emptySubModules": "无子模块",
+      "unknownModule": "未知模块"
     }
   }
 }
