@@ -203,6 +203,17 @@ function goBack() {
     void router.push({ name: 'PlayerList', params: { locale: route.params.locale } });
 }
 
+function goToPlayerFilteredPage(name: string) {
+  void router.push({
+    name,
+    params: { locale: route.params.locale },
+    query: {
+      playerId: playerId.value,
+      playerName: displayName.value,
+    },
+  });
+}
+
 onMounted(loadProfile);
 watch(playerId, loadProfile);
 </script>
@@ -325,7 +336,12 @@ watch(playerId, loadProfile);
         <el-tab-pane :label="t('views.playerProfile.tabs.assets')">
           <div class="profile-panel-stack">
             <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.homes') }}</h3>
+              <div class="profile-panel__header">
+                <h3>{{ t('views.playerProfile.sections.homes') }}</h3>
+                <el-button type="primary" link @click="goToPlayerFilteredPage('TeleportHomes')">
+                  {{ t('components.myTable.view') }}
+                </el-button>
+              </div>
               <el-table :data="homes" size="small" border>
                 <el-table-column prop="homeName" :label="t('views.playerProfile.fields.homeName')" />
                 <el-table-column :label="t('views.playerList.position')">
@@ -360,7 +376,12 @@ watch(playerId, loadProfile);
         <el-tab-pane :label="t('views.playerProfile.tabs.activity')">
           <div class="profile-panel-stack">
             <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.gameEvents') }}</h3>
+              <div class="profile-panel__header">
+                <h3>{{ t('views.playerProfile.sections.gameEvents') }}</h3>
+                <el-button type="primary" link @click="goToPlayerFilteredPage('GameEventLogs')">
+                  {{ t('components.myTable.view') }}
+                </el-button>
+              </div>
               <el-table :data="gameEvents" size="small" border>
                 <el-table-column :label="t('views.gameEventLogs.columns.createdAt')" width="170">
                   <template #default="{ row }">
@@ -374,7 +395,12 @@ watch(playerId, loadProfile);
             </section>
 
             <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.chat') }}</h3>
+              <div class="profile-panel__header">
+                <h3>{{ t('views.playerProfile.sections.chat') }}</h3>
+                <el-button type="primary" link @click="goToPlayerFilteredPage('ChatHistory')">
+                  {{ t('components.myTable.view') }}
+                </el-button>
+              </div>
               <el-table :data="chatMessages" size="small" border>
                 <el-table-column :label="t('views.gameChat.history.columns.createdAt')" width="170">
                   <template #default="{ row }">
@@ -390,7 +416,12 @@ watch(playerId, loadProfile);
 
         <el-tab-pane :label="t('views.playerProfile.tabs.economy')">
           <section class="profile-panel">
-            <h3>{{ t('views.playerProfile.sections.economyTransactions') }}</h3>
+            <div class="profile-panel__header">
+              <h3>{{ t('views.playerProfile.sections.economyTransactions') }}</h3>
+              <el-button type="primary" link @click="goToPlayerFilteredPage('EconomyTransactions')">
+                {{ t('components.myTable.view') }}
+              </el-button>
+            </div>
             <el-table :data="economyTransactions" size="small" border>
               <el-table-column :label="t('views.economy.transactions.columns.occurredAt')" width="170">
                 <template #default="{ row }">
@@ -407,7 +438,12 @@ watch(playerId, loadProfile);
 
         <el-tab-pane :label="t('views.playerProfile.tabs.teleport')">
           <section class="profile-panel">
-            <h3>{{ t('views.playerProfile.sections.teleportLogs') }}</h3>
+            <div class="profile-panel__header">
+              <h3>{{ t('views.playerProfile.sections.teleportLogs') }}</h3>
+              <el-button type="primary" link @click="goToPlayerFilteredPage('TeleportLogs')">
+                {{ t('components.myTable.view') }}
+              </el-button>
+            </div>
             <el-table :data="teleportLogs" size="small" border>
               <el-table-column :label="t('views.teleport.logs.columns.timestamp')" width="170">
                 <template #default="{ row }">
@@ -549,6 +585,18 @@ watch(playerId, loadProfile);
   margin: 0 0 12px;
   font-size: 15px;
   font-weight: 700;
+}
+
+.profile-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profile-panel__header h3 {
+  margin: 0;
 }
 
 .profile-panel dl {

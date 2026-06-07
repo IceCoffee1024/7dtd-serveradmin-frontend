@@ -8,7 +8,7 @@ import type { EconomyLeaderboardRow } from '~/queries/economy';
 import { useMutation, useQuery, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePlayerProfileNavigation, usePopup } from '~/composables';
+import { usePlayerProfileNavigation, usePopup, useRoutePlayerTableSearch } from '~/composables';
 import {
   economyDeleteAccountMutation,
   economyFreezeAccountMutation,
@@ -32,6 +32,7 @@ const { confirm } = usePopup();
 const { viewPlayerProfile } = usePlayerProfileNavigation();
 const queryCache = useQueryCache();
 const tableRef = useTemplateRef('tableRef');
+useRoutePlayerTableSearch(tableRef);
 const adjustDialogRef = useTemplateRef('adjustDialogRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const batchAdjustDialogRef = useTemplateRef('batchAdjustDialogRef');

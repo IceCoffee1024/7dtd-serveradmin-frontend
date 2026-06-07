@@ -4,7 +4,7 @@ import type { GameEventLogDto, GameEventLogQueryOrder } from '~/generated/api/ty
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePlayerProfileNavigation } from '~/composables';
+import { usePlayerProfileNavigation, useRoutePlayerTableSearch } from '~/composables';
 import { gameEventLogGetGameEventLogsQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'GameEventLogsPage' });
@@ -14,6 +14,8 @@ type LogRow = GameEventLogDto;
 const { t } = useI18n();
 const queryCache = useQueryCache();
 const { viewPlayerProfile } = usePlayerProfileNavigation();
+const tableRef = useTemplateRef('tableRef');
+useRoutePlayerTableSearch(tableRef, 'keyword');
 
 const EVENT_TYPES = ['PlayerJoined', 'PlayerLeft', 'PlayerDied', 'PlayerKilledZombie', 'PlayerKilledPlayer'] as const;
 
@@ -157,6 +159,7 @@ function onViewPlayerProfile(playerId: string | null | undefined, playerName: st
 <template>
   <div class="flex flex-col gap-4">
     <MyTable
+      ref="tableRef"
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"

@@ -5,4 +5,5 @@ export * from './useLatestAsync';
 export * from './useMenus';
 export * from './usePlayerProfileNavigation';
 export * from './usePopup';
+export * from './useRoutePlayerTableSearch';
 export * from './useTheme';

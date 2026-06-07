@@ -2,6 +2,7 @@
 import type { HomeLocationDto } from '~/generated/api/types.gen';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import { usePopup } from '~/composables';
 import {
   teleportDeleteHomeMutation,
@@ -13,6 +14,7 @@ defineOptions({ name: 'TeleportHomesPage' });
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
+const route = useRoute();
 const queryCache = useQueryCache();
 
 const playerIdInput = ref('');
@@ -54,6 +56,17 @@ async function searchHomes() {
   }
 }
 
+async function applyRoutePlayerSearch() {
+  const rawPlayerId = Array.isArray(route.query.playerId) ? route.query.playerId[0] : route.query.playerId;
+  const playerId = typeof rawPlayerId === 'string' ? rawPlayerId.trim() : '';
+  if (!playerId) {
+    return;
+  }
+
+  playerIdInput.value = playerId;
+  await searchHomes();
+}
+
 async function onDelete(row: HomeLocationDto) {
   const playerId = row.playerId ?? searchedPlayerId.value;
   const homeName = row.homeName;
@@ -77,6 +90,11 @@ async function onDelete(row: HomeLocationDto) {
     console.error(error);
   }
 }
+
+onMounted(applyRoutePlayerSearch);
+watch(() => route.query.playerId, () => {
+  void applyRoutePlayerSearch();
+});
 </script>
 
 <template>

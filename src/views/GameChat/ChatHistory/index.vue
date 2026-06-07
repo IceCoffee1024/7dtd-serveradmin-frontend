@@ -4,7 +4,7 @@ import type { ChatMessageDto, ChatMessageQueryOrder, ChatType } from '~/generate
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePlayerProfileNavigation } from '~/composables';
+import { usePlayerProfileNavigation, useRoutePlayerTableSearch } from '~/composables';
 import { chatMessagesGetQuery } from '~/generated/api/@pinia/colada.gen';
 import { getChatTypeOptions, getChatTypeTagType } from '../chatType';
 
@@ -15,6 +15,8 @@ type ChatMessageRow = ChatMessageDto;
 const { t } = useI18n();
 const queryCache = useQueryCache();
 const { viewPlayerProfile } = usePlayerProfileNavigation();
+const tableRef = useTemplateRef('tableRef');
+useRoutePlayerTableSearch(tableRef);
 
 const chatTypeOptions = computed(() => getChatTypeOptions(t));
 
@@ -212,6 +214,7 @@ function onViewPlayerProfile(row: ChatMessageRow) {
 <template>
   <el-card class="h-full" shadow="never">
     <MyTable
+      ref="tableRef"
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"

@@ -4,7 +4,7 @@ import type { TeleportLogDto } from '~/generated/api/types.gen';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePlayerProfileNavigation } from '~/composables';
+import { usePlayerProfileNavigation, useRoutePlayerTableSearch } from '~/composables';
 import { teleportGetLogsQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'TeleportLogsPage' });
@@ -14,6 +14,8 @@ type LogRow = TeleportLogDto;
 const { t } = useI18n();
 const queryCache = useQueryCache();
 const { viewPlayerProfile } = usePlayerProfileNavigation();
+const tableRef = useTemplateRef('tableRef');
+useRoutePlayerTableSearch(tableRef);
 
 const SUB_SYSTEM_TAG_MAP: Record<string, 'success' | 'danger' | 'warning' | 'info' | undefined> = {
   Home: 'success',
@@ -118,6 +120,7 @@ function onViewPlayerProfile(row: LogRow) {
 <template>
   <div class="flex flex-col gap-4">
     <MyTable
+      ref="tableRef"
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"

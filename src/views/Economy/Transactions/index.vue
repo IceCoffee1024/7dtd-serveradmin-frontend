@@ -9,7 +9,7 @@ import type { EconomyTransactionFilters } from '~/queries/economy';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePlayerProfileNavigation } from '~/composables';
+import { usePlayerProfileNavigation, useRoutePlayerTableSearch } from '~/composables';
 import { usePopup } from '~/composables/usePopup';
 import { economyTransactionsGetTransactionsQuery } from '~/generated/api/@pinia/colada.gen';
 import {
@@ -26,6 +26,8 @@ const { t } = useI18n();
 const { toast } = usePopup();
 const { viewPlayerProfile } = usePlayerProfileNavigation();
 const queryCache = useQueryCache();
+const tableRef = useTemplateRef('tableRef');
+useRoutePlayerTableSearch(tableRef);
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const detailRow = ref<TransactionRow | null>(null);
 
@@ -266,6 +268,7 @@ function onViewPlayerProfile(row: TransactionRow) {
     </div>
 
     <MyTable
+      ref="tableRef"
       row-key="id"
       :columns="columns"
       :fetch-data="fetchData"
