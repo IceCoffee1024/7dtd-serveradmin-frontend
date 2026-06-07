@@ -5,6 +5,7 @@ import SelectCluster from 'ol-ext/interaction/SelectCluster';
 import LayerGroup from 'ol/layer/Group';
 import { Stroke, Style } from 'ol/style';
 import { useMapPopup } from '../composables/useMapPopup';
+import { MapLifecycle } from '../types';
 import { layerRegistry } from './mapRegistry';
 
 export function setupGlobalSelectCluster(context: OpenLayersModuleContext) {
@@ -53,7 +54,7 @@ export function setupGlobalSelectCluster(context: OpenLayersModuleContext) {
   selectLayer.set('interactive', true);
   map.addInteraction(globalSelectCluster);
 
-  const { on: onPopup, hide: hidePopup, activeLayerId } = useMapPopup();
+  const { on: onPopup, off: offPopup, hide: hidePopup, activeLayerId } = useMapPopup();
 
   globalSelectCluster.on('select', (event) => {
     if (event.selected.length > 0) {
@@ -83,8 +84,13 @@ export function setupGlobalSelectCluster(context: OpenLayersModuleContext) {
     }
   });
 
-  onPopup('hide', () => {
+  const handlePopupHide = () => {
     globalSelectCluster.getFeatures().clear();
+  };
+  onPopup('hide', handlePopupHide);
+
+  map.on(MapLifecycle.REMOVE as any, () => {
+    offPopup('hide', handlePopupHide);
   });
 
   layerRegistry.forEach((layer) => {

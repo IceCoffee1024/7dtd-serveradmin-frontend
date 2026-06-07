@@ -1,7 +1,7 @@
 import type { MaybeRef } from 'vue';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from './types';
 import { useIntervalFn } from '@vueuse/core';
-import { computed, ref, toValue, watchEffect } from 'vue';
+import { computed, onActivated, onDeactivated, ref, toValue, watchEffect } from 'vue';
 
 /**
  * Data-layer options for table orchestration.
@@ -31,6 +31,7 @@ export function useTableData<T extends Record<string, any>>(options: UseTableDat
   const loading = ref(false);
   const tableData = ref<T[]>([]);
   const totalRecords = ref(0);
+  const isComponentActive = ref(true);
 
   async function loadLazyData() {
     loading.value = true;
@@ -69,7 +70,7 @@ export function useTableData<T extends Record<string, any>>(options: UseTableDat
   );
 
   watchEffect((onCleanup) => {
-    if (autoRefreshIntervalMs.value > 0) {
+    if (isComponentActive.value && autoRefreshIntervalMs.value > 0) {
       resumeAutoRefresh();
     }
     else {
@@ -79,6 +80,15 @@ export function useTableData<T extends Record<string, any>>(options: UseTableDat
     onCleanup(() => {
       pauseAutoRefresh();
     });
+  });
+
+  onActivated(() => {
+    isComponentActive.value = true;
+  });
+
+  onDeactivated(() => {
+    isComponentActive.value = false;
+    pauseAutoRefresh();
   });
 
   function onExportCSV() {

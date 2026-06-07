@@ -19,6 +19,7 @@ import { gameServerGetLandClaims2Query } from '~/generated/api/@pinia/colada.gen
 import { i18n } from '~/plugins/i18n';
 import { useMapPopup } from '../../composables/useMapPopup';
 import { LAYER_ID } from '../../constants';
+import { MapLifecycle } from '../../types';
 import { layerRegistry } from '../mapRegistry';
 
 /**
@@ -176,10 +177,15 @@ export function setupLandClaimsLayer(context: OpenLayersModuleContext) {
     layerGroup.set('title', `${i18n.global.t('views.map.landClaim')} (${claimCount})`);
   };
 
-  const { show: showPopup, hide: hidePopup, on: onPopup } = useMapPopup();
-  onPopup('landClaimRemoved', async () => {
+  const { show: showPopup, hide: hidePopup, on: onPopup, off: offPopup } = useMapPopup();
+  const handleLandClaimRemoved = async () => {
     await loadLandClaims();
     hidePopup();
+  };
+  onPopup('landClaimRemoved', handleLandClaimRemoved);
+
+  map.on(MapLifecycle.REMOVE as any, () => {
+    offPopup('landClaimRemoved', handleLandClaimRemoved);
   });
 
   layerGroup.set('onFeatureSelected', (feature: Feature) => {

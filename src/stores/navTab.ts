@@ -70,6 +70,10 @@ export const useNavTabStore = defineStore('nav-tab', () => {
     tabsList.value.push(activeTab.value);
   }
 
+  function removeCachedViews(names: string[]) {
+    names.forEach(name => keepAliveStore.removeCachedView(name));
+  }
+
   async function removeTab(targetName: string) {
     const index = tabsList.value.findIndex(item => item === targetName);
     if (index === -1)
@@ -88,9 +92,9 @@ export const useNavTabStore = defineStore('nav-tab', () => {
   }
 
   async function closeOtherTabs(currentName: string) {
-    tabsList.value = tabsList.value.filter(
-      item => item === currentName,
-    );
+    const closedTabs = tabsList.value.filter(item => item !== currentName);
+    removeCachedViews(closedTabs);
+    tabsList.value = tabsList.value.filter(item => item === currentName);
 
     if (activeTab.value !== currentName) {
       activeTab.value = currentName;
@@ -103,10 +107,9 @@ export const useNavTabStore = defineStore('nav-tab', () => {
     if (index === -1)
       return;
 
-    tabsList.value = tabsList.value.filter((item, i) => {
-      keepAliveStore.removeCachedView(currentName);
-      return i >= index;
-    });
+    const closedTabs = tabsList.value.slice(0, index);
+    removeCachedViews(closedTabs);
+    tabsList.value = tabsList.value.slice(index);
 
     if (!tabsList.value.includes(activeTab.value)) {
       activeTab.value = currentName;
@@ -118,9 +121,9 @@ export const useNavTabStore = defineStore('nav-tab', () => {
     if (index === -1)
       return;
 
-    tabsList.value = tabsList.value.filter((item, i) => {
-      return i <= index;
-    });
+    const closedTabs = tabsList.value.slice(index + 1);
+    removeCachedViews(closedTabs);
+    tabsList.value = tabsList.value.slice(0, index + 1);
 
     if (!tabsList.value.includes(activeTab.value)) {
       activeTab.value = currentName;
