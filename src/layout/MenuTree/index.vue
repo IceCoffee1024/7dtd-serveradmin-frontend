@@ -187,11 +187,13 @@ const overflowHorizontalMenus = computed(() => horizontalMenus.value.slice(horiz
 }
 
 .menu-tree.menu-tree--collapsed {
-  padding-inline: 0.45rem;
+  width: 100%;
+  padding-inline: 0;
 }
 
 .menu-tree.menu-tree--collapsed .el-menu-item,
 .menu-tree.menu-tree--collapsed .el-sub-menu__title {
+  width: 100%;
   justify-content: center;
   padding: 0 !important;
 }
@@ -199,6 +201,15 @@ const overflowHorizontalMenus = computed(() => horizontalMenus.value.slice(horiz
 .menu-tree.menu-tree--collapsed .el-menu-item .el-icon,
 .menu-tree.menu-tree--collapsed .el-sub-menu__title .el-icon {
   margin-right: 0;
+}
+
+.menu-tree.menu-tree--collapsed.el-menu--collapse {
+  width: 100%;
+}
+
+.menu-tree.menu-tree--collapsed .el-menu-item,
+.menu-tree.menu-tree--collapsed > .el-sub-menu > .el-sub-menu__title {
+  min-width: 0;
 }
 
 .menu-tree.menu-tree--horizontal {

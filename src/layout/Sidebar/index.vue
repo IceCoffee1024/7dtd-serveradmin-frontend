@@ -13,7 +13,7 @@ const { menus } = useMenus();
 
 <template>
   <!-- overflow-x-hidden: Prevent horizontal scrollbars from appearing when collapsing. -->
-  <div class="sidebar-shell">
+  <div class="sidebar-shell" :class="{ 'sidebar-shell--collapsed': collapse }">
     <div class="sidebar-panel">
       <div class="sidebar-scroller">
         <MenuTree :menus="menus" :collapse="collapse" />
@@ -28,6 +28,10 @@ const { menus } = useMenus();
   height: 100%;
   padding: 0.9rem 0.75rem 0.75rem;
   overflow: hidden;
+}
+
+.sidebar-shell--collapsed {
+  padding: 0.75rem 0.35rem 0.6rem;
 }
 
 .sidebar-panel {
@@ -53,6 +57,19 @@ const { menus } = useMenus();
   overflow-y: auto;
   scrollbar-gutter: stable;
   scrollbar-color: color-mix(in srgb, var(--colors-primary) 18%, transparent) transparent;
+}
+
+.sidebar-shell--collapsed .sidebar-panel {
+  border-radius: 20px;
+}
+
+.sidebar-shell--collapsed .sidebar-scroller {
+  margin: 0.35rem 0;
+  scrollbar-gutter: auto;
+}
+
+.sidebar-shell--collapsed .sidebar-scroller::-webkit-scrollbar {
+  width: 0;
 }
 
 .sidebar-scroller::-webkit-scrollbar {

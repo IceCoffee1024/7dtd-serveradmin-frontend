@@ -6,7 +6,7 @@ export const LAYOUT_LIMITS = {
   minSidebarWidth: 220,
   minNonChineseSidebarWidth: 280,
   minLongTextSidebarWidth: 320,
-  minSidebarCollapsedWidth: 56,
+  minSidebarCollapsedWidth: 64,
   minTabHeight: 32,
   minFooterHeight: 96,
 } as const;
