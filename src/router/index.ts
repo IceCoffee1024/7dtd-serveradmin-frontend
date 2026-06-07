@@ -108,7 +108,6 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: () => t('menus.gameChat'),
           icon: markIcon(() => import('~icons/mdi/chat')),
-          groupLabel: () => t('menus.groups.gameFeatures'),
         },
         children: [
           {

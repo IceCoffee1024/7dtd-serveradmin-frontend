@@ -9,6 +9,8 @@ defineOptions({ name: 'FeatureModulesPage' });
 
 type FeatureModuleHealth = 'Healthy' | 'Disabled' | 'Unavailable';
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
+type FeatureModuleConfigurationStatus = 'Ok' | 'Warning' | 'Unknown';
+type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 
 interface FeatureSubModuleStatus {
   key: string;
@@ -24,6 +26,7 @@ interface FeatureModuleStatus {
   health: FeatureModuleHealthPayload;
   settingsType?: string | null;
   subModules: FeatureSubModuleStatus[];
+  configuration?: FeatureModuleConfiguration | null;
 }
 
 interface FeatureModuleRouteLink {
@@ -34,6 +37,12 @@ interface FeatureModuleRouteLink {
 interface FeatureModuleMeta {
   labelKey: string;
   routes: FeatureModuleRouteLink[];
+}
+
+interface FeatureModuleConfiguration {
+  status: FeatureModuleConfigurationStatusPayload;
+  messageCode?: string | null;
+  args?: Array<string | number | null> | null;
 }
 
 const { t } = useI18n();
@@ -196,8 +205,84 @@ function getSubModuleName(item: FeatureSubModuleStatus): string {
   return item.key.includes(':') ? item.key.split(':').at(-1)! : item.key;
 }
 
-function formatSettingsType(value?: string | null): string {
-  return value || '-';
+function getEnabledSubModuleCount(item: unknown): number {
+  const module = toModuleStatus(item);
+  return module.subModules.filter(subModule => subModule.enabled).length;
+}
+
+function getStatusDetail(item: unknown): string {
+  const module = toModuleStatus(item);
+  const health = normalizeHealth(module.health);
+
+  if (!module.registered || health === 'Unavailable')
+    return t('views.featureModules.details.unavailable');
+
+  if (health === 'Disabled')
+    return t('views.featureModules.details.disabled');
+
+  if (module.subModules.length > 0) {
+    return t('views.featureModules.details.subModuleSummary', [
+      getEnabledSubModuleCount(module),
+      module.subModules.length,
+    ]);
+  }
+
+  return t('views.featureModules.details.enabled');
+}
+
+function normalizeConfigurationStatus(value: FeatureModuleConfigurationStatusPayload): FeatureModuleConfigurationStatus {
+  if (typeof value === 'number') {
+    if (value === 0)
+      return 'Ok';
+    if (value === 1)
+      return 'Warning';
+    return 'Unknown';
+  }
+
+  const text = String(value ?? '').toLowerCase();
+  if (text === 'ok')
+    return 'Ok';
+  if (text === 'warning')
+    return 'Warning';
+  return 'Unknown';
+}
+
+function getConfigurationStatus(item: unknown): FeatureModuleConfigurationStatus {
+  const module = toModuleStatus(item);
+  const health = normalizeHealth(module.health);
+
+  if (!module.registered || health === 'Unavailable')
+    return 'Unknown';
+
+  if (health === 'Disabled')
+    return 'Unknown';
+
+  return normalizeConfigurationStatus(module.configuration?.status);
+}
+
+function getConfigurationText(item: unknown): string {
+  const module = toModuleStatus(item);
+  const health = normalizeHealth(module.health);
+
+  if (!module.registered || health === 'Unavailable')
+    return t('views.featureModules.configuration.notAvailable');
+
+  if (health === 'Disabled')
+    return t('views.featureModules.configuration.notApplicable');
+
+  const messageCode = module.configuration?.messageCode;
+  if (messageCode == null || messageCode.length === 0)
+    return t('views.featureModules.configuration.notChecked');
+
+  return t(`views.featureModules.configuration.${messageCode}`, module.configuration?.args ?? []);
+}
+
+function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
+  if (status === 'Ok')
+    return 'success';
+  if (status === 'Warning')
+    return 'warning';
+  return 'info';
 }
 
 async function loadModules() {
@@ -304,18 +389,31 @@ onMounted(loadModules);
         </el-table-column>
 
         <el-table-column
-          :label="t('views.featureModules.columns.settingsType')"
-          min-width="190"
+          :label="t('views.featureModules.columns.details')"
+          min-width="230"
           show-overflow-tooltip
         >
           <template #default="{ row }">
-            {{ formatSettingsType(row.settingsType) }}
+            <span class="feature-modules-page__status-detail">
+              {{ getStatusDetail(row) }}
+            </span>
+          </template>
+        </el-table-column>
+
+        <el-table-column :label="t('views.featureModules.columns.configuration')" min-width="220">
+          <template #default="{ row }">
+            <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
+              {{ getConfigurationText(row) }}
+            </el-tag>
           </template>
         </el-table-column>
 
         <el-table-column :label="t('views.featureModules.columns.subModules')" min-width="220">
           <template #default="{ row }">
             <div v-if="row.subModules.length > 0" class="feature-modules-page__submodules">
+              <span class="feature-modules-page__submodule-count">
+                {{ getEnabledSubModuleCount(row) }}/{{ row.subModules.length }}
+              </span>
               <el-tag
                 v-for="subModule in row.subModules"
                 :key="subModule.key"
@@ -428,8 +526,19 @@ onMounted(loadModules);
 .feature-modules-page__submodules,
 .feature-modules-page__actions {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.feature-modules-page__status-detail {
+  color: var(--el-text-color-regular);
+}
+
+.feature-modules-page__submodule-count {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 20px;
 }
 
 @media (max-width: 768px) {

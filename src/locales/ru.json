@@ -2442,7 +2442,9 @@
         "enabled": "Enabled",
         "settingsType": "Settings Type",
         "subModules": "Sub-modules",
-        "actions": "Actions"
+        "actions": "Actions",
+        "details": "Status Details",
+        "configuration": "Configuration"
       },
       "status": {
         "healthy": "Healthy",
@@ -2450,7 +2452,29 @@
         "unavailable": "Unavailable"
       },
       "emptySubModules": "No sub-modules",
-      "unknownModule": "Unknown Module"
+      "unknownModule": "Unknown Module",
+      "details": {
+        "enabled": "Module is enabled. Use the actions on the right to open related pages.",
+        "disabled": "Module is disabled in settings. Open settings to enable it.",
+        "unavailable": "Module is not registered or unavailable at runtime.",
+        "subModuleSummary": "{0}/{1} sub-modules enabled."
+      },
+      "configuration": {
+        "notAvailable": "Unavailable",
+        "notApplicable": "N/A",
+        "checking": "Checking",
+        "notChecked": "No automatic check",
+        "checkFailed": "Check failed",
+        "coloredChatProfiles": "{0} color profiles",
+        "economyShopItems": "{0}/{1} shop items enabled",
+        "scheduledCommands": "{0}/{1} scheduled commands enabled",
+        "teleportCities": "{0}/{1} cities enabled",
+        "gameNoticeMessages": "{0} notice messages",
+        "achievementDefinitions": "{0} achievement definitions",
+        "onlineReward": "{0} min cycle, {1} reward",
+        "backupSubModules": "{0}/{1} backup sub-modules enabled",
+        "restartSchedule": "Restart schedule: {0}"
+      }
     }
   }
 }

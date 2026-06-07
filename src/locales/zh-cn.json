@@ -2442,7 +2442,9 @@
         "enabled": "启用",
         "settingsType": "设置类型",
         "subModules": "子模块",
-        "actions": "操作"
+        "actions": "操作",
+        "details": "状态说明",
+        "configuration": "配置检查"
       },
       "status": {
         "healthy": "正常",
@@ -2450,7 +2452,29 @@
         "unavailable": "不可用"
       },
       "emptySubModules": "无子模块",
-      "unknownModule": "未知模块"
+      "unknownModule": "未知模块",
+      "details": {
+        "enabled": "模块已启用，可从右侧入口进入相关页面。",
+        "disabled": "模块当前在设置中禁用，可进入设置页启用。",
+        "unavailable": "模块未注册或当前运行时不可用。",
+        "subModuleSummary": "已启用 {0}/{1} 个子模块。"
+      },
+      "configuration": {
+        "notAvailable": "不可用",
+        "notApplicable": "不适用",
+        "checking": "检查中",
+        "notChecked": "暂无自动检查",
+        "checkFailed": "检查失败",
+        "coloredChatProfiles": "彩色配置 {0} 个",
+        "economyShopItems": "启用商品 {0}/{1} 个",
+        "scheduledCommands": "启用命令 {0}/{1} 个",
+        "teleportCities": "启用城市 {0}/{1} 个",
+        "gameNoticeMessages": "公告消息 {0} 条",
+        "achievementDefinitions": "成就定义 {0} 个",
+        "onlineReward": "周期 {0} 分钟，奖励 {1}",
+        "backupSubModules": "启用备份子模块 {0}/{1} 个",
+        "restartSchedule": "重启计划：{0}"
+      }
     }
   }
 }
