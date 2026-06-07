@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { EntityInfoFeatureData, LandClaimFeatureData, TraderLocationFeatureData } from './types';
+import type { EntityInfoFeatureData, LandClaimFeatureData, TraderLocationFeatureData, VehicleLocationFeatureData } from './types';
 import { useMapPopup } from './composables/useMapPopup';
 import { LAYER_ID } from './constants';
 import EntityInfoPopup from './EntityInfoPopup.vue';
 import LandClaimPopup from './LandClaimPopup.vue';
 import TraderLocationPopup from './TraderLocationPopup.vue';
+import VehicleLocationPopup from './VehicleLocationPopup.vue';
 
 const { visible, activeLayerId, selectedData, emit, hide } = useMapPopup();
 </script>
@@ -31,6 +32,10 @@ const { visible, activeLayerId, selectedData, emit, hide } = useMapPopup();
         <TraderLocationPopup
           v-else-if="activeLayerId === LAYER_ID.TRADERS_CLUSTER_LAYER"
           :data="(selectedData as TraderLocationFeatureData)"
+        />
+        <VehicleLocationPopup
+          v-else-if="activeLayerId === LAYER_ID.VEHICLES_CLUSTER_LAYER"
+          :data="(selectedData as VehicleLocationFeatureData)"
         />
       </div>
     </div>

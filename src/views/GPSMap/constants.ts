@@ -9,6 +9,7 @@ export const LAYER_ID = {
   ANIMALS_CLUSTER_LAYER: 'sdtd_animals_cluster_layer',
   HOSTILES_CLUSTER_LAYER: 'sdtd_hostiles_cluster_layer',
   TRADERS_CLUSTER_LAYER: 'sdtd_traders_cluster_layer',
+  VEHICLES_CLUSTER_LAYER: 'sdtd_vehicles_cluster_layer',
 } as const;
 
 export const POPUP_CONFIG_MAP = {

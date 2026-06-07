@@ -6,7 +6,7 @@ import type BaseLayer from 'ol/layer/Base';
 import type VectorSource from 'ol/source/Vector';
 import type { Style } from 'ol/style';
 import type { LAYER_ID } from './constants';
-import type { EntityBasicInfoDto, EntityType, PositionDto } from '~/generated/api/types.gen';
+import type { EntityBasicInfoDto, EntityType, InvItemDto, PositionDto } from '~/generated/api/types.gen';
 
 /**
  * Defines runtime map metadata required by 7DTD map rendering.
@@ -79,6 +79,36 @@ export interface TraderLocationFeatureData extends MapPointFeatureData {
   protectPosition: PositionDto;
   protectSize: PositionDto;
   isClosed: boolean;
+}
+
+/**
+ * Defines the structure of vehicle data stored in OpenLayers features.
+ */
+export interface VehicleLocationFeatureData extends MapPointFeatureData {
+  entityId: number;
+  entityName: string;
+  vehicleName: string;
+  localizedName?: string | null;
+  position: PositionDto;
+  isLoaded: boolean;
+  hasStorage?: boolean | null;
+  isLocked?: boolean | null;
+  fuelPercent?: number | null;
+  quality?: number | null;
+  ownerId?: string | null;
+  ownerName?: string | null;
+  ownerEntityId?: number | null;
+  storageItemCount?: number | null;
+}
+
+/**
+ * Defines the vehicle storage payload returned by the lazy inventory endpoint.
+ */
+export interface VehicleInventoryData {
+  entityId: number;
+  isLoaded: boolean;
+  hasStorage: boolean;
+  items: InvItemDto[];
 }
 
 export type OverlayLayerId = (typeof LAYER_ID)[keyof typeof LAYER_ID];

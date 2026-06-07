@@ -22,6 +22,7 @@ import { setupPlayerDragTeleportControl } from './playerDragTeleport';
 import { setupRegionGridLayer } from './layers/regionGrid';
 import { createSdtdTileLayer } from './layers/sdtdTiles';
 import { setupTradersLayer } from './layers/traders';
+import { setupVehiclesLayer } from './layers/vehicles';
 import 'ol/ol.css';
 import 'ol-layerswitcher/dist/ol-layerswitcher.css';
 import 'ol-ext/dist/ol-ext.css';
@@ -86,6 +87,7 @@ export function initOpenLayers(
   setupOfflinePlayersLayer(context);
   const onlinePlayersLayer = setupOnlinePlayersLayer(context);
   setupTradersLayer(context);
+  setupVehiclesLayer(context);
 
   setupGameTimeControl(map);
   const renderActionsElement = setupRenderActionsControl(map, sdtdTileSource);
