@@ -5,6 +5,7 @@ import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { chatMessagesGetQuery } from '~/generated/api/@pinia/colada.gen';
+import { getChatTypeOptions, getChatTypeTagType } from '../chatType';
 
 defineOptions({ name: 'ChatHistory' });
 
@@ -13,13 +14,7 @@ type ChatMessageRow = ChatMessageDto;
 const { t } = useI18n();
 const queryCache = useQueryCache();
 
-const chatTypeOptions = computed(() => [
-  { label: 'Global', value: 'Global' },
-  { label: 'Whisper', value: 'Whisper' },
-  { label: 'Party', value: 'Party' },
-  { label: 'Friends', value: 'Friends' },
-  { label: 'Unknown', value: 'Unknown' },
-]);
+const chatTypeOptions = computed(() => getChatTypeOptions(t));
 
 const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
   {
@@ -65,6 +60,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
   {
     prop: 'chatType',
     label: t('views.gameChat.history.columns.chatType'),
+    slot: 'chatType',
     sortable: true,
     enum: chatTypeOptions,
     search: {
@@ -226,6 +222,12 @@ function formatTimestamp(value: string | null | undefined): string {
         <span class="text-xs text-gray-600 font-mono dark:text-gray-300">
           {{ row.playerId || t('views.gameChat.history.emptyPlayerId') }}
         </span>
+      </template>
+
+      <template #chatType="{ row }">
+        <el-tag size="small" round effect="plain" :type="getChatTypeTagType(row.chatType as ChatType)">
+          {{ chatTypeOptions.find(item => item.value === row.chatType)?.label ?? t('common.unknown') }}
+        </el-tag>
       </template>
 
       <template #message="{ row }">

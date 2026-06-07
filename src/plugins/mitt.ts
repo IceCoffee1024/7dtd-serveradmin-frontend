@@ -1,4 +1,4 @@
-import type { PlayerBasicInfoDto } from '~/generated/api/types.gen';
+import type { ChatType, PlayerBasicInfoDto } from '~/generated/api/types.gen';
 import mitt from 'mitt';
 
 export const EVENT_TYPES = {
@@ -42,6 +42,8 @@ export interface ChatMessagePayload {
   message?: string;
   timestamp?: string;
   senderName?: string;
+  chatType?: ChatType;
+  recipientEntityIds?: number[];
 }
 
 type RespawnType = 'NewGame' | 'LoadedGame' | 'Died' | 'Teleport' | 'EnterMultiplayer' | 'JoinMultiplayer' | 'Unknown';

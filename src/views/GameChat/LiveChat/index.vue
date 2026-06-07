@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OnlinePlayerDto } from '~/generated/api/types.gen';
+import type { ChatType, OnlinePlayerDto } from '~/generated/api/types.gen';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
 import dayjs from 'dayjs';
@@ -12,6 +12,7 @@ import {
 } from '~/generated/api/@pinia/colada.gen';
 import { useGameEventStore } from '~/stores/gameEvent';
 import { formatPosition } from '~/utils';
+import { getChatTypeLabel, getChatTypeOptions, getChatTypeTagType, type LiveChatTypeFilter } from '../chatType';
 
 defineOptions({ name: 'LiveChat' });
 
@@ -24,6 +25,7 @@ const isLoading = ref(false);
 const loadingPlayers = ref(false);
 const onlinePlayers = ref<OnlinePlayerDto[]>([]);
 const selectedPlayerId = ref<string>();
+const activeChatType = ref<LiveChatTypeFilter>('All');
 
 const { currentCommand, navigateUp, navigateDown, addCommandToHistory, onInputChange } = useCommandHistory();
 const sendGlobalMessageMutation = useMutation({
@@ -41,6 +43,18 @@ const composerChannel = computed(() =>
     ? t('views.chatSettings.preview.channels.whisper')
     : t('views.chatSettings.preview.channels.global'),
 );
+const chatTypeOptions = computed(() => getChatTypeOptions(t));
+const chatTypeFilterOptions = computed(() => [
+  { label: t('views.gameChat.history.placeholders.allChatTypes'), value: 'All' as const },
+  ...chatTypeOptions.value,
+]);
+const filteredChatMessages = computed(() => {
+  if (activeChatType.value === 'All') {
+    return gameEventStore.chatMessages;
+  }
+
+  return gameEventStore.chatMessages.filter(item => item.chatType === activeChatType.value);
+});
 
 async function refreshPlayers(showLoading = true) {
   if (showLoading) {
@@ -150,7 +164,7 @@ function displaySender(senderName: string) {
 }
 
 const { pause, resume } = watch(
-  () => gameEventStore.chatMessages.length,
+  () => filteredChatMessages.value.length,
   async () => {
     const element = contentRef.value;
     if (element && isScrolledToBottom(element)) {
@@ -158,6 +172,10 @@ const { pause, resume } = watch(
     }
   },
 );
+
+watch(activeChatType, () => {
+  void scrollToBottom();
+});
 
 onActivated(() => {
   void scrollToBottom();
@@ -189,8 +207,16 @@ onBeforeUnmount(() => {
         </el-tag>
       </header>
 
+      <div class="live-chat-filters">
+        <el-segmented
+          v-model="activeChatType"
+          :options="chatTypeFilterOptions"
+          size="small"
+        />
+      </div>
+
       <div ref="contentRef" class="live-chat-messages">
-        <div v-if="gameEventStore.chatMessages.length === 0" class="app-empty-state live-chat-empty">
+        <div v-if="filteredChatMessages.length === 0" class="app-empty-state live-chat-empty">
           <div class="app-empty-state__icon">
             <icon-mdi:chat-outline />
           </div>
@@ -200,7 +226,7 @@ onBeforeUnmount(() => {
         </div>
 
         <article
-          v-for="item in gameEventStore.chatMessages"
+          v-for="item in filteredChatMessages"
           :key="item.id"
           class="live-chat-message"
         >
@@ -209,6 +235,15 @@ onBeforeUnmount(() => {
           </div>
           <div class="live-chat-message__body">
             <div class="live-chat-message__meta">
+              <el-tag
+                class="live-chat-message__channel"
+                size="small"
+                round
+                effect="plain"
+                :type="getChatTypeTagType(item.chatType)"
+              >
+                {{ getChatTypeLabel(item.chatType as ChatType, t) }}
+              </el-tag>
               <span class="live-chat-message__sender">{{ displaySender(item.senderName) }}</span>
               <span v-if="formatTimestamp(item.timestamp)" class="live-chat-message__time">
                 {{ formatTimestamp(item.timestamp) }}
@@ -362,6 +397,19 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid color-mix(in srgb, var(--el-border-color-light) 66%, white 34%);
 }
 
+.live-chat-filters {
+  flex: 0 0 auto;
+  padding: 0.75rem 1rem 0;
+
+  :deep(.el-segmented) {
+    max-width: 100%;
+  }
+
+  :deep(.el-segmented__group) {
+    flex-wrap: wrap;
+  }
+}
+
 .live-chat-panel__title-group {
   display: inline-flex;
   align-items: center;
@@ -441,6 +489,10 @@ onBeforeUnmount(() => {
   color: var(--el-text-color-primary);
   font-size: 0.88rem;
   font-weight: 800;
+}
+
+.live-chat-message__channel {
+  flex-shrink: 0;
 }
 
 .live-chat-message__time {

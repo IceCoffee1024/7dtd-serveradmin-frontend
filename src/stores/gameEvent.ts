@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
+import type { ChatType } from '~/generated/api/types.gen';
 
 /**
  * Represents a single server log entry shown in the console page.
@@ -18,6 +19,16 @@ export interface ChatMessage {
   senderName: string;
   message: string;
   timestamp: string;
+  chatType: ChatType;
+  recipientEntityIds?: number[];
+}
+
+export interface AddChatMessagePayload {
+  senderName: string;
+  message: string;
+  timestamp: string;
+  chatType?: ChatType;
+  recipientEntityIds?: number[];
 }
 
 const MAX_RECORD_COUNT = 2000;
@@ -53,12 +64,14 @@ export const useGameEventStore = defineStore('gameEvent', () => {
    * @param senderName - Sender display name.
    * @returns Promise that resolves after the buffer trimming completes.
    */
-  const addChatMessage = async (message: string, timestamp: string, senderName: string): Promise<void> => {
+  const addChatMessage = async (payload: AddChatMessagePayload): Promise<void> => {
     chatMessages.value.push({
       id: uuidv4(),
-      message,
-      timestamp,
-      senderName,
+      message: payload.message,
+      timestamp: payload.timestamp,
+      senderName: payload.senderName,
+      chatType: payload.chatType ?? 'Unknown',
+      recipientEntityIds: payload.recipientEntityIds,
     });
 
     if (chatMessages.value.length > MAX_RECORD_COUNT) {

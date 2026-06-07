@@ -61,7 +61,13 @@ export const useGameEventConnection = createSharedComposable(() => {
 
   const handleChatMessage = (data: ChatMessagePayload) => {
     const payload = data ?? {};
-    void gameEventStore.addChatMessage(payload.message ?? '', payload.timestamp ?? '', payload.senderName ?? 'Unknown');
+    void gameEventStore.addChatMessage({
+      message: payload.message ?? '',
+      timestamp: payload.timestamp ?? '',
+      senderName: payload.senderName ?? 'Unknown',
+      chatType: payload.chatType ?? 'Unknown',
+      recipientEntityIds: payload.recipientEntityIds,
+    });
   };
 
   function registerListeners(): void {
