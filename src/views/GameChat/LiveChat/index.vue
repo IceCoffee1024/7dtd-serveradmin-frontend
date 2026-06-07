@@ -12,7 +12,7 @@ import {
 } from '~/generated/api/@pinia/colada.gen';
 import { useGameEventStore } from '~/stores/gameEvent';
 import { formatPosition } from '~/utils';
-import { getChatTypeLabel, getChatTypeOptions, getChatTypeTagType, type LiveChatTypeFilter } from '../chatType';
+import { getChatTypeLabel, getChatTypeOptions, type LiveChatTypeFilter } from '../chatType';
 
 defineOptions({ name: 'LiveChat' });
 
@@ -40,8 +40,8 @@ const selectedPlayer = computed(() =>
 );
 const composerChannel = computed(() =>
   selectedPlayer.value
-    ? t('views.chatSettings.preview.channels.whisper')
-    : t('views.chatSettings.preview.channels.global'),
+    ? getChatTypeLabel('Whisper', t)
+    : getChatTypeLabel('Global', t),
 );
 const chatTypeOptions = computed(() => getChatTypeOptions(t));
 const chatTypeFilterOptions = computed(() => [
@@ -163,6 +163,10 @@ function displaySender(senderName: string) {
   return senderName?.trim() || t('views.chatSettings.preview.defaultSender');
 }
 
+function chatTypeToneClass(chatType: LiveChatTypeFilter | undefined) {
+  return `live-chat-channel-tone--${(chatType ?? 'Unknown').toString().toLowerCase()}`;
+}
+
 const { pause, resume } = watch(
   () => filteredChatMessages.value.length,
   async () => {
@@ -202,18 +206,23 @@ onBeforeUnmount(() => {
           <span class="live-chat-panel__status-dot" />
           <span class="live-chat-panel__title">{{ t('menus.liveChat') }}</span>
         </div>
+        <nav class="live-chat-channel-tabs" :aria-label="t('views.gameChat.history.columns.chatType')">
+          <button
+            v-for="option in chatTypeFilterOptions"
+            :key="option.value"
+            class="live-chat-channel-tab"
+            :class="[chatTypeToneClass(option.value), { 'live-chat-channel-tab--active': activeChatType === option.value }]"
+            type="button"
+            @click="activeChatType = option.value"
+          >
+            <span class="live-chat-channel-tab__dot" />
+            <span class="live-chat-channel-tab__label">{{ option.label }}</span>
+          </button>
+        </nav>
         <el-tag round effect="plain" :type="selectedPlayer ? 'warning' : 'success'">
           {{ composerChannel }}
         </el-tag>
       </header>
-
-      <div class="live-chat-filters">
-        <el-segmented
-          v-model="activeChatType"
-          :options="chatTypeFilterOptions"
-          size="small"
-        />
-      </div>
 
       <div ref="contentRef" class="live-chat-messages">
         <div v-if="filteredChatMessages.length === 0" class="app-empty-state live-chat-empty">
@@ -235,15 +244,13 @@ onBeforeUnmount(() => {
           </div>
           <div class="live-chat-message__body">
             <div class="live-chat-message__meta">
-              <el-tag
+              <span
                 class="live-chat-message__channel"
-                size="small"
-                round
-                effect="plain"
-                :type="getChatTypeTagType(item.chatType)"
+                :class="chatTypeToneClass(item.chatType)"
               >
+                <span class="live-chat-message__channel-dot" />
                 {{ getChatTypeLabel(item.chatType as ChatType, t) }}
-              </el-tag>
+              </span>
               <span class="live-chat-message__sender">{{ displaySender(item.senderName) }}</span>
               <span v-if="formatTimestamp(item.timestamp)" class="live-chat-message__time">
                 {{ formatTimestamp(item.timestamp) }}
@@ -388,26 +395,18 @@ onBeforeUnmount(() => {
 
 .live-chat-panel__header,
 .live-chat-online__header {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 0.75rem;
   flex: 0 0 auto;
   padding: 1rem 1rem 0.85rem;
   border-bottom: 1px solid color-mix(in srgb, var(--el-border-color-light) 66%, white 34%);
 }
 
-.live-chat-filters {
-  flex: 0 0 auto;
-  padding: 0.75rem 1rem 0;
-
-  :deep(.el-segmented) {
-    max-width: 100%;
-  }
-
-  :deep(.el-segmented__group) {
-    flex-wrap: wrap;
-  }
+.live-chat-online__header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .live-chat-panel__title-group {
@@ -415,6 +414,18 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.55rem;
   min-width: 0;
+}
+
+.live-chat-panel__header > .el-tag {
+  justify-self: end;
+  max-width: 100%;
+
+  :deep(.el-tag__content) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .live-chat-panel__status-dot {
@@ -429,6 +440,80 @@ onBeforeUnmount(() => {
 .live-chat-online__title {
   color: var(--el-text-color-primary);
   font-weight: 800;
+}
+
+.live-chat-channel-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  max-width: min(42rem, 100%);
+  padding: 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--el-border-color-light) 66%, white 34%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--el-fill-color-light) 66%, transparent);
+}
+
+.live-chat-channel-tab {
+  --live-chat-channel-color: var(--el-text-color-secondary);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.8rem;
+  padding: 0 0.65rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--el-text-color-secondary);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.live-chat-channel-tab:hover,
+.live-chat-channel-tab--active {
+  background: color-mix(in srgb, var(--live-chat-channel-color) 10%, var(--el-bg-color));
+  color: var(--live-chat-channel-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--live-chat-channel-color) 18%, transparent);
+}
+
+.live-chat-channel-tab__dot,
+.live-chat-message__channel-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--live-chat-channel-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--live-chat-channel-color) 12%, transparent);
+}
+
+.live-chat-channel-tone--all {
+  --live-chat-channel-color: var(--colors-primary);
+}
+
+.live-chat-channel-tone--global {
+  --live-chat-channel-color: var(--el-color-success);
+}
+
+.live-chat-channel-tone--friends {
+  --live-chat-channel-color: var(--el-color-info);
+}
+
+.live-chat-channel-tone--party {
+  --live-chat-channel-color: var(--el-color-warning);
+}
+
+.live-chat-channel-tone--whisper {
+  --live-chat-channel-color: var(--el-color-danger);
+}
+
+.live-chat-channel-tone--unknown {
+  --live-chat-channel-color: var(--el-text-color-secondary);
 }
 
 .live-chat-messages {
@@ -492,7 +577,16 @@ onBeforeUnmount(() => {
 }
 
 .live-chat-message__channel {
+  --live-chat-channel-color: var(--el-text-color-secondary);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
   flex-shrink: 0;
+  color: color-mix(in srgb, var(--live-chat-channel-color) 82%, var(--el-text-color-secondary));
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .live-chat-message__time {
@@ -675,12 +769,35 @@ onBeforeUnmount(() => {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .live-chat-panel__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .live-chat-channel-tabs {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+  }
+
   .live-chat-online {
     min-height: 18rem;
   }
 }
 
 @media (max-width: 720px) {
+  .live-chat-panel__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .live-chat-panel__header > .el-tag,
+  .live-chat-channel-tabs {
+    justify-self: start;
+  }
+
+  .live-chat-channel-tabs {
+    border-radius: 18px;
+  }
+
   .live-chat-composer__row {
     grid-template-columns: minmax(0, 1fr) auto;
   }
