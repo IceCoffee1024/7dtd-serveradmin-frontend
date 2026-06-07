@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { VehicleInventoryData, VehicleLocationFeatureData } from './types';
 import { useI18n } from 'vue-i18n';
+import GameIconEx from '~/components/PlayerInventoryDialog/GameIconEx/index.vue';
+import { usePlayerProfileNavigation } from '~/composables';
 import { client } from '~/generated/api/client.gen';
 import { useLocaleStore } from '~/stores/locale';
 import { formatPosition } from '~/utils';
-import GameIconEx from '~/components/PlayerInventoryDialog/GameIconEx/index.vue';
 
 interface Props {
   data: VehicleLocationFeatureData;
@@ -12,6 +13,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const { t } = useI18n();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 const localeStore = useLocaleStore();
 const loading = ref(false);
 const inventory = ref<VehicleInventoryData | null>(null);
@@ -19,7 +21,16 @@ const errorMessage = ref('');
 
 const vehicleName = computed(() => props.data.localizedName ?? props.data.vehicleName ?? props.data.entityName);
 const ownerName = computed(() => props.data.ownerName ?? props.data.ownerId ?? t('common.unknown'));
+const canViewOwnerProfile = computed(() => Boolean(props.data.ownerId));
 const canLoadInventory = computed(() => props.data.isLoaded && props.data.hasStorage === true);
+
+function handleViewOwnerProfile() {
+  if (!props.data.ownerId) {
+    return;
+  }
+
+  viewPlayerProfile({ playerId: props.data.ownerId, playerName: props.data.ownerName ?? undefined });
+}
 
 async function loadInventory() {
   inventory.value = null;
@@ -84,6 +95,13 @@ watch(
       </div>
     </div>
 
+    <div v-if="canViewOwnerProfile" class="vehicle-popup__actions">
+      <el-button type="primary" size="small" @click="handleViewOwnerProfile">
+        <icon-mdi:account-card-outline class="mr-1" />
+        {{ $t('views.playerList.viewProfile') }}
+      </el-button>
+    </div>
+
     <div class="vehicle-popup__inventory">
       <div class="vehicle-popup__section-title">
         {{ $t('views.map.vehicleInventory') }}
@@ -136,6 +154,16 @@ watch(
 .vehicle-popup__inventory {
   display: grid;
   gap: 0.45rem;
+}
+
+.vehicle-popup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vehicle-popup__actions :deep(.el-button) {
+  margin-left: 0;
 }
 
 .vehicle-popup__section-title {

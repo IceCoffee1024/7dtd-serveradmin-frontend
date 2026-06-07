@@ -49,11 +49,28 @@ function handleViewProfile() {
       <br>
       {{ $t('views.map.claimStatus') }}: {{ data.claimActive ? $t('views.map.claimActive') : $t('views.map.claimInactive') }}
     </div>
-    <button class="mr-8px mt-4px" @click="handleViewProfile">
-      {{ $t('views.playerList.viewProfile') }}
-    </button>
-    <button class="mt-4px" @click="handleRemoveClaim">
-      {{ $t('views.map.removeLandClaim') }}
-    </button>
+    <div class="map-popup-actions">
+      <el-button type="primary" size="small" @click="handleViewProfile">
+        <icon-mdi:account-card-outline class="mr-1" />
+        {{ $t('views.playerList.viewProfile') }}
+      </el-button>
+      <el-button type="danger" plain size="small" @click="handleRemoveClaim">
+        <icon-mdi:delete-outline class="mr-1" />
+        {{ $t('views.map.removeLandClaim') }}
+      </el-button>
+    </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.map-popup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.map-popup-actions :deep(.el-button) {
+  margin-left: 0;
+}
+</style>

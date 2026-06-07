@@ -533,7 +533,8 @@
         "gameEvents": "Recent Game Events",
         "chat": "Recent Chat",
         "economyTransactions": "Recent Economy Transactions",
-        "teleportLogs": "Recent Teleport Logs"
+        "teleportLogs": "Recent Teleport Logs",
+        "timeline": "Player Timeline"
       },
       "fields": {
         "balance": "Balance",
@@ -554,6 +555,12 @@
       },
       "actions": {
         "unban": "Remove Ban"
+      },
+      "timeline": {
+        "chat": "Chat",
+        "event": "Event",
+        "economy": "Economy",
+        "teleport": "Teleport"
       }
     },
     "map": {

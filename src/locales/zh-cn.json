@@ -533,7 +533,8 @@
         "gameEvents": "最近游戏事件",
         "chat": "最近聊天",
         "economyTransactions": "最近经济流水",
-        "teleportLogs": "最近传送记录"
+        "teleportLogs": "最近传送记录",
+        "timeline": "玩家时间线"
       },
       "fields": {
         "balance": "余额",
@@ -554,6 +555,12 @@
       },
       "actions": {
         "unban": "解除封禁"
+      },
+      "timeline": {
+        "chat": "聊天",
+        "event": "事件",
+        "economy": "经济",
+        "teleport": "传送"
       }
     },
     "map": {

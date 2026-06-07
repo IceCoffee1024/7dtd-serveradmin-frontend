@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { FormRules } from 'element-plus';
-import type { MyFormField } from '~/composables/useMyForm';
 import type {
   AdminUserDto,
   BanEntryDto,
@@ -9,8 +7,6 @@ import type {
   EconomyAccountDetailDto,
   EconomyTransactionDto,
   GameEventLogDto,
-  GameItemDto,
-  GiveItemToPlayerRequestDto,
   HomeLocationDto,
   MuteEntryDto,
   PlayerDetailsDto,
@@ -18,22 +14,9 @@ import type {
   VehicleLocationDto,
   WhitelistEntryDto,
 } from '~/generated/api/types.gen';
-import { useMutation } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import GameItemSelect from '~/components/GameItemSelect/index.vue';
-import MyDialog from '~/components/MyDialog/index.vue';
-import MyForm from '~/components/MyForm/index.vue';
-import { usePopup } from '~/composables';
-import {
-  chatAddOrUpdateMuteMutation,
-  chatRemoveMutesMutation,
-  gameServerCreateBanMutation,
-  gameServerGiveItemToOnlinePlayerMutation,
-  gameServerKickPlayerMutation,
-  gameServerRemoveBansMutation,
-} from '~/generated/api/@pinia/colada.gen';
 import {
   chatGetMutes,
   chatMessagesGet,
@@ -49,9 +32,8 @@ import {
   teleportGetHomes,
   teleportGetLogs,
 } from '~/generated/api/sdk.gen';
-import v from '~/plugins/valibot';
-import { invalidateGeneratedQueries } from '~/queries/generated';
-import { formatPosition, generateElementRules, showCommandResult } from '~/utils';
+import { formatPosition } from '~/utils';
+import PlayerProfileActions from './PlayerProfileActions.vue';
 
 defineOptions({ name: 'PlayerProfilePage' });
 
@@ -62,21 +44,18 @@ interface ProfileStatus {
   isWhitelisted: boolean;
 }
 
-interface FormExpose {
-  validate: () => Promise<boolean | undefined>;
-  clearValidate: (props?: string | string[]) => void;
-}
-
-interface GiveItemFormModel {
-  itemName: string;
-  count: number;
-  quality: number;
+interface TimelineItem {
+  id: string;
+  type: 'chat' | 'event' | 'economy' | 'teleport';
+  title: string;
+  description: string;
+  timestamp: string;
+  tagType: 'primary' | 'success' | 'warning' | 'info';
 }
 
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const { confirm, prompt, toast } = usePopup();
 
 const loading = ref(false);
 const loadedAt = ref<Date | null>(null);
@@ -93,65 +72,6 @@ const adminEntry = ref<AdminUserDto | null>(null);
 const banEntry = ref<BanEntryDto | null>(null);
 const muteEntry = ref<MuteEntryDto | null>(null);
 const whitelistEntry = ref<WhitelistEntryDto | null>(null);
-const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
-const giveItemDialogRef = useTemplateRef('giveItemDialogRef');
-const giveItemFormRef = useTemplateRef<FormExpose>('giveItemFormRef');
-const selectedGameItem = ref<GameItemDto | null>(null);
-const giveItemForm = reactive<GiveItemFormModel>({
-  itemName: '',
-  count: 1,
-  quality: 1,
-});
-const selectedItemAcceptsQuality = computed(() => selectedGameItem.value?.hasQuality === true);
-const giveItemSchema = v.object({
-  itemName: v.pipe(v.string(), v.minLength(1)),
-  count: v.pipe(v.number(), v.minValue(1), v.maxValue(999999)),
-  quality: v.pipe(v.number(), v.minValue(1), v.maxValue(6)),
-});
-const giveItemRules: FormRules = generateElementRules(giveItemSchema);
-const giveItemFields = computed<MyFormField<GiveItemFormModel>[]>(() => [
-  {
-    prop: 'itemName',
-    label: t('views.playerList.giveItem.fields.itemName'),
-    el: 'custom',
-    span: { xs: 24 },
-  },
-  {
-    prop: 'count',
-    label: t('views.playerList.giveItem.fields.count'),
-    el: 'el-input-number',
-    props: { min: 1, max: 999999, precision: 0, class: 'w-full' },
-    span: { xs: 24, md: 12 },
-  },
-  {
-    prop: 'quality',
-    label: t('views.playerList.giveItem.fields.quality'),
-    el: 'el-input-number',
-    props: { min: 1, max: 6, precision: 0, class: 'w-full' },
-    disabled: () => !selectedItemAcceptsQuality.value,
-    tooltip: t('views.playerList.giveItem.qualityHint'),
-    span: { xs: 24, md: 12 },
-  },
-]);
-const kickPlayerMutation = useMutation({
-  ...gameServerKickPlayerMutation(),
-});
-const banPlayerMutation = useMutation({
-  ...gameServerCreateBanMutation(),
-});
-const removeBanMutation = useMutation({
-  ...gameServerRemoveBansMutation(),
-});
-const addMuteMutation = useMutation({
-  ...chatAddOrUpdateMuteMutation(),
-});
-const removeMuteMutation = useMutation({
-  ...chatRemoveMutesMutation(),
-});
-const giveItemMutation = useMutation({
-  ...gameServerGiveItemToOnlinePlayerMutation(),
-});
-const isGivingItem = computed(() => giveItemMutation.isLoading.value);
 
 const playerId = computed(() => {
   const value = route.params.playerId;
@@ -200,6 +120,62 @@ const summaryCards = computed(() => [
     type: 'primary',
   },
 ]);
+
+const timelineItems = computed<TimelineItem[]>(() => {
+  const items: TimelineItem[] = [
+    ...chatMessages.value.map((message, index) => ({
+      id: `chat-${message.id ?? index}`,
+      type: 'chat' as const,
+      title: t('views.playerProfile.timeline.chat'),
+      description: [
+        message.chatType,
+        message.message,
+      ].filter(Boolean).join(' · '),
+      timestamp: message.createdAt ?? '',
+      tagType: 'primary' as const,
+    })),
+    ...gameEvents.value.map((event, index) => ({
+      id: `event-${event.id ?? index}`,
+      type: 'event' as const,
+      title: event.eventType ?? t('views.playerProfile.timeline.event'),
+      description: [
+        event.playerName,
+        event.targetPlayerName,
+      ].filter(Boolean).join(' → ') || event.details || '--',
+      timestamp: event.createdAt ?? '',
+      tagType: 'warning' as const,
+    })),
+    ...economyTransactions.value.map((transaction, index) => ({
+      id: `economy-${transaction.id ?? index}`,
+      type: 'economy' as const,
+      title: t('views.playerProfile.timeline.economy'),
+      description: [
+        transaction.type,
+        transaction.amount != null ? `${t('views.economy.transactions.columns.amount')}: ${transaction.amount}` : '',
+        transaction.balanceAfter != null ? `${t('views.economy.transactions.columns.balanceAfter')}: ${transaction.balanceAfter}` : '',
+        transaction.source,
+      ].filter(Boolean).join(' · '),
+      timestamp: transaction.occurredAt ?? '',
+      tagType: 'success' as const,
+    })),
+    ...teleportLogs.value.map((log, index) => ({
+      id: `teleport-${log.id ?? index}`,
+      type: 'teleport' as const,
+      title: t('views.playerProfile.timeline.teleport'),
+      description: [
+        log.subSystem,
+        `${formatTeleportPosition(log, 'from')} → ${formatTeleportPosition(log, 'to')}`,
+        log.costPaid != null ? `${t('views.teleport.logs.columns.costPaid')}: ${log.costPaid}` : '',
+      ].filter(Boolean).join(' · '),
+      timestamp: log.timestamp ?? '',
+      tagType: 'info' as const,
+    })),
+  ].filter(item => item.timestamp);
+
+  return items
+    .sort((a, b) => dayjs(b.timestamp).valueOf() - dayjs(a.timestamp).valueOf())
+    .slice(0, 24);
+});
 
 function formatTime(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
@@ -304,170 +280,6 @@ function goToPlayerFilteredPage(name: string) {
   });
 }
 
-function openInventory() {
-  playerInventoryDialogRef.value?.open(playerId.value, displayName.value);
-}
-
-function openGiveItemDialog() {
-  giveItemForm.itemName = '';
-  giveItemForm.count = 1;
-  giveItemForm.quality = 1;
-  selectedGameItem.value = null;
-  giveItemDialogRef.value?.open();
-  nextTick(() => giveItemFormRef.value?.clearValidate());
-}
-
-function onSelectedGameItemChange(item: GameItemDto | null) {
-  selectedGameItem.value = item;
-  if (item?.hasQuality !== true) {
-    giveItemForm.quality = 1;
-  }
-}
-
-async function onGiveItemConfirm(): Promise<boolean | void> {
-  const valid = await giveItemFormRef.value?.validate().catch(() => false);
-  if (!valid) {
-    return false;
-  }
-
-  const body: GiveItemToPlayerRequestDto = {
-    itemName: giveItemForm.itemName.trim(),
-    count: Number(giveItemForm.count),
-    quality: selectedItemAcceptsQuality.value ? Number(giveItemForm.quality) : null,
-  };
-
-  try {
-    const result = await giveItemMutation.mutateAsync({
-      path: { playerId: playerId.value },
-      body,
-    });
-    showCommandResult(result ?? undefined, t('views.playerList.giveItem.title'));
-  }
-  catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-async function onKickPlayer() {
-  if (!isOnline.value) {
-    return;
-  }
-
-  const reason = await prompt({ text: t('views.playerList.kickReason') });
-  if (reason === undefined) {
-    return;
-  }
-
-  try {
-    const result = await kickPlayerMutation.mutateAsync({
-      body: { playerId: playerId.value, reason: reason || null },
-    });
-    showCommandResult(result ?? undefined, t('views.playerList.kick'));
-    await loadProfile();
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-async function onBanPlayer() {
-  const minutesStr = await prompt({
-    text: t('views.playerList.banDuration'),
-    inputValidator: value => (Number(value) > 0) || t('views.playerList.banDuration'),
-  });
-  if (minutesStr === undefined) {
-    return;
-  }
-
-  const reason = await prompt({ text: t('views.playerList.banReason') });
-  if (reason === undefined) {
-    return;
-  }
-
-  const confirmed = await confirm({ text: t('views.playerList.ban'), type: 'warning' });
-  if (!confirmed) {
-    return;
-  }
-
-  try {
-    const result = await banPlayerMutation.mutateAsync({
-      body: {
-        playerId: playerId.value,
-        bannedUntil: dayjs().add(Number(minutesStr), 'minute').toISOString(),
-        displayName: displayName.value,
-        reason: reason || null,
-      },
-    });
-    showCommandResult(result ?? undefined, t('views.playerList.ban'));
-    await invalidateGeneratedQueries('GameServer');
-    await loadProfile();
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-async function onRemoveBan() {
-  const confirmed = await confirm({ text: t('views.playerProfile.flags.banned'), type: 'warning' });
-  if (!confirmed) {
-    return;
-  }
-
-  try {
-    const result = await removeBanMutation.mutateAsync({ body: [playerId.value] });
-    showCommandResult(result ?? undefined, t('views.playerProfile.flags.banned'));
-    await invalidateGeneratedQueries('GameServer');
-    await loadProfile();
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-async function onMutePlayer() {
-  const minutesStr = await prompt({ text: t('views.playerList.muteDuration') });
-  if (minutesStr === undefined) {
-    return;
-  }
-
-  const reason = await prompt({ text: t('views.playerList.muteReason') });
-  if (reason === undefined) {
-    return;
-  }
-
-  try {
-    const minutes = Number(minutesStr);
-    const mutedUntil = minutes > 0 ? dayjs().add(minutes, 'minute').toISOString() : null;
-    await addMuteMutation.mutateAsync({
-      body: {
-        playerId: playerId.value,
-        playerName: displayName.value,
-        mutedUntil,
-        reason: reason || null,
-      },
-    });
-    toast({ type: 'success', title: t('views.playerList.mute') });
-    await invalidateGeneratedQueries('Chat');
-    await loadProfile();
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-async function onRemoveMute() {
-  try {
-    await removeMuteMutation.mutateAsync({ body: [playerId.value] });
-    toast({ type: 'success', title: t('views.playerList.unmute') });
-    await invalidateGeneratedQueries('Chat');
-    await loadProfile();
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
 onMounted(loadProfile);
 watch(playerId, loadProfile);
 </script>
@@ -520,64 +332,13 @@ watch(playerId, loadProfile);
         </div>
       </section>
 
-      <section class="profile-panel player-profile-actions">
-        <div class="profile-panel__header">
-          <h3>{{ t('components.myTable.operation') }}</h3>
-          <el-tag :type="isOnline ? 'success' : 'info'" effect="plain">
-            {{ isOnline ? t('common.online') : t('common.offline') }}
-          </el-tag>
-        </div>
-        <div class="player-profile-actions__list">
-          <el-button :disabled="!playerId" @click="openInventory">
-            <icon-mdi:bag-personal-outline class="mr-1" />
-            {{ t('views.map.viewPlayerInventory') }}
-          </el-button>
-          <el-button type="primary" :disabled="!isOnline" :loading="isGivingItem" @click="openGiveItemDialog">
-            <icon-mdi:gift-outline class="mr-1" />
-            {{ t('views.playerList.giveItem.title') }}
-          </el-button>
-          <el-button :disabled="!isOnline" :loading="kickPlayerMutation.isLoading.value" @click="onKickPlayer">
-            <icon-mdi:logout class="mr-1" />
-            {{ t('views.playerList.kick') }}
-          </el-button>
-          <el-button
-            v-if="status.isMuted"
-            type="success"
-            :loading="removeMuteMutation.isLoading.value"
-            @click="onRemoveMute"
-          >
-            <icon-mdi:microphone-outline class="mr-1" />
-            {{ t('views.playerList.unmute') }}
-          </el-button>
-          <el-button
-            v-else
-            type="warning"
-            :loading="addMuteMutation.isLoading.value"
-            @click="onMutePlayer"
-          >
-            <icon-mdi:microphone-off class="mr-1" />
-            {{ t('views.playerList.mute') }}
-          </el-button>
-          <el-button
-            v-if="status.isBanned"
-            type="success"
-            :loading="removeBanMutation.isLoading.value"
-            @click="onRemoveBan"
-          >
-            <icon-mdi:account-check-outline class="mr-1" />
-            {{ t('views.playerProfile.actions.unban') }}
-          </el-button>
-          <el-button
-            v-else
-            type="danger"
-            :loading="banPlayerMutation.isLoading.value"
-            @click="onBanPlayer"
-          >
-            <icon-mdi:account-cancel-outline class="mr-1" />
-            {{ t('views.playerList.ban') }}
-          </el-button>
-        </div>
-      </section>
+      <PlayerProfileActions
+        :player-id="playerId"
+        :display-name="displayName"
+        :is-online="isOnline"
+        :status="status"
+        @refreshed="loadProfile"
+      />
 
       <el-tabs class="player-profile-tabs">
         <el-tab-pane :label="t('views.playerProfile.tabs.overview')">
@@ -690,6 +451,34 @@ watch(playerId, loadProfile);
           <div class="profile-panel-stack">
             <section class="profile-panel">
               <div class="profile-panel__header">
+                <h3>{{ t('views.playerProfile.sections.timeline') }}</h3>
+              </div>
+              <el-empty
+                v-if="timelineItems.length === 0"
+                :description="t('components.myTable.noData')"
+              />
+              <el-timeline v-else class="player-profile-timeline">
+                <el-timeline-item
+                  v-for="item in timelineItems"
+                  :key="item.id"
+                  :timestamp="formatTime(item.timestamp)"
+                  placement="top"
+                >
+                  <div class="player-profile-timeline__item">
+                    <div class="player-profile-timeline__header">
+                      <el-tag :type="item.tagType" effect="plain" size="small">
+                        {{ t(`views.playerProfile.timeline.${item.type}`) }}
+                      </el-tag>
+                      <strong>{{ item.title }}</strong>
+                    </div>
+                    <p>{{ item.description }}</p>
+                  </div>
+                </el-timeline-item>
+              </el-timeline>
+            </section>
+
+            <section class="profile-panel">
+              <div class="profile-panel__header">
                 <h3>{{ t('views.playerProfile.sections.gameEvents') }}</h3>
                 <el-button type="primary" link @click="goToPlayerFilteredPage('GameEventLogs')">
                   {{ t('components.myTable.view') }}
@@ -783,39 +572,6 @@ watch(playerId, loadProfile);
       <footer class="player-profile-footer">
         {{ t('views.playerProfile.loadedAt') }}: {{ loadedAt ? dayjs(loadedAt).format('YYYY-MM-DD HH:mm:ss') : '--' }}
       </footer>
-
-      <MyDialog
-        ref="giveItemDialogRef"
-        :title="t('views.playerList.giveItem.title')"
-        :loading="isGivingItem"
-        :on-confirm="onGiveItemConfirm"
-      >
-        <div class="text-sm mb-3 px-3 py-2 border border-gray-200 rounded bg-gray-50 dark:border-gray-700 dark:bg-gray-800/60">
-          <span class="text-gray-500 dark:text-gray-400">{{ t('views.playerList.giveItem.target') }}</span>
-          <span class="font-semibold ml-2">{{ displayName }}</span>
-          <span class="text-gray-400 font-mono ml-2">{{ playerId }}</span>
-        </div>
-        <MyForm
-          ref="giveItemFormRef"
-          v-model="giveItemForm"
-          :fields="giveItemFields"
-          :rules="giveItemRules"
-          label-position="top"
-          label-width="auto"
-          :gutter="16"
-        >
-          <template #itemName>
-            <GameItemSelect
-              v-model="giveItemForm.itemName"
-              include-blocks
-              :placeholder="t('views.playerList.giveItem.fields.itemName')"
-              @selected-change="onSelectedGameItemChange"
-            />
-          </template>
-        </MyForm>
-      </MyDialog>
-
-      <PlayerInventoryDialog ref="playerInventoryDialogRef" />
     </div>
   </el-card>
 </template>
@@ -906,20 +662,6 @@ watch(playerId, loadProfile);
   font-size: 22px;
 }
 
-.player-profile-actions {
-  padding: 14px;
-}
-
-.player-profile-actions__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.player-profile-actions__list :deep(.el-button) {
-  margin-left: 0;
-}
-
 .player-profile-tabs {
   min-height: 0;
 }
@@ -974,6 +716,34 @@ watch(playerId, loadProfile);
   min-width: 0;
   margin: 0;
   overflow-wrap: anywhere;
+}
+
+.player-profile-timeline {
+  padding-left: 2px;
+}
+
+.player-profile-timeline__item {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.player-profile-timeline__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-profile-timeline__header strong,
+.player-profile-timeline__item p {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.player-profile-timeline__item p {
+  margin: 0;
+  color: var(--el-text-color-secondary);
 }
 
 .player-profile-footer {

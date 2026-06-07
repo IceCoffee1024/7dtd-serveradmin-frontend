@@ -22,7 +22,6 @@ function handleViewProfile() {
 const { t } = useI18n();
 
 const title = computed(() => {
-  console.log('EntityInfoPopup title computed', props.data);
   switch (props.data.entityType) {
     case 'OfflinePlayer':
       return `${t('views.map.offlinePlayer')}: ${props.data.entityName} (${props.data.playerId})`;
@@ -44,13 +43,30 @@ const title = computed(() => {
       {{ title }}
     </div>
     <template v-if="data.playerId">
-      <button class="mr-8px mt-4px" @click="handleViewProfile">
-        {{ $t('views.playerList.viewProfile') }}
-      </button>
-      <button v-if="data.playerId" class="mt-4px" @click="handleViewInventory">
-        {{ $t('views.map.viewPlayerInventory') }}
-      </button>
+      <div class="map-popup-actions">
+        <el-button type="primary" size="small" @click="handleViewProfile">
+          <icon-mdi:account-card-outline class="mr-1" />
+          {{ $t('views.playerList.viewProfile') }}
+        </el-button>
+        <el-button size="small" @click="handleViewInventory">
+          <icon-mdi:bag-personal-outline class="mr-1" />
+          {{ $t('views.map.viewPlayerInventory') }}
+        </el-button>
+      </div>
       <PlayerInventoryDialog v-if="data.playerId" ref="playerInventoryDialogRef" />
     </template>
   </div>
 </template>
+
+<style scoped lang="scss">
+.map-popup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.map-popup-actions :deep(.el-button) {
+  margin-left: 0;
+}
+</style>
