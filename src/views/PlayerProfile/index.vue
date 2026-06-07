@@ -262,7 +262,7 @@ watch(playerId, loadProfile);
 </script>
 
 <template>
-  <el-card v-loading="loading" class="player-profile-page h-full min-h-0" shadow="never">
+  <el-card v-loading="loading" class="player-profile-page" shadow="never">
     <div class="player-profile-page__body">
       <header class="player-profile-header">
         <div class="player-profile-header__main">
@@ -556,8 +556,6 @@ watch(playerId, loadProfile);
 <style scoped lang="scss">
 .player-profile-page {
   :deep(.el-card__body) {
-    height: 100%;
-    min-height: 0;
     padding: 0;
   }
 }
@@ -566,10 +564,7 @@ watch(playerId, loadProfile);
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
-  min-height: 0;
   padding: 18px;
-  overflow: auto;
 }
 
 .player-profile-header {
