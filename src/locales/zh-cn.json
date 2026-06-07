@@ -551,6 +551,9 @@
         "whitelisted": "白名单",
         "banned": "已封禁",
         "muted": "已禁言"
+      },
+      "actions": {
+        "unban": "解除封禁"
       }
     },
     "map": {

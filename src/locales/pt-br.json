@@ -551,6 +551,9 @@
         "whitelisted": "Whitelisted",
         "banned": "Banned",
         "muted": "Muted"
+      },
+      "actions": {
+        "unban": "Remove Ban"
       }
     },
     "map": {
