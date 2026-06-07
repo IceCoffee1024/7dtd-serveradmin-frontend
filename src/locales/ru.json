@@ -33,6 +33,7 @@
     "login": "Войти",
     "dashboard": "Панель управления",
     "playerList": "Список игроков",
+    "playerProfile": "Player Profile",
     "gpsMap": "GPS-карта",
     "gameChat": "Игровой чат",
     "liveChat": "Живой чат",
@@ -483,6 +484,7 @@
       "viewInventory": "Посмотреть инвентарь",
       "viewSkills": "Просмотр навыков",
       "viewDetails": "Посмотреть детали",
+      "viewProfile": "Player Profile",
       "kick": "Выгнать игрока",
       "kickReason": "Причина исключения (необязательно)",
       "ban": "Забанить игрока",
@@ -503,6 +505,52 @@
         },
         "allOnline": "Все игроки онлайн",
         "onlineCount": "Онлайн: {0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "Loaded At",
+      "permanent": "Permanent",
+      "summary": {
+        "status": "Status",
+        "balance": "Balance",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "assets": "Assets",
+        "activity": "Activity",
+        "economy": "Economy",
+        "teleport": "Teleport"
+      },
+      "sections": {
+        "basic": "Basic Info",
+        "progress": "Progress",
+        "assets": "Assets",
+        "access": "Access & Moderation",
+        "homes": "Homes",
+        "vehicles": "Vehicles",
+        "gameEvents": "Recent Game Events",
+        "chat": "Recent Chat",
+        "economyTransactions": "Recent Economy Transactions",
+        "teleportLogs": "Recent Teleport Logs"
+      },
+      "fields": {
+        "balance": "Balance",
+        "frozen": "Frozen",
+        "homes": "Homes",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles",
+        "homeName": "Home Name",
+        "createdAt": "Created At",
+        "from": "From",
+        "to": "To"
+      },
+      "flags": {
+        "admin": "Admin",
+        "whitelisted": "Whitelisted",
+        "banned": "Banned",
+        "muted": "Muted"
       }
     },
     "map": {

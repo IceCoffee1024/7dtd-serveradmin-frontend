@@ -33,6 +33,7 @@
     "login": "登入",
     "dashboard": "儀表板",
     "playerList": "玩家列表",
+    "playerProfile": "玩家畫像",
     "gpsMap": "GPS地圖",
     "gameChat": "遊戲聊天",
     "liveChat": "即時聊天",
@@ -483,6 +484,7 @@
       "viewInventory": "查看庫存",
       "viewSkills": "查看技能",
       "viewDetails": "看詳情",
+      "viewProfile": "玩家畫像",
       "kick": "踢球員",
       "kickReason": "踢出原因（可選）",
       "ban": "禁止玩家",
@@ -503,6 +505,52 @@
         },
         "allOnline": "所有線上玩家",
         "onlineCount": "線上：{0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "載入時間",
+      "permanent": "永久",
+      "summary": {
+        "status": "狀態",
+        "balance": "餘額",
+        "landClaims": "領地",
+        "vehicles": "車輛"
+      },
+      "tabs": {
+        "overview": "概覽",
+        "assets": "資產",
+        "activity": "活動",
+        "economy": "經濟",
+        "teleport": "傳送"
+      },
+      "sections": {
+        "basic": "基礎資訊",
+        "progress": "成長資料",
+        "assets": "資產概覽",
+        "access": "權限與處罰",
+        "homes": "家園",
+        "vehicles": "車輛",
+        "gameEvents": "最近遊戲事件",
+        "chat": "最近聊天",
+        "economyTransactions": "最近經濟流水",
+        "teleportLogs": "最近傳送記錄"
+      },
+      "fields": {
+        "balance": "餘額",
+        "frozen": "凍結",
+        "homes": "家園",
+        "landClaims": "領地",
+        "vehicles": "車輛",
+        "homeName": "家園名稱",
+        "createdAt": "建立時間",
+        "from": "來源位置",
+        "to": "目標位置"
+      },
+      "flags": {
+        "admin": "管理員",
+        "whitelisted": "白名單",
+        "banned": "已封禁",
+        "muted": "已禁言"
       }
     },
     "map": {

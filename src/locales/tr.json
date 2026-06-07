@@ -33,6 +33,7 @@
     "login": "Giriş yap",
     "dashboard": "Kontrol Paneli",
     "playerList": "Oyuncu Listesi",
+    "playerProfile": "Player Profile",
     "gpsMap": "GPS Haritası",
     "gameChat": "Oyun Sohbeti",
     "liveChat": "Canlı Sohbet",
@@ -483,6 +484,7 @@
       "viewInventory": "Envanteri Görüntüle",
       "viewSkills": "Becerileri Görüntüle",
       "viewDetails": "Ayrıntıları Görüntüle",
+      "viewProfile": "Player Profile",
       "kick": "Oyuncuyu Tekmele",
       "kickReason": "Vuruş Nedeni (İsteğe bağlı)",
       "ban": "Oyuncuyu Yasakla",
@@ -503,6 +505,52 @@
         },
         "allOnline": "Tüm çevrimiçi oyuncular",
         "onlineCount": "Çevrimiçi: {0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "Loaded At",
+      "permanent": "Permanent",
+      "summary": {
+        "status": "Status",
+        "balance": "Balance",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "assets": "Assets",
+        "activity": "Activity",
+        "economy": "Economy",
+        "teleport": "Teleport"
+      },
+      "sections": {
+        "basic": "Basic Info",
+        "progress": "Progress",
+        "assets": "Assets",
+        "access": "Access & Moderation",
+        "homes": "Homes",
+        "vehicles": "Vehicles",
+        "gameEvents": "Recent Game Events",
+        "chat": "Recent Chat",
+        "economyTransactions": "Recent Economy Transactions",
+        "teleportLogs": "Recent Teleport Logs"
+      },
+      "fields": {
+        "balance": "Balance",
+        "frozen": "Frozen",
+        "homes": "Homes",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles",
+        "homeName": "Home Name",
+        "createdAt": "Created At",
+        "from": "From",
+        "to": "To"
+      },
+      "flags": {
+        "admin": "Admin",
+        "whitelisted": "Whitelisted",
+        "banned": "Banned",
+        "muted": "Muted"
       }
     },
     "map": {

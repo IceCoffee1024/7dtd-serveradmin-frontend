@@ -33,6 +33,7 @@
     "login": "Connexion",
     "dashboard": "Tableau de bord",
     "playerList": "Liste des joueurs",
+    "playerProfile": "Player Profile",
     "gpsMap": "Carte GPS",
     "gameChat": "Chat de jeu",
     "liveChat": "Chat en direct",
@@ -483,6 +484,7 @@
       "viewInventory": "Voir l'inventaire",
       "viewSkills": "Voir les compétences",
       "viewDetails": "Afficher les détails",
+      "viewProfile": "Player Profile",
       "kick": "Joueur de coup de pied",
       "kickReason": "Raison du coup de pied (facultatif)",
       "ban": "Interdire un joueur",
@@ -503,6 +505,52 @@
         },
         "allOnline": "Tous les joueurs en ligne",
         "onlineCount": "En ligne : {0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "Loaded At",
+      "permanent": "Permanent",
+      "summary": {
+        "status": "Status",
+        "balance": "Balance",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "assets": "Assets",
+        "activity": "Activity",
+        "economy": "Economy",
+        "teleport": "Teleport"
+      },
+      "sections": {
+        "basic": "Basic Info",
+        "progress": "Progress",
+        "assets": "Assets",
+        "access": "Access & Moderation",
+        "homes": "Homes",
+        "vehicles": "Vehicles",
+        "gameEvents": "Recent Game Events",
+        "chat": "Recent Chat",
+        "economyTransactions": "Recent Economy Transactions",
+        "teleportLogs": "Recent Teleport Logs"
+      },
+      "fields": {
+        "balance": "Balance",
+        "frozen": "Frozen",
+        "homes": "Homes",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles",
+        "homeName": "Home Name",
+        "createdAt": "Created At",
+        "from": "From",
+        "to": "To"
+      },
+      "flags": {
+        "admin": "Admin",
+        "whitelisted": "Whitelisted",
+        "banned": "Banned",
+        "muted": "Muted"
       }
     },
     "map": {

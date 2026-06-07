@@ -33,6 +33,7 @@
     "login": "로그인",
     "dashboard": "대시보드",
     "playerList": "플레이어 목록",
+    "playerProfile": "Player Profile",
     "gpsMap": "GPS 지도",
     "gameChat": "게임 채팅",
     "liveChat": "라이브 채팅",
@@ -483,6 +484,7 @@
       "viewInventory": "재고 보기",
       "viewSkills": "스킬 보기",
       "viewDetails": "세부정보 보기",
+      "viewProfile": "Player Profile",
       "kick": "킥 플레이어",
       "kickReason": "킥 사유(선택사항)",
       "ban": "플레이어 금지",
@@ -503,6 +505,52 @@
         },
         "allOnline": "모든 온라인 플레이어",
         "onlineCount": "온라인: {0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "Loaded At",
+      "permanent": "Permanent",
+      "summary": {
+        "status": "Status",
+        "balance": "Balance",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "assets": "Assets",
+        "activity": "Activity",
+        "economy": "Economy",
+        "teleport": "Teleport"
+      },
+      "sections": {
+        "basic": "Basic Info",
+        "progress": "Progress",
+        "assets": "Assets",
+        "access": "Access & Moderation",
+        "homes": "Homes",
+        "vehicles": "Vehicles",
+        "gameEvents": "Recent Game Events",
+        "chat": "Recent Chat",
+        "economyTransactions": "Recent Economy Transactions",
+        "teleportLogs": "Recent Teleport Logs"
+      },
+      "fields": {
+        "balance": "Balance",
+        "frozen": "Frozen",
+        "homes": "Homes",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles",
+        "homeName": "Home Name",
+        "createdAt": "Created At",
+        "from": "From",
+        "to": "To"
+      },
+      "flags": {
+        "admin": "Admin",
+        "whitelisted": "Whitelisted",
+        "banned": "Banned",
+        "muted": "Muted"
       }
     },
     "map": {

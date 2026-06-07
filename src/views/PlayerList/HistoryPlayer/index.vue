@@ -9,6 +9,7 @@ import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { gameServerGetHistoryPlayersQuery } from '~/generated/api/@pinia/colada.gen';
 import { formatPosition } from '~/utils';
@@ -16,6 +17,8 @@ import { formatPosition } from '~/utils';
 type HistoryPlayerRow = HistoryPlayerDto;
 
 const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
 const queryCache = useQueryCache();
 
 const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
@@ -98,6 +101,18 @@ function formatTimestamp(value: string | null | undefined): string {
 }
 
 const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
+  {
+    label: t('views.playerList.viewProfile'),
+    command: (row) => {
+      if (!row)
+        return;
+      void router.push({
+        name: 'PlayerProfile',
+        params: { locale: route.params.locale, playerId: row.playerId },
+        query: { playerName: row.playerName },
+      });
+    },
+  },
   {
     label: t('views.playerList.viewInventory'),
     command: (row) => {

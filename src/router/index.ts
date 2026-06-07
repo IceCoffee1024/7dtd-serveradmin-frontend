@@ -83,6 +83,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'PlayerProfile',
+        path: 'player-profile/:playerId',
+        component: () => import('../views/PlayerProfile/index.vue'),
+        meta: {
+          title: () => t('menus.playerProfile'),
+          hidden: true,
+        },
+      },
+      {
         name: 'GPSMap',
         path: 'gps-map',
         component: () => import('../views/GPSMap/index.vue'),

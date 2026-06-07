@@ -33,6 +33,7 @@
     "login": "Login",
     "dashboard": "Dashboard",
     "playerList": "Player List",
+    "playerProfile": "Player Profile",
     "gpsMap": "GPS Map",
     "gameChat": "Game Chat",
     "liveChat": "Live Chat",
@@ -483,6 +484,7 @@
       "viewInventory": "View Inventory",
       "viewSkills": "View Skills",
       "viewDetails": "View Details",
+      "viewProfile": "Player Profile",
       "kick": "Kick Player",
       "kickReason": "Kick Reason (Optional)",
       "ban": "Ban Player",
@@ -503,6 +505,52 @@
         },
         "allOnline": "All Online Players",
         "onlineCount": "Online: {0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "Loaded At",
+      "permanent": "Permanent",
+      "summary": {
+        "status": "Status",
+        "balance": "Balance",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "assets": "Assets",
+        "activity": "Activity",
+        "economy": "Economy",
+        "teleport": "Teleport"
+      },
+      "sections": {
+        "basic": "Basic Info",
+        "progress": "Progress",
+        "assets": "Assets",
+        "access": "Access & Moderation",
+        "homes": "Homes",
+        "vehicles": "Vehicles",
+        "gameEvents": "Recent Game Events",
+        "chat": "Recent Chat",
+        "economyTransactions": "Recent Economy Transactions",
+        "teleportLogs": "Recent Teleport Logs"
+      },
+      "fields": {
+        "balance": "Balance",
+        "frozen": "Frozen",
+        "homes": "Homes",
+        "landClaims": "Land Claims",
+        "vehicles": "Vehicles",
+        "homeName": "Home Name",
+        "createdAt": "Created At",
+        "from": "From",
+        "to": "To"
+      },
+      "flags": {
+        "admin": "Admin",
+        "whitelisted": "Whitelisted",
+        "banned": "Banned",
+        "muted": "Muted"
       }
     },
     "map": {

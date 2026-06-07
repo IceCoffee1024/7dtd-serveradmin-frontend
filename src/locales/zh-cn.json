@@ -33,6 +33,7 @@
     "login": "登录",
     "dashboard": "仪表盘",
     "playerList": "玩家列表",
+    "playerProfile": "玩家画像",
     "gpsMap": "GPS地图",
     "gameChat": "游戏聊天",
     "liveChat": "实时聊天",
@@ -483,6 +484,7 @@
       "viewInventory": "查看背包",
       "viewSkills": "查看技能",
       "viewDetails": "查看详情",
+      "viewProfile": "玩家画像",
       "kick": "踢出玩家",
       "kickReason": "踢出原因（可选）",
       "ban": "封禁玩家",
@@ -503,6 +505,52 @@
         },
         "allOnline": "所有在线玩家",
         "onlineCount": "在线：{0}"
+      }
+    },
+    "playerProfile": {
+      "loadedAt": "加载时间",
+      "permanent": "永久",
+      "summary": {
+        "status": "状态",
+        "balance": "余额",
+        "landClaims": "领地",
+        "vehicles": "车辆"
+      },
+      "tabs": {
+        "overview": "概览",
+        "assets": "资产",
+        "activity": "活动",
+        "economy": "经济",
+        "teleport": "传送"
+      },
+      "sections": {
+        "basic": "基础信息",
+        "progress": "成长数据",
+        "assets": "资产概览",
+        "access": "权限与处罚",
+        "homes": "家园",
+        "vehicles": "车辆",
+        "gameEvents": "最近游戏事件",
+        "chat": "最近聊天",
+        "economyTransactions": "最近经济流水",
+        "teleportLogs": "最近传送记录"
+      },
+      "fields": {
+        "balance": "余额",
+        "frozen": "冻结",
+        "homes": "家园",
+        "landClaims": "领地",
+        "vehicles": "车辆",
+        "homeName": "家园名称",
+        "createdAt": "创建时间",
+        "from": "来源位置",
+        "to": "目标位置"
+      },
+      "flags": {
+        "admin": "管理员",
+        "whitelisted": "白名单",
+        "banned": "已封禁",
+        "muted": "已禁言"
       }
     },
     "map": {

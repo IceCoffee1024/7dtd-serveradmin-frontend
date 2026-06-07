@@ -13,12 +13,12 @@ import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import GameItemSelect from '~/components/GameItemSelect/index.vue';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables/usePopup';
-import { client } from '~/generated/api/client.gen';
 import {
   chatAddOrUpdateMuteMutation,
   chatRemoveMutesMutation,
@@ -27,6 +27,7 @@ import {
   gameServerGiveItemToOnlinePlayerMutation,
   gameServerKickPlayerMutation,
 } from '~/generated/api/@pinia/colada.gen';
+import { client } from '~/generated/api/client.gen';
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { formatPosition, generateElementRules, showCommandResult } from '~/utils';
@@ -46,6 +47,8 @@ interface GiveItemFormModel {
 }
 
 const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
 const { confirm: confirmPopup, prompt, toast } = usePopup();
 const queryCache = useQueryCache();
 const kickPlayerMutation = useMutation({
@@ -283,6 +286,18 @@ async function onGiveItemConfirm(): Promise<boolean | void> {
 }
 
 const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
+  {
+    label: t('views.playerList.viewProfile'),
+    command: (row) => {
+      if (!row)
+        return;
+      void router.push({
+        name: 'PlayerProfile',
+        params: { locale: route.params.locale, playerId: row.playerId },
+        query: { playerName: row.playerName },
+      });
+    },
+  },
   {
     label: t('views.playerList.viewInventory'),
     command: (row) => {
