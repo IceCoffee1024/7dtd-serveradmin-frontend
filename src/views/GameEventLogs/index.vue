@@ -4,6 +4,7 @@ import type { GameEventLogDto, GameEventLogQueryOrder } from '~/generated/api/ty
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { usePlayerProfileNavigation } from '~/composables';
 import { gameEventLogGetGameEventLogsQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'GameEventLogsPage' });
@@ -12,6 +13,7 @@ type LogRow = GameEventLogDto;
 
 const { t } = useI18n();
 const queryCache = useQueryCache();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 
 const EVENT_TYPES = ['PlayerJoined', 'PlayerLeft', 'PlayerDied', 'PlayerKilledZombie', 'PlayerKilledPlayer'] as const;
 
@@ -79,8 +81,8 @@ const columns = computed<MyTableColumn<LogRow>[]>(() => [
     },
   },
   { prop: 'createdAt', label: t('views.gameEventLogs.columns.createdAt'), slot: 'createdAt', sortable: true },
-  { prop: 'playerName', label: t('views.gameEventLogs.columns.playerName'), sortable: true },
-  { prop: 'targetPlayerName', label: t('views.gameEventLogs.columns.targetPlayerName') },
+  { prop: 'playerName', label: t('views.gameEventLogs.columns.playerName'), slot: 'playerName', sortable: true },
+  { prop: 'targetPlayerName', label: t('views.gameEventLogs.columns.targetPlayerName'), slot: 'targetPlayerName' },
   { prop: 'entityType', label: t('views.gameEventLogs.columns.entityType') },
   { prop: 'details', label: 'Details' },
 ]);
@@ -146,6 +148,10 @@ function resolveEventTypeTag(eventType: string): 'success' | 'danger' | 'warning
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
+
+function onViewPlayerProfile(playerId: string | null | undefined, playerName: string | null | undefined) {
+  viewPlayerProfile({ playerId, playerName });
+}
 </script>
 
 <template>
@@ -167,6 +173,30 @@ function formatTimestamp(value: string | null | undefined): string {
         <el-tag :type="resolveEventTypeTag(row.eventType)">
           {{ resolveEventTypeLabel(row.eventType) }}
         </el-tag>
+      </template>
+
+      <template #playerName="{ row }">
+        <el-button
+          v-if="row.playerId"
+          type="primary"
+          link
+          @click="onViewPlayerProfile(row.playerId, row.playerName)"
+        >
+          {{ row.playerName || row.playerId }}
+        </el-button>
+        <span v-else>{{ row.playerName || '--' }}</span>
+      </template>
+
+      <template #targetPlayerName="{ row }">
+        <el-button
+          v-if="row.targetPlayerId"
+          type="primary"
+          link
+          @click="onViewPlayerProfile(row.targetPlayerId, row.targetPlayerName)"
+        >
+          {{ row.targetPlayerName || row.targetPlayerId }}
+        </el-button>
+        <span v-else>{{ row.targetPlayerName || '--' }}</span>
       </template>
     </MyTable>
   </div>

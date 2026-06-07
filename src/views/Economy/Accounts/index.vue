@@ -8,7 +8,7 @@ import type { EconomyLeaderboardRow } from '~/queries/economy';
 import { useMutation, useQuery, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePopup } from '~/composables';
+import { usePlayerProfileNavigation, usePopup } from '~/composables';
 import {
   economyDeleteAccountMutation,
   economyFreezeAccountMutation,
@@ -29,6 +29,7 @@ type AccountRow = EconomyAccountDto;
 
 const { t } = useI18n();
 const { confirm } = usePopup();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 const queryCache = useQueryCache();
 const tableRef = useTemplateRef('tableRef');
 const adjustDialogRef = useTemplateRef('adjustDialogRef');
@@ -91,6 +92,7 @@ const columns = computed<MyTableColumn<AccountRow>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.economy.accounts.columns.playerId'),
+    slot: 'playerId',
     sortable: true,
     search: {
       el: 'el-input',
@@ -102,6 +104,7 @@ const columns = computed<MyTableColumn<AccountRow>[]>(() => [
   {
     prop: 'playerName',
     label: t('views.economy.accounts.columns.playerName'),
+    slot: 'playerName',
     sortable: true,
     search: {
       el: 'el-input',
@@ -243,6 +246,10 @@ function onView(row: AccountRow) {
   detailDialogRef.value?.show(row.playerId);
 }
 
+function onViewPlayerProfile(row: AccountRow) {
+  viewPlayerProfile({ playerId: row.playerId, playerName: row.playerName });
+}
+
 async function onToggleFrozen(row: AccountRow) {
   try {
     await freezeAccountMutation.mutateAsync({
@@ -298,6 +305,27 @@ async function onSaved() {
 
         <template #balance="{ row }">
           <span class="accounts-page__balance">{{ row.balance }}</span>
+        </template>
+
+        <template #playerId="{ row }">
+          <el-button
+            type="primary"
+            link
+            class="accounts-page__mono"
+            @click="onViewPlayerProfile(row as AccountRow)"
+          >
+            {{ row.playerId }}
+          </el-button>
+        </template>
+
+        <template #playerName="{ row }">
+          <el-button
+            type="primary"
+            link
+            @click="onViewPlayerProfile(row as AccountRow)"
+          >
+            {{ row.playerName || row.playerId }}
+          </el-button>
         </template>
 
         <template #isFrozen="{ row }">
@@ -385,7 +413,13 @@ async function onSaved() {
                 #{{ item.rank }}
               </div>
               <div class="accounts-page__leaderboard-name">
-                {{ item.playerName }}
+                <el-button
+                  type="primary"
+                  link
+                  @click="viewPlayerProfile({ playerId: item.playerId, playerName: item.playerName })"
+                >
+                  {{ item.playerName || item.playerId }}
+                </el-button>
               </div>
               <div class="accounts-page__leaderboard-id">
                 {{ item.playerId }}

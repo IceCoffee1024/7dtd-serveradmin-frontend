@@ -3,7 +3,7 @@ import type { LandClaimFeatureData } from './types';
 import { useMutation } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { usePopup } from '~/composables';
+import { usePlayerProfileNavigation, usePopup } from '~/composables';
 import { gameServerRemovePlayerLandClaim2Mutation } from '~/generated/api/@pinia/colada.gen';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { formatPosition } from '~/utils';
@@ -17,6 +17,7 @@ const emit = defineEmits(['claimRemoved']);
 
 const { t } = useI18n();
 const { confirm } = usePopup();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 const removeLandClaimMutation = useMutation({
   ...gameServerRemovePlayerLandClaim2Mutation(),
   async onSettled() {
@@ -31,6 +32,10 @@ async function handleRemoveClaim() {
     emit('claimRemoved');
   }
 }
+
+function handleViewProfile() {
+  viewPlayerProfile({ playerId: props.data.playerId, playerName: props.data.playerName });
+}
 </script>
 
 <template>
@@ -44,6 +49,9 @@ async function handleRemoveClaim() {
       <br>
       {{ $t('views.map.claimStatus') }}: {{ data.claimActive ? $t('views.map.claimActive') : $t('views.map.claimInactive') }}
     </div>
+    <button class="mr-8px mt-4px" @click="handleViewProfile">
+      {{ $t('views.playerList.viewProfile') }}
+    </button>
     <button class="mt-4px" @click="handleRemoveClaim">
       {{ $t('views.map.removeLandClaim') }}
     </button>

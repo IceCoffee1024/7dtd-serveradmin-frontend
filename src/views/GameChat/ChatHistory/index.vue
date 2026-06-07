@@ -4,6 +4,7 @@ import type { ChatMessageDto, ChatMessageQueryOrder, ChatType } from '~/generate
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { usePlayerProfileNavigation } from '~/composables';
 import { chatMessagesGetQuery } from '~/generated/api/@pinia/colada.gen';
 import { getChatTypeOptions, getChatTypeTagType } from '../chatType';
 
@@ -13,6 +14,7 @@ type ChatMessageRow = ChatMessageDto;
 
 const { t } = useI18n();
 const queryCache = useQueryCache();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 
 const chatTypeOptions = computed(() => getChatTypeOptions(t));
 
@@ -76,6 +78,7 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
   {
     prop: 'senderName',
     label: t('views.gameChat.history.columns.senderName'),
+    slot: 'senderName',
     sortable: true,
     search: {
       el: 'el-input',
@@ -200,6 +203,10 @@ function toOptionalChatType(value: unknown): ChatType | undefined {
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
+
+function onViewPlayerProfile(row: ChatMessageRow) {
+  viewPlayerProfile({ playerId: row.playerId, playerName: row.senderName });
+}
 </script>
 
 <template>
@@ -219,9 +226,30 @@ function formatTimestamp(value: string | null | undefined): string {
       </template>
 
       <template #playerId="{ row }">
-        <span class="text-xs text-gray-600 font-mono dark:text-gray-300">
+        <el-button
+          v-if="row.playerId"
+          type="primary"
+          link
+          class="text-xs font-mono"
+          @click="onViewPlayerProfile(row as ChatMessageRow)"
+        >
+          {{ row.playerId }}
+        </el-button>
+        <span v-else class="text-xs text-gray-600 font-mono dark:text-gray-300">
           {{ row.playerId || t('views.gameChat.history.emptyPlayerId') }}
         </span>
+      </template>
+
+      <template #senderName="{ row }">
+        <el-button
+          v-if="row.playerId"
+          type="primary"
+          link
+          @click="onViewPlayerProfile(row as ChatMessageRow)"
+        >
+          {{ row.senderName || row.playerId }}
+        </el-button>
+        <span v-else>{{ row.senderName || '--' }}</span>
       </template>
 
       <template #chatType="{ row }">

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { EntityInfoFeatureData } from './types';
 import { useI18n } from 'vue-i18n';
+import { usePlayerProfileNavigation } from '~/composables';
 
 interface Props {
   data: EntityInfoFeatureData;
@@ -8,9 +9,14 @@ interface Props {
 
 const props = defineProps<Props>();
 const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 
 function handleViewInventory() {
   playerInventoryDialogRef.value?.open(props.data.playerId!, props.data.entityName);
+}
+
+function handleViewProfile() {
+  viewPlayerProfile({ playerId: props.data.playerId, playerName: props.data.entityName });
 }
 
 const { t } = useI18n();
@@ -38,6 +44,9 @@ const title = computed(() => {
       {{ title }}
     </div>
     <template v-if="data.playerId">
+      <button class="mr-8px mt-4px" @click="handleViewProfile">
+        {{ $t('views.playerList.viewProfile') }}
+      </button>
       <button v-if="data.playerId" class="mt-4px" @click="handleViewInventory">
         {{ $t('views.map.viewPlayerInventory') }}
       </button>

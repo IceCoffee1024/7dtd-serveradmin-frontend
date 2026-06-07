@@ -4,6 +4,7 @@ import type { TeleportLogDto } from '~/generated/api/types.gen';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { usePlayerProfileNavigation } from '~/composables';
 import { teleportGetLogsQuery } from '~/generated/api/@pinia/colada.gen';
 
 defineOptions({ name: 'TeleportLogsPage' });
@@ -12,6 +13,7 @@ type LogRow = TeleportLogDto;
 
 const { t } = useI18n();
 const queryCache = useQueryCache();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 
 const SUB_SYSTEM_TAG_MAP: Record<string, 'success' | 'danger' | 'warning' | 'info' | undefined> = {
   Home: 'success',
@@ -56,7 +58,7 @@ const columns = computed<MyTableColumn<LogRow>[]>(() => [
     },
   },
   { prop: 'timestamp', label: t('views.teleport.logs.columns.timestamp'), slot: 'timestamp', sortable: true },
-  { prop: 'playerName', label: t('views.teleport.logs.columns.playerName'), sortable: true },
+  { prop: 'playerName', label: t('views.teleport.logs.columns.playerName'), slot: 'playerName', sortable: true },
   { prop: 'subSystem', label: t('views.teleport.logs.columns.subSystem'), slot: 'subSystem' },
   { prop: 'fromX', label: t('views.teleport.logs.columns.fromX'), width: 70, align: 'right' },
   { prop: 'fromY', label: t('views.teleport.logs.columns.fromY'), width: 70, align: 'right' },
@@ -107,6 +109,10 @@ function resolveSubSystemTag(subSystem: string | null | undefined): 'success' | 
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '';
 }
+
+function onViewPlayerProfile(row: LogRow) {
+  viewPlayerProfile({ playerId: row.playerId, playerName: row.playerName });
+}
 </script>
 
 <template>
@@ -122,6 +128,18 @@ function formatTimestamp(value: string | null | undefined): string {
     >
       <template #timestamp="{ row }">
         <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.timestamp) }}</span>
+      </template>
+
+      <template #playerName="{ row }">
+        <el-button
+          v-if="row.playerId"
+          type="primary"
+          link
+          @click="onViewPlayerProfile(row as LogRow)"
+        >
+          {{ row.playerName || row.playerId }}
+        </el-button>
+        <span v-else>{{ row.playerName || '--' }}</span>
       </template>
 
       <template #subSystem="{ row }">

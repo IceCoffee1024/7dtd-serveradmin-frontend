@@ -3,5 +3,6 @@ export * from './useCommandHistory';
 export * from './useGameEventConnection';
 export * from './useLatestAsync';
 export * from './useMenus';
+export * from './usePlayerProfileNavigation';
 export * from './usePopup';
 export * from './useTheme';

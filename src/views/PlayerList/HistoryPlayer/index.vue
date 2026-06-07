@@ -9,16 +9,15 @@ import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
+import { usePlayerProfileNavigation } from '~/composables';
 import { gameServerGetHistoryPlayersQuery } from '~/generated/api/@pinia/colada.gen';
 import { formatPosition } from '~/utils';
 
 type HistoryPlayerRow = HistoryPlayerDto;
 
 const { t } = useI18n();
-const route = useRoute();
-const router = useRouter();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 const queryCache = useQueryCache();
 
 const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
@@ -106,11 +105,7 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      void router.push({
-        name: 'PlayerProfile',
-        params: { locale: route.params.locale, playerId: row.playerId },
-        query: { playerName: row.playerName },
-      });
+      viewPlayerProfile({ playerId: row.playerId, playerName: row.playerName });
     },
   },
   {

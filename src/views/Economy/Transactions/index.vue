@@ -9,6 +9,7 @@ import type { EconomyTransactionFilters } from '~/queries/economy';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { usePlayerProfileNavigation } from '~/composables';
 import { usePopup } from '~/composables/usePopup';
 import { economyTransactionsGetTransactionsQuery } from '~/generated/api/@pinia/colada.gen';
 import {
@@ -23,6 +24,7 @@ type TransactionRow = EconomyTransactionDto;
 
 const { t } = useI18n();
 const { toast } = usePopup();
+const { viewPlayerProfile } = usePlayerProfileNavigation();
 const queryCache = useQueryCache();
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const detailRow = ref<TransactionRow | null>(null);
@@ -63,6 +65,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
   {
     prop: 'playerId',
     label: t('views.economy.transactions.columns.playerId'),
+    slot: 'playerId',
     sortable: true,
     search: {
       el: 'el-input',
@@ -74,6 +77,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
   {
     prop: 'playerName',
     label: t('views.economy.transactions.columns.playerName'),
+    slot: 'playerName',
     sortable: true,
     search: {
       el: 'el-input',
@@ -241,6 +245,10 @@ async function onView(row: TransactionRow) {
   detailRow.value = row;
   detailDialogRef.value?.show();
 }
+
+function onViewPlayerProfile(row: TransactionRow) {
+  viewPlayerProfile({ playerId: row.playerId, playerName: row.playerName });
+}
 </script>
 
 <template>
@@ -275,6 +283,31 @@ async function onView(row: TransactionRow) {
         >
           {{ row.direction === 'Income' ? '+' : '-' }}{{ row.amount }}
         </span>
+      </template>
+
+      <template #playerId="{ row }">
+        <el-button
+          v-if="row.playerId"
+          type="primary"
+          link
+          class="transactions-page__mono"
+          @click="onViewPlayerProfile(row as TransactionRow)"
+        >
+          {{ row.playerId }}
+        </el-button>
+        <span v-else>--</span>
+      </template>
+
+      <template #playerName="{ row }">
+        <el-button
+          v-if="row.playerId"
+          type="primary"
+          link
+          @click="onViewPlayerProfile(row as TransactionRow)"
+        >
+          {{ row.playerName || row.playerId }}
+        </el-button>
+        <span v-else>{{ row.playerName || '--' }}</span>
       </template>
 
       <template #occurredAt="{ row }">
