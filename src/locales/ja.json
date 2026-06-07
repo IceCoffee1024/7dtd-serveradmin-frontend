@@ -2382,8 +2382,11 @@
       "command": "指示",
       "description": "説明",
       "permissionLevel": "許可レベル",
+      "validation": {
+        "invalidPlayerId": "Enter a SteamID64, or a player ID starting with Steam_ or EOS_."
+      },
       "tooltips": {
-        "playerId": "権限を付与する一意のプレーヤー識別子 (通常は SteamID64)。",
+        "playerId": "Unique player identifier to grant permissions to. You can enter a SteamID64; it will be saved with the Steam_ prefix. You can also enter a player ID starting with Steam_ or EOS_.",
         "displayName": "管理パネルでこのアカウントを認識するために使用される表示名。",
         "permissionLevel": "サーバーの許可レベル。\n通常、値が大きいほど、より多くの権限を意味します。",
         "command": "このルールが適用されるコンソール コマンド名。",

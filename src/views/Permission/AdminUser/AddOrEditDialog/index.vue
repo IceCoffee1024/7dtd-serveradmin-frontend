@@ -9,6 +9,7 @@ import { gameServerCreateAdminUserMutation } from '~/generated/api/@pinia/colada
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules, showCommandResult } from '~/utils';
+import { isValidPlayerIdInput, normalizePlayerIdInput } from '~/utils/playerId';
 
 interface FormModel {
   playerId: string;
@@ -57,7 +58,12 @@ const form = reactive<FormModel>({
 });
 
 const AdminUserSchema = v.object({
-  playerId: v.pipe(v.string(), v.minLength(1)),
+  playerId: v.pipe(
+    v.string(),
+    v.trim(),
+    v.minLength(1),
+    v.check(isValidPlayerIdInput, t('views.permission.validation.invalidPlayerId')),
+  ),
   permissionLevel: v.pipe(v.number(), v.minValue(0), v.maxValue(2000)),
   displayName: v.pipe(v.string(), v.minLength(1)),
 });
@@ -71,6 +77,9 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     el: 'el-input',
     tooltip: t('views.permission.tooltips.playerId'),
     disabled: () => isEdit.value,
+    onChange: () => {
+      form.playerId = normalizePlayerIdInput(form.playerId);
+    },
   },
   {
     prop: 'permissionLevel',
@@ -123,7 +132,12 @@ async function onSubmit() {
   }
 
   try {
-    const result = await createAdminUserMutation.mutateAsync({ body: { ...form } });
+    const result = await createAdminUserMutation.mutateAsync({
+      body: {
+        ...form,
+        playerId: normalizePlayerIdInput(form.playerId),
+      },
+    });
     if (!showCommandResult(result ?? undefined, isEdit.value ? t('common.update') : t('common.save')))
       return false;
 

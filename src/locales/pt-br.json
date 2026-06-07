@@ -2382,8 +2382,11 @@
       "command": "Comando",
       "description": "Descrição",
       "permissionLevel": "Nível de permissão",
+      "validation": {
+        "invalidPlayerId": "Enter a SteamID64, or a player ID starting with Steam_ or EOS_."
+      },
       "tooltips": {
-        "playerId": "Identificador exclusivo do jogador para conceder permissões, geralmente um SteamID64.",
+        "playerId": "Unique player identifier to grant permissions to. You can enter a SteamID64; it will be saved with the Steam_ prefix. You can also enter a player ID starting with Steam_ or EOS_.",
         "displayName": "Nome de exibição usado para reconhecer esta conta no painel de administração.",
         "permissionLevel": "Nível de permissão do servidor. \nValores mais altos geralmente significam mais privilégios.",
         "command": "O nome do comando do console ao qual esta regra se aplica.",

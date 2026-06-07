@@ -2382,8 +2382,11 @@
       "addAdminUser": "新增管理员",
       "editAdminUser": "编辑管理员",
       "permissionLevel": "权限级别",
+      "validation": {
+        "invalidPlayerId": "请输入 SteamID64，或 Steam_ / EOS_ 开头的玩家 ID。"
+      },
       "tooltips": {
-        "playerId": "要授予权限的玩家唯一标识，通常填写 SteamID64。",
+        "playerId": "要授予权限的玩家唯一标识。可填写 SteamID64，保存时会自动转为 Steam_ 前缀格式；也可直接填写 Steam_ 或 EOS_ 开头的玩家 ID。",
         "displayName": "用于后台识别该账号的显示名称。",
         "permissionLevel": "服务器权限等级，数值越接近上限，权限通常越高。",
         "command": "这条规则对应的控制台命令名称。",

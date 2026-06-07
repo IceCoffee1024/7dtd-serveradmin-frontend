@@ -2382,8 +2382,11 @@
       "command": "Rozkaz",
       "description": "Opis",
       "permissionLevel": "Poziom uprawnień",
+      "validation": {
+        "invalidPlayerId": "Enter a SteamID64, or a player ID starting with Steam_ or EOS_."
+      },
       "tooltips": {
-        "playerId": "Unikalny identyfikator gracza, któremu można przyznać uprawnienia, zwykle SteamID64.",
+        "playerId": "Unique player identifier to grant permissions to. You can enter a SteamID64; it will be saved with the Steam_ prefix. You can also enter a player ID starting with Steam_ or EOS_.",
         "displayName": "Nazwa wyświetlana używana do rozpoznawania tego konta w panelu administracyjnym.",
         "permissionLevel": "Poziom uprawnień serwera. \nWyższe wartości zwykle oznaczają więcej przywilejów.",
         "command": "Nazwa polecenia konsoli, którego dotyczy ta reguła.",

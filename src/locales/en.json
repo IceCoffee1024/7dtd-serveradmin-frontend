@@ -2382,8 +2382,11 @@
       "command": "Command",
       "description": "Description",
       "permissionLevel": "Permission Level",
+      "validation": {
+        "invalidPlayerId": "Enter a SteamID64, or a player ID starting with Steam_ or EOS_."
+      },
       "tooltips": {
-        "playerId": "Unique player identifier to grant permissions to, usually a SteamID64.",
+        "playerId": "Unique player identifier to grant permissions to. You can enter a SteamID64; it will be saved with the Steam_ prefix. You can also enter a player ID starting with Steam_ or EOS_.",
         "displayName": "Display name used to recognize this account in the admin panel.",
         "permissionLevel": "Server permission level. Higher values usually mean more privileges.",
         "command": "The console command name this rule applies to.",

@@ -2382,8 +2382,11 @@
       "command": "명령",
       "description": "설명",
       "permissionLevel": "권한 수준",
+      "validation": {
+        "invalidPlayerId": "Enter a SteamID64, or a player ID starting with Steam_ or EOS_."
+      },
       "tooltips": {
-        "playerId": "권한을 부여할 고유 플레이어 식별자(일반적으로 SteamID64)입니다.",
+        "playerId": "Unique player identifier to grant permissions to. You can enter a SteamID64; it will be saved with the Steam_ prefix. You can also enter a player ID starting with Steam_ or EOS_.",
         "displayName": "관리자 패널에서 이 계정을 인식하는 데 사용되는 표시 이름입니다.",
         "permissionLevel": "서버 권한 수준. \n값이 높을수록 일반적으로 더 많은 권한을 의미합니다.",
         "command": "이 규칙이 적용되는 콘솔 명령 이름입니다.",

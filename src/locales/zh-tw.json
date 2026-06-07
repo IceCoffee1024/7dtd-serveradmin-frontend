@@ -2382,8 +2382,11 @@
       "command": "命令",
       "description": "描述",
       "permissionLevel": "權限等級",
+      "validation": {
+        "invalidPlayerId": "請輸入 SteamID64，或 Steam_ / EOS_ 開頭的玩家 ID。"
+      },
       "tooltips": {
-        "playerId": "用於授予權限的唯一玩家標識符，通常是 SteamID64。",
+        "playerId": "用於授予權限的唯一玩家標識符。可填寫 SteamID64，儲存時會自動轉為 Steam_ 前綴格式；也可直接填寫 Steam_ 或 EOS_ 開頭的玩家 ID。",
         "displayName": "用於在管理面板中識別此帳戶的顯示名稱。",
         "permissionLevel": "伺服器權限等級。較高的值通常意味著更多的特權。",
         "command": "此規則適用的控制台命令名稱。",
