@@ -17,21 +17,8 @@ import type {
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import {
-  chatGetMutes,
-  chatMessagesGet,
-  economyGetAccount,
-  economyTransactionsGetTransactions,
-  gameEventLogGetGameEventLogs,
-  gameServerGetAdminUsers,
-  gameServerGetBans,
-  gameServerGetLandClaims,
-  gameServerGetPlayerDetails,
-  gameServerGetVehicleLocations,
-  gameServerGetWhitelistEntries,
-  teleportGetHomes,
-  teleportGetLogs,
-} from '~/generated/api/sdk.gen';
+import { client } from '~/generated/api/client.gen';
+import { useLocaleStore } from '~/stores/locale';
 import { formatPosition } from '~/utils';
 import PlayerProfileActions from './PlayerProfileActions.vue';
 
@@ -53,9 +40,26 @@ interface TimelineItem {
   tagType: 'primary' | 'success' | 'warning' | 'info';
 }
 
+interface PlayerProfileOverviewDto {
+  details: PlayerDetailsDto | null;
+  economyAccount: EconomyAccountDetailDto | null;
+  homes: HomeLocationDto[];
+  landClaims: ClaimOwnerDto | null;
+  vehicles: VehicleLocationDto[];
+  chatMessages: ChatMessageDto[];
+  gameEvents: GameEventLogDto[];
+  economyTransactions: EconomyTransactionDto[];
+  teleportLogs: TeleportLogDto[];
+  adminEntry: AdminUserDto | null;
+  banEntry: BanEntryDto | null;
+  muteEntry: MuteEntryDto | null;
+  whitelistEntry: WhitelistEntryDto | null;
+}
+
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const localeStore = useLocaleStore();
 
 const loading = ref(false);
 const loadedAt = ref<Date | null>(null);
@@ -196,66 +200,39 @@ function formatTeleportPosition(log: TeleportLogDto, side: 'from' | 'to'): strin
   return `${x}, ${y}, ${z}`;
 }
 
-async function safeLoad<T>(loader: () => Promise<T>, fallback: T): Promise<T> {
-  try {
-    return await loader();
-  }
-  catch (error) {
-    console.error(error);
-    return fallback;
-  }
-}
-
 async function loadProfile() {
   if (!playerId.value)
     return;
 
   loading.value = true;
   try {
-    const [
-      detailsData,
-      economyData,
-      homesData,
-      landClaimsData,
-      vehiclesData,
-      chatData,
-      eventData,
-      transactionData,
-      teleportData,
-      adminUsers,
-      bans,
-      mutes,
-      whitelist,
-    ] = await Promise.all([
-      safeLoad(async () => (await gameServerGetPlayerDetails({ path: { playerId: playerId.value } })).data ?? null, null),
-      safeLoad(async () => (await economyGetAccount({ path: { playerId: playerId.value } })).data ?? null, null),
-      safeLoad(async () => (await teleportGetHomes({ query: { playerId: playerId.value } })).data ?? [], []),
-      safeLoad(async () => (await gameServerGetLandClaims({ path: { playerId: playerId.value } })).data ?? null, null),
-      safeLoad(async () => (await gameServerGetVehicleLocations()).data ?? [], []),
-      safeLoad(async () => (await chatMessagesGet({ query: { playerId: playerId.value, pageNumber: 1, pageSize: 8, order: 'CreatedAt', desc: true } })).data?.items ?? [], []),
-      safeLoad(async () => (await gameEventLogGetGameEventLogs({ query: { keyword: playerId.value, pageNumber: 1, pageSize: 8, order: 'CreatedAt', desc: true } })).data?.items ?? [], []),
-      safeLoad(async () => (await economyTransactionsGetTransactions({ query: { playerId: playerId.value, pageNumber: 1, pageSize: 8, order: 'OccurredAt', desc: true } })).data?.items ?? [], []),
-      safeLoad(async () => (await teleportGetLogs({ query: { playerId: playerId.value, pageIndex: 1, pageSize: 8 } })).data?.items ?? [], []),
-      safeLoad(async () => (await gameServerGetAdminUsers()).data ?? [], []),
-      safeLoad(async () => (await gameServerGetBans()).data ?? [], []),
-      safeLoad(async () => (await chatGetMutes()).data ?? [], []),
-      safeLoad(async () => (await gameServerGetWhitelistEntries()).data ?? [], []),
-    ]);
+    const { data } = await client.get<PlayerProfileOverviewDto, unknown, true>({
+      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+      query: {
+        language: localeStore.languageEnglishName,
+        activityLimit: 8,
+      },
+      url: `/api/GameServer/PlayerProfiles/${encodeURIComponent(playerId.value)}`,
+      throwOnError: true,
+    });
 
-    details.value = detailsData;
-    economyAccount.value = economyData;
-    homes.value = homesData;
-    landClaims.value = landClaimsData;
-    vehicles.value = vehiclesData.filter(vehicle => vehicle.ownerId === playerId.value);
-    chatMessages.value = chatData;
-    gameEvents.value = eventData.filter(event => event.playerId === playerId.value || event.targetPlayerId === playerId.value);
-    economyTransactions.value = transactionData;
-    teleportLogs.value = teleportData;
-    adminEntry.value = adminUsers.find(item => item.playerId === playerId.value) ?? null;
-    banEntry.value = bans.find(item => item.playerId === playerId.value) ?? null;
-    muteEntry.value = mutes.find(item => item.playerId === playerId.value) ?? null;
-    whitelistEntry.value = whitelist.find(item => item.playerId === playerId.value) ?? null;
+    details.value = data?.details ?? null;
+    economyAccount.value = data?.economyAccount ?? null;
+    homes.value = data?.homes ?? [];
+    landClaims.value = data?.landClaims ?? null;
+    vehicles.value = data?.vehicles ?? [];
+    chatMessages.value = data?.chatMessages ?? [];
+    gameEvents.value = data?.gameEvents ?? [];
+    economyTransactions.value = data?.economyTransactions ?? [];
+    teleportLogs.value = data?.teleportLogs ?? [];
+    adminEntry.value = data?.adminEntry ?? null;
+    banEntry.value = data?.banEntry ?? null;
+    muteEntry.value = data?.muteEntry ?? null;
+    whitelistEntry.value = data?.whitelistEntry ?? null;
     loadedAt.value = new Date();
+  }
+  catch (error) {
+    console.error(error);
   }
   finally {
     loading.value = false;
