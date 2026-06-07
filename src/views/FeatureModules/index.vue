@@ -1,33 +1,20 @@
 <script setup lang="ts">
+import type {
+  FeatureModuleConfigurationStatus,
+  FeatureModuleHealth,
+  FeatureModuleStatusDto,
+  FeatureSubModuleStatusDto,
+} from '~/generated/api/types.gen';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables/usePopup';
-import { client } from '~/generated/api/client.gen';
+import { featureModulesGetFeatureModules } from '~/generated/api/sdk.gen';
 import { markIcon } from '~/utils';
 
 defineOptions({ name: 'FeatureModulesPage' });
 
-type FeatureModuleHealth = 'Healthy' | 'Disabled' | 'Unavailable';
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
-type FeatureModuleConfigurationStatus = 'Ok' | 'Warning' | 'Unknown';
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
-
-interface FeatureSubModuleStatus {
-  key: string;
-  enabled: boolean;
-  health: FeatureModuleHealthPayload;
-  settingsType?: string | null;
-}
-
-interface FeatureModuleStatus {
-  key: string;
-  registered: boolean;
-  enabled: boolean;
-  health: FeatureModuleHealthPayload;
-  settingsType?: string | null;
-  subModules: FeatureSubModuleStatus[];
-  configuration?: FeatureModuleConfiguration | null;
-}
 
 interface FeatureModuleRouteLink {
   name: string;
@@ -39,12 +26,6 @@ interface FeatureModuleMeta {
   routes: FeatureModuleRouteLink[];
 }
 
-interface FeatureModuleConfiguration {
-  status: FeatureModuleConfigurationStatusPayload;
-  messageCode?: string | null;
-  args?: Array<string | number | null> | null;
-}
-
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
@@ -54,7 +35,7 @@ const iconRefresh = markIcon(() => import('~icons/mdi/refresh'));
 const iconOpen = markIcon(() => import('~icons/mdi/open-in-new'));
 
 const loading = ref(false);
-const modules = ref<FeatureModuleStatus[]>([]);
+const modules = ref<FeatureModuleStatusDto[]>([]);
 
 const moduleMeta: Record<string, FeatureModuleMeta> = {
   'chat': {
@@ -186,8 +167,8 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): FeatureModuleStatus {
-  return item as FeatureModuleStatus;
+function toModuleStatus(item: unknown): FeatureModuleStatusDto {
+  return item as FeatureModuleStatusDto;
 }
 
 function getModuleName(item: unknown): string {
@@ -201,7 +182,7 @@ function getModuleRoutes(item: unknown): FeatureModuleRouteLink[] {
   return (moduleMeta[module.key]?.routes ?? []).filter(link => router.hasRoute(link.name));
 }
 
-function getSubModuleName(item: FeatureSubModuleStatus): string {
+function getSubModuleName(item: FeatureSubModuleStatusDto): string {
   return item.key.includes(':') ? item.key.split(':').at(-1)! : item.key;
 }
 
@@ -288,9 +269,7 @@ function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
 async function loadModules() {
   loading.value = true;
   try {
-    const { data } = await client.get<FeatureModuleStatus[], unknown, true>({
-      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
-      url: '/api/FeatureModules',
+    const { data } = await featureModulesGetFeatureModules({
       throwOnError: true,
     });
     modules.value = data ?? [];

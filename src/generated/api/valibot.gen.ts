@@ -1086,6 +1086,56 @@ export const vEconomyTransactionQueryOrder = v.picklist([
 ]);
 
 /**
+ * Health state for a feature module exposed by the module center.
+ */
+export const vFeatureModuleHealth = v.picklist([
+    'Healthy',
+    'Disabled',
+    'Unavailable'
+]);
+
+/**
+ * Represents a sub-module projected from a parent feature's sub-feature.
+ */
+export const vFeatureSubModuleStatusDto = v.strictObject({
+    key: v.string(),
+    enabled: v.boolean(),
+    health: vFeatureModuleHealth,
+    settingsType: v.nullish(v.string())
+});
+
+/**
+ * Configuration readiness state for a feature module.
+ */
+export const vFeatureModuleConfigurationStatus = v.picklist([
+    'Ok',
+    'Warning',
+    'Unknown'
+]);
+
+/**
+ * Represents a localized configuration check result for a module.
+ */
+export const vFeatureModuleConfigurationDto = v.strictObject({
+    status: vFeatureModuleConfigurationStatus,
+    messageCode: v.string(),
+    args: v.array(v.string())
+});
+
+/**
+ * Represents the runtime status of a server-admin feature module.
+ */
+export const vFeatureModuleStatusDto = v.strictObject({
+    key: v.string(),
+    registered: v.boolean(),
+    enabled: v.boolean(),
+    health: vFeatureModuleHealth,
+    settingsType: v.nullish(v.string()),
+    subModules: v.array(vFeatureSubModuleStatusDto),
+    configuration: vFeatureModuleConfigurationDto
+});
+
+/**
  * Read-only projection of a persisted game event record returned by the management API.
  */
 export const vGameEventLogDto = v.strictObject({
@@ -1513,6 +1563,53 @@ export const vMapInfoDto = v.strictObject({
     regionSize: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
     chunkSize: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
     worldSize: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+/**
+ * Represents a trader POI area discovered from the game world's prefab decorator.
+ */
+export const vTraderLocationDto = v.strictObject({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    name: v.string(),
+    localizationKey: v.nullish(v.string()),
+    localizedName: v.nullish(v.string()),
+    prefabName: v.nullish(v.string()),
+    position: vPositionDto,
+    areaPosition: vPositionDto,
+    areaSize: vPositionDto,
+    protectPosition: vPositionDto,
+    protectSize: vPositionDto,
+    isClosed: v.boolean()
+});
+
+/**
+ * Represents a vehicle location and basic runtime state for map rendering.
+ */
+export const vVehicleLocationDto = v.strictObject({
+    entityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    entityName: v.string(),
+    vehicleName: v.string(),
+    localizedName: v.nullish(v.string()),
+    position: vPositionDto,
+    isLoaded: v.boolean(),
+    hasStorage: v.nullish(v.boolean()),
+    isLocked: v.nullish(v.boolean()),
+    fuelPercent: v.nullish(v.number()),
+    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    ownerId: v.nullish(v.string()),
+    ownerName: v.nullish(v.string()),
+    ownerEntityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    storageItemCount: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Represents a vehicle storage snapshot.
+ */
+export const vVehicleInventoryDto = v.strictObject({
+    entityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    isLoaded: v.boolean(),
+    hasStorage: v.boolean(),
+    items: v.array(vInvItemDto)
 });
 
 /**
@@ -2548,6 +2645,22 @@ export const vGameServerGetMapTilePath = v.object({
     y: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
 });
 
+export const vGameServerGetTraderLocationsQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGameServerGetVehicleLocationsQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGameServerGetVehicleInventoryPath = v.object({
+    entityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vGameServerGetVehicleInventoryQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
 export const vGameServerGetLocationsQuery = v.object({
     entityType: vEntityType
 });
@@ -2601,6 +2714,11 @@ export const vGameServerToggleModStatusQuery = v.object({
  * Kick request containing the player's cross-platform ID and an optional reason.
  */
 export const vGameServerKickPlayerBody = vKickPlayerRequestDto;
+
+/**
+ * Item grant payload containing item id, count, and optional quality.
+ */
+export const vGameServerGiveItemToAllOnlinePlayersBody = vGiveItemToPlayerRequestDto;
 
 /**
  * Item grant payload containing item id, count, and optional quality.

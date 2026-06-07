@@ -18,10 +18,25 @@ export type AchievementFeatureSettingsDto = {
  * RFC 7807-Compatible Error Details Model
  */
 export type ProblemDetailsDto = {
+    /**
+     * URI reference that identifies the problem type.
+     */
     type?: string | null;
+    /**
+     * Short human-readable summary of the problem type.
+     */
     title?: string | null;
+    /**
+     * HTTP status code generated for this occurrence of the problem.
+     */
     status?: number | null;
+    /**
+     * Human-readable explanation specific to this occurrence of the problem.
+     */
     detail?: string | null;
+    /**
+     * URI reference that identifies this specific occurrence of the problem.
+     */
     instance?: string | null;
     [key: string]: unknown;
 };
@@ -1815,6 +1830,90 @@ export type PagedDtoOfEconomyTransactionDto = {
 export type EconomyTransactionQueryOrder = 'CreatedAt' | 'OccurredAt' | 'PlayerId' | 'PlayerName' | 'Amount' | 'Type';
 
 /**
+ * Represents the runtime status of a server-admin feature module.
+ */
+export type FeatureModuleStatusDto = {
+    /**
+     * Stable module key used by feature configuration.
+     */
+    key: string;
+    /**
+     * True when the module exists in the runtime registry.
+     */
+    registered: boolean;
+    /**
+     * True when the module is enabled.
+     */
+    enabled: boolean;
+    /**
+     * Module health state.
+     */
+    health: FeatureModuleHealth;
+    /**
+     * Runtime settings type name.
+     */
+    settingsType?: string | null;
+    /**
+     * Sub-modules projected from runtime sub-features.
+     */
+    subModules: Array<FeatureSubModuleStatusDto>;
+    /**
+     * Configuration readiness check for the module.
+     */
+    configuration: FeatureModuleConfigurationDto;
+};
+
+/**
+ * Health state for a feature module exposed by the module center.
+ */
+export type FeatureModuleHealth = 'Healthy' | 'Disabled' | 'Unavailable';
+
+/**
+ * Represents a sub-module projected from a parent feature's sub-feature.
+ */
+export type FeatureSubModuleStatusDto = {
+    /**
+     * Stable sub-module key.
+     */
+    key: string;
+    /**
+     * True when the sub-module is enabled.
+     */
+    enabled: boolean;
+    /**
+     * Sub-module health state.
+     */
+    health: FeatureModuleHealth;
+    /**
+     * Runtime settings type name.
+     */
+    settingsType?: string | null;
+};
+
+/**
+ * Represents a localized configuration check result for a module.
+ */
+export type FeatureModuleConfigurationDto = {
+    /**
+     * Configuration readiness state.
+     */
+    status: FeatureModuleConfigurationStatus;
+    /**
+     * Stable frontend i18n message code under views.featureModules.configuration.
+     */
+    messageCode: string;
+    /**
+     * Positional message arguments for the frontend i18n formatter.
+     */
+    args: Array<string>;
+};
+
+/**
+ * Configuration readiness state for a feature module.
+ */
+export type FeatureModuleConfigurationStatus = 'Ok' | 'Warning' | 'Unknown';
+
+/**
  * Represents a paged query result with total count and current page items.
  */
 export type PagedDtoOfGameEventLogDto = {
@@ -2825,6 +2924,140 @@ export type MapInfoDto = {
      * Size of the world in world units, used for validating map coordinate bounds.
      */
     worldSize: number;
+};
+
+/**
+ * Represents a trader POI area discovered from the game world's prefab decorator.
+ */
+export type TraderLocationDto = {
+    /**
+     * Stable id derived from the trader area's order in the world trader list.
+     */
+    id: number;
+    /**
+     * Display name for the trader marker.
+     */
+    name: string;
+    /**
+     * Game localization key used to resolve the trader display name when an active trader entity is available.
+     */
+    localizationKey?: string | null;
+    /**
+     * Localized trader display name resolved from the selected game language.
+     */
+    localizedName?: string | null;
+    /**
+     * Prefab instance name when the trader area can be matched to a POI prefab.
+     */
+    prefabName?: string | null;
+    /**
+     * Center position used by map marker layers.
+     */
+    position: PositionDto;
+    /**
+     * World position of the trader prefab area.
+     */
+    areaPosition: PositionDto;
+    /**
+     * Size of the trader prefab area.
+     */
+    areaSize: PositionDto;
+    /**
+     * World position of the protected trader area.
+     */
+    protectPosition: PositionDto;
+    /**
+     * Size of the protected trader area.
+     */
+    protectSize: PositionDto;
+    /**
+     * True when the trader area is currently closed by game time logic.
+     */
+    isClosed: boolean;
+};
+
+/**
+ * Represents a vehicle location and basic runtime state for map rendering.
+ */
+export type VehicleLocationDto = {
+    /**
+     * Runtime entity id assigned by the game.
+     */
+    entityId: number;
+    /**
+     * Entity class name used by the game definition.
+     */
+    entityName: string;
+    /**
+     * Vehicle definition key, usually the lower-case vehicle name.
+     */
+    vehicleName: string;
+    /**
+     * Localized vehicle display name resolved for the selected game language.
+     */
+    localizedName?: string | null;
+    /**
+     * Current or last known vehicle position.
+     */
+    position: PositionDto;
+    /**
+     * True when the vehicle entity is currently loaded in the world.
+     */
+    isLoaded: boolean;
+    /**
+     * True when the vehicle supports storage.
+     */
+    hasStorage?: boolean | null;
+    /**
+     * True when the vehicle is locked.
+     */
+    isLocked?: boolean | null;
+    /**
+     * Fuel percentage from 0 to 100 when available.
+     */
+    fuelPercent?: number | null;
+    /**
+     * Vehicle quality value when available.
+     */
+    quality?: number | null;
+    /**
+     * Owner platform id when known.
+     */
+    ownerId?: string | null;
+    /**
+     * Owner display name when known.
+     */
+    ownerName?: string | null;
+    /**
+     * Owner entity id when known.
+     */
+    ownerEntityId?: number | null;
+    /**
+     * Number of non-empty storage slots when the active vehicle inventory is available.
+     */
+    storageItemCount?: number | null;
+};
+
+/**
+ * Represents a vehicle storage snapshot.
+ */
+export type VehicleInventoryDto = {
+    /**
+     * Vehicle entity id.
+     */
+    entityId: number;
+    /**
+     * True when the vehicle entity is currently loaded and storage can be inspected.
+     */
+    isLoaded: boolean;
+    /**
+     * True when the vehicle supports storage.
+     */
+    hasStorage: boolean;
+    /**
+     * Storage items currently present in the vehicle.
+     */
+    items: Array<InvItemDto>;
 };
 
 /**
@@ -5977,6 +6210,22 @@ export type EconomyTransactionsGetTransactionResponses = {
 
 export type EconomyTransactionsGetTransactionResponse = EconomyTransactionsGetTransactionResponses[keyof EconomyTransactionsGetTransactionResponses];
 
+export type FeatureModulesGetFeatureModulesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/FeatureModules';
+};
+
+export type FeatureModulesGetFeatureModulesResponses = {
+    /**
+     * A collection of feature module status snapshots.
+     */
+    200: Array<FeatureModuleStatusDto>;
+};
+
+export type FeatureModulesGetFeatureModulesResponse = FeatureModulesGetFeatureModulesResponses[keyof FeatureModulesGetFeatureModulesResponses];
+
 export type GameEventLogGetGameEventLogsData = {
     body?: never;
     path?: never;
@@ -6133,11 +6382,17 @@ export type GameServerSendGlobalMessageData = {
     url: '/api/GameServer/SendGlobalMessage';
 };
 
+export type GameServerSendGlobalMessageErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerSendGlobalMessageError = GameServerSendGlobalMessageErrors[keyof GameServerSendGlobalMessageErrors];
+
 export type GameServerSendGlobalMessageResponses = {
     /**
-     * Execution output from the underlying console command pipeline.
+     * Execution output from the message dispatch pipeline.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerSendGlobalMessageResponse = GameServerSendGlobalMessageResponses[keyof GameServerSendGlobalMessageResponses];
@@ -6152,11 +6407,18 @@ export type GameServerSendPrivateMessageData = {
     url: '/api/GameServer/SendPrivateMessage';
 };
 
+export type GameServerSendPrivateMessageErrors = {
+    400: ProblemDetailsDto;
+    404: ProblemDetailsDto;
+};
+
+export type GameServerSendPrivateMessageError = GameServerSendPrivateMessageErrors[keyof GameServerSendPrivateMessageErrors];
+
 export type GameServerSendPrivateMessageResponses = {
     /**
-     * Execution output from the underlying console command pipeline.
+     * Execution output from the message dispatch pipeline.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerSendPrivateMessageResponse = GameServerSendPrivateMessageResponses[keyof GameServerSendPrivateMessageResponses];
@@ -6171,11 +6433,17 @@ export type GameServerRemoveAdminUsersData = {
     url: '/api/GameServer/AdminUsers';
 };
 
+export type GameServerRemoveAdminUsersErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerRemoveAdminUsersError = GameServerRemoveAdminUsersErrors[keyof GameServerRemoveAdminUsersErrors];
+
 export type GameServerRemoveAdminUsersResponses = {
     /**
      * List of results indicating success or failure for each admin removal.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerRemoveAdminUsersResponse = GameServerRemoveAdminUsersResponses[keyof GameServerRemoveAdminUsersResponses];
@@ -6206,11 +6474,17 @@ export type GameServerCreateAdminUserData = {
     url: '/api/GameServer/AdminUsers';
 };
 
+export type GameServerCreateAdminUserErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerCreateAdminUserError = GameServerCreateAdminUserErrors[keyof GameServerCreateAdminUserErrors];
+
 export type GameServerCreateAdminUserResponses = {
     /**
      * List of results indicating success or failure for the admin creation.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerCreateAdminUserResponse = GameServerCreateAdminUserResponses[keyof GameServerCreateAdminUserResponses];
@@ -6225,12 +6499,18 @@ export type GameServerRemoveCommandPermissionsData = {
     url: '/api/GameServer/CommandPermissions';
 };
 
+export type GameServerRemoveCommandPermissionsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerRemoveCommandPermissionsError = GameServerRemoveCommandPermissionsErrors[keyof GameServerRemoveCommandPermissionsErrors];
+
 export type GameServerRemoveCommandPermissionsResponses = {
     /**
      * An enumerable collection of strings containing the results of each command permission removal. The
      * collection will be empty if no commands are provided.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerRemoveCommandPermissionsResponse = GameServerRemoveCommandPermissionsResponses[keyof GameServerRemoveCommandPermissionsResponses];
@@ -6262,11 +6542,17 @@ export type GameServerCreateCommandPermissionData = {
     url: '/api/GameServer/CommandPermissions';
 };
 
+export type GameServerCreateCommandPermissionErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerCreateCommandPermissionError = GameServerCreateCommandPermissionErrors[keyof GameServerCreateCommandPermissionErrors];
+
 export type GameServerCreateCommandPermissionResponses = {
     /**
      * An enumerable collection of strings containing the result messages from the command execution.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerCreateCommandPermissionResponse = GameServerCreateCommandPermissionResponses[keyof GameServerCreateCommandPermissionResponses];
@@ -6281,12 +6567,18 @@ export type GameServerRemoveBansData = {
     url: '/api/GameServer/Bans';
 };
 
+export type GameServerRemoveBansErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerRemoveBansError = GameServerRemoveBansErrors[keyof GameServerRemoveBansErrors];
+
 export type GameServerRemoveBansResponses = {
     /**
      * An enumerable collection of strings containing the results of each ban removal command. Each string
      * represents the output from the ban removal operation for a player.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerRemoveBansResponse = GameServerRemoveBansResponses[keyof GameServerRemoveBansResponses];
@@ -6319,11 +6611,17 @@ export type GameServerCreateBanData = {
     url: '/api/GameServer/Bans';
 };
 
+export type GameServerCreateBanErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerCreateBanError = GameServerCreateBanErrors[keyof GameServerCreateBanErrors];
+
 export type GameServerCreateBanResponses = {
     /**
      * An enumerable collection of strings containing the results of the ban command execution.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerCreateBanResponse = GameServerCreateBanResponses[keyof GameServerCreateBanResponses];
@@ -6338,12 +6636,18 @@ export type GameServerRemoveWhitelistEntriesData = {
     url: '/api/GameServer/Whitelist';
 };
 
+export type GameServerRemoveWhitelistEntriesErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerRemoveWhitelistEntriesError = GameServerRemoveWhitelistEntriesErrors[keyof GameServerRemoveWhitelistEntriesErrors];
+
 export type GameServerRemoveWhitelistEntriesResponses = {
     /**
      * A collection of strings containing the results of each whitelist removal command. Each entry represents the
      * server's response for the corresponding player ID.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerRemoveWhitelistEntriesResponse = GameServerRemoveWhitelistEntriesResponses[keyof GameServerRemoveWhitelistEntriesResponses];
@@ -6375,11 +6679,17 @@ export type GameServerCreateWhitelistEntryData = {
     url: '/api/GameServer/Whitelist';
 };
 
+export type GameServerCreateWhitelistEntryErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GameServerCreateWhitelistEntryError = GameServerCreateWhitelistEntryErrors[keyof GameServerCreateWhitelistEntryErrors];
+
 export type GameServerCreateWhitelistEntryResponses = {
     /**
      * An enumerable collection of strings containing the results of the whitelist command execution.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerCreateWhitelistEntryResponse = GameServerCreateWhitelistEntryResponses[keyof GameServerCreateWhitelistEntryResponses];
@@ -6767,6 +7077,74 @@ export type GameServerRenderExploredAreaResponses = {
 
 export type GameServerRenderExploredAreaResponse = GameServerRenderExploredAreaResponses[keyof GameServerRenderExploredAreaResponses];
 
+export type GameServerGetTraderLocationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Localization column to resolve trader names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/TraderLocations';
+};
+
+export type GameServerGetTraderLocationsResponses = {
+    /**
+     * A collection of trader map locations.
+     */
+    200: Array<TraderLocationDto>;
+};
+
+export type GameServerGetTraderLocationsResponse = GameServerGetTraderLocationsResponses[keyof GameServerGetTraderLocationsResponses];
+
+export type GameServerGetVehicleLocationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Localization column to resolve vehicle names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/VehicleLocations';
+};
+
+export type GameServerGetVehicleLocationsResponses = {
+    /**
+     * A collection of vehicle map locations.
+     */
+    200: Array<VehicleLocationDto>;
+};
+
+export type GameServerGetVehicleLocationsResponse = GameServerGetVehicleLocationsResponses[keyof GameServerGetVehicleLocationsResponses];
+
+export type GameServerGetVehicleInventoryData = {
+    body?: never;
+    path: {
+        /**
+         * Vehicle entity id.
+         */
+        entityId: number;
+    };
+    query?: {
+        /**
+         * Localization column to resolve item names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/Vehicles/{entityId}/Inventory';
+};
+
+export type GameServerGetVehicleInventoryResponses = {
+    /**
+     * Vehicle inventory snapshot when the vehicle is loaded.
+     */
+    200: VehicleInventoryDto;
+};
+
+export type GameServerGetVehicleInventoryResponse = GameServerGetVehicleInventoryResponses[keyof GameServerGetVehicleInventoryResponses];
+
 export type GameServerGetLocationsData = {
     body?: never;
     path?: never;
@@ -7085,14 +7463,46 @@ export type GameServerKickPlayerData = {
     url: '/api/GameServer/KickPlayer';
 };
 
+export type GameServerKickPlayerErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type GameServerKickPlayerError = GameServerKickPlayerErrors[keyof GameServerKickPlayerErrors];
+
 export type GameServerKickPlayerResponses = {
     /**
      * Console output from the kick command pipeline.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerKickPlayerResponse = GameServerKickPlayerResponses[keyof GameServerKickPlayerResponses];
+
+export type GameServerGiveItemToAllOnlinePlayersData = {
+    /**
+     * Item grant payload containing item id, count, and optional quality.
+     */
+    body: GiveItemToPlayerRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/GameServer/OnlinePlayers/Items';
+};
+
+export type GameServerGiveItemToAllOnlinePlayersErrors = {
+    400: ProblemDetailsDto;
+    409: ProblemDetailsDto;
+};
+
+export type GameServerGiveItemToAllOnlinePlayersError = GameServerGiveItemToAllOnlinePlayersErrors[keyof GameServerGiveItemToAllOnlinePlayersErrors];
+
+export type GameServerGiveItemToAllOnlinePlayersResponses = {
+    /**
+     * Console output from the item grant command pipeline.
+     */
+    200: Array<string>;
+};
+
+export type GameServerGiveItemToAllOnlinePlayersResponse = GameServerGiveItemToAllOnlinePlayersResponses[keyof GameServerGiveItemToAllOnlinePlayersResponses];
 
 export type GameServerGiveItemToOnlinePlayerData = {
     /**
@@ -7135,11 +7545,17 @@ export type GameServerTeleportToPositionData = {
     url: '/api/GameServer/TeleportToPosition';
 };
 
+export type GameServerTeleportToPositionErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type GameServerTeleportToPositionError = GameServerTeleportToPositionErrors[keyof GameServerTeleportToPositionErrors];
+
 export type GameServerTeleportToPositionResponses = {
     /**
      * Console output from the teleport command pipeline.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerTeleportToPositionResponse = GameServerTeleportToPositionResponses[keyof GameServerTeleportToPositionResponses];
@@ -7154,11 +7570,17 @@ export type GameServerTeleportToPlayerData = {
     url: '/api/GameServer/TeleportToPlayer';
 };
 
+export type GameServerTeleportToPlayerErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type GameServerTeleportToPlayerError = GameServerTeleportToPlayerErrors[keyof GameServerTeleportToPlayerErrors];
+
 export type GameServerTeleportToPlayerResponses = {
     /**
      * Console output from the teleport command pipeline.
      */
-    200: Array<string> | null;
+    200: Array<string>;
 };
 
 export type GameServerTeleportToPlayerResponse = GameServerTeleportToPlayerResponses[keyof GameServerTeleportToPlayerResponses];
