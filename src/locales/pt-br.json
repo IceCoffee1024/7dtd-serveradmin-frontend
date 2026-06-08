@@ -99,7 +99,8 @@
     "featureModules": "Feature Modules",
     "eventAutomation": "Automacao de eventos",
     "eventAutomationRules": "Rules",
-    "eventAutomationSettings": "Settings"
+    "eventAutomationSettings": "Settings",
+    "eventAutomationRuns": "Run History"
   },
   "components": {
     "myTable": {
@@ -2705,7 +2706,8 @@
           "editTitle": "Edit Rule"
         },
         "actions": {
-          "formatJson": "Format JSON"
+          "formatJson": "Format JSON",
+          "duplicate": "Duplicate"
         },
         "validation": {
           "nameRequired": "Rule name is required.",
@@ -2717,7 +2719,8 @@
           "createSuccess": "Rule created successfully.",
           "updateSuccess": "Rule updated successfully.",
           "deleteSuccess": "Rule deleted successfully.",
-          "deleteConfirm": "Delete rule \"{name}\"?"
+          "deleteConfirm": "Delete rule \"{name}\"?",
+          "duplicateName": "{name} Copy"
         },
         "templates": {
           "welcomePrivateMessage": {
@@ -2751,6 +2754,29 @@
             "description": "Broadcast a fixed message when a global chat command is detected.",
             "message": "Server notice triggered by {playerName}."
           }
+        },
+        "status": {
+          "Success": "Success",
+          "Failed": "Failed"
+        },
+        "reference": {
+          "title": "JSON reference",
+          "variables": "Available variables",
+          "conditionsTitle": "Common conditions",
+          "actionsTitle": "Supported actions",
+          "conditions": {
+            "chatType": "Matches a chat channel such as Global or Whisper.",
+            "messageContains": "Matches when the chat message contains this text.",
+            "messageStartsWith": "Matches when the chat message starts with this text.",
+            "playerNameContains": "Matches when the player name contains this text.",
+            "ignoreCase": "Makes text matching case-insensitive."
+          },
+          "actions": {
+            "sendGlobalMessage": "Sends a message to all online players.",
+            "sendPrivateMessage": "Sends a private message to the triggering player.",
+            "giveItem": "Gives an item to the triggering player.",
+            "adjustEconomy": "Adds or deducts currency from the triggering player account."
+          }
         }
       },
       "settings": {
@@ -2763,6 +2789,35 @@
           "resetSuccess": "Settings reset successfully.",
           "resetConfirm": "Reset event automation settings to defaults?",
           "unsavedChanges": "You have unsaved changes. Leave this page?"
+        }
+      },
+      "runs": {
+        "columns": {
+          "ruleName": "Rule",
+          "triggerType": "Trigger",
+          "playerName": "Player",
+          "playerId": "Player ID",
+          "startedAt": "Started At",
+          "endedAt": "Ended At",
+          "durationMs": "Duration",
+          "status": "Status",
+          "summary": "Summary",
+          "errorMessage": "Error",
+          "message": "Message"
+        },
+        "filters": {
+          "succeeded": "Succeeded",
+          "timeRange": "Time Range"
+        },
+        "placeholders": {
+          "timeRange": "Select time range"
+        },
+        "actions": {
+          "viewDetails": "View details"
+        },
+        "detail": {
+          "title": "Execution Details",
+          "detailsJson": "Details JSON"
         }
       }
     }

@@ -426,6 +426,15 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
+            name: 'EventAutomationRuns',
+            path: 'runs',
+            component: () => import('../views/EventAutomation/Runs/index.vue'),
+            meta: {
+              title: () => t('menus.eventAutomationRuns'),
+              icon: markIcon(() => import('~icons/mdi/history')),
+            },
+          },
+          {
             name: 'EventAutomationSettings',
             path: 'settings',
             component: () => import('../views/EventAutomation/Settings/index.vue'),

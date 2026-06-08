@@ -40,6 +40,12 @@ interface RuleTemplate {
   actions: Array<Record<string, unknown>>;
 }
 
+interface ReferenceItem {
+  label: string;
+  value: string;
+  description: string;
+}
+
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
 
@@ -178,6 +184,59 @@ const ruleTemplateOptions = computed(() =>
   })),
 );
 
+const variableTokens = ['{triggerType}', '{playerId}', '{playerName}', '{entityId}', '{message}', '{chatType}', '{x}', '{y}', '{z}'] as const;
+
+const conditionReferences = computed<ReferenceItem[]>(() => [
+  {
+    label: 'chatType',
+    value: '"chatType": "Global"',
+    description: t('views.eventAutomation.rules.reference.conditions.chatType'),
+  },
+  {
+    label: 'messageContains',
+    value: '"messageContains": "help"',
+    description: t('views.eventAutomation.rules.reference.conditions.messageContains'),
+  },
+  {
+    label: 'messageStartsWith',
+    value: '"messageStartsWith": "!help"',
+    description: t('views.eventAutomation.rules.reference.conditions.messageStartsWith'),
+  },
+  {
+    label: 'playerNameContains',
+    value: '"playerNameContains": "Admin"',
+    description: t('views.eventAutomation.rules.reference.conditions.playerNameContains'),
+  },
+  {
+    label: 'ignoreCase',
+    value: '"ignoreCase": true',
+    description: t('views.eventAutomation.rules.reference.conditions.ignoreCase'),
+  },
+]);
+
+const actionReferences = computed<ReferenceItem[]>(() => [
+  {
+    label: 'SendGlobalMessage',
+    value: '{ "type": "SendGlobalMessage", "message": "{playerName} joined." }',
+    description: t('views.eventAutomation.rules.reference.actions.sendGlobalMessage'),
+  },
+  {
+    label: 'SendPrivateMessage',
+    value: '{ "type": "SendPrivateMessage", "target": "TriggerPlayer", "message": "Welcome!" }',
+    description: t('views.eventAutomation.rules.reference.actions.sendPrivateMessage'),
+  },
+  {
+    label: 'GiveItem',
+    value: '{ "type": "GiveItem", "target": "TriggerPlayer", "itemName": "resourceWood", "count": 100, "quality": 1 }',
+    description: t('views.eventAutomation.rules.reference.actions.giveItem'),
+  },
+  {
+    label: 'AdjustEconomy',
+    value: '{ "type": "AdjustEconomy", "target": "TriggerPlayer", "amount": 100, "reason": "Reward" }',
+    description: t('views.eventAutomation.rules.reference.actions.adjustEconomy'),
+  },
+]);
+
 const rules = computed<FormRules<RuleFormModel>>(() => ({
   name: [{ required: true, message: t('views.eventAutomation.rules.validation.nameRequired'), trigger: 'blur' }],
   triggerType: [{ required: true, message: t('views.eventAutomation.rules.validation.triggerRequired'), trigger: 'change' }],
@@ -300,6 +359,24 @@ function resolveTriggerTypeLabel(triggerType: string): string {
   return label === key ? triggerType : label;
 }
 
+function resolveLastStatusType(status: string | null | undefined): 'success' | 'danger' | 'info' {
+  if (status === 'Success')
+    return 'success';
+  if (status === 'Failed')
+    return 'danger';
+
+  return 'info';
+}
+
+function resolveLastStatusLabel(status: string | null | undefined): string {
+  if (!status)
+    return t('common.unknown');
+
+  const key = `views.eventAutomation.rules.status.${status}`;
+  const label = t(key);
+  return label === key ? status : label;
+}
+
 function validateJsonObject(_rule: unknown, value: string, callback: (error?: Error) => void) {
   try {
     const parsed = JSON.parse(value || '{}');
@@ -376,6 +453,15 @@ function onEdit(row: RuleRow) {
   editingRule.value = row;
   selectedTemplateKey.value = undefined;
   applyRuleToForm(row);
+  dialogVisible.value = true;
+  nextTick(() => formRef.value?.clearValidate());
+}
+
+function onDuplicate(row: RuleRow) {
+  editingRule.value = null;
+  selectedTemplateKey.value = undefined;
+  applyRuleToForm(row);
+  form.name = t('views.eventAutomation.rules.messages.duplicateName', { name: row.name });
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -487,8 +573,8 @@ async function onDelete(row: RuleRow) {
       </template>
 
       <template #lastStatus="{ row }">
-        <el-tag type="info">
-          {{ row.lastStatus || t('common.unknown') }}
+        <el-tag :type="resolveLastStatusType(row.lastStatus)">
+          {{ resolveLastStatusLabel(row.lastStatus) }}
         </el-tag>
       </template>
 
@@ -500,6 +586,9 @@ async function onDelete(row: RuleRow) {
         <div class="flex gap-1.5 justify-center">
           <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('components.myTable.edit')" @click="onEdit(row)">
             <icon-mdi-pencil />
+          </IconButton>
+          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.duplicate')" @click="onDuplicate(row)">
+            <icon-mdi-content-copy />
           </IconButton>
           <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('common.delete')" @click="onDelete(row)">
             <icon-mdi-delete-outline />
@@ -539,6 +628,46 @@ async function onDelete(row: RuleRow) {
                 </el-option>
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col :xs="24">
+            <el-collapse class="event-automation-reference">
+              <el-collapse-item :title="t('views.eventAutomation.rules.reference.title')" name="reference">
+                <div class="event-automation-reference__section">
+                  <div class="event-automation-reference__title">
+                    {{ t('views.eventAutomation.rules.reference.variables') }}
+                  </div>
+                  <div class="event-automation-reference__tokens">
+                    <el-tag v-for="token in variableTokens" :key="token" type="info">
+                      {{ token }}
+                    </el-tag>
+                  </div>
+                </div>
+
+                <div class="event-automation-reference__section">
+                  <div class="event-automation-reference__title">
+                    {{ t('views.eventAutomation.rules.reference.conditionsTitle') }}
+                  </div>
+                  <div class="event-automation-reference__list">
+                    <div v-for="item in conditionReferences" :key="item.label" class="event-automation-reference__item">
+                      <code>{{ item.value }}</code>
+                      <span>{{ item.description }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="event-automation-reference__section">
+                  <div class="event-automation-reference__title">
+                    {{ t('views.eventAutomation.rules.reference.actionsTitle') }}
+                  </div>
+                  <div class="event-automation-reference__list">
+                    <div v-for="item in actionReferences" :key="item.label" class="event-automation-reference__item">
+                      <code>{{ item.value }}</code>
+                      <span>{{ item.description }}</span>
+                    </div>
+                  </div>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
           </el-col>
           <el-col :xs="24" :md="12">
             <el-form-item prop="name" :label="t('views.eventAutomation.rules.form.name')">
@@ -618,6 +747,62 @@ async function onDelete(row: RuleRow) {
 }
 
 .event-automation-template-option small {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+}
+
+.event-automation-reference {
+  margin-bottom: 8px;
+  border-color: var(--el-border-color-lighter);
+}
+
+.event-automation-reference :deep(.el-collapse-item__header) {
+  color: var(--el-text-color-regular);
+  font-size: 13px;
+}
+
+.event-automation-reference__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-automation-reference__section + .event-automation-reference__section {
+  margin-top: 14px;
+}
+
+.event-automation-reference__title {
+  color: var(--el-text-color-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.event-automation-reference__tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.event-automation-reference__list {
+  display: grid;
+  gap: 8px;
+}
+
+.event-automation-reference__item {
+  display: grid;
+  gap: 4px;
+}
+
+.event-automation-reference__item code {
+  overflow-wrap: anywhere;
+  border-radius: 4px;
+  background: var(--el-fill-color-light);
+  padding: 4px 6px;
+  color: var(--el-text-color-primary);
+  font-size: 12px;
+}
+
+.event-automation-reference__item span {
   color: var(--el-text-color-secondary);
   font-size: 12px;
 }

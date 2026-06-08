@@ -99,7 +99,8 @@
     "featureModules": "功能模組",
     "eventAutomation": "事件自動化",
     "eventAutomationRules": "規則",
-    "eventAutomationSettings": "設定"
+    "eventAutomationSettings": "設定",
+    "eventAutomationRuns": "執行歷史"
   },
   "components": {
     "myTable": {
@@ -2705,7 +2706,8 @@
           "editTitle": "編輯規則"
         },
         "actions": {
-          "formatJson": "格式化 JSON"
+          "formatJson": "格式化 JSON",
+          "duplicate": "複製規則"
         },
         "validation": {
           "nameRequired": "請輸入規則名稱。",
@@ -2717,7 +2719,8 @@
           "createSuccess": "規則建立成功。",
           "updateSuccess": "規則更新成功。",
           "deleteSuccess": "規則刪除成功。",
-          "deleteConfirm": "確認刪除規則「{name}」？"
+          "deleteConfirm": "確認刪除規則「{name}」？",
+          "duplicateName": "{name} 副本"
         },
         "templates": {
           "welcomePrivateMessage": {
@@ -2751,6 +2754,29 @@
             "description": "全域聊天命中指定命令前綴時傳送固定廣播。",
             "message": "{playerName} 觸發了一條伺服器公告。"
           }
+        },
+        "status": {
+          "Success": "成功",
+          "Failed": "失敗"
+        },
+        "reference": {
+          "title": "JSON 欄位參考",
+          "variables": "可用變數",
+          "conditionsTitle": "常用條件",
+          "actionsTitle": "支援動作",
+          "conditions": {
+            "chatType": "匹配聊天頻道，例如 Global 或 Whisper。",
+            "messageContains": "聊天訊息包含指定文字時匹配。",
+            "messageStartsWith": "聊天訊息以指定文字開頭時匹配。",
+            "playerNameContains": "玩家名稱包含指定文字時匹配。",
+            "ignoreCase": "文字匹配時忽略大小寫。"
+          },
+          "actions": {
+            "sendGlobalMessage": "向所有線上玩家傳送訊息。",
+            "sendPrivateMessage": "向觸發規則的玩家傳送私聊訊息。",
+            "giveItem": "向觸發規則的玩家發放物品。",
+            "adjustEconomy": "增加或扣除觸發規則玩家的經濟帳戶餘額。"
+          }
         }
       },
       "settings": {
@@ -2763,6 +2789,35 @@
           "resetSuccess": "設定已還原預設值。",
           "resetConfirm": "確認將事件自動化設定還原為預設值？",
           "unsavedChanges": "目前有未儲存的變更，確認離開？"
+        }
+      },
+      "runs": {
+        "columns": {
+          "ruleName": "規則",
+          "triggerType": "觸發器",
+          "playerName": "玩家",
+          "playerId": "玩家 ID",
+          "startedAt": "開始時間",
+          "endedAt": "結束時間",
+          "durationMs": "耗時",
+          "status": "狀態",
+          "summary": "摘要",
+          "errorMessage": "錯誤",
+          "message": "訊息內容"
+        },
+        "filters": {
+          "succeeded": "是否成功",
+          "timeRange": "時間範圍"
+        },
+        "placeholders": {
+          "timeRange": "選擇時間範圍"
+        },
+        "actions": {
+          "viewDetails": "查看詳情"
+        },
+        "detail": {
+          "title": "執行詳情",
+          "detailsJson": "詳情 JSON"
         }
       }
     }
