@@ -96,7 +96,8 @@
     "onlineRewardSettings": "設定",
     "gameEventLogs": "遊戲事件日誌",
     "gameItems": "物品 / 方塊",
-    "featureModules": "功能模組"
+    "featureModules": "功能模組",
+    "eventAutomation": "事件自動化"
   },
   "components": {
     "myTable": {
@@ -2584,6 +2585,7 @@
         "coloredChatProfiles": "彩色設定 {0} 個",
         "economyShopItems": "啟用商品 {0}/{1} 個",
         "scheduledCommands": "啟用命令 {0}/{1} 個",
+        "eventAutomationRules": "已啟用 {0}/{1} 條自動化規則",
         "teleportCities": "啟用城市 {0}/{1} 個",
         "gameNoticeMessages": "公告訊息 {0} 則",
         "achievementDefinitions": "成就定義 {0} 個",
@@ -2622,6 +2624,7 @@
         "restartInvalidHistoryRetentionDays": "重啟歷史保留天數不能為負數：{0}。",
         "restartInvalidBloodMoonDeferMinutes": "啟用血月延遲時，延遲分鐘數必須大於 0：{0}。",
         "scheduledCommandInvalidHistoryRetentionDays": "排程命令歷史保留天數不能為負數：{0}。",
+        "eventAutomationInvalidHistoryRetentionDays": "事件自動化歷史保留天數不能為負數：{0}。",
         "scheduledCommandMissingFailureNotifyMessage": "已啟用失敗通知，但未配置通知訊息。",
         "gameNoticeInvalidRotatingInterval": "存在輪播公告時，輪播間隔必須大於 0：{0}。",
         "onlineRewardInvalidInterval": "在線獎勵週期必須大於 0 分鐘：{0}。",

@@ -1873,6 +1873,18 @@ export type FeatureModuleStatusDto = {
      * Configuration readiness check for the module.
      */
     configuration: FeatureModuleConfigurationDto;
+    /**
+     * True when this module supports the unified enable endpoint.
+     */
+    canEnable: boolean;
+    /**
+     * True when this module supports the unified disable endpoint.
+     */
+    canDisable: boolean;
+    /**
+     * True when this module supports unified validation.
+     */
+    canValidate: boolean;
 };
 
 /**
@@ -2010,6 +2022,14 @@ export type FeatureModulePermissionDto = {
      * True when the game world must be initialized before this access path is available.
      */
     requiresGameStartDone: boolean;
+    /**
+     * True when this access path requires an administrator operator.
+     */
+    requiresAdmin: boolean;
+    /**
+     * True when this access path is used by an online player.
+     */
+    requiresOnlinePlayer: boolean;
     /**
      * Minimum game command permission level when one is known.
      */

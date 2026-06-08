@@ -14,6 +14,14 @@ import { defineConfig, loadEnv } from 'vite';
 
 const COMPONENTS_INCLUDE = [/\.vue$/, /\.vue\?vue/, /\.md$/];
 
+function normalizePublicBasePath(value: string | undefined) {
+  const base = value?.trim();
+  if (!base || /^[a-z]:[\\/]/i.test(base) || /^\\\\/.test(base))
+    return '/';
+
+  return base;
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -100,7 +108,7 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    base: env.VITE_APP_PUBLIC_BASE_PATH || '/',
+    base: normalizePublicBasePath(env.VITE_APP_PUBLIC_BASE_PATH),
     server: {
       open: true,
       proxy: {

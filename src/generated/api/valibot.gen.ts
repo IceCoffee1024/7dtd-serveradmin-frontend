@@ -1152,6 +1152,8 @@ export const vFeatureModulePermissionDto = v.strictObject({
     descriptionKey: v.string(),
     requiresAuthentication: v.boolean(),
     requiresGameStartDone: v.boolean(),
+    requiresAdmin: v.boolean(),
+    requiresOnlinePlayer: v.boolean(),
     permissionLevel: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
 });
 
@@ -1208,7 +1210,10 @@ export const vFeatureModuleStatusDto = v.strictObject({
     subModules: v.array(vFeatureSubModuleStatusDto),
     commands: v.array(vFeatureModuleCommandDto),
     permissions: v.array(vFeatureModulePermissionDto),
-    configuration: vFeatureModuleConfigurationDto
+    configuration: vFeatureModuleConfigurationDto,
+    canEnable: v.boolean(),
+    canDisable: v.boolean(),
+    canValidate: v.boolean()
 });
 
 /**

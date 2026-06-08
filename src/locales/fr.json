@@ -96,7 +96,8 @@
     "onlineRewardSettings": "Paramètres",
     "gameEventLogs": "Journaux d'événements de jeu",
     "gameItems": "Objets / blocs",
-    "featureModules": "Feature Modules"
+    "featureModules": "Feature Modules",
+    "eventAutomation": "Automatisation des evenements"
   },
   "components": {
     "myTable": {
@@ -2584,6 +2585,7 @@
         "coloredChatProfiles": "{0} color profiles",
         "economyShopItems": "{0}/{1} shop items enabled",
         "scheduledCommands": "{0}/{1} scheduled commands enabled",
+        "eventAutomationRules": "{0}/{1} regles d automatisation activees",
         "teleportCities": "{0}/{1} cities enabled",
         "gameNoticeMessages": "{0} notice messages",
         "achievementDefinitions": "{0} achievement definitions",
@@ -2622,6 +2624,7 @@
         "restartInvalidHistoryRetentionDays": "Restart history retention days cannot be negative: {0}.",
         "restartInvalidBloodMoonDeferMinutes": "Blood moon defer minutes must be greater than 0 when defer is enabled: {0}.",
         "scheduledCommandInvalidHistoryRetentionDays": "Scheduled command history retention days cannot be negative: {0}.",
+        "eventAutomationInvalidHistoryRetentionDays": "Les jours de conservation de l automatisation des evenements ne peuvent pas etre negatifs : {0}.",
         "scheduledCommandMissingFailureNotifyMessage": "Failure notification is enabled but no message is configured.",
         "gameNoticeInvalidRotatingInterval": "Rotating notice interval must be greater than 0 when rotating notices exist: {0}.",
         "onlineRewardInvalidInterval": "Online reward interval must be greater than 0 minutes: {0}.",

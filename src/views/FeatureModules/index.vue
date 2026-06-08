@@ -30,18 +30,6 @@ type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus 
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
 
-type ExtendedFeatureModulePermissionDto = FeatureModulePermissionDto & {
-  requiresAdmin?: boolean;
-  requiresOnlinePlayer?: boolean;
-};
-
-type ExtendedFeatureModuleStatusDto = FeatureModuleStatusDto & {
-  canDisable?: boolean;
-  canEnable?: boolean;
-  canValidate?: boolean;
-  permissions: ExtendedFeatureModulePermissionDto[];
-};
-
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
@@ -56,8 +44,8 @@ const issueSeverities: FeatureModuleConfigurationIssueSeverity[] = ['Error', 'Wa
 
 const loading = ref(false);
 const actionLoadingKey = ref('');
-const modules = ref<ExtendedFeatureModuleStatusDto[]>([]);
-const selectedModule = ref<ExtendedFeatureModuleStatusDto | null>(null);
+const modules = ref<FeatureModuleStatusDto[]>([]);
+const selectedModule = ref<FeatureModuleStatusDto | null>(null);
 const detailVisible = ref(false);
 const filter = ref<ModuleFilter>('all');
 const keyword = ref('');
@@ -138,11 +126,11 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): ExtendedFeatureModuleStatusDto {
-  return item as ExtendedFeatureModuleStatusDto;
+function toModuleStatus(item: unknown): FeatureModuleStatusDto {
+  return item as FeatureModuleStatusDto;
 }
 
-function matchesFilter(item: ExtendedFeatureModuleStatusDto): boolean {
+function matchesFilter(item: FeatureModuleStatusDto): boolean {
   const health = normalizeHealth(item.health);
   if (filter.value === 'enabled')
     return health === 'Healthy';
@@ -189,7 +177,7 @@ function getModuleCommands(item: unknown): FeatureModuleCommandDto[] {
   return module.commands ?? [];
 }
 
-function getModulePermissions(item: unknown): ExtendedFeatureModulePermissionDto[] {
+function getModulePermissions(item: unknown): FeatureModulePermissionDto[] {
   const module = toModuleStatus(item);
   return module.permissions ?? [];
 }
@@ -387,7 +375,7 @@ async function loadModules() {
     const { data } = await featureModulesGetFeatureModules({
       throwOnError: true,
     });
-    modules.value = (data ?? []) as ExtendedFeatureModuleStatusDto[];
+    modules.value = data ?? [];
     if (selectedKey != null) {
       selectedModule.value = modules.value.find(item => item.key === selectedKey) ?? selectedModule.value;
     }
