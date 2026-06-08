@@ -1086,6 +1086,68 @@ export const vEconomyTransactionQueryOrder = v.picklist([
 ]);
 
 /**
+ * Global settings for the event automation feature.
+ */
+export const vEventAutomationFeatureSettingsDto = v.strictObject({
+    isEnabled: v.optional(v.boolean()),
+    historyRetentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Represents one event automation rule returned to the management UI.
+ */
+export const vEventAutomationRuleDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    updatedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    name: v.string(),
+    isEnabled: v.optional(v.boolean()),
+    triggerType: v.string(),
+    conditionsJson: v.string(),
+    actionsJson: v.string(),
+    description: v.nullish(v.string()),
+    lastMatchedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastStatus: v.nullish(v.string()),
+    lastMessage: v.nullish(v.string())
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfEventAutomationRuleDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vEventAutomationRuleDto)
+});
+
+/**
+ * Sortable columns supported by the event automation rule list endpoint.
+ */
+export const vEventAutomationRuleQueryOrder = v.picklist([
+    'CreatedAt',
+    'UpdatedAt',
+    'Name',
+    'IsEnabled',
+    'TriggerType',
+    'LastMatchedAt'
+]);
+
+/**
+ * Request model for creating or updating an event automation rule.
+ */
+export const vEventAutomationRuleUpsertDto = v.strictObject({
+    name: v.string(),
+    isEnabled: v.optional(v.boolean()),
+    triggerType: v.string(),
+    conditionsJson: v.nullish(v.string()),
+    actionsJson: v.nullish(v.string()),
+    description: v.nullish(v.string())
+});
+
+/**
  * Health state for a feature module exposed by the module center.
  */
 export const vFeatureModuleHealth = v.picklist([
@@ -2616,6 +2678,34 @@ export const vEconomyTransactionsExportTransactionsQuery = v.object({
 });
 
 export const vEconomyTransactionsGetTransactionPath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vEventAutomationUpdateSettingsBody = vEventAutomationFeatureSettingsDto;
+
+export const vEventAutomationGetRulesQuery = v.object({
+    isEnabled: v.nullish(v.boolean()),
+    triggerType: v.nullish(v.string()),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(vEventAutomationRuleQueryOrder),
+    desc: v.optional(v.boolean())
+});
+
+export const vEventAutomationCreateRuleBody = vEventAutomationRuleUpsertDto;
+
+export const vEventAutomationDeleteRulePath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vEventAutomationGetRulePath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vEventAutomationUpdateRuleBody = vEventAutomationRuleUpsertDto;
+
+export const vEventAutomationUpdateRulePath = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
 });
 

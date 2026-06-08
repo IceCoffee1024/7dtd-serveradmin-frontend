@@ -1830,6 +1830,123 @@ export type PagedDtoOfEconomyTransactionDto = {
 export type EconomyTransactionQueryOrder = 'CreatedAt' | 'OccurredAt' | 'PlayerId' | 'PlayerName' | 'Amount' | 'Type';
 
 /**
+ * Global settings for the event automation feature.
+ */
+export type EventAutomationFeatureSettingsDto = {
+    /**
+     * Whether event automation is enabled.
+     */
+    isEnabled?: boolean;
+    /**
+     * Number of days to retain automation execution history when it is added later.
+     */
+    historyRetentionDays?: number;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfEventAutomationRuleDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<EventAutomationRuleDto>;
+};
+
+/**
+ * Represents one event automation rule returned to the management UI.
+ */
+export type EventAutomationRuleDto = {
+    /**
+     * Database identity of the rule row.
+     */
+    id?: number;
+    /**
+     * UTC timestamp recorded when the row was created.
+     */
+    createdAt?: string;
+    /**
+     * UTC timestamp recorded when the row was last updated.
+     */
+    updatedAt?: string;
+    /**
+     * Human-readable rule name.
+     */
+    name: string;
+    /**
+     * Whether this rule is currently active.
+     */
+    isEnabled?: boolean;
+    /**
+     * Trigger type, for example PlayerJoined, ChatMessage, PlayerDied, or Cron.
+     */
+    triggerType: string;
+    /**
+     * JSON object that stores trigger-specific conditions.
+     */
+    conditionsJson: string;
+    /**
+     * JSON array that stores actions to execute when the rule matches.
+     */
+    actionsJson: string;
+    /**
+     * Optional human-readable description shown in the management UI.
+     */
+    description?: string | null;
+    /**
+     * UTC timestamp of the last event match.
+     */
+    lastMatchedAt?: string | null;
+    /**
+     * Result status from the last match.
+     */
+    lastStatus?: string | null;
+    /**
+     * Short message from the last match.
+     */
+    lastMessage?: string | null;
+};
+
+/**
+ * Sortable columns supported by the event automation rule list endpoint.
+ */
+export type EventAutomationRuleQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Name' | 'IsEnabled' | 'TriggerType' | 'LastMatchedAt';
+
+/**
+ * Request model for creating or updating an event automation rule.
+ */
+export type EventAutomationRuleUpsertDto = {
+    /**
+     * Human-readable rule name.
+     */
+    name: string;
+    /**
+     * Whether this rule is currently active.
+     */
+    isEnabled?: boolean;
+    /**
+     * Trigger type, for example PlayerJoined, ChatMessage, PlayerDied, or Cron.
+     */
+    triggerType: string;
+    /**
+     * JSON object that stores trigger-specific conditions.
+     */
+    conditionsJson?: string | null;
+    /**
+     * JSON array that stores actions to execute when the rule matches.
+     */
+    actionsJson?: string | null;
+    /**
+     * Optional human-readable description shown in the management UI.
+     */
+    description?: string | null;
+};
+
+/**
  * Represents the runtime status of a server-admin feature module.
  */
 export type FeatureModuleStatusDto = {
@@ -6490,6 +6607,175 @@ export type EconomyTransactionsGetTransactionResponses = {
 };
 
 export type EconomyTransactionsGetTransactionResponse = EconomyTransactionsGetTransactionResponses[keyof EconomyTransactionsGetTransactionResponses];
+
+export type EventAutomationResetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Settings';
+};
+
+export type EventAutomationResetSettingsResponses = {
+    200: EventAutomationFeatureSettingsDto;
+};
+
+export type EventAutomationResetSettingsResponse = EventAutomationResetSettingsResponses[keyof EventAutomationResetSettingsResponses];
+
+export type EventAutomationGetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Settings';
+};
+
+export type EventAutomationGetSettingsResponses = {
+    200: EventAutomationFeatureSettingsDto;
+};
+
+export type EventAutomationGetSettingsResponse = EventAutomationGetSettingsResponses[keyof EventAutomationGetSettingsResponses];
+
+export type EventAutomationUpdateSettingsData = {
+    body: EventAutomationFeatureSettingsDto;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Settings';
+};
+
+export type EventAutomationUpdateSettingsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type EventAutomationUpdateSettingsError = EventAutomationUpdateSettingsErrors[keyof EventAutomationUpdateSettingsErrors];
+
+export type EventAutomationUpdateSettingsResponses = {
+    200: unknown;
+};
+
+export type EventAutomationGetRulesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Optional enabled-state filter.
+         */
+        isEnabled?: boolean | null;
+        /**
+         * Optional trigger type filter.
+         */
+        triggerType?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Column to sort by; null retains the default order.
+         */
+        order?: EventAutomationRuleQueryOrder | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/EventAutomation/Rules';
+};
+
+export type EventAutomationGetRulesResponses = {
+    200: PagedDtoOfEventAutomationRuleDto;
+};
+
+export type EventAutomationGetRulesResponse = EventAutomationGetRulesResponses[keyof EventAutomationGetRulesResponses];
+
+export type EventAutomationCreateRuleData = {
+    body: EventAutomationRuleUpsertDto;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Rules';
+};
+
+export type EventAutomationCreateRuleErrors = {
+    400: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationCreateRuleError = EventAutomationCreateRuleErrors[keyof EventAutomationCreateRuleErrors];
+
+export type EventAutomationCreateRuleResponses = {
+    200: EventAutomationRuleDto;
+};
+
+export type EventAutomationCreateRuleResponse = EventAutomationCreateRuleResponses[keyof EventAutomationCreateRuleResponses];
+
+export type EventAutomationDeleteRuleData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/EventAutomation/Rules/{id}';
+};
+
+export type EventAutomationDeleteRuleErrors = {
+    404: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationDeleteRuleError = EventAutomationDeleteRuleErrors[keyof EventAutomationDeleteRuleErrors];
+
+export type EventAutomationDeleteRuleResponses = {
+    200: unknown;
+};
+
+export type EventAutomationGetRuleData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/EventAutomation/Rules/{id}';
+};
+
+export type EventAutomationGetRuleErrors = {
+    404: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationGetRuleError = EventAutomationGetRuleErrors[keyof EventAutomationGetRuleErrors];
+
+export type EventAutomationGetRuleResponses = {
+    200: EventAutomationRuleDto;
+};
+
+export type EventAutomationGetRuleResponse = EventAutomationGetRuleResponses[keyof EventAutomationGetRuleResponses];
+
+export type EventAutomationUpdateRuleData = {
+    body: EventAutomationRuleUpsertDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/EventAutomation/Rules/{id}';
+};
+
+export type EventAutomationUpdateRuleErrors = {
+    400: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationUpdateRuleError = EventAutomationUpdateRuleErrors[keyof EventAutomationUpdateRuleErrors];
+
+export type EventAutomationUpdateRuleResponses = {
+    200: EventAutomationRuleDto;
+};
+
+export type EventAutomationUpdateRuleResponse = EventAutomationUpdateRuleResponses[keyof EventAutomationUpdateRuleResponses];
 
 export type FeatureModulesGetFeatureModulesData = {
     body?: never;

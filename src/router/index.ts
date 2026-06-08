@@ -407,6 +407,36 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'EventAutomation',
+        path: 'event-automation',
+        component: () => import('../views/EventAutomation/index.vue'),
+        redirect: { name: 'EventAutomationRules' },
+        meta: {
+          title: () => t('menus.eventAutomation'),
+          icon: markIcon(() => import('~icons/mdi/robot-outline')),
+        },
+        children: [
+          {
+            name: 'EventAutomationRules',
+            path: 'rules',
+            component: () => import('../views/EventAutomation/Rules/index.vue'),
+            meta: {
+              title: () => t('menus.eventAutomationRules'),
+              icon: markIcon(() => import('~icons/mdi/format-list-checks')),
+            },
+          },
+          {
+            name: 'EventAutomationSettings',
+            path: 'settings',
+            component: () => import('../views/EventAutomation/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.eventAutomationSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),

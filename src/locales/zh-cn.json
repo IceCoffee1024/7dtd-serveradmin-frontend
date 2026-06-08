@@ -97,7 +97,9 @@
     "gameEventLogs": "游戏事件日志",
     "gameItems": "物品/方块",
     "featureModules": "功能模块",
-    "eventAutomation": "事件自动化"
+    "eventAutomation": "事件自动化",
+    "eventAutomationRules": "规则",
+    "eventAutomationSettings": "设置"
   },
   "components": {
     "myTable": {
@@ -2668,6 +2670,66 @@
       "enableConfirm": "确认启用 {0}？",
       "disableConfirm": "确认禁用 {0}？这可能停止相关命令和自动化。",
       "actionUnavailable": "此模块不支持该操作。"
+    },
+    "eventAutomation": {
+      "triggers": {
+        "PlayerJoined": "玩家加入",
+        "PlayerLeft": "玩家离开",
+        "PlayerDied": "玩家死亡",
+        "ChatMessage": "聊天消息",
+        "Cron": "定时触发"
+      },
+      "rules": {
+        "hint": "当前阶段先保存和校验规则，运行时事件执行将在下一阶段接入。",
+        "columns": {
+          "name": "名称",
+          "isEnabled": "启用",
+          "triggerType": "触发器",
+          "description": "描述",
+          "lastMatchedAt": "最后匹配时间",
+          "lastStatus": "最后状态",
+          "updatedAt": "更新时间"
+        },
+        "form": {
+          "name": "名称",
+          "isEnabled": "启用",
+          "triggerType": "触发类型",
+          "description": "描述",
+          "conditionsJson": "条件 JSON",
+          "actionsJson": "动作 JSON"
+        },
+        "dialog": {
+          "createTitle": "创建规则",
+          "editTitle": "编辑规则"
+        },
+        "actions": {
+          "formatJson": "格式化 JSON"
+        },
+        "validation": {
+          "nameRequired": "请输入规则名称。",
+          "triggerRequired": "请选择触发类型。",
+          "conditionsJson": "条件必须是 JSON 对象。",
+          "actionsJson": "动作必须是 JSON 数组。"
+        },
+        "messages": {
+          "createSuccess": "规则创建成功。",
+          "updateSuccess": "规则更新成功。",
+          "deleteSuccess": "规则删除成功。",
+          "deleteConfirm": "确认删除规则“{name}”？"
+        }
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "启用",
+          "historyRetentionDays": "历史保留天数"
+        },
+        "messages": {
+          "saveSuccess": "设置保存成功。",
+          "resetSuccess": "设置已恢复默认值。",
+          "resetConfirm": "确认将事件自动化设置恢复为默认值？",
+          "unsavedChanges": "当前有未保存的更改，确认离开？"
+        }
+      }
     }
   }
 }

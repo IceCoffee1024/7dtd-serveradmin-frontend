@@ -97,7 +97,9 @@
     "gameEventLogs": "Dzienniki zdarzeń gry",
     "gameItems": "Przedmioty / bloki",
     "featureModules": "Feature Modules",
-    "eventAutomation": "Automatyzacja zdarzen"
+    "eventAutomation": "Automatyzacja zdarzen",
+    "eventAutomationRules": "Rules",
+    "eventAutomationSettings": "Settings"
   },
   "components": {
     "myTable": {
@@ -2668,6 +2670,66 @@
       "enableConfirm": "Enable {0}?",
       "disableConfirm": "Disable {0}? This may stop related commands and automation.",
       "actionUnavailable": "This action is not available for this module."
+    },
+    "eventAutomation": {
+      "triggers": {
+        "PlayerJoined": "Player Joined",
+        "PlayerLeft": "Player Left",
+        "PlayerDied": "Player Died",
+        "ChatMessage": "Chat Message",
+        "Cron": "Scheduled Time"
+      },
+      "rules": {
+        "hint": "Rules are stored and validated now. Runtime event execution will be connected in the next phase.",
+        "columns": {
+          "name": "Name",
+          "isEnabled": "Enabled",
+          "triggerType": "Trigger",
+          "description": "Description",
+          "lastMatchedAt": "Last Matched",
+          "lastStatus": "Last Status",
+          "updatedAt": "Updated At"
+        },
+        "form": {
+          "name": "Name",
+          "isEnabled": "Enabled",
+          "triggerType": "Trigger Type",
+          "description": "Description",
+          "conditionsJson": "Conditions JSON",
+          "actionsJson": "Actions JSON"
+        },
+        "dialog": {
+          "createTitle": "Create Rule",
+          "editTitle": "Edit Rule"
+        },
+        "actions": {
+          "formatJson": "Format JSON"
+        },
+        "validation": {
+          "nameRequired": "Rule name is required.",
+          "triggerRequired": "Trigger type is required.",
+          "conditionsJson": "Conditions must be a JSON object.",
+          "actionsJson": "Actions must be a JSON array."
+        },
+        "messages": {
+          "createSuccess": "Rule created successfully.",
+          "updateSuccess": "Rule updated successfully.",
+          "deleteSuccess": "Rule deleted successfully.",
+          "deleteConfirm": "Delete rule \"{name}\"?"
+        }
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "Enabled",
+          "historyRetentionDays": "History Retention Days"
+        },
+        "messages": {
+          "saveSuccess": "Settings saved successfully.",
+          "resetSuccess": "Settings reset successfully.",
+          "resetConfirm": "Reset event automation settings to defaults?",
+          "unsavedChanges": "You have unsaved changes. Leave this page?"
+        }
+      }
     }
   }
 }

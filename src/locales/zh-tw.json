@@ -97,7 +97,9 @@
     "gameEventLogs": "遊戲事件日誌",
     "gameItems": "物品 / 方塊",
     "featureModules": "功能模組",
-    "eventAutomation": "事件自動化"
+    "eventAutomation": "事件自動化",
+    "eventAutomationRules": "規則",
+    "eventAutomationSettings": "設定"
   },
   "components": {
     "myTable": {
@@ -2668,6 +2670,66 @@
       "enableConfirm": "確認啟用 {0}？",
       "disableConfirm": "確認停用 {0}？這可能停止相關命令與自動化。",
       "actionUnavailable": "此模組不支援該操作。"
+    },
+    "eventAutomation": {
+      "triggers": {
+        "PlayerJoined": "玩家加入",
+        "PlayerLeft": "玩家離開",
+        "PlayerDied": "玩家死亡",
+        "ChatMessage": "聊天訊息",
+        "Cron": "定時觸發"
+      },
+      "rules": {
+        "hint": "目前階段先儲存和驗證規則，執行階段會在下一階段接入。",
+        "columns": {
+          "name": "名稱",
+          "isEnabled": "啟用",
+          "triggerType": "觸發器",
+          "description": "描述",
+          "lastMatchedAt": "最後符合時間",
+          "lastStatus": "最後狀態",
+          "updatedAt": "更新時間"
+        },
+        "form": {
+          "name": "名稱",
+          "isEnabled": "啟用",
+          "triggerType": "觸發類型",
+          "description": "描述",
+          "conditionsJson": "條件 JSON",
+          "actionsJson": "動作 JSON"
+        },
+        "dialog": {
+          "createTitle": "建立規則",
+          "editTitle": "編輯規則"
+        },
+        "actions": {
+          "formatJson": "格式化 JSON"
+        },
+        "validation": {
+          "nameRequired": "請輸入規則名稱。",
+          "triggerRequired": "請選擇觸發類型。",
+          "conditionsJson": "條件必須是 JSON 物件。",
+          "actionsJson": "動作必須是 JSON 陣列。"
+        },
+        "messages": {
+          "createSuccess": "規則建立成功。",
+          "updateSuccess": "規則更新成功。",
+          "deleteSuccess": "規則刪除成功。",
+          "deleteConfirm": "確認刪除規則「{name}」？"
+        }
+      },
+      "settings": {
+        "fields": {
+          "isEnabled": "啟用",
+          "historyRetentionDays": "歷史保留天數"
+        },
+        "messages": {
+          "saveSuccess": "設定儲存成功。",
+          "resetSuccess": "設定已還原預設值。",
+          "resetConfirm": "確認將事件自動化設定還原為預設值？",
+          "unsavedChanges": "目前有未儲存的變更，確認離開？"
+        }
+      }
     }
   }
 }
