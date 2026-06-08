@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type {
+  FeatureModuleCommandDto,
   FeatureModuleConfigurationStatus,
   FeatureModuleHealth,
+  FeatureModulePermissionDto,
+  FeatureModuleRouteDto,
   FeatureModuleStatusDto,
   FeatureSubModuleStatusDto,
 } from '~/generated/api/types.gen';
@@ -16,16 +19,6 @@ defineOptions({ name: 'FeatureModulesPage' });
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 
-interface FeatureModuleRouteLink {
-  name: string;
-  labelKey: string;
-}
-
-interface FeatureModuleMeta {
-  labelKey: string;
-  routes: FeatureModuleRouteLink[];
-}
-
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
@@ -33,88 +26,12 @@ const { toast } = usePopup();
 
 const iconRefresh = markIcon(() => import('~icons/mdi/refresh'));
 const iconOpen = markIcon(() => import('~icons/mdi/open-in-new'));
+const iconDetails = markIcon(() => import('~icons/mdi/information-outline'));
 
 const loading = ref(false);
 const modules = ref<FeatureModuleStatusDto[]>([]);
-
-const moduleMeta: Record<string, FeatureModuleMeta> = {
-  'chat': {
-    labelKey: 'menus.gameChat',
-    routes: [
-      { name: 'ChatSettings', labelKey: 'menus.chatSettings' },
-      { name: 'LiveChat', labelKey: 'menus.liveChat' },
-      { name: 'ChatHistory', labelKey: 'menus.chatHistory' },
-    ],
-  },
-  'colored-chat': {
-    labelKey: 'menus.coloredChat',
-    routes: [{ name: 'ColoredChat', labelKey: 'menus.coloredChat' }],
-  },
-  'economy': {
-    labelKey: 'menus.economy',
-    routes: [
-      { name: 'EconomyOverview', labelKey: 'menus.economyOverview' },
-      { name: 'EconomySettings', labelKey: 'menus.economySettings' },
-      { name: 'EconomyShop', labelKey: 'menus.economyShop' },
-    ],
-  },
-  'backup': {
-    labelKey: 'menus.backup',
-    routes: [
-      { name: 'BackupSettings', labelKey: 'menus.backupSettings' },
-      { name: 'BackupTasks', labelKey: 'menus.backupTasks' },
-      { name: 'BackupHistory', labelKey: 'menus.backupHistory' },
-    ],
-  },
-  'restart': {
-    labelKey: 'menus.restart',
-    routes: [
-      { name: 'RestartSettings', labelKey: 'menus.restartSettings' },
-      { name: 'RestartRun', labelKey: 'menus.restartRun' },
-      { name: 'RestartHistory', labelKey: 'menus.restartHistory' },
-    ],
-  },
-  'scheduled-command': {
-    labelKey: 'menus.scheduler',
-    routes: [
-      { name: 'SchedulerTasks', labelKey: 'menus.schedulerTasks' },
-      { name: 'SchedulerHistory', labelKey: 'menus.schedulerHistory' },
-      { name: 'SchedulerSettings', labelKey: 'menus.schedulerSettings' },
-    ],
-  },
-  'teleport': {
-    labelKey: 'menus.teleport',
-    routes: [
-      { name: 'TeleportSettings', labelKey: 'menus.teleportSettings' },
-      { name: 'TeleportTools', labelKey: 'menus.teleportTools' },
-      { name: 'TeleportLogs', labelKey: 'menus.teleportLogs' },
-    ],
-  },
-  'game-notice': {
-    labelKey: 'menus.gameNotice',
-    routes: [{ name: 'GameNotice', labelKey: 'menus.gameNotice' }],
-  },
-  'vote-restart': {
-    labelKey: 'menus.voteRestart',
-    routes: [{ name: 'VoteRestartSettings', labelKey: 'menus.voteRestartSettings' }],
-  },
-  'vote-kick': {
-    labelKey: 'menus.voteKick',
-    routes: [{ name: 'VoteKickSettings', labelKey: 'menus.voteKickSettings' }],
-  },
-  'achievement': {
-    labelKey: 'menus.achievement',
-    routes: [
-      { name: 'AchievementSettings', labelKey: 'menus.achievementSettings' },
-      { name: 'AchievementDefinitions', labelKey: 'menus.achievementDefinitions' },
-      { name: 'AchievementRecords', labelKey: 'menus.achievementRecords' },
-    ],
-  },
-  'online-reward': {
-    labelKey: 'menus.onlineReward',
-    routes: [{ name: 'OnlineRewardSettings', labelKey: 'menus.onlineRewardSettings' }],
-  },
-};
+const selectedModule = ref<FeatureModuleStatusDto | null>(null);
+const detailVisible = ref(false);
 
 const summary = computed(() => {
   const result = {
@@ -173,13 +90,14 @@ function toModuleStatus(item: unknown): FeatureModuleStatusDto {
 
 function getModuleName(item: unknown): string {
   const module = toModuleStatus(item);
-  const meta = moduleMeta[module.key];
-  return meta === undefined ? t('views.featureModules.unknownModule') : t(meta.labelKey);
+  return module.definition?.labelKey == null
+    ? t('views.featureModules.unknownModule')
+    : t(module.definition.labelKey);
 }
 
-function getModuleRoutes(item: unknown): FeatureModuleRouteLink[] {
+function getModuleRoutes(item: unknown): FeatureModuleRouteDto[] {
   const module = toModuleStatus(item);
-  return (moduleMeta[module.key]?.routes ?? []).filter(link => router.hasRoute(link.name));
+  return (module.definition?.routes ?? []).filter(link => router.hasRoute(link.name));
 }
 
 function getSubModuleName(item: FeatureSubModuleStatusDto): string {
@@ -189,6 +107,44 @@ function getSubModuleName(item: FeatureSubModuleStatusDto): string {
 function getEnabledSubModuleCount(item: unknown): number {
   const module = toModuleStatus(item);
   return module.subModules.filter(subModule => subModule.enabled).length;
+}
+
+function getSubModuleSummary(item: unknown): string {
+  const module = toModuleStatus(item);
+  return t('views.featureModules.countSummary', [
+    getEnabledSubModuleCount(module),
+    module.subModules.length,
+  ]);
+}
+
+function getModuleCommands(item: unknown): FeatureModuleCommandDto[] {
+  const module = toModuleStatus(item);
+  return module.commands ?? [];
+}
+
+function getModulePermissions(item: unknown): FeatureModulePermissionDto[] {
+  const module = toModuleStatus(item);
+  return module.permissions ?? [];
+}
+
+function getEnabledCommandCount(item: unknown): number {
+  return getModuleCommands(item).filter(command => command.enabled).length;
+}
+
+function getCommandSummary(item: unknown): string {
+  const commands = getModuleCommands(item);
+  return t('views.featureModules.countSummary', [
+    getEnabledCommandCount(item),
+    commands.length,
+  ]);
+}
+
+function getCommandTagType(command: FeatureModuleCommandDto) {
+  return command.enabled ? 'success' : 'info';
+}
+
+function getCommandDescription(command: FeatureModuleCommandDto): string {
+  return command.descriptionKey == null ? '-' : t(command.descriptionKey);
 }
 
 function getStatusDetail(item: unknown): string {
@@ -285,13 +241,18 @@ async function loadModules() {
   }
 }
 
-function openRoute(link: FeatureModuleRouteLink) {
+function openRoute(link: FeatureModuleRouteDto) {
   void router.push({
     name: link.name,
     params: {
       locale: route.params.locale,
     },
   });
+}
+
+function openDetails(item: unknown) {
+  selectedModule.value = toModuleStatus(item);
+  detailVisible.value = true;
 }
 
 onMounted(loadModules);
@@ -387,31 +348,38 @@ onMounted(loadModules);
           </template>
         </el-table-column>
 
-        <el-table-column :label="t('views.featureModules.columns.subModules')" min-width="220">
+        <el-table-column :label="t('views.featureModules.columns.subModules')" width="130" align="center">
           <template #default="{ row }">
-            <div v-if="row.subModules.length > 0" class="feature-modules-page__submodules">
-              <span class="feature-modules-page__submodule-count">
-                {{ getEnabledSubModuleCount(row) }}/{{ row.subModules.length }}
-              </span>
-              <el-tag
-                v-for="subModule in row.subModules"
-                :key="subModule.key"
-                :type="getHealthTagType(subModule.health)"
-                effect="plain"
-                size="small"
-              >
-                {{ getSubModuleName(subModule) }}
-              </el-tag>
-            </div>
+            <span v-if="row.subModules.length > 0" class="feature-modules-page__count">
+              {{ getSubModuleSummary(row) }}
+            </span>
             <span v-else class="text-sm text-gray-400">
-              {{ t('views.featureModules.emptySubModules') }}
+              -
             </span>
           </template>
         </el-table-column>
 
-        <el-table-column :label="t('views.featureModules.columns.actions')" width="260" fixed="right">
+        <el-table-column :label="t('views.featureModules.columns.commands')" width="130" align="center">
+          <template #default="{ row }">
+            <span v-if="getModuleCommands(row).length > 0" class="feature-modules-page__count">
+              {{ getCommandSummary(row) }}
+            </span>
+            <span v-else class="text-sm text-gray-400">
+              -
+            </span>
+          </template>
+        </el-table-column>
+
+        <el-table-column :label="t('views.featureModules.columns.actions')" width="300" fixed="right">
           <template #default="{ row }">
             <div class="feature-modules-page__actions">
+              <el-button
+                :icon="iconDetails"
+                size="small"
+                @click="openDetails(row)"
+              >
+                {{ t('views.featureModules.detailsAction') }}
+              </el-button>
               <el-button
                 v-for="link in getModuleRoutes(row)"
                 :key="link.name"
@@ -430,6 +398,121 @@ onMounted(loadModules);
       </el-table>
     </div>
   </el-card>
+
+  <el-drawer
+    v-model="detailVisible"
+    :title="selectedModule == null ? t('views.featureModules.detail.title') : getModuleName(selectedModule)"
+    size="520px"
+    append-to-body
+  >
+    <div v-if="selectedModule != null" class="feature-module-detail">
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.detail.overview') }}</h3>
+        <el-descriptions :column="1" size="small" border>
+          <el-descriptions-item :label="t('views.featureModules.columns.key')">
+            <code>{{ selectedModule.key }}</code>
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('views.featureModules.columns.status')">
+            <el-tag :type="getHealthTagType(selectedModule.health)" effect="plain">
+              {{ getHealthLabel(selectedModule.health) }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('views.featureModules.columns.enabled')">
+            <el-tag :type="selectedModule.enabled ? 'success' : 'info'" effect="plain">
+              {{ selectedModule.enabled ? t('common.yes') : t('common.no') }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('views.featureModules.columns.settingsType')">
+            {{ selectedModule.settingsType ?? '-' }}
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('views.featureModules.columns.configuration')">
+            <el-tag :type="getConfigurationTagType(getConfigurationStatus(selectedModule))" effect="plain">
+              {{ getConfigurationText(selectedModule) }}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
+      </section>
+
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.detail.routes') }}</h3>
+        <div v-if="getModuleRoutes(selectedModule).length > 0" class="feature-module-detail__list">
+          <el-button
+            v-for="link in getModuleRoutes(selectedModule)"
+            :key="link.name"
+            :icon="iconOpen"
+            size="small"
+            @click="openRoute(link)"
+          >
+            {{ t(link.labelKey) }}
+          </el-button>
+        </div>
+        <el-empty v-else :description="t('views.featureModules.detail.emptyRoutes')" :image-size="72" />
+      </section>
+
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.columns.commands') }}</h3>
+        <div v-if="getModuleCommands(selectedModule).length > 0" class="feature-module-detail__commands">
+          <div
+            v-for="command in getModuleCommands(selectedModule)"
+            :key="command.name"
+            class="feature-module-detail__command"
+          >
+            <div class="feature-module-detail__command-main">
+              <el-tag :type="getCommandTagType(command)" effect="plain">
+                {{ command.name }}
+              </el-tag>
+              <span v-if="command.aliases.length > 0" class="feature-module-detail__aliases">
+                {{ t('views.featureModules.detail.aliases') }}: {{ command.aliases.join(', ') }}
+              </span>
+            </div>
+            <p>{{ getCommandDescription(command) }}</p>
+          </div>
+        </div>
+        <el-empty v-else :description="t('views.featureModules.emptyCommands')" :image-size="72" />
+      </section>
+
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.detail.permissions') }}</h3>
+        <div v-if="getModulePermissions(selectedModule).length > 0" class="feature-module-detail__permissions">
+          <div
+            v-for="permission in getModulePermissions(selectedModule)"
+            :key="permission.scope"
+            class="feature-module-detail__permission"
+          >
+            <div class="feature-module-detail__permission-main">
+              <strong>{{ t(permission.labelKey) }}</strong>
+              <el-tag v-if="permission.requiresAuthentication" type="warning" effect="plain" size="small">
+                {{ t('views.featureModules.permissionFlags.authenticated') }}
+              </el-tag>
+              <el-tag v-if="permission.requiresGameStartDone" type="info" effect="plain" size="small">
+                {{ t('views.featureModules.permissionFlags.gameReady') }}
+              </el-tag>
+              <el-tag v-if="permission.permissionLevel != null" type="danger" effect="plain" size="small">
+                {{ t('views.featureModules.permissionLevel', [permission.permissionLevel]) }}
+              </el-tag>
+            </div>
+            <p>{{ t(permission.descriptionKey) }}</p>
+          </div>
+        </div>
+        <el-empty v-else :description="t('views.featureModules.detail.emptyPermissions')" :image-size="72" />
+      </section>
+
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.columns.subModules') }}</h3>
+        <div v-if="selectedModule.subModules.length > 0" class="feature-module-detail__tags">
+          <el-tag
+            v-for="subModule in selectedModule.subModules"
+            :key="subModule.key"
+            :type="getHealthTagType(subModule.health)"
+            effect="plain"
+          >
+            {{ getSubModuleName(subModule) }}
+          </el-tag>
+        </div>
+        <el-empty v-else :description="t('views.featureModules.emptySubModules')" :image-size="72" />
+      </section>
+    </div>
+  </el-drawer>
 </template>
 
 <style scoped lang="scss">
@@ -502,7 +585,6 @@ onMounted(loadModules);
   }
 }
 
-.feature-modules-page__submodules,
 .feature-modules-page__actions {
   display: flex;
   align-items: center;
@@ -510,11 +592,84 @@ onMounted(loadModules);
   gap: 6px;
 }
 
+.feature-modules-page__count {
+  color: var(--el-text-color-regular);
+  font-size: 13px;
+}
+
 .feature-modules-page__status-detail {
   color: var(--el-text-color-regular);
 }
 
 .feature-modules-page__submodule-count {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.feature-module-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature-module-detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  h3 {
+    margin: 0;
+    color: var(--el-text-color-primary);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22px;
+  }
+}
+
+.feature-module-detail__list,
+.feature-module-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-module-detail__commands {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature-module-detail__permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature-module-detail__command,
+.feature-module-detail__permission {
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--el-fill-color-extra-light);
+
+  p {
+    margin: 6px 0 0;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.feature-module-detail__command-main,
+.feature-module-detail__permission-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-module-detail__aliases {
   color: var(--el-text-color-secondary);
   font-size: 12px;
   line-height: 20px;

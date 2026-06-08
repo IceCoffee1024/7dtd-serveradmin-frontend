@@ -8,6 +8,7 @@ import type {
   EconomyTransactionDto,
   GameEventLogDto,
   HomeLocationDto,
+  Language,
   MuteEntryDto,
   PlayerDetailsDto,
   TeleportLogDto,
@@ -17,7 +18,7 @@ import type {
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { client } from '~/generated/api/client.gen';
+import { gameServerGetPlayerProfileOverview } from '~/generated/api/sdk.gen';
 import { useLocaleStore } from '~/stores/locale';
 import { formatPosition } from '~/utils';
 import PlayerProfileActions from './PlayerProfileActions.vue';
@@ -38,22 +39,6 @@ interface TimelineItem {
   description: string;
   timestamp: string;
   tagType: 'primary' | 'success' | 'warning' | 'info';
-}
-
-interface PlayerProfileOverviewDto {
-  details: PlayerDetailsDto | null;
-  economyAccount: EconomyAccountDetailDto | null;
-  homes: HomeLocationDto[];
-  landClaims: ClaimOwnerDto | null;
-  vehicles: VehicleLocationDto[];
-  chatMessages: ChatMessageDto[];
-  gameEvents: GameEventLogDto[];
-  economyTransactions: EconomyTransactionDto[];
-  teleportLogs: TeleportLogDto[];
-  adminEntry: AdminUserDto | null;
-  banEntry: BanEntryDto | null;
-  muteEntry: MuteEntryDto | null;
-  whitelistEntry: WhitelistEntryDto | null;
 }
 
 const { t } = useI18n();
@@ -206,13 +191,14 @@ async function loadProfile() {
 
   loading.value = true;
   try {
-    const { data } = await client.get<PlayerProfileOverviewDto, unknown, true>({
-      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+    const { data } = await gameServerGetPlayerProfileOverview({
+      path: {
+        playerId: playerId.value,
+      },
       query: {
-        language: localeStore.languageEnglishName,
+        language: localeStore.languageEnglishName as Language,
         activityLimit: 8,
       },
-      url: `/api/GameServer/PlayerProfiles/${encodeURIComponent(playerId.value)}`,
       throwOnError: true,
     });
 

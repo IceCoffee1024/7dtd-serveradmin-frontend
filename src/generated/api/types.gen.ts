@@ -1854,9 +1854,21 @@ export type FeatureModuleStatusDto = {
      */
     settingsType?: string | null;
     /**
+     * Static metadata that describes this module for management UIs.
+     */
+    definition?: FeatureModuleDefinitionDto | null;
+    /**
      * Sub-modules projected from runtime sub-features.
      */
     subModules: Array<FeatureSubModuleStatusDto>;
+    /**
+     * Runtime commands declared by the current module settings.
+     */
+    commands: Array<FeatureModuleCommandDto>;
+    /**
+     * Read-only access rules related to this module.
+     */
+    permissions: Array<FeatureModulePermissionDto>;
     /**
      * Configuration readiness check for the module.
      */
@@ -1867,6 +1879,72 @@ export type FeatureModuleStatusDto = {
  * Health state for a feature module exposed by the module center.
  */
 export type FeatureModuleHealth = 'Healthy' | 'Disabled' | 'Unavailable';
+
+/**
+ * Static metadata that describes how a feature module is presented in the management UI.
+ */
+export type FeatureModuleDefinitionDto = {
+    /**
+     * Stable module key.
+     */
+    key: string;
+    /**
+     * Frontend i18n key used for the module label.
+     */
+    labelKey: string;
+    /**
+     * Frontend i18n key used for grouping modules.
+     */
+    categoryKey: string;
+    /**
+     * Primary settings route name when the module has one.
+     */
+    settingsRouteName?: string | null;
+    /**
+     * Frontend routes related to this module.
+     */
+    routes: Array<FeatureModuleRouteDto>;
+    /**
+     * Commands declared by this module.
+     */
+    commands: Array<FeatureModuleCommandDto>;
+};
+
+/**
+ * Represents one frontend route exposed by a feature module.
+ */
+export type FeatureModuleRouteDto = {
+    /**
+     * Vue router route name.
+     */
+    name: string;
+    /**
+     * Frontend i18n key used for the route label.
+     */
+    labelKey: string;
+};
+
+/**
+ * Represents one command declared by a feature module.
+ */
+export type FeatureModuleCommandDto = {
+    /**
+     * Command name without the chat prefix.
+     */
+    name: string;
+    /**
+     * Additional accepted command aliases.
+     */
+    aliases: Array<string>;
+    /**
+     * True when the command is active under the current feature settings.
+     */
+    enabled: boolean;
+    /**
+     * Stable frontend i18n key for the command description.
+     */
+    descriptionKey?: string | null;
+};
 
 /**
  * Represents a sub-module projected from a parent feature's sub-feature.
@@ -1888,6 +1966,36 @@ export type FeatureSubModuleStatusDto = {
      * Runtime settings type name.
      */
     settingsType?: string | null;
+};
+
+/**
+ * Represents one read-only access rule related to a feature module.
+ */
+export type FeatureModulePermissionDto = {
+    /**
+     * Stable permission scope key.
+     */
+    scope: string;
+    /**
+     * Frontend i18n key for the access rule label.
+     */
+    labelKey: string;
+    /**
+     * Frontend i18n key for the access rule description.
+     */
+    descriptionKey: string;
+    /**
+     * True when the access rule requires a signed-in web administrator.
+     */
+    requiresAuthentication: boolean;
+    /**
+     * True when the game world must be initialized before this access path is available.
+     */
+    requiresGameStartDone: boolean;
+    /**
+     * Minimum game command permission level when one is known.
+     */
+    permissionLevel?: number | null;
 };
 
 /**
@@ -2773,6 +2881,237 @@ export type PlayerProfileDto = {
 };
 
 /**
+ * Aggregates the data blocks needed by the player profile page.
+ */
+export type PlayerProfileOverviewDto = {
+    /**
+     * Full runtime and persisted player details. Null when the player cannot be found.
+     */
+    details?: PlayerDetailsDto | null;
+    /**
+     * Economy account snapshot. Null when the player has no economy account yet.
+     */
+    economyAccount?: EconomyAccountDetailDto | null;
+    /**
+     * Saved home teleport locations owned by the player.
+     */
+    homes: Array<HomeLocationDto>;
+    /**
+     * Land-claim ownership and claim block positions for the player.
+     */
+    landClaims?: ClaimOwnerDto | null;
+    /**
+     * Vehicles currently known to be owned by the player.
+     */
+    vehicles: Array<VehicleLocationDto>;
+    /**
+     * Recent chat messages sent by the player.
+     */
+    chatMessages: Array<ChatMessageDto>;
+    /**
+     * Recent game events where the player is the actor or target.
+     */
+    gameEvents: Array<GameEventLogDto>;
+    /**
+     * Recent economy transactions owned by the player.
+     */
+    economyTransactions: Array<EconomyTransactionDto>;
+    /**
+     * Recent teleport logs for the player.
+     */
+    teleportLogs: Array<TeleportLogDto>;
+    /**
+     * Matching admin ACL entry when the player is an admin.
+     */
+    adminEntry?: AdminUserDto | null;
+    /**
+     * Matching active ban entry when the player is banned.
+     */
+    banEntry?: BanEntryDto | null;
+    /**
+     * Matching mute entry when the player has a mute record.
+     */
+    muteEntry?: MuteEntryDto | null;
+    /**
+     * Matching whitelist entry when the player is whitelisted.
+     */
+    whitelistEntry?: WhitelistEntryDto | null;
+};
+
+/**
+ * Represents a player-owned home location returned by the management panel.
+ */
+export type HomeLocationDto = {
+    /**
+     * Database identity of the home row.
+     */
+    id?: number;
+    /**
+     * Stable cross-platform player identifier of the owner.
+     */
+    playerId?: string;
+    /**
+     * Player display name captured when the home was last saved.
+     */
+    playerName?: string;
+    /**
+     * Name the player assigned to this home location.
+     */
+    homeName?: string;
+    /**
+     * World X coordinate of the saved home position.
+     */
+    x?: number;
+    /**
+     * World Y (height) coordinate of the saved home position.
+     */
+    y?: number;
+    /**
+     * World Z coordinate of the saved home position.
+     */
+    z?: number;
+    /**
+     * UTC timestamp when the home was first saved.
+     */
+    createdAt?: string;
+};
+
+export type ClaimOwnerDto = PlayerBasicInfoDto & {
+    /**
+     * Indicates whether the owner's land-claim protection is currently active.
+     */
+    claimActive: boolean;
+    /**
+     * Last known login time for claim lifecycle and cleanup decisions.
+     */
+    lastLogin: string;
+    /**
+     * World positions of all claim blocks currently associated with this owner.
+     */
+    claimPositions: Array<PositionDto>;
+};
+
+/**
+ * Represents a vehicle location and basic runtime state for map rendering.
+ */
+export type VehicleLocationDto = {
+    /**
+     * Runtime entity id assigned by the game.
+     */
+    entityId: number;
+    /**
+     * Entity class name used by the game definition.
+     */
+    entityName: string;
+    /**
+     * Vehicle definition key, usually the lower-case vehicle name.
+     */
+    vehicleName: string;
+    /**
+     * Localized vehicle display name resolved for the selected game language.
+     */
+    localizedName?: string | null;
+    /**
+     * Current or last known vehicle position.
+     */
+    position: PositionDto;
+    /**
+     * True when the vehicle entity is currently loaded in the world.
+     */
+    isLoaded: boolean;
+    /**
+     * True when the vehicle supports storage.
+     */
+    hasStorage?: boolean | null;
+    /**
+     * True when the vehicle is locked.
+     */
+    isLocked?: boolean | null;
+    /**
+     * Fuel percentage from 0 to 100 when available.
+     */
+    fuelPercent?: number | null;
+    /**
+     * Vehicle quality value when available.
+     */
+    quality?: number | null;
+    /**
+     * Owner platform id when known.
+     */
+    ownerId?: string | null;
+    /**
+     * Owner display name when known.
+     */
+    ownerName?: string | null;
+    /**
+     * Owner entity id when known.
+     */
+    ownerEntityId?: number | null;
+    /**
+     * Number of non-empty storage slots when the active vehicle inventory is available.
+     */
+    storageItemCount?: number | null;
+};
+
+/**
+ * Represents a single teleport audit log record returned by the management panel.
+ */
+export type TeleportLogDto = {
+    /**
+     * Database identity of the log row.
+     */
+    id?: number;
+    /**
+     * UTC timestamp when the teleport was executed.
+     */
+    timestamp?: string;
+    /**
+     * Stable cross-platform player identifier.
+     */
+    playerId?: string;
+    /**
+     * Player display name at the time of the teleport.
+     */
+    playerName?: string;
+    /**
+     * Sub-system that executed the teleport: Home, City, Friend, or Back.
+     */
+    subSystem?: string;
+    /**
+     * World X coordinate the player teleported from.
+     */
+    fromX?: number;
+    /**
+     * World Y coordinate the player teleported from.
+     */
+    fromY?: number;
+    /**
+     * World Z coordinate the player teleported from.
+     */
+    fromZ?: number;
+    /**
+     * World X coordinate the player teleported to.
+     */
+    toX?: number;
+    /**
+     * World Y coordinate the player teleported to.
+     */
+    toY?: number;
+    /**
+     * World Z coordinate the player teleported to.
+     */
+    toZ?: number;
+    /**
+     * Economy balance deducted for this teleport. Zero means free.
+     */
+    costPaid?: number;
+    /**
+     * Optional contextual label, e.g. the home or city name.
+     */
+    remark?: string | null;
+};
+
+/**
  * Represents a player's inventory partitioned by gameplay container type.
  */
 export type InventoryDto = {
@@ -2977,68 +3316,6 @@ export type TraderLocationDto = {
 };
 
 /**
- * Represents a vehicle location and basic runtime state for map rendering.
- */
-export type VehicleLocationDto = {
-    /**
-     * Runtime entity id assigned by the game.
-     */
-    entityId: number;
-    /**
-     * Entity class name used by the game definition.
-     */
-    entityName: string;
-    /**
-     * Vehicle definition key, usually the lower-case vehicle name.
-     */
-    vehicleName: string;
-    /**
-     * Localized vehicle display name resolved for the selected game language.
-     */
-    localizedName?: string | null;
-    /**
-     * Current or last known vehicle position.
-     */
-    position: PositionDto;
-    /**
-     * True when the vehicle entity is currently loaded in the world.
-     */
-    isLoaded: boolean;
-    /**
-     * True when the vehicle supports storage.
-     */
-    hasStorage?: boolean | null;
-    /**
-     * True when the vehicle is locked.
-     */
-    isLocked?: boolean | null;
-    /**
-     * Fuel percentage from 0 to 100 when available.
-     */
-    fuelPercent?: number | null;
-    /**
-     * Vehicle quality value when available.
-     */
-    quality?: number | null;
-    /**
-     * Owner platform id when known.
-     */
-    ownerId?: string | null;
-    /**
-     * Owner display name when known.
-     */
-    ownerName?: string | null;
-    /**
-     * Owner entity id when known.
-     */
-    ownerEntityId?: number | null;
-    /**
-     * Number of non-empty storage slots when the active vehicle inventory is available.
-     */
-    storageItemCount?: number | null;
-};
-
-/**
  * Represents a vehicle storage snapshot.
  */
 export type VehicleInventoryDto = {
@@ -3128,21 +3405,6 @@ export type GameItemDto = {
      * Blocks have IDs below Block.ItemsStartHere; items are at or above it.
      */
     isBlock?: boolean;
-};
-
-export type ClaimOwnerDto = PlayerBasicInfoDto & {
-    /**
-     * Indicates whether the owner's land-claim protection is currently active.
-     */
-    claimActive: boolean;
-    /**
-     * Last known login time for claim lifecycle and cleanup decisions.
-     */
-    lastLogin: string;
-    /**
-     * World positions of all claim blocks currently associated with this owner.
-     */
-    claimPositions: Array<PositionDto>;
 };
 
 /**
@@ -4029,44 +4291,6 @@ export type SaveCityLocationDto = {
 };
 
 /**
- * Represents a player-owned home location returned by the management panel.
- */
-export type HomeLocationDto = {
-    /**
-     * Database identity of the home row.
-     */
-    id?: number;
-    /**
-     * Stable cross-platform player identifier of the owner.
-     */
-    playerId?: string;
-    /**
-     * Player display name captured when the home was last saved.
-     */
-    playerName?: string;
-    /**
-     * Name the player assigned to this home location.
-     */
-    homeName?: string;
-    /**
-     * World X coordinate of the saved home position.
-     */
-    x?: number;
-    /**
-     * World Y (height) coordinate of the saved home position.
-     */
-    y?: number;
-    /**
-     * World Z coordinate of the saved home position.
-     */
-    z?: number;
-    /**
-     * UTC timestamp when the home was first saved.
-     */
-    createdAt?: string;
-};
-
-/**
  * Represents a paged query result with total count and current page items.
  */
 export type PagedDtoOfTeleportLogDto = {
@@ -4078,64 +4302,6 @@ export type PagedDtoOfTeleportLogDto = {
      * Items returned for the current page.
      */
     items: Array<TeleportLogDto>;
-};
-
-/**
- * Represents a single teleport audit log record returned by the management panel.
- */
-export type TeleportLogDto = {
-    /**
-     * Database identity of the log row.
-     */
-    id?: number;
-    /**
-     * UTC timestamp when the teleport was executed.
-     */
-    timestamp?: string;
-    /**
-     * Stable cross-platform player identifier.
-     */
-    playerId?: string;
-    /**
-     * Player display name at the time of the teleport.
-     */
-    playerName?: string;
-    /**
-     * Sub-system that executed the teleport: Home, City, Friend, or Back.
-     */
-    subSystem?: string;
-    /**
-     * World X coordinate the player teleported from.
-     */
-    fromX?: number;
-    /**
-     * World Y coordinate the player teleported from.
-     */
-    fromY?: number;
-    /**
-     * World Z coordinate the player teleported from.
-     */
-    fromZ?: number;
-    /**
-     * World X coordinate the player teleported to.
-     */
-    toX?: number;
-    /**
-     * World Y coordinate the player teleported to.
-     */
-    toY?: number;
-    /**
-     * World Z coordinate the player teleported to.
-     */
-    toZ?: number;
-    /**
-     * Economy balance deducted for this teleport. Zero means free.
-     */
-    costPaid?: number;
-    /**
-     * Optional contextual label, e.g. the home or city name.
-     */
-    remark?: string | null;
 };
 
 /**
@@ -6897,6 +7063,40 @@ export type GameServerGetPlayerDetailsResponses = {
 };
 
 export type GameServerGetPlayerDetailsResponse = GameServerGetPlayerDetailsResponses[keyof GameServerGetPlayerDetailsResponses];
+
+export type GameServerGetPlayerProfileOverviewData = {
+    body?: never;
+    path: {
+        /**
+         * Combined platform player identifier.
+         */
+        playerId: string;
+    };
+    query?: {
+        /**
+         * Optional localization column used for vehicle names.
+         */
+        language?: Language | null;
+        /**
+         * Maximum number of recent rows returned per activity stream.
+         */
+        activityLimit?: number;
+    };
+    url: '/api/GameServer/PlayerProfiles/{playerId}';
+};
+
+export type GameServerGetPlayerProfileOverviewErrors = {
+    404: unknown;
+};
+
+export type GameServerGetPlayerProfileOverviewResponses = {
+    /**
+     * HTTP 200 with aggregated player profile data when found; otherwise HTTP 404.
+     */
+    200: PlayerProfileOverviewDto;
+};
+
+export type GameServerGetPlayerProfileOverviewResponse = GameServerGetPlayerProfileOverviewResponses[keyof GameServerGetPlayerProfileOverviewResponses];
 
 export type GameServerGetPlayerInventoryData = {
     body?: never;

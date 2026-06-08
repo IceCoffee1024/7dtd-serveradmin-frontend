@@ -1095,6 +1095,36 @@ export const vFeatureModuleHealth = v.picklist([
 ]);
 
 /**
+ * Represents one frontend route exposed by a feature module.
+ */
+export const vFeatureModuleRouteDto = v.strictObject({
+    name: v.string(),
+    labelKey: v.string()
+});
+
+/**
+ * Represents one command declared by a feature module.
+ */
+export const vFeatureModuleCommandDto = v.strictObject({
+    name: v.string(),
+    aliases: v.array(v.string()),
+    enabled: v.boolean(),
+    descriptionKey: v.nullish(v.string())
+});
+
+/**
+ * Static metadata that describes how a feature module is presented in the management UI.
+ */
+export const vFeatureModuleDefinitionDto = v.strictObject({
+    key: v.string(),
+    labelKey: v.string(),
+    categoryKey: v.string(),
+    settingsRouteName: v.nullish(v.string()),
+    routes: v.array(vFeatureModuleRouteDto),
+    commands: v.array(vFeatureModuleCommandDto)
+});
+
+/**
  * Represents a sub-module projected from a parent feature's sub-feature.
  */
 export const vFeatureSubModuleStatusDto = v.strictObject({
@@ -1102,6 +1132,18 @@ export const vFeatureSubModuleStatusDto = v.strictObject({
     enabled: v.boolean(),
     health: vFeatureModuleHealth,
     settingsType: v.nullish(v.string())
+});
+
+/**
+ * Represents one read-only access rule related to a feature module.
+ */
+export const vFeatureModulePermissionDto = v.strictObject({
+    scope: v.string(),
+    labelKey: v.string(),
+    descriptionKey: v.string(),
+    requiresAuthentication: v.boolean(),
+    requiresGameStartDone: v.boolean(),
+    permissionLevel: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
 });
 
 /**
@@ -1131,7 +1173,10 @@ export const vFeatureModuleStatusDto = v.strictObject({
     enabled: v.boolean(),
     health: vFeatureModuleHealth,
     settingsType: v.nullish(v.string()),
+    definition: v.nullish(vFeatureModuleDefinitionDto),
     subModules: v.array(vFeatureSubModuleStatusDto),
+    commands: v.array(vFeatureModuleCommandDto),
+    permissions: v.array(vFeatureModulePermissionDto),
     configuration: vFeatureModuleConfigurationDto
 });
 
@@ -1509,6 +1554,88 @@ export const vPlayerDetailsDto = v.intersect([vPlayerBasicInfoDto, v.strictObjec
     })]);
 
 /**
+ * Represents a player-owned home location returned by the management panel.
+ */
+export const vHomeLocationDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    playerId: v.optional(v.string()),
+    playerName: v.optional(v.string()),
+    homeName: v.optional(v.string()),
+    x: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    y: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    z: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+export const vClaimOwnerDto = v.intersect([vPlayerBasicInfoDto, v.strictObject({
+        claimActive: v.boolean(),
+        lastLogin: v.pipe(v.string(), v.isoTimestamp()),
+        claimPositions: v.array(vPositionDto)
+    })]);
+
+/**
+ * Represents a vehicle location and basic runtime state for map rendering.
+ */
+export const vVehicleLocationDto = v.strictObject({
+    entityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    entityName: v.string(),
+    vehicleName: v.string(),
+    localizedName: v.nullish(v.string()),
+    position: vPositionDto,
+    isLoaded: v.boolean(),
+    hasStorage: v.nullish(v.boolean()),
+    isLocked: v.nullish(v.boolean()),
+    fuelPercent: v.nullish(v.number()),
+    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    ownerId: v.nullish(v.string()),
+    ownerName: v.nullish(v.string()),
+    ownerEntityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    storageItemCount: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Represents a single teleport audit log record returned by the management panel.
+ */
+export const vTeleportLogDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    timestamp: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    playerId: v.optional(v.string()),
+    playerName: v.optional(v.string()),
+    subSystem: v.optional(v.string()),
+    fromX: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    fromY: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    fromZ: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    toX: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    toY: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    toZ: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    costPaid: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    remark: v.nullish(v.string())
+});
+
+/**
+ * Aggregates the data blocks needed by the player profile page.
+ */
+export const vPlayerProfileOverviewDto = v.strictObject({
+    details: v.nullish(vPlayerDetailsDto),
+    economyAccount: v.nullish(vEconomyAccountDetailDto),
+    homes: v.array(vHomeLocationDto),
+    landClaims: v.nullish(vClaimOwnerDto),
+    vehicles: v.array(vVehicleLocationDto),
+    chatMessages: v.array(vChatMessageDto),
+    gameEvents: v.array(vGameEventLogDto),
+    economyTransactions: v.array(vEconomyTransactionDto),
+    teleportLogs: v.array(vTeleportLogDto),
+    adminEntry: v.nullish(vAdminUserDto),
+    banEntry: v.nullish(vBanEntryDto),
+    muteEntry: v.nullish(vMuteEntryDto),
+    whitelistEntry: v.nullish(vWhitelistEntryDto)
+});
+
+/**
  * Represents a normalized inventory item snapshot returned by player inspection APIs.
  */
 export const vInvItemDto: v.GenericSchema = v.strictObject({
@@ -1583,26 +1710,6 @@ export const vTraderLocationDto = v.strictObject({
 });
 
 /**
- * Represents a vehicle location and basic runtime state for map rendering.
- */
-export const vVehicleLocationDto = v.strictObject({
-    entityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
-    entityName: v.string(),
-    vehicleName: v.string(),
-    localizedName: v.nullish(v.string()),
-    position: vPositionDto,
-    isLoaded: v.boolean(),
-    hasStorage: v.nullish(v.boolean()),
-    isLocked: v.nullish(v.boolean()),
-    fuelPercent: v.nullish(v.number()),
-    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    ownerId: v.nullish(v.string()),
-    ownerName: v.nullish(v.string()),
-    ownerEntityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    storageItemCount: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
-});
-
-/**
  * Represents a vehicle storage snapshot.
  */
 export const vVehicleInventoryDto = v.strictObject({
@@ -1648,12 +1755,6 @@ export const vGameItemDto = v.strictObject({
     hasQuality: v.optional(v.boolean()),
     isBlock: v.optional(v.boolean())
 });
-
-export const vClaimOwnerDto = v.intersect([vPlayerBasicInfoDto, v.strictObject({
-        claimActive: v.boolean(),
-        lastLogin: v.pipe(v.string(), v.isoTimestamp()),
-        claimPositions: v.array(vPositionDto)
-    })]);
 
 /**
  * Represents land-claim state used by territory administration endpoints.
@@ -2055,43 +2156,6 @@ export const vSaveCityLocationDto = v.strictObject({
     ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
     isEnabled: v.optional(v.boolean()),
     sortOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
-});
-
-/**
- * Represents a player-owned home location returned by the management panel.
- */
-export const vHomeLocationDto = v.strictObject({
-    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    playerId: v.optional(v.string()),
-    playerName: v.optional(v.string()),
-    homeName: v.optional(v.string()),
-    x: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    y: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    z: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp()))
-});
-
-/**
- * Represents a single teleport audit log record returned by the management panel.
- */
-export const vTeleportLogDto = v.strictObject({
-    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    timestamp: v.optional(v.pipe(v.string(), v.isoTimestamp())),
-    playerId: v.optional(v.string()),
-    playerName: v.optional(v.string()),
-    subSystem: v.optional(v.string()),
-    fromX: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    fromY: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    fromZ: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    toX: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    toY: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    toZ: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    costPaid: v.optional(v.pipe(v.union([
-        v.number(),
-        v.string(),
-        v.bigint()
-    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
-    remark: v.nullish(v.string())
 });
 
 /**
@@ -2613,6 +2677,15 @@ export const vGameServerGetHistoryPlayerByIdPath = v.object({
 
 export const vGameServerGetPlayerDetailsPath = v.object({
     playerId: v.string()
+});
+
+export const vGameServerGetPlayerProfileOverviewPath = v.object({
+    playerId: v.string()
+});
+
+export const vGameServerGetPlayerProfileOverviewQuery = v.object({
+    language: v.nullish(vLanguage),
+    activityLimit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 8)
 });
 
 export const vGameServerGetPlayerInventoryPath = v.object({

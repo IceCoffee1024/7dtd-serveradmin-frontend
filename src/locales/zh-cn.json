@@ -2505,7 +2505,8 @@
         "subModules": "子模块",
         "actions": "操作",
         "details": "状态说明",
-        "configuration": "配置检查"
+        "configuration": "配置检查",
+        "commands": "命令"
       },
       "status": {
         "healthy": "正常",
@@ -2513,7 +2514,53 @@
         "unavailable": "不可用"
       },
       "emptySubModules": "无子模块",
+      "emptyCommands": "无命令",
       "unknownModule": "未知模块",
+      "countSummary": "{0}/{1}",
+      "detailsAction": "详情",
+      "detail": {
+        "title": "模块详情",
+        "overview": "概览",
+        "routes": "入口",
+        "emptyRoutes": "无入口",
+        "aliases": "别名",
+        "permissions": "访问规则",
+        "emptyPermissions": "无访问规则"
+      },
+      "permissionLevel": "等级 {0}",
+      "permissionFlags": {
+        "authenticated": "已登录管理员",
+        "gameReady": "游戏已就绪"
+      },
+      "permissionScopes": {
+        "managementApi": "管理 API",
+        "chatCommand": "聊天命令"
+      },
+      "permissionDescriptions": {
+        "managementApi": "相关管理页面和 API 调用需要已登录的 Web 管理员。",
+        "chatCommand": "游戏内玩家可在功能和命令启用时使用这些聊天命令；当前没有绑定统一管理员权限等级。"
+      },
+      "commandDescriptions": {
+        "economyBalance": "查看玩家当前经济余额。",
+        "economyPay": "向另一名玩家转账货币。",
+        "economyDaily": "领取已配置的每日经济奖励。",
+        "economyMoneyTop": "查看经济排行榜。",
+        "economyShop": "列出可购买的商店商品。",
+        "economyBuy": "从经济商店购买商品。",
+        "economyRedeem": "兑换已配置的经济奖励码。",
+        "teleportHomes": "列出玩家保存的家位置。",
+        "teleportSetHome": "将玩家当前位置保存为家。",
+        "teleportDeleteHome": "删除已保存的家位置。",
+        "teleportHome": "传送玩家到已保存的家。",
+        "teleportCities": "列出可用的城市传送点。",
+        "teleportCity": "传送玩家到城市传送点。",
+        "teleportRequest": "向另一名在线玩家发送传送请求。",
+        "teleportAccept": "接受收到的传送请求。",
+        "teleportReject": "拒绝收到的传送请求。",
+        "teleportBack": "返回上一次传送前的位置。",
+        "voteRestart": "发起或参与服务器重启投票。",
+        "voteKick": "发起或参与踢出玩家投票。"
+      },
       "details": {
         "enabled": "模块已启用，可从右侧入口进入相关页面。",
         "disabled": "模块当前在设置中禁用，可进入设置页启用。",

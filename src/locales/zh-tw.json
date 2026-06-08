@@ -2505,7 +2505,8 @@
         "subModules": "子模組",
         "actions": "操作",
         "details": "狀態說明",
-        "configuration": "設定檢查"
+        "configuration": "設定檢查",
+        "commands": "命令"
       },
       "status": {
         "healthy": "正常",
@@ -2513,7 +2514,53 @@
         "unavailable": "不可用"
       },
       "emptySubModules": "無子模組",
+      "emptyCommands": "無命令",
       "unknownModule": "未知模組",
+      "countSummary": "{0}/{1}",
+      "detailsAction": "詳情",
+      "detail": {
+        "title": "模組詳情",
+        "overview": "概覽",
+        "routes": "入口",
+        "emptyRoutes": "無入口",
+        "aliases": "別名",
+        "permissions": "存取規則",
+        "emptyPermissions": "無存取規則"
+      },
+      "permissionLevel": "等級 {0}",
+      "permissionFlags": {
+        "authenticated": "已登入管理員",
+        "gameReady": "遊戲已就緒"
+      },
+      "permissionScopes": {
+        "managementApi": "管理 API",
+        "chatCommand": "聊天命令"
+      },
+      "permissionDescriptions": {
+        "managementApi": "相關管理頁面和 API 呼叫需要已登入的 Web 管理員。",
+        "chatCommand": "遊戲內玩家可在功能和命令啟用時使用這些聊天命令；目前沒有綁定統一管理員權限等級。"
+      },
+      "commandDescriptions": {
+        "economyBalance": "查看玩家目前經濟餘額。",
+        "economyPay": "向另一名玩家轉帳貨幣。",
+        "economyDaily": "領取已設定的每日經濟獎勵。",
+        "economyMoneyTop": "查看經濟排行榜。",
+        "economyShop": "列出可購買的商店商品。",
+        "economyBuy": "從經濟商店購買商品。",
+        "economyRedeem": "兌換已設定的經濟獎勵碼。",
+        "teleportHomes": "列出玩家儲存的家位置。",
+        "teleportSetHome": "將玩家目前位置儲存為家。",
+        "teleportDeleteHome": "刪除已儲存的家位置。",
+        "teleportHome": "傳送玩家到已儲存的家。",
+        "teleportCities": "列出可用的城市傳送點。",
+        "teleportCity": "傳送玩家到城市傳送點。",
+        "teleportRequest": "向另一名線上玩家傳送傳送請求。",
+        "teleportAccept": "接受收到的傳送請求。",
+        "teleportReject": "拒絕收到的傳送請求。",
+        "teleportBack": "返回上一次傳送前的位置。",
+        "voteRestart": "發起或參與伺服器重啟投票。",
+        "voteKick": "發起或參與踢出玩家投票。"
+      },
       "details": {
         "enabled": "模組已啟用，可從右側入口進入相關頁面。",
         "disabled": "模組目前在設定中停用，可進入設定頁啟用。",

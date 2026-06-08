@@ -2505,7 +2505,8 @@
         "subModules": "Sub-modules",
         "actions": "Actions",
         "details": "Status Details",
-        "configuration": "Configuration"
+        "configuration": "Configuration",
+        "commands": "Commands"
       },
       "status": {
         "healthy": "Healthy",
@@ -2513,7 +2514,53 @@
         "unavailable": "Unavailable"
       },
       "emptySubModules": "No sub-modules",
+      "emptyCommands": "No commands",
       "unknownModule": "Unknown Module",
+      "countSummary": "{0}/{1}",
+      "detailsAction": "Details",
+      "detail": {
+        "title": "Module Details",
+        "overview": "Overview",
+        "routes": "Entry Points",
+        "emptyRoutes": "No entry points",
+        "aliases": "Aliases",
+        "permissions": "Access Rules",
+        "emptyPermissions": "No access rules"
+      },
+      "permissionLevel": "Level {0}",
+      "permissionFlags": {
+        "authenticated": "Signed-in admin",
+        "gameReady": "Game ready"
+      },
+      "permissionScopes": {
+        "managementApi": "Management API",
+        "chatCommand": "Chat Commands"
+      },
+      "permissionDescriptions": {
+        "managementApi": "Related management pages and API calls require a signed-in web administrator.",
+        "chatCommand": "In-game players can use these chat commands when the feature and command are enabled; no unified admin permission level is currently attached."
+      },
+      "commandDescriptions": {
+        "economyBalance": "Shows the player's current economy balance.",
+        "economyPay": "Transfers currency to another player.",
+        "economyDaily": "Claims the configured daily economy reward.",
+        "economyMoneyTop": "Shows the economy leaderboard.",
+        "economyShop": "Lists available shop items.",
+        "economyBuy": "Buys an item from the economy shop.",
+        "economyRedeem": "Redeems a configured economy reward code.",
+        "teleportHomes": "Lists the player's saved home locations.",
+        "teleportSetHome": "Saves the player's current position as a home.",
+        "teleportDeleteHome": "Deletes a saved home location.",
+        "teleportHome": "Teleports the player to a saved home.",
+        "teleportCities": "Lists available city teleport destinations.",
+        "teleportCity": "Teleports the player to a city destination.",
+        "teleportRequest": "Sends a teleport request to another online player.",
+        "teleportAccept": "Accepts an incoming teleport request.",
+        "teleportReject": "Rejects an incoming teleport request.",
+        "teleportBack": "Returns the player to the previous teleport position.",
+        "voteRestart": "Starts or participates in a server restart vote.",
+        "voteKick": "Starts or participates in a player kick vote."
+      },
       "details": {
         "enabled": "Module is enabled. Use the actions on the right to open related pages.",
         "disabled": "Module is disabled in settings. Open settings to enable it.",
