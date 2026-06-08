@@ -2680,7 +2680,7 @@
         "Cron": "Scheduled Time"
       },
       "rules": {
-        "hint": "Rules are stored and validated now. Runtime event execution will be connected in the next phase.",
+        "hint": "Currently supports PlayerJoined and ChatMessage triggers. Actions support global messages, private messages, item grants, and economy balance adjustments.",
         "columns": {
           "name": "Name",
           "isEnabled": "Enabled",
@@ -2696,7 +2696,9 @@
           "triggerType": "Trigger Type",
           "description": "Description",
           "conditionsJson": "Conditions JSON",
-          "actionsJson": "Actions JSON"
+          "actionsJson": "Actions JSON",
+          "template": "Template",
+          "templatePlaceholder": "Select a template to fill rule JSON"
         },
         "dialog": {
           "createTitle": "Create Rule",
@@ -2716,6 +2718,39 @@
           "updateSuccess": "Rule updated successfully.",
           "deleteSuccess": "Rule deleted successfully.",
           "deleteConfirm": "Delete rule \"{name}\"?"
+        },
+        "templates": {
+          "welcomePrivateMessage": {
+            "name": "Private welcome message",
+            "description": "Send a private welcome message when a player joins.",
+            "message": "Welcome, {playerName}!"
+          },
+          "welcomeBroadcast": {
+            "name": "Join broadcast",
+            "description": "Broadcast a message when a player joins.",
+            "message": "{playerName} joined the server."
+          },
+          "newPlayerGift": {
+            "name": "New player starter gift",
+            "description": "Give wood to the joined player and send a private notice.",
+            "message": "Starter gift sent: 100 wood."
+          },
+          "economyWelcomeReward": {
+            "name": "Welcome economy reward",
+            "description": "Add currency to the joined player account.",
+            "reason": "Welcome reward",
+            "message": "Welcome reward sent: 100 coins."
+          },
+          "chatKeywordReply": {
+            "name": "Keyword auto reply",
+            "description": "Reply privately when a global chat message contains a keyword.",
+            "message": "Command received. An administrator will respond if needed."
+          },
+          "chatCommandBroadcast": {
+            "name": "Chat command broadcast",
+            "description": "Broadcast a fixed message when a global chat command is detected.",
+            "message": "Server notice triggered by {playerName}."
+          }
         }
       },
       "settings": {

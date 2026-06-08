@@ -29,7 +29,16 @@ interface RuleFormModel {
   description: string;
 }
 
-const TRIGGER_TYPES = ['PlayerJoined', 'PlayerLeft', 'PlayerDied', 'ChatMessage', 'Cron'] as const;
+const TRIGGER_TYPES = ['PlayerJoined', 'ChatMessage'] as const;
+
+interface RuleTemplate {
+  key: string;
+  name: string;
+  description: string;
+  triggerType: (typeof TRIGGER_TYPES)[number];
+  conditions: Record<string, unknown>;
+  actions: Array<Record<string, unknown>>;
+}
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
@@ -39,6 +48,7 @@ const formRef = useTemplateRef<FormInstance>('formRef');
 const dialogVisible = ref(false);
 const editingRule = ref<RuleRow | null>(null);
 const isSubmitting = ref(false);
+const selectedTemplateKey = ref<string>();
 
 const form = reactive<RuleFormModel>(buildDefaults());
 
@@ -53,6 +63,120 @@ const enabledOptions = computed(() => [
   { label: t('common.yes'), value: true },
   { label: t('common.no'), value: false },
 ]);
+
+const ruleTemplates = computed<RuleTemplate[]>(() => [
+  {
+    key: 'welcomePrivateMessage',
+    name: t('views.eventAutomation.rules.templates.welcomePrivateMessage.name'),
+    description: t('views.eventAutomation.rules.templates.welcomePrivateMessage.description'),
+    triggerType: 'PlayerJoined',
+    conditions: {},
+    actions: [
+      {
+        type: 'SendPrivateMessage',
+        target: 'TriggerPlayer',
+        message: t('views.eventAutomation.rules.templates.welcomePrivateMessage.message'),
+      },
+    ],
+  },
+  {
+    key: 'welcomeBroadcast',
+    name: t('views.eventAutomation.rules.templates.welcomeBroadcast.name'),
+    description: t('views.eventAutomation.rules.templates.welcomeBroadcast.description'),
+    triggerType: 'PlayerJoined',
+    conditions: {},
+    actions: [
+      {
+        type: 'SendGlobalMessage',
+        message: t('views.eventAutomation.rules.templates.welcomeBroadcast.message'),
+      },
+    ],
+  },
+  {
+    key: 'newPlayerGift',
+    name: t('views.eventAutomation.rules.templates.newPlayerGift.name'),
+    description: t('views.eventAutomation.rules.templates.newPlayerGift.description'),
+    triggerType: 'PlayerJoined',
+    conditions: {},
+    actions: [
+      {
+        type: 'GiveItem',
+        target: 'TriggerPlayer',
+        itemName: 'resourceWood',
+        count: 100,
+        quality: 1,
+      },
+      {
+        type: 'SendPrivateMessage',
+        target: 'TriggerPlayer',
+        message: t('views.eventAutomation.rules.templates.newPlayerGift.message'),
+      },
+    ],
+  },
+  {
+    key: 'economyWelcomeReward',
+    name: t('views.eventAutomation.rules.templates.economyWelcomeReward.name'),
+    description: t('views.eventAutomation.rules.templates.economyWelcomeReward.description'),
+    triggerType: 'PlayerJoined',
+    conditions: {},
+    actions: [
+      {
+        type: 'AdjustEconomy',
+        target: 'TriggerPlayer',
+        amount: 100,
+        reason: t('views.eventAutomation.rules.templates.economyWelcomeReward.reason'),
+      },
+      {
+        type: 'SendPrivateMessage',
+        target: 'TriggerPlayer',
+        message: t('views.eventAutomation.rules.templates.economyWelcomeReward.message'),
+      },
+    ],
+  },
+  {
+    key: 'chatKeywordReply',
+    name: t('views.eventAutomation.rules.templates.chatKeywordReply.name'),
+    description: t('views.eventAutomation.rules.templates.chatKeywordReply.description'),
+    triggerType: 'ChatMessage',
+    conditions: {
+      chatType: 'Global',
+      messageContains: 'help',
+      ignoreCase: true,
+    },
+    actions: [
+      {
+        type: 'SendPrivateMessage',
+        target: 'TriggerPlayer',
+        message: t('views.eventAutomation.rules.templates.chatKeywordReply.message'),
+      },
+    ],
+  },
+  {
+    key: 'chatCommandBroadcast',
+    name: t('views.eventAutomation.rules.templates.chatCommandBroadcast.name'),
+    description: t('views.eventAutomation.rules.templates.chatCommandBroadcast.description'),
+    triggerType: 'ChatMessage',
+    conditions: {
+      chatType: 'Global',
+      messageStartsWith: '!notice',
+      ignoreCase: true,
+    },
+    actions: [
+      {
+        type: 'SendGlobalMessage',
+        message: t('views.eventAutomation.rules.templates.chatCommandBroadcast.message'),
+      },
+    ],
+  },
+]);
+
+const ruleTemplateOptions = computed(() =>
+  ruleTemplates.value.map(template => ({
+    label: template.name,
+    value: template.key,
+    description: template.description,
+  })),
+);
 
 const rules = computed<FormRules<RuleFormModel>>(() => ({
   name: [{ required: true, message: t('views.eventAutomation.rules.validation.nameRequired'), trigger: 'blur' }],
@@ -110,7 +234,13 @@ function buildDefaults(): RuleFormModel {
     isEnabled: true,
     triggerType: 'PlayerJoined',
     conditionsJson: '{}',
-    actionsJson: '[]',
+    actionsJson: JSON.stringify([
+      {
+        type: 'SendPrivateMessage',
+        target: 'TriggerPlayer',
+        message: 'Welcome, {playerName}!',
+      },
+    ], null, 2),
     description: '',
   };
 }
@@ -207,6 +337,23 @@ function formatJsonField(prop: 'actionsJson' | 'conditionsJson') {
   }
 }
 
+function applyRuleTemplate(templateKey: string | undefined) {
+  if (!templateKey)
+    return;
+
+  const template = ruleTemplates.value.find(item => item.key === templateKey);
+  if (template == null)
+    return;
+
+  form.name = template.name;
+  form.isEnabled = true;
+  form.triggerType = template.triggerType;
+  form.conditionsJson = JSON.stringify(template.conditions, null, 2);
+  form.actionsJson = JSON.stringify(template.actions, null, 2);
+  form.description = template.description;
+  nextTick(() => formRef.value?.clearValidate());
+}
+
 function applyRuleToForm(rule: RuleRow | null) {
   const source = rule ?? buildDefaults();
   form.name = source.name ?? '';
@@ -219,6 +366,7 @@ function applyRuleToForm(rule: RuleRow | null) {
 
 function onAdd() {
   editingRule.value = null;
+  selectedTemplateKey.value = undefined;
   applyRuleToForm(null);
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
@@ -226,6 +374,7 @@ function onAdd() {
 
 function onEdit(row: RuleRow) {
   editingRule.value = row;
+  selectedTemplateKey.value = undefined;
   applyRuleToForm(row);
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
@@ -367,6 +516,30 @@ async function onDelete(row: RuleRow) {
     >
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
         <el-row :gutter="16">
+          <el-col :xs="24">
+            <el-form-item :label="t('views.eventAutomation.rules.form.template')">
+              <el-select
+                v-model="selectedTemplateKey"
+                class="w-full"
+                clearable
+                filterable
+                :placeholder="t('views.eventAutomation.rules.form.templatePlaceholder')"
+                @change="applyRuleTemplate"
+              >
+                <el-option
+                  v-for="option in ruleTemplateOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                >
+                  <div class="event-automation-template-option">
+                    <span>{{ option.label }}</span>
+                    <small>{{ option.description }}</small>
+                  </div>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :xs="24" :md="12">
             <el-form-item prop="name" :label="t('views.eventAutomation.rules.form.name')">
               <el-input v-model="form.name" clearable />
@@ -435,5 +608,17 @@ async function onDelete(row: RuleRow) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.event-automation-template-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.25;
+}
+
+.event-automation-template-option small {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
 }
 </style>

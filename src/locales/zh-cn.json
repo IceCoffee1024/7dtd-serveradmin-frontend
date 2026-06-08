@@ -2680,7 +2680,7 @@
         "Cron": "定时触发"
       },
       "rules": {
-        "hint": "当前阶段先保存和校验规则，运行时事件执行将在下一阶段接入。",
+        "hint": "当前支持玩家加入和聊天消息触发。动作支持全服消息、私聊、给物品和调整经济余额。",
         "columns": {
           "name": "名称",
           "isEnabled": "启用",
@@ -2696,7 +2696,9 @@
           "triggerType": "触发类型",
           "description": "描述",
           "conditionsJson": "条件 JSON",
-          "actionsJson": "动作 JSON"
+          "actionsJson": "动作 JSON",
+          "template": "规则模板",
+          "templatePlaceholder": "选择模板后自动填充规则 JSON"
         },
         "dialog": {
           "createTitle": "创建规则",
@@ -2716,6 +2718,39 @@
           "updateSuccess": "规则更新成功。",
           "deleteSuccess": "规则删除成功。",
           "deleteConfirm": "确认删除规则“{name}”？"
+        },
+        "templates": {
+          "welcomePrivateMessage": {
+            "name": "进服私聊欢迎",
+            "description": "玩家加入时向该玩家发送一条私聊欢迎消息。",
+            "message": "欢迎 {playerName} 加入服务器！"
+          },
+          "welcomeBroadcast": {
+            "name": "进服全服广播",
+            "description": "玩家加入时向全服广播提示。",
+            "message": "{playerName} 加入了服务器。"
+          },
+          "newPlayerGift": {
+            "name": "新人礼包",
+            "description": "玩家加入时发放木头并私聊提示。",
+            "message": "新人礼包已发放：100 个木头。"
+          },
+          "economyWelcomeReward": {
+            "name": "进服经济奖励",
+            "description": "玩家加入时增加经济账户余额。",
+            "reason": "进服欢迎奖励",
+            "message": "欢迎奖励已到账：100 金币。"
+          },
+          "chatKeywordReply": {
+            "name": "聊天关键词回复",
+            "description": "全局聊天包含关键词时自动私聊回复。",
+            "message": "已收到你的请求，如需处理管理员会继续跟进。"
+          },
+          "chatCommandBroadcast": {
+            "name": "聊天命令广播",
+            "description": "全局聊天命中指定命令前缀时发送固定广播。",
+            "message": "{playerName} 触发了一条服务器公告。"
+          }
         }
       },
       "settings": {
