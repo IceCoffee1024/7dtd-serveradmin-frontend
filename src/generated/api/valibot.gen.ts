@@ -1113,6 +1113,14 @@ export const vFeatureModuleCommandDto = v.strictObject({
 });
 
 /**
+ * Describes a capability exposed by a feature module.
+ */
+export const vFeatureModuleCapabilityDto = v.strictObject({
+    key: v.string(),
+    labelKey: v.string()
+});
+
+/**
  * Static metadata that describes how a feature module is presented in the management UI.
  */
 export const vFeatureModuleDefinitionDto = v.strictObject({
@@ -1121,7 +1129,8 @@ export const vFeatureModuleDefinitionDto = v.strictObject({
     categoryKey: v.string(),
     settingsRouteName: v.nullish(v.string()),
     routes: v.array(vFeatureModuleRouteDto),
-    commands: v.array(vFeatureModuleCommandDto)
+    commands: v.array(vFeatureModuleCommandDto),
+    capabilities: v.array(vFeatureModuleCapabilityDto)
 });
 
 /**
@@ -1156,12 +1165,34 @@ export const vFeatureModuleConfigurationStatus = v.picklist([
 ]);
 
 /**
+ * Severity for a module configuration issue.
+ */
+export const vFeatureModuleConfigurationIssueSeverity = v.picklist([
+    'Info',
+    'Warning',
+    'Error'
+]);
+
+/**
+ * Describes a single configuration issue or validation note for a feature module.
+ */
+export const vFeatureModuleConfigurationIssueDto = v.strictObject({
+    code: v.string(),
+    severity: vFeatureModuleConfigurationIssueSeverity,
+    messageCode: v.string(),
+    args: v.array(v.string())
+});
+
+/**
  * Represents a localized configuration check result for a module.
  */
 export const vFeatureModuleConfigurationDto = v.strictObject({
     status: vFeatureModuleConfigurationStatus,
     messageCode: v.string(),
-    args: v.array(v.string())
+    args: v.array(v.string()),
+    checkedAt: v.pipe(v.string(), v.isoTimestamp()),
+    issueCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    issues: v.array(vFeatureModuleConfigurationIssueDto)
 });
 
 /**
@@ -1178,6 +1209,20 @@ export const vFeatureModuleStatusDto = v.strictObject({
     commands: v.array(vFeatureModuleCommandDto),
     permissions: v.array(vFeatureModulePermissionDto),
     configuration: vFeatureModuleConfigurationDto
+});
+
+/**
+ * Unified read-only settings summary for a feature module.
+ */
+export const vFeatureModuleSettingsSummaryDto = v.strictObject({
+    key: v.string(),
+    settingsType: v.nullish(v.string()),
+    isEnabled: v.boolean(),
+    canEnable: v.boolean(),
+    canDisable: v.boolean(),
+    canValidate: v.boolean(),
+    settingsRouteName: v.nullish(v.string()),
+    validation: vFeatureModuleConfigurationDto
 });
 
 /**
@@ -2567,6 +2612,22 @@ export const vEconomyTransactionsExportTransactionsQuery = v.object({
 
 export const vEconomyTransactionsGetTransactionPath = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vFeatureModulesGetSettingsSummaryPath = v.object({
+    key: v.string()
+});
+
+export const vFeatureModulesValidateSettingsPath = v.object({
+    key: v.string()
+});
+
+export const vFeatureModulesEnableModulePath = v.object({
+    key: v.string()
+});
+
+export const vFeatureModulesDisableModulePath = v.object({
+    key: v.string()
 });
 
 export const vGameEventLogGetGameEventLogsQuery = v.object({

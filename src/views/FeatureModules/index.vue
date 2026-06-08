@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type {
+  FeatureModuleCapabilityDto,
   FeatureModuleCommandDto,
+  FeatureModuleConfigurationIssueDto,
+  FeatureModuleConfigurationIssueSeverity,
   FeatureModuleConfigurationStatus,
   FeatureModuleHealth,
   FeatureModulePermissionDto,
@@ -12,38 +15,19 @@ import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables/usePopup';
-import { client } from '~/generated/api/client.gen';
-import { featureModulesGetFeatureModules } from '~/generated/api/sdk.gen';
+import {
+  featureModulesDisableModule,
+  featureModulesEnableModule,
+  featureModulesGetFeatureModules,
+  featureModulesValidateSettings,
+} from '~/generated/api/sdk.gen';
 import { markIcon } from '~/utils';
 
 defineOptions({ name: 'FeatureModulesPage' });
 
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
-type FeatureModuleConfigurationIssueSeverityPayload = 'Info' | 'Warning' | 'Error' | string | number | null | undefined;
-
-interface FeatureModuleConfigurationIssuePayload {
-  code?: string | null;
-  severity?: FeatureModuleConfigurationIssueSeverityPayload;
-  messageCode?: string | null;
-  args?: string[] | null;
-}
-
-interface FeatureModuleCapabilityPayload {
-  key: string;
-  labelKey: string;
-}
-
-type ExtendedFeatureModuleStatusDto = FeatureModuleStatusDto & {
-  definition?: (NonNullable<FeatureModuleStatusDto['definition']> & {
-    capabilities?: FeatureModuleCapabilityPayload[] | null;
-  }) | null;
-  configuration?: FeatureModuleStatusDto['configuration'] & {
-    checkedAt?: string | null;
-    issueCount?: number | null;
-    issues?: FeatureModuleConfigurationIssuePayload[] | null;
-  };
-};
+type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 
 const { t } = useI18n();
 const router = useRouter();
@@ -58,8 +42,8 @@ const iconPower = markIcon(() => import('~icons/mdi/power'));
 
 const loading = ref(false);
 const actionLoadingKey = ref('');
-const modules = ref<ExtendedFeatureModuleStatusDto[]>([]);
-const selectedModule = ref<ExtendedFeatureModuleStatusDto | null>(null);
+const modules = ref<FeatureModuleStatusDto[]>([]);
+const selectedModule = ref<FeatureModuleStatusDto | null>(null);
 const detailVisible = ref(false);
 
 const summary = computed(() => {
@@ -113,8 +97,8 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): ExtendedFeatureModuleStatusDto {
-  return item as ExtendedFeatureModuleStatusDto;
+function toModuleStatus(item: unknown): FeatureModuleStatusDto {
+  return item as FeatureModuleStatusDto;
 }
 
 function getModuleName(item: unknown): string {
@@ -255,12 +239,12 @@ function getConfigurationCheckedAt(item: unknown): string {
     : dayjs(module.configuration.checkedAt).format('YYYY-MM-DD HH:mm:ss');
 }
 
-function getConfigurationIssues(item: unknown): FeatureModuleConfigurationIssuePayload[] {
+function getConfigurationIssues(item: unknown): FeatureModuleConfigurationIssueDto[] {
   const module = toModuleStatus(item);
   return module.configuration?.issues ?? [];
 }
 
-function getIssueText(issue: FeatureModuleConfigurationIssuePayload): string {
+function getIssueText(issue: FeatureModuleConfigurationIssueDto): string {
   const messageCode = issue.messageCode;
   if (messageCode == null || messageCode.length === 0)
     return issue.code ?? '-';
@@ -301,12 +285,12 @@ function getIssueSeverityLabel(severity: FeatureModuleConfigurationIssueSeverity
   return t('views.featureModules.issueSeverity.info');
 }
 
-function getModuleCapabilities(item: unknown): FeatureModuleCapabilityPayload[] {
+function getModuleCapabilities(item: unknown): FeatureModuleCapabilityDto[] {
   const module = toModuleStatus(item);
   return module.definition?.capabilities ?? [];
 }
 
-function getCapabilityLabel(capability: FeatureModuleCapabilityPayload): string {
+function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
   return capability.labelKey == null || capability.labelKey.length === 0
     ? capability.key
     : t(capability.labelKey);
@@ -358,11 +342,20 @@ async function postModuleAction(item: unknown, action: 'Enable' | 'Disable' | 'V
   actionLoadingKey.value = loadingKey;
 
   try {
-    await client.post<unknown, unknown, true>({
-      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
-      url: `/api/FeatureModules/${encodeURIComponent(module.key)}/${action}`,
+    const options = {
+      path: {
+        key: module.key,
+      },
       throwOnError: true,
-    });
+    };
+
+    if (action === 'Enable')
+      await featureModulesEnableModule(options);
+    else if (action === 'Disable')
+      await featureModulesDisableModule(options);
+    else
+      await featureModulesValidateSettings(options);
+
     toast({
       type: 'success',
       title: t(`views.featureModules.actions.${action.toLowerCase()}Success`),

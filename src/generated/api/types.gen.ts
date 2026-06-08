@@ -1908,6 +1908,10 @@ export type FeatureModuleDefinitionDto = {
      * Commands declared by this module.
      */
     commands: Array<FeatureModuleCommandDto>;
+    /**
+     * Static capability hints used by management UIs to decide which affordances to show.
+     */
+    capabilities: Array<FeatureModuleCapabilityDto>;
 };
 
 /**
@@ -1944,6 +1948,20 @@ export type FeatureModuleCommandDto = {
      * Stable frontend i18n key for the command description.
      */
     descriptionKey?: string | null;
+};
+
+/**
+ * Describes a capability exposed by a feature module.
+ */
+export type FeatureModuleCapabilityDto = {
+    /**
+     * Stable capability key.
+     */
+    key: string;
+    /**
+     * Frontend i18n key used for capability label.
+     */
+    labelKey: string;
 };
 
 /**
@@ -2014,12 +2032,89 @@ export type FeatureModuleConfigurationDto = {
      * Positional message arguments for the frontend i18n formatter.
      */
     args: Array<string>;
+    /**
+     * UTC timestamp when this configuration check was produced.
+     */
+    checkedAt: string;
+    /**
+     * Number of configuration issues included in this result.
+     */
+    issueCount: number;
+    /**
+     * Detailed configuration issues and validation notes.
+     */
+    issues: Array<FeatureModuleConfigurationIssueDto>;
 };
 
 /**
  * Configuration readiness state for a feature module.
  */
 export type FeatureModuleConfigurationStatus = 'Ok' | 'Warning' | 'Unknown';
+
+/**
+ * Describes a single configuration issue or validation note for a feature module.
+ */
+export type FeatureModuleConfigurationIssueDto = {
+    /**
+     * Stable machine-readable issue code.
+     */
+    code: string;
+    /**
+     * Issue severity.
+     */
+    severity: FeatureModuleConfigurationIssueSeverity;
+    /**
+     * Stable frontend i18n message code under views.featureModules.configuration.
+     */
+    messageCode: string;
+    /**
+     * Positional message arguments for the frontend i18n formatter.
+     */
+    args: Array<string>;
+};
+
+/**
+ * Severity for a module configuration issue.
+ */
+export type FeatureModuleConfigurationIssueSeverity = 'Info' | 'Warning' | 'Error';
+
+/**
+ * Unified read-only settings summary for a feature module.
+ */
+export type FeatureModuleSettingsSummaryDto = {
+    /**
+     * Stable module key.
+     */
+    key: string;
+    /**
+     * Runtime settings type name.
+     */
+    settingsType?: string | null;
+    /**
+     * True when the module is enabled in its current strongly typed settings.
+     */
+    isEnabled: boolean;
+    /**
+     * True when this module supports a unified enable endpoint.
+     */
+    canEnable: boolean;
+    /**
+     * True when this module supports a unified disable endpoint.
+     */
+    canDisable: boolean;
+    /**
+     * True when this module supports unified validation.
+     */
+    canValidate: boolean;
+    /**
+     * Primary settings route name when the module has one.
+     */
+    settingsRouteName?: string | null;
+    /**
+     * Current validation result for the module settings.
+     */
+    validation: FeatureModuleConfigurationDto;
+};
 
 /**
  * Represents a paged query result with total count and current page items.
@@ -6391,6 +6486,106 @@ export type FeatureModulesGetFeatureModulesResponses = {
 };
 
 export type FeatureModulesGetFeatureModulesResponse = FeatureModulesGetFeatureModulesResponses[keyof FeatureModulesGetFeatureModulesResponses];
+
+export type FeatureModulesGetSettingsSummaryData = {
+    body?: never;
+    path: {
+        /**
+         * Stable feature module key.
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/FeatureModules/{key}/SettingsSummary';
+};
+
+export type FeatureModulesGetSettingsSummaryErrors = {
+    404: unknown;
+};
+
+export type FeatureModulesGetSettingsSummaryResponses = {
+    /**
+     * The module settings summary.
+     */
+    200: FeatureModuleSettingsSummaryDto;
+};
+
+export type FeatureModulesGetSettingsSummaryResponse = FeatureModulesGetSettingsSummaryResponses[keyof FeatureModulesGetSettingsSummaryResponses];
+
+export type FeatureModulesValidateSettingsData = {
+    body?: never;
+    path: {
+        /**
+         * Stable feature module key.
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/FeatureModules/{key}/Validate';
+};
+
+export type FeatureModulesValidateSettingsErrors = {
+    404: unknown;
+};
+
+export type FeatureModulesValidateSettingsResponses = {
+    /**
+     * The module validation result.
+     */
+    200: FeatureModuleConfigurationDto;
+};
+
+export type FeatureModulesValidateSettingsResponse = FeatureModulesValidateSettingsResponses[keyof FeatureModulesValidateSettingsResponses];
+
+export type FeatureModulesEnableModuleData = {
+    body?: never;
+    path: {
+        /**
+         * Stable feature module key.
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/FeatureModules/{key}/Enable';
+};
+
+export type FeatureModulesEnableModuleErrors = {
+    404: unknown;
+};
+
+export type FeatureModulesEnableModuleResponses = {
+    /**
+     * The updated module settings summary.
+     */
+    200: FeatureModuleSettingsSummaryDto;
+};
+
+export type FeatureModulesEnableModuleResponse = FeatureModulesEnableModuleResponses[keyof FeatureModulesEnableModuleResponses];
+
+export type FeatureModulesDisableModuleData = {
+    body?: never;
+    path: {
+        /**
+         * Stable feature module key.
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/FeatureModules/{key}/Disable';
+};
+
+export type FeatureModulesDisableModuleErrors = {
+    404: unknown;
+};
+
+export type FeatureModulesDisableModuleResponses = {
+    /**
+     * The updated module settings summary.
+     */
+    200: FeatureModuleSettingsSummaryDto;
+};
+
+export type FeatureModulesDisableModuleResponse = FeatureModulesDisableModuleResponses[keyof FeatureModulesDisableModuleResponses];
 
 export type GameEventLogGetGameEventLogsData = {
     body?: never;
