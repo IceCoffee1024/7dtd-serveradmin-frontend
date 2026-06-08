@@ -8,9 +8,11 @@ import type {
   FeatureModuleStatusDto,
   FeatureSubModuleStatusDto,
 } from '~/generated/api/types.gen';
+import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables/usePopup';
+import { client } from '~/generated/api/client.gen';
 import { featureModulesGetFeatureModules } from '~/generated/api/sdk.gen';
 import { markIcon } from '~/utils';
 
@@ -18,6 +20,30 @@ defineOptions({ name: 'FeatureModulesPage' });
 
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
+type FeatureModuleConfigurationIssueSeverityPayload = 'Info' | 'Warning' | 'Error' | string | number | null | undefined;
+
+interface FeatureModuleConfigurationIssuePayload {
+  code?: string | null;
+  severity?: FeatureModuleConfigurationIssueSeverityPayload;
+  messageCode?: string | null;
+  args?: string[] | null;
+}
+
+interface FeatureModuleCapabilityPayload {
+  key: string;
+  labelKey: string;
+}
+
+type ExtendedFeatureModuleStatusDto = FeatureModuleStatusDto & {
+  definition?: (NonNullable<FeatureModuleStatusDto['definition']> & {
+    capabilities?: FeatureModuleCapabilityPayload[] | null;
+  }) | null;
+  configuration?: FeatureModuleStatusDto['configuration'] & {
+    checkedAt?: string | null;
+    issueCount?: number | null;
+    issues?: FeatureModuleConfigurationIssuePayload[] | null;
+  };
+};
 
 const { t } = useI18n();
 const router = useRouter();
@@ -27,10 +53,13 @@ const { toast } = usePopup();
 const iconRefresh = markIcon(() => import('~icons/mdi/refresh'));
 const iconOpen = markIcon(() => import('~icons/mdi/open-in-new'));
 const iconDetails = markIcon(() => import('~icons/mdi/information-outline'));
+const iconValidate = markIcon(() => import('~icons/mdi/check-circle-outline'));
+const iconPower = markIcon(() => import('~icons/mdi/power'));
 
 const loading = ref(false);
-const modules = ref<FeatureModuleStatusDto[]>([]);
-const selectedModule = ref<FeatureModuleStatusDto | null>(null);
+const actionLoadingKey = ref('');
+const modules = ref<ExtendedFeatureModuleStatusDto[]>([]);
+const selectedModule = ref<ExtendedFeatureModuleStatusDto | null>(null);
 const detailVisible = ref(false);
 
 const summary = computed(() => {
@@ -84,8 +113,8 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): FeatureModuleStatusDto {
-  return item as FeatureModuleStatusDto;
+function toModuleStatus(item: unknown): ExtendedFeatureModuleStatusDto {
+  return item as ExtendedFeatureModuleStatusDto;
 }
 
 function getModuleName(item: unknown): string {
@@ -214,6 +243,75 @@ function getConfigurationText(item: unknown): string {
   return t(`views.featureModules.configuration.${messageCode}`, module.configuration?.args ?? []);
 }
 
+function getConfigurationIssueCount(item: unknown): number {
+  const module = toModuleStatus(item);
+  return module.configuration?.issueCount ?? module.configuration?.issues?.length ?? 0;
+}
+
+function getConfigurationCheckedAt(item: unknown): string {
+  const module = toModuleStatus(item);
+  return module.configuration?.checkedAt == null
+    ? '-'
+    : dayjs(module.configuration.checkedAt).format('YYYY-MM-DD HH:mm:ss');
+}
+
+function getConfigurationIssues(item: unknown): FeatureModuleConfigurationIssuePayload[] {
+  const module = toModuleStatus(item);
+  return module.configuration?.issues ?? [];
+}
+
+function getIssueText(issue: FeatureModuleConfigurationIssuePayload): string {
+  const messageCode = issue.messageCode;
+  if (messageCode == null || messageCode.length === 0)
+    return issue.code ?? '-';
+  return t(`views.featureModules.configuration.${messageCode}`, issue.args ?? []);
+}
+
+function getIssueTagType(severity: FeatureModuleConfigurationIssueSeverityPayload) {
+  if (typeof severity === 'number') {
+    if (severity === 1)
+      return 'warning';
+    if (severity === 2)
+      return 'danger';
+    return 'info';
+  }
+
+  const text = String(severity ?? '').toLowerCase();
+  if (text === 'warning')
+    return 'warning';
+  if (text === 'error')
+    return 'danger';
+  return 'info';
+}
+
+function getIssueSeverityLabel(severity: FeatureModuleConfigurationIssueSeverityPayload): string {
+  if (typeof severity === 'number') {
+    if (severity === 1)
+      return t('views.featureModules.issueSeverity.warning');
+    if (severity === 2)
+      return t('views.featureModules.issueSeverity.error');
+    return t('views.featureModules.issueSeverity.info');
+  }
+
+  const text = String(severity ?? '').toLowerCase();
+  if (text === 'warning')
+    return t('views.featureModules.issueSeverity.warning');
+  if (text === 'error')
+    return t('views.featureModules.issueSeverity.error');
+  return t('views.featureModules.issueSeverity.info');
+}
+
+function getModuleCapabilities(item: unknown): FeatureModuleCapabilityPayload[] {
+  const module = toModuleStatus(item);
+  return module.definition?.capabilities ?? [];
+}
+
+function getCapabilityLabel(capability: FeatureModuleCapabilityPayload): string {
+  return capability.labelKey == null || capability.labelKey.length === 0
+    ? capability.key
+    : t(capability.labelKey);
+}
+
 function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
   if (status === 'Ok')
     return 'success';
@@ -225,10 +323,14 @@ function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
 async function loadModules() {
   loading.value = true;
   try {
+    const selectedKey = selectedModule.value?.key;
     const { data } = await featureModulesGetFeatureModules({
       throwOnError: true,
     });
     modules.value = data ?? [];
+    if (selectedKey != null) {
+      selectedModule.value = modules.value.find(item => item.key === selectedKey) ?? selectedModule.value;
+    }
   }
   catch (error) {
     toast({
@@ -238,6 +340,45 @@ async function loadModules() {
   }
   finally {
     loading.value = false;
+  }
+}
+
+function getModuleActionLoadingKey(item: unknown, action: string): string {
+  const module = toModuleStatus(item);
+  return `${module.key}:${action}`;
+}
+
+function isModuleActionLoading(item: unknown, action: string): boolean {
+  return actionLoadingKey.value === getModuleActionLoadingKey(item, action);
+}
+
+async function postModuleAction(item: unknown, action: 'Enable' | 'Disable' | 'Validate') {
+  const module = toModuleStatus(item);
+  const loadingKey = getModuleActionLoadingKey(module, action);
+  actionLoadingKey.value = loadingKey;
+
+  try {
+    await client.post<unknown, unknown, true>({
+      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+      url: `/api/FeatureModules/${encodeURIComponent(module.key)}/${action}`,
+      throwOnError: true,
+    });
+    toast({
+      type: 'success',
+      title: t(`views.featureModules.actions.${action.toLowerCase()}Success`),
+    });
+    await loadModules();
+  }
+  catch (error) {
+    toast({
+      type: 'error',
+      text: error instanceof Error ? error.message : String(error),
+    });
+  }
+  finally {
+    if (actionLoadingKey.value === loadingKey) {
+      actionLoadingKey.value = '';
+    }
   }
 }
 
@@ -342,9 +483,14 @@ onMounted(loadModules);
 
         <el-table-column :label="t('views.featureModules.columns.configuration')" min-width="220">
           <template #default="{ row }">
-            <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
-              {{ getConfigurationText(row) }}
-            </el-tag>
+            <div class="feature-modules-page__configuration">
+              <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
+                {{ getConfigurationText(row) }}
+              </el-tag>
+              <span v-if="getConfigurationIssueCount(row) > 0" class="feature-modules-page__issue-count">
+                {{ t('views.featureModules.issueCount', [getConfigurationIssueCount(row)]) }}
+              </span>
+            </div>
           </template>
         </el-table-column>
 
@@ -370,7 +516,7 @@ onMounted(loadModules);
           </template>
         </el-table-column>
 
-        <el-table-column :label="t('views.featureModules.columns.actions')" width="300" fixed="right">
+        <el-table-column :label="t('views.featureModules.columns.actions')" width="420" fixed="right">
           <template #default="{ row }">
             <div class="feature-modules-page__actions">
               <el-button
@@ -379,6 +525,25 @@ onMounted(loadModules);
                 @click="openDetails(row)"
               >
                 {{ t('views.featureModules.detailsAction') }}
+              </el-button>
+              <el-button
+                v-if="row.registered"
+                :icon="iconValidate"
+                :loading="isModuleActionLoading(row, 'Validate')"
+                size="small"
+                @click="postModuleAction(row, 'Validate')"
+              >
+                {{ t('views.featureModules.actions.validate') }}
+              </el-button>
+              <el-button
+                v-if="row.registered"
+                :icon="iconPower"
+                :loading="isModuleActionLoading(row, row.enabled ? 'Disable' : 'Enable')"
+                :type="row.enabled ? 'warning' : 'success'"
+                size="small"
+                @click="postModuleAction(row, row.enabled ? 'Disable' : 'Enable')"
+              >
+                {{ row.enabled ? t('views.featureModules.actions.disable') : t('views.featureModules.actions.enable') }}
               </el-button>
               <el-button
                 v-for="link in getModuleRoutes(row)"
@@ -430,7 +595,44 @@ onMounted(loadModules);
               {{ getConfigurationText(selectedModule) }}
             </el-tag>
           </el-descriptions-item>
+          <el-descriptions-item :label="t('views.featureModules.columns.issueCount')">
+            {{ getConfigurationIssueCount(selectedModule) }}
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('views.featureModules.columns.checkedAt')">
+            {{ getConfigurationCheckedAt(selectedModule) }}
+          </el-descriptions-item>
         </el-descriptions>
+      </section>
+
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.detail.capabilities') }}</h3>
+        <div v-if="getModuleCapabilities(selectedModule).length > 0" class="feature-module-detail__tags">
+          <el-tag
+            v-for="capability in getModuleCapabilities(selectedModule)"
+            :key="capability.key"
+            effect="plain"
+          >
+            {{ getCapabilityLabel(capability) }}
+          </el-tag>
+        </div>
+        <el-empty v-else :description="t('views.featureModules.detail.emptyCapabilities')" :image-size="72" />
+      </section>
+
+      <section class="feature-module-detail__section">
+        <h3>{{ t('views.featureModules.detail.configurationIssues') }}</h3>
+        <div v-if="getConfigurationIssues(selectedModule).length > 0" class="feature-module-detail__issues">
+          <div
+            v-for="issue in getConfigurationIssues(selectedModule)"
+            :key="issue.code ?? issue.messageCode ?? getIssueText(issue)"
+            class="feature-module-detail__issue"
+          >
+            <el-tag :type="getIssueTagType(issue.severity)" effect="plain" size="small">
+              {{ getIssueSeverityLabel(issue.severity) }}
+            </el-tag>
+            <span>{{ getIssueText(issue) }}</span>
+          </div>
+        </div>
+        <el-empty v-else :description="t('views.featureModules.detail.emptyConfigurationIssues')" :image-size="72" />
       </section>
 
       <section class="feature-module-detail__section">
@@ -597,6 +799,19 @@ onMounted(loadModules);
   font-size: 13px;
 }
 
+.feature-modules-page__configuration {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.feature-modules-page__issue-count {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+}
+
 .feature-modules-page__status-detail {
   color: var(--el-text-color-regular);
 }
@@ -646,8 +861,15 @@ onMounted(loadModules);
   gap: 8px;
 }
 
+.feature-module-detail__issues {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .feature-module-detail__command,
-.feature-module-detail__permission {
+.feature-module-detail__permission,
+.feature-module-detail__issue {
   border: 1px solid var(--el-border-color-lighter);
   border-radius: 8px;
   padding: 10px 12px;
@@ -659,6 +881,15 @@ onMounted(loadModules);
     font-size: 12px;
     line-height: 18px;
   }
+}
+
+.feature-module-detail__issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--el-text-color-regular);
+  font-size: 13px;
+  line-height: 20px;
 }
 
 .feature-module-detail__command-main,

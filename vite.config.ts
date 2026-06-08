@@ -100,7 +100,7 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    base: env.VITE_APP_PUBLIC_BASE_PATH,
+    base: env.VITE_APP_PUBLIC_BASE_PATH || '/',
     server: {
       open: true,
       proxy: {

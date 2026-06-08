@@ -2506,7 +2506,9 @@
         "actions": "操作",
         "details": "状态说明",
         "configuration": "配置检查",
-        "commands": "命令"
+        "commands": "命令",
+        "issueCount": "问题数",
+        "checkedAt": "检查时间"
       },
       "status": {
         "healthy": "正常",
@@ -2525,7 +2527,11 @@
         "emptyRoutes": "无入口",
         "aliases": "别名",
         "permissions": "访问规则",
-        "emptyPermissions": "无访问规则"
+        "emptyPermissions": "无访问规则",
+        "capabilities": "能力",
+        "emptyCapabilities": "无能力信息",
+        "configurationIssues": "配置问题",
+        "emptyConfigurationIssues": "无配置问题"
       },
       "permissionLevel": "等级 {0}",
       "permissionFlags": {
@@ -2582,6 +2588,26 @@
         "onlineReward": "周期 {0} 分钟，奖励 {1}",
         "backupSubModules": "启用备份子模块 {0}/{1} 个",
         "restartSchedule": "重启计划：{0}"
+      },
+      "issueCount": "{0} 个问题",
+      "issueSeverity": {
+        "info": "信息",
+        "warning": "警告",
+        "error": "错误"
+      },
+      "capabilities": {
+        "status": "状态",
+        "configurationCheck": "配置检查",
+        "settings": "设置",
+        "routes": "入口"
+      },
+      "actions": {
+        "enable": "启用",
+        "disable": "禁用",
+        "validate": "校验",
+        "enableSuccess": "模块已启用",
+        "disableSuccess": "模块已禁用",
+        "validateSuccess": "模块配置校验完成"
       }
     }
   }

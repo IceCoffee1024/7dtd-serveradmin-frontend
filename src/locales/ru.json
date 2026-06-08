@@ -2506,7 +2506,9 @@
         "actions": "Actions",
         "details": "Status Details",
         "configuration": "Configuration",
-        "commands": "Commands"
+        "commands": "Commands",
+        "issueCount": "Issues",
+        "checkedAt": "Checked At"
       },
       "status": {
         "healthy": "Healthy",
@@ -2525,7 +2527,11 @@
         "emptyRoutes": "No entry points",
         "aliases": "Aliases",
         "permissions": "Access Rules",
-        "emptyPermissions": "No access rules"
+        "emptyPermissions": "No access rules",
+        "capabilities": "Capabilities",
+        "emptyCapabilities": "No capabilities",
+        "configurationIssues": "Configuration Issues",
+        "emptyConfigurationIssues": "No configuration issues"
       },
       "permissionLevel": "Level {0}",
       "permissionFlags": {
@@ -2582,6 +2588,26 @@
         "onlineReward": "{0} min cycle, {1} reward",
         "backupSubModules": "{0}/{1} backup sub-modules enabled",
         "restartSchedule": "Restart schedule: {0}"
+      },
+      "issueCount": "{0} issues",
+      "issueSeverity": {
+        "info": "Info",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "capabilities": {
+        "status": "Status",
+        "configurationCheck": "Configuration Check",
+        "settings": "Settings",
+        "routes": "Entry Points"
+      },
+      "actions": {
+        "enable": "Enable",
+        "disable": "Disable",
+        "validate": "Validate",
+        "enableSuccess": "Module enabled",
+        "disableSuccess": "Module disabled",
+        "validateSuccess": "Module configuration validated"
       }
     }
   }
