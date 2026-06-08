@@ -2536,7 +2536,9 @@
       "permissionLevel": "等级 {0}",
       "permissionFlags": {
         "authenticated": "已登录管理员",
-        "gameReady": "游戏已就绪"
+        "gameReady": "游戏已就绪",
+        "admin": "管理员",
+        "onlinePlayer": "在线玩家"
       },
       "permissionScopes": {
         "managementApi": "管理 API",
@@ -2606,7 +2608,32 @@
         "teleportNoEnabledSubModules": "没有启用任何传送子模块。",
         "teleportInvalidMaxHomes": "启用家传送时，最大家数量必须大于 0：{0}。",
         "teleportInvalidRequestExpiry": "启用好友传送时，请求过期时间必须大于 0 秒：{0}。",
-        "teleportInvalidGlobalCooldown": "启用全局冷却时，全局冷却时间必须大于 0 秒：{0}。"
+        "teleportInvalidGlobalCooldown": "启用全局冷却时，全局冷却时间必须大于 0 秒：{0}。",
+        "coloredChatInvalidPlayerColorTagPermission": "玩家彩色标签权限无效：{0}。",
+        "coloredChatNoColorRules": "未配置彩色配置，也未配置默认颜色。",
+        "backupNoEnabledSubModules": "没有启用任何备份子模块。",
+        "backupMissingCronExpression": "{0} 备份没有配置 Cron 表达式。",
+        "backupMissingDestinationRoot": "{0} 备份没有配置目标目录。",
+        "backupInvalidRetentionCount": "{0} 备份保留数量无效：{1}。",
+        "backupInvalidHistoryRetentionDays": "备份历史保留天数不能为负数：{0}。",
+        "restartMissingCronExpression": "重启计划没有配置 Cron 表达式。",
+        "restartInvalidWarningLeadSeconds": "重启提前提醒秒数不能为负数：{0}。",
+        "restartInvalidWarningStage": "一个或多个重启提醒阶段存在负数提前时间。",
+        "restartInvalidHistoryRetentionDays": "重启历史保留天数不能为负数：{0}。",
+        "restartInvalidBloodMoonDeferMinutes": "启用血月延迟时，延迟分钟数必须大于 0：{0}。",
+        "scheduledCommandInvalidHistoryRetentionDays": "计划命令历史保留天数不能为负数：{0}。",
+        "scheduledCommandMissingFailureNotifyMessage": "已启用失败通知，但未配置通知消息。",
+        "gameNoticeInvalidRotatingInterval": "存在轮播公告时，轮播间隔必须大于 0：{0}。",
+        "onlineRewardInvalidInterval": "在线奖励周期必须大于 0 分钟：{0}。",
+        "onlineRewardInvalidAmount": "在线奖励金额必须大于 0：{0}。",
+        "voteSettings": "最低人数 {0}，通过阈值 {1}%",
+        "voteInvalidWarningLeadSeconds": "投票重启提前提醒秒数不能为负数：{0}。",
+        "voteInvalidMinOnlinePlayers": "最低在线人数必须大于 0：{0}。",
+        "voteInvalidDuration": "投票持续时间必须大于 0 秒：{0}。",
+        "voteInvalidPassThreshold": "投票通过阈值必须大于 0 且不超过 100：{0}。",
+        "voteKickInvalidTargetImmunity": "投票踢出目标保护秒数不能为负数：{0}。",
+        "voteKickMissingKickReason": "投票踢出原因为空，被踢玩家可能看到兜底原因。",
+        "commandConflict": "命令“{0}”在这些模块中冲突：{1}。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2627,7 +2654,17 @@
         "enableSuccess": "模块已启用",
         "disableSuccess": "模块已禁用",
         "validateSuccess": "模块配置校验完成"
-      }
+      },
+      "filterAll": "全部",
+      "filterEnabled": "已启用",
+      "filterDisabled": "已禁用",
+      "filterIssues": "有问题",
+      "filterUnavailable": "不可用",
+      "searchPlaceholder": "搜索模块名称或 key",
+      "issueFirst": "问题优先",
+      "enableConfirm": "确认启用 {0}？",
+      "disableConfirm": "确认禁用 {0}？这可能停止相关命令和自动化。",
+      "actionUnavailable": "此模块不支持该操作。"
     }
   }
 }

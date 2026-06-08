@@ -2536,7 +2536,9 @@
       "permissionLevel": "Level {0}",
       "permissionFlags": {
         "authenticated": "Signed-in admin",
-        "gameReady": "Game ready"
+        "gameReady": "Game ready",
+        "admin": "Admin",
+        "onlinePlayer": "Online Player"
       },
       "permissionScopes": {
         "managementApi": "Management API",
@@ -2606,7 +2608,32 @@
         "teleportNoEnabledSubModules": "No teleport sub-module is enabled.",
         "teleportInvalidMaxHomes": "Maximum home count must be greater than 0 when home teleport is enabled: {0}.",
         "teleportInvalidRequestExpiry": "Teleport request expiry must be greater than 0 seconds when friend teleport is enabled: {0}.",
-        "teleportInvalidGlobalCooldown": "Global cooldown must be greater than 0 seconds when enabled: {0}."
+        "teleportInvalidGlobalCooldown": "Global cooldown must be greater than 0 seconds when enabled: {0}.",
+        "coloredChatInvalidPlayerColorTagPermission": "Invalid player color tag permission: {0}.",
+        "coloredChatNoColorRules": "No color profiles or default colors are configured.",
+        "backupNoEnabledSubModules": "No backup sub-module is enabled.",
+        "backupMissingCronExpression": "{0} backup has no cron expression.",
+        "backupMissingDestinationRoot": "{0} backup has no destination folder.",
+        "backupInvalidRetentionCount": "{0} backup retention count is invalid: {1}.",
+        "backupInvalidHistoryRetentionDays": "Backup history retention days cannot be negative: {0}.",
+        "restartMissingCronExpression": "Restart schedule has no cron expression.",
+        "restartInvalidWarningLeadSeconds": "Restart warning lead seconds cannot be negative: {0}.",
+        "restartInvalidWarningStage": "One or more restart warning stages have a negative lead time.",
+        "restartInvalidHistoryRetentionDays": "Restart history retention days cannot be negative: {0}.",
+        "restartInvalidBloodMoonDeferMinutes": "Blood moon defer minutes must be greater than 0 when defer is enabled: {0}.",
+        "scheduledCommandInvalidHistoryRetentionDays": "Scheduled command history retention days cannot be negative: {0}.",
+        "scheduledCommandMissingFailureNotifyMessage": "Failure notification is enabled but no message is configured.",
+        "gameNoticeInvalidRotatingInterval": "Rotating notice interval must be greater than 0 when rotating notices exist: {0}.",
+        "onlineRewardInvalidInterval": "Online reward interval must be greater than 0 minutes: {0}.",
+        "onlineRewardInvalidAmount": "Online reward amount must be greater than 0: {0}.",
+        "voteSettings": "Minimum players {0}, pass threshold {1}%",
+        "voteInvalidWarningLeadSeconds": "Vote restart warning lead seconds cannot be negative: {0}.",
+        "voteInvalidMinOnlinePlayers": "Minimum online player count must be greater than 0: {0}.",
+        "voteInvalidDuration": "Vote duration must be greater than 0 seconds: {0}.",
+        "voteInvalidPassThreshold": "Vote pass threshold must be greater than 0 and no more than 100: {0}.",
+        "voteKickInvalidTargetImmunity": "Vote kick target immunity seconds cannot be negative: {0}.",
+        "voteKickMissingKickReason": "Vote kick reason is empty; kicked players may see a fallback reason.",
+        "commandConflict": "Command \"{0}\" conflicts across modules: {1}."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2627,7 +2654,17 @@
         "enableSuccess": "Module enabled",
         "disableSuccess": "Module disabled",
         "validateSuccess": "Module configuration validated"
-      }
+      },
+      "filterAll": "All",
+      "filterEnabled": "Enabled",
+      "filterDisabled": "Disabled",
+      "filterIssues": "Has Issues",
+      "filterUnavailable": "Unavailable",
+      "searchPlaceholder": "Search module name or key",
+      "issueFirst": "Issues first",
+      "enableConfirm": "Enable {0}?",
+      "disableConfirm": "Disable {0}? This may stop related commands and automation.",
+      "actionUnavailable": "This action is not available for this module."
     }
   }
 }

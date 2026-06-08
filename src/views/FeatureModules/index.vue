@@ -28,23 +28,40 @@ defineOptions({ name: 'FeatureModulesPage' });
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
+type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
+
+type ExtendedFeatureModulePermissionDto = FeatureModulePermissionDto & {
+  requiresAdmin?: boolean;
+  requiresOnlinePlayer?: boolean;
+};
+
+type ExtendedFeatureModuleStatusDto = FeatureModuleStatusDto & {
+  canDisable?: boolean;
+  canEnable?: boolean;
+  canValidate?: boolean;
+  permissions: ExtendedFeatureModulePermissionDto[];
+};
 
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
-const { toast } = usePopup();
+const { confirm, toast } = usePopup();
 
 const iconRefresh = markIcon(() => import('~icons/mdi/refresh'));
 const iconOpen = markIcon(() => import('~icons/mdi/open-in-new'));
 const iconDetails = markIcon(() => import('~icons/mdi/information-outline'));
 const iconValidate = markIcon(() => import('~icons/mdi/check-circle-outline'));
 const iconPower = markIcon(() => import('~icons/mdi/power'));
+const issueSeverities: FeatureModuleConfigurationIssueSeverity[] = ['Error', 'Warning', 'Info'];
 
 const loading = ref(false);
 const actionLoadingKey = ref('');
-const modules = ref<FeatureModuleStatusDto[]>([]);
-const selectedModule = ref<FeatureModuleStatusDto | null>(null);
+const modules = ref<ExtendedFeatureModuleStatusDto[]>([]);
+const selectedModule = ref<ExtendedFeatureModuleStatusDto | null>(null);
 const detailVisible = ref(false);
+const filter = ref<ModuleFilter>('all');
+const keyword = ref('');
+const issueFirst = ref(true);
 
 const summary = computed(() => {
   const result = {
@@ -65,6 +82,30 @@ const summary = computed(() => {
   }
 
   return result;
+});
+
+const filteredModules = computed(() => {
+  const normalizedKeyword = keyword.value.trim().toLowerCase();
+  const items = modules.value.filter((item) => {
+    if (!matchesFilter(item))
+      return false;
+
+    if (normalizedKeyword.length === 0)
+      return true;
+
+    return item.key.toLowerCase().includes(normalizedKeyword)
+      || getModuleName(item).toLowerCase().includes(normalizedKeyword);
+  });
+
+  return [...items].sort((a, b) => {
+    if (issueFirst.value) {
+      const issueDiff = getConfigurationIssueCount(b) - getConfigurationIssueCount(a);
+      if (issueDiff !== 0)
+        return issueDiff;
+    }
+
+    return getModuleName(a).localeCompare(getModuleName(b));
+  });
 });
 
 function normalizeHealth(value: FeatureModuleHealthPayload): FeatureModuleHealth {
@@ -97,8 +138,21 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): FeatureModuleStatusDto {
-  return item as FeatureModuleStatusDto;
+function toModuleStatus(item: unknown): ExtendedFeatureModuleStatusDto {
+  return item as ExtendedFeatureModuleStatusDto;
+}
+
+function matchesFilter(item: ExtendedFeatureModuleStatusDto): boolean {
+  const health = normalizeHealth(item.health);
+  if (filter.value === 'enabled')
+    return health === 'Healthy';
+  if (filter.value === 'disabled')
+    return health === 'Disabled';
+  if (filter.value === 'unavailable')
+    return health === 'Unavailable';
+  if (filter.value === 'issues')
+    return getConfigurationIssueCount(item) > 0;
+  return true;
 }
 
 function getModuleName(item: unknown): string {
@@ -135,7 +189,7 @@ function getModuleCommands(item: unknown): FeatureModuleCommandDto[] {
   return module.commands ?? [];
 }
 
-function getModulePermissions(item: unknown): FeatureModulePermissionDto[] {
+function getModulePermissions(item: unknown): ExtendedFeatureModulePermissionDto[] {
   const module = toModuleStatus(item);
   return module.permissions ?? [];
 }
@@ -268,6 +322,23 @@ function getIssueTagType(severity: FeatureModuleConfigurationIssueSeverityPayloa
   return 'info';
 }
 
+function normalizeIssueSeverity(severity: FeatureModuleConfigurationIssueSeverityPayload): FeatureModuleConfigurationIssueSeverity {
+  if (typeof severity === 'number') {
+    if (severity === 1)
+      return 'Warning';
+    if (severity === 2)
+      return 'Error';
+    return 'Info';
+  }
+
+  const text = String(severity ?? '').toLowerCase();
+  if (text === 'warning')
+    return 'Warning';
+  if (text === 'error')
+    return 'Error';
+  return 'Info';
+}
+
 function getIssueSeverityLabel(severity: FeatureModuleConfigurationIssueSeverityPayload): string {
   if (typeof severity === 'number') {
     if (severity === 1)
@@ -283,6 +354,11 @@ function getIssueSeverityLabel(severity: FeatureModuleConfigurationIssueSeverity
   if (text === 'error')
     return t('views.featureModules.issueSeverity.error');
   return t('views.featureModules.issueSeverity.info');
+}
+
+function getIssuesBySeverity(item: unknown, severity: FeatureModuleConfigurationIssueSeverity): FeatureModuleConfigurationIssueDto[] {
+  return getConfigurationIssues(item)
+    .filter(issue => normalizeIssueSeverity(issue.severity) === severity);
 }
 
 function getModuleCapabilities(item: unknown): FeatureModuleCapabilityDto[] {
@@ -311,7 +387,7 @@ async function loadModules() {
     const { data } = await featureModulesGetFeatureModules({
       throwOnError: true,
     });
-    modules.value = data ?? [];
+    modules.value = (data ?? []) as ExtendedFeatureModuleStatusDto[];
     if (selectedKey != null) {
       selectedModule.value = modules.value.find(item => item.key === selectedKey) ?? selectedModule.value;
     }
@@ -338,6 +414,23 @@ function isModuleActionLoading(item: unknown, action: string): boolean {
 
 async function postModuleAction(item: unknown, action: 'Enable' | 'Disable' | 'Validate') {
   const module = toModuleStatus(item);
+  if (!canRunModuleAction(module, action)) {
+    toast({
+      type: 'warning',
+      text: t('views.featureModules.actionUnavailable'),
+    });
+    return;
+  }
+
+  if (action === 'Enable' || action === 'Disable') {
+    const ok = await confirm({
+      type: action === 'Disable' ? 'warning' : 'question',
+      text: t(`views.featureModules.${action === 'Enable' ? 'enableConfirm' : 'disableConfirm'}`, [getModuleName(module)]),
+    });
+    if (!ok)
+      return;
+  }
+
   const loadingKey = getModuleActionLoadingKey(module, action);
   actionLoadingKey.value = loadingKey;
 
@@ -373,6 +466,18 @@ async function postModuleAction(item: unknown, action: 'Enable' | 'Disable' | 'V
       actionLoadingKey.value = '';
     }
   }
+}
+
+function canRunModuleAction(item: unknown, action: 'Enable' | 'Disable' | 'Validate'): boolean {
+  const module = toModuleStatus(item);
+  if (!module.registered)
+    return false;
+
+  if (action === 'Enable')
+    return module.canEnable ?? true;
+  if (action === 'Disable')
+    return module.canDisable ?? true;
+  return module.canValidate ?? true;
 }
 
 function openRoute(link: FeatureModuleRouteDto) {
@@ -429,9 +534,34 @@ onMounted(loadModules);
         </div>
       </div>
 
+      <div class="feature-modules-page__toolbar">
+        <el-segmented
+          v-model="filter"
+          :options="[
+            { label: t('views.featureModules.filterAll'), value: 'all' },
+            { label: t('views.featureModules.filterEnabled'), value: 'enabled' },
+            { label: t('views.featureModules.filterDisabled'), value: 'disabled' },
+            { label: t('views.featureModules.filterIssues'), value: 'issues' },
+            { label: t('views.featureModules.filterUnavailable'), value: 'unavailable' },
+          ]"
+        />
+        <div class="feature-modules-page__toolbar-right">
+          <el-input
+            v-model="keyword"
+            clearable
+            :placeholder="t('views.featureModules.searchPlaceholder')"
+            class="feature-modules-page__search"
+          />
+          <el-switch
+            v-model="issueFirst"
+            :active-text="t('views.featureModules.issueFirst')"
+          />
+        </div>
+      </div>
+
       <el-table
         v-loading="loading"
-        :data="modules"
+        :data="filteredModules"
         row-key="key"
 
         stripe border
@@ -520,7 +650,7 @@ onMounted(loadModules);
                 {{ t('views.featureModules.detailsAction') }}
               </el-button>
               <el-button
-                v-if="row.registered"
+                v-if="canRunModuleAction(row, 'Validate')"
                 :icon="iconValidate"
                 :loading="isModuleActionLoading(row, 'Validate')"
                 size="small"
@@ -529,7 +659,7 @@ onMounted(loadModules);
                 {{ t('views.featureModules.actions.validate') }}
               </el-button>
               <el-button
-                v-if="row.registered"
+                v-if="canRunModuleAction(row, row.enabled ? 'Disable' : 'Enable')"
                 :icon="iconPower"
                 :loading="isModuleActionLoading(row, row.enabled ? 'Disable' : 'Enable')"
                 :type="row.enabled ? 'warning' : 'success'"
@@ -614,16 +744,23 @@ onMounted(loadModules);
       <section class="feature-module-detail__section">
         <h3>{{ t('views.featureModules.detail.configurationIssues') }}</h3>
         <div v-if="getConfigurationIssues(selectedModule).length > 0" class="feature-module-detail__issues">
-          <div
-            v-for="issue in getConfigurationIssues(selectedModule)"
-            :key="issue.code ?? issue.messageCode ?? getIssueText(issue)"
-            class="feature-module-detail__issue"
-          >
-            <el-tag :type="getIssueTagType(issue.severity)" effect="plain" size="small">
-              {{ getIssueSeverityLabel(issue.severity) }}
-            </el-tag>
-            <span>{{ getIssueText(issue) }}</span>
-          </div>
+          <template v-for="severity in issueSeverities" :key="severity">
+            <div v-if="getIssuesBySeverity(selectedModule, severity).length > 0" class="feature-module-detail__issue-group">
+              <div class="feature-module-detail__issue-group-title">
+                {{ getIssueSeverityLabel(severity) }}
+              </div>
+              <div
+                v-for="issue in getIssuesBySeverity(selectedModule, severity)"
+                :key="issue.code ?? issue.messageCode ?? getIssueText(issue)"
+                class="feature-module-detail__issue"
+              >
+                <el-tag :type="getIssueTagType(issue.severity)" effect="plain" size="small">
+                  {{ getIssueSeverityLabel(issue.severity) }}
+                </el-tag>
+                <span>{{ getIssueText(issue) }}</span>
+              </div>
+            </div>
+          </template>
         </div>
         <el-empty v-else :description="t('views.featureModules.detail.emptyConfigurationIssues')" :image-size="72" />
       </section>
@@ -681,6 +818,12 @@ onMounted(loadModules);
               </el-tag>
               <el-tag v-if="permission.requiresGameStartDone" type="info" effect="plain" size="small">
                 {{ t('views.featureModules.permissionFlags.gameReady') }}
+              </el-tag>
+              <el-tag v-if="permission.requiresAdmin" type="danger" effect="plain" size="small">
+                {{ t('views.featureModules.permissionFlags.admin') }}
+              </el-tag>
+              <el-tag v-if="permission.requiresOnlinePlayer" type="success" effect="plain" size="small">
+                {{ t('views.featureModules.permissionFlags.onlinePlayer') }}
               </el-tag>
               <el-tag v-if="permission.permissionLevel != null" type="danger" effect="plain" size="small">
                 {{ t('views.featureModules.permissionLevel', [permission.permissionLevel]) }}
@@ -766,6 +909,24 @@ onMounted(loadModules);
 .feature-modules-page__table {
   flex: 1;
   min-height: 320px;
+}
+
+.feature-modules-page__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.feature-modules-page__toolbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.feature-modules-page__search {
+  width: 260px;
 }
 
 .feature-modules-page__module-name {
@@ -860,6 +1021,18 @@ onMounted(loadModules);
   gap: 8px;
 }
 
+.feature-module-detail__issue-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature-module-detail__issue-group-title {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
 .feature-module-detail__command,
 .feature-module-detail__permission,
 .feature-module-detail__issue {
@@ -911,6 +1084,16 @@ onMounted(loadModules);
 
   .feature-modules-page__summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .feature-modules-page__toolbar,
+  .feature-modules-page__toolbar-right {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .feature-modules-page__search {
+    width: 100%;
   }
 }
 </style>
