@@ -377,7 +377,25 @@ async function onRemoveMute() {
 
 <style scoped lang="scss">
 .player-profile-actions {
+  min-width: 0;
   padding: 14px;
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
+}
+
+.profile-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profile-panel__header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .player-profile-actions__list {

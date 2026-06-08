@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ProfileStatus } from './types';
 import type {
   AdminUserDto,
   BanEntryDto,
@@ -20,26 +21,14 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { gameServerGetPlayerProfileOverview } from '~/generated/api/sdk.gen';
 import { useLocaleStore } from '~/stores/locale';
-import { formatPosition } from '~/utils';
 import PlayerProfileActions from './PlayerProfileActions.vue';
+import PlayerProfileActivityPanel from './PlayerProfileActivityPanel.vue';
+import PlayerProfileAssetsPanel from './PlayerProfileAssetsPanel.vue';
+import PlayerProfileEconomyPanel from './PlayerProfileEconomyPanel.vue';
+import PlayerProfileOverviewPanel from './PlayerProfileOverviewPanel.vue';
+import PlayerProfileTeleportPanel from './PlayerProfileTeleportPanel.vue';
 
 defineOptions({ name: 'PlayerProfilePage' });
-
-interface ProfileStatus {
-  isAdmin: boolean;
-  isBanned: boolean;
-  isMuted: boolean;
-  isWhitelisted: boolean;
-}
-
-interface TimelineItem {
-  id: string;
-  type: 'chat' | 'event' | 'economy' | 'teleport';
-  title: string;
-  description: string;
-  timestamp: string;
-  tagType: 'primary' | 'success' | 'warning' | 'info';
-}
 
 const { t } = useI18n();
 const route = useRoute();
@@ -110,79 +99,8 @@ const summaryCards = computed(() => [
   },
 ]);
 
-const timelineItems = computed<TimelineItem[]>(() => {
-  const items: TimelineItem[] = [
-    ...chatMessages.value.map((message, index) => ({
-      id: `chat-${message.id ?? index}`,
-      type: 'chat' as const,
-      title: t('views.playerProfile.timeline.chat'),
-      description: [
-        message.chatType,
-        message.message,
-      ].filter(Boolean).join(' · '),
-      timestamp: message.createdAt ?? '',
-      tagType: 'primary' as const,
-    })),
-    ...gameEvents.value.map((event, index) => ({
-      id: `event-${event.id ?? index}`,
-      type: 'event' as const,
-      title: event.eventType ?? t('views.playerProfile.timeline.event'),
-      description: [
-        event.playerName,
-        event.targetPlayerName,
-      ].filter(Boolean).join(' → ') || event.details || '--',
-      timestamp: event.createdAt ?? '',
-      tagType: 'warning' as const,
-    })),
-    ...economyTransactions.value.map((transaction, index) => ({
-      id: `economy-${transaction.id ?? index}`,
-      type: 'economy' as const,
-      title: t('views.playerProfile.timeline.economy'),
-      description: [
-        transaction.type,
-        transaction.amount != null ? `${t('views.economy.transactions.columns.amount')}: ${transaction.amount}` : '',
-        transaction.balanceAfter != null ? `${t('views.economy.transactions.columns.balanceAfter')}: ${transaction.balanceAfter}` : '',
-        transaction.source,
-      ].filter(Boolean).join(' · '),
-      timestamp: transaction.occurredAt ?? '',
-      tagType: 'success' as const,
-    })),
-    ...teleportLogs.value.map((log, index) => ({
-      id: `teleport-${log.id ?? index}`,
-      type: 'teleport' as const,
-      title: t('views.playerProfile.timeline.teleport'),
-      description: [
-        log.subSystem,
-        `${formatTeleportPosition(log, 'from')} → ${formatTeleportPosition(log, 'to')}`,
-        log.costPaid != null ? `${t('views.teleport.logs.columns.costPaid')}: ${log.costPaid}` : '',
-      ].filter(Boolean).join(' · '),
-      timestamp: log.timestamp ?? '',
-      tagType: 'info' as const,
-    })),
-  ].filter(item => item.timestamp);
-
-  return items
-    .sort((a, b) => dayjs(b.timestamp).valueOf() - dayjs(a.timestamp).valueOf())
-    .slice(0, 24);
-});
-
 function formatTime(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
-}
-
-function formatHomePosition(home: HomeLocationDto): string {
-  if (home.x == null || home.y == null || home.z == null)
-    return '--';
-  return `${home.x}, ${home.y}, ${home.z}`;
-}
-
-function formatTeleportPosition(log: TeleportLogDto, side: 'from' | 'to'): string {
-  const x = side === 'from' ? log.fromX : log.toX;
-  const y = side === 'from' ? log.fromY : log.toY;
-  const z = side === 'from' ? log.fromZ : log.toZ;
-  if (x == null || y == null || z == null)
-    return '--';
-  return `${x}, ${y}, ${z}`;
 }
 
 async function loadProfile() {
@@ -305,230 +223,55 @@ watch(playerId, loadProfile);
 
       <el-tabs class="player-profile-tabs">
         <el-tab-pane :label="t('views.playerProfile.tabs.overview')">
-          <div class="player-profile-grid">
-            <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.basic') }}</h3>
-              <dl>
-                <dt>{{ t('views.playerList.playerName') }}</dt>
-                <dd>{{ details?.playerName ?? displayName }}</dd>
-                <dt>{{ t('views.playerList.entityId') }}</dt>
-                <dd>{{ details?.entityId ?? '--' }}</dd>
-                <dt>{{ t('views.playerList.permissionLevel') }}</dt>
-                <dd>{{ details?.permissionLevel ?? adminEntry?.permissionLevel ?? '--' }}</dd>
-                <dt>{{ t('views.playerList.position') }}</dt>
-                <dd>{{ formatPosition(details?.position) || '--' }}</dd>
-                <dt>{{ t('views.playerList.lastLogin') }}</dt>
-                <dd>{{ formatTime(details?.lastLogin) }}</dd>
-              </dl>
-            </section>
-
-            <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.progress') }}</h3>
-              <dl>
-                <dt>{{ t('views.playerList.level') }}</dt>
-                <dd>{{ details?.level ?? '--' }}</dd>
-                <dt>{{ t('views.playerList.gameStage') }}</dt>
-                <dd>{{ details?.gameStage ?? '--' }}</dd>
-                <dt>{{ t('views.playerList.zombieKills') }}</dt>
-                <dd>{{ details?.zombieKills ?? '--' }}</dd>
-                <dt>{{ t('views.playerList.playerKills') }}</dt>
-                <dd>{{ details?.playerKills ?? '--' }}</dd>
-                <dt>{{ t('views.playerList.deaths') }}</dt>
-                <dd>{{ details?.deaths ?? '--' }}</dd>
-              </dl>
-            </section>
-
-            <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.assets') }}</h3>
-              <dl>
-                <dt>{{ t('views.playerProfile.fields.balance') }}</dt>
-                <dd>{{ economyAccount?.balance ?? '--' }}</dd>
-                <dt>{{ t('views.playerProfile.fields.frozen') }}</dt>
-                <dd>{{ economyAccount?.isFrozen ? t('common.yes') : t('common.no') }}</dd>
-                <dt>{{ t('views.playerProfile.fields.homes') }}</dt>
-                <dd>{{ homes.length }}</dd>
-                <dt>{{ t('views.playerProfile.fields.landClaims') }}</dt>
-                <dd>{{ landClaims?.claimPositions?.length ?? 0 }}</dd>
-                <dt>{{ t('views.playerProfile.fields.vehicles') }}</dt>
-                <dd>{{ vehicles.length }}</dd>
-              </dl>
-            </section>
-
-            <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.access') }}</h3>
-              <dl>
-                <dt>{{ t('views.playerProfile.flags.admin') }}</dt>
-                <dd>{{ status.isAdmin ? t('common.yes') : t('common.no') }}</dd>
-                <dt>{{ t('views.playerProfile.flags.whitelisted') }}</dt>
-                <dd>{{ status.isWhitelisted ? t('common.yes') : t('common.no') }}</dd>
-                <dt>{{ t('views.playerProfile.flags.banned') }}</dt>
-                <dd>{{ banEntry ? formatTime(banEntry.bannedUntil) : t('common.no') }}</dd>
-                <dt>{{ t('views.playerProfile.flags.muted') }}</dt>
-                <dd>{{ muteEntry ? (muteEntry.mutedUntil ? formatTime(muteEntry.mutedUntil) : t('views.playerProfile.permanent')) : t('common.no') }}</dd>
-              </dl>
-            </section>
-          </div>
+          <PlayerProfileOverviewPanel
+            :details="details"
+            :display-name="displayName"
+            :economy-account="economyAccount"
+            :homes="homes"
+            :land-claims="landClaims"
+            :vehicles="vehicles"
+            :status="status"
+            :admin-entry="adminEntry"
+            :ban-entry="banEntry"
+            :mute-entry="muteEntry"
+            :format-time="formatTime"
+          />
         </el-tab-pane>
 
         <el-tab-pane :label="t('views.playerProfile.tabs.assets')">
-          <div class="profile-panel-stack">
-            <section class="profile-panel">
-              <div class="profile-panel__header">
-                <h3>{{ t('views.playerProfile.sections.homes') }}</h3>
-                <el-button type="primary" link @click="goToPlayerFilteredPage('TeleportHomes')">
-                  {{ t('components.myTable.view') }}
-                </el-button>
-              </div>
-              <el-table :data="homes" size="small" border>
-                <el-table-column prop="homeName" :label="t('views.playerProfile.fields.homeName')" />
-                <el-table-column :label="t('views.playerList.position')">
-                  <template #default="{ row }">
-                    {{ formatHomePosition(row) }}
-                  </template>
-                </el-table-column>
-                <el-table-column :label="t('views.playerProfile.fields.createdAt')">
-                  <template #default="{ row }">
-                    {{ formatTime(row.createdAt) }}
-                  </template>
-                </el-table-column>
-              </el-table>
-            </section>
-
-            <section class="profile-panel">
-              <h3>{{ t('views.playerProfile.sections.vehicles') }}</h3>
-              <el-table :data="vehicles" size="small" border>
-                <el-table-column prop="localizedName" :label="t('views.map.vehicle')" />
-                <el-table-column prop="entityId" :label="t('views.playerList.entityId')" width="110" />
-                <el-table-column :label="t('views.playerList.position')">
-                  <template #default="{ row }">
-                    {{ formatPosition(row.position) }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="storageItemCount" :label="t('views.map.storage')" width="120" />
-              </el-table>
-            </section>
-          </div>
+          <PlayerProfileAssetsPanel
+            :homes="homes"
+            :vehicles="vehicles"
+            :format-time="formatTime"
+            @view-page="goToPlayerFilteredPage"
+          />
         </el-tab-pane>
 
         <el-tab-pane :label="t('views.playerProfile.tabs.activity')">
-          <div class="profile-panel-stack">
-            <section class="profile-panel">
-              <div class="profile-panel__header">
-                <h3>{{ t('views.playerProfile.sections.timeline') }}</h3>
-              </div>
-              <el-empty
-                v-if="timelineItems.length === 0"
-                :description="t('components.myTable.noData')"
-              />
-              <el-timeline v-else class="player-profile-timeline">
-                <el-timeline-item
-                  v-for="item in timelineItems"
-                  :key="item.id"
-                  :timestamp="formatTime(item.timestamp)"
-                  placement="top"
-                >
-                  <div class="player-profile-timeline__item">
-                    <div class="player-profile-timeline__header">
-                      <el-tag :type="item.tagType" effect="plain" size="small">
-                        {{ t(`views.playerProfile.timeline.${item.type}`) }}
-                      </el-tag>
-                      <strong>{{ item.title }}</strong>
-                    </div>
-                    <p>{{ item.description }}</p>
-                  </div>
-                </el-timeline-item>
-              </el-timeline>
-            </section>
-
-            <section class="profile-panel">
-              <div class="profile-panel__header">
-                <h3>{{ t('views.playerProfile.sections.gameEvents') }}</h3>
-                <el-button type="primary" link @click="goToPlayerFilteredPage('GameEventLogs')">
-                  {{ t('components.myTable.view') }}
-                </el-button>
-              </div>
-              <el-table :data="gameEvents" size="small" border>
-                <el-table-column :label="t('views.gameEventLogs.columns.createdAt')" width="170">
-                  <template #default="{ row }">
-                    {{ formatTime(row.createdAt) }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="eventType" :label="t('views.gameEventLogs.columns.eventType')" />
-                <el-table-column prop="playerName" :label="t('views.gameEventLogs.columns.playerName')" />
-                <el-table-column prop="targetPlayerName" :label="t('views.gameEventLogs.columns.targetPlayerName')" />
-              </el-table>
-            </section>
-
-            <section class="profile-panel">
-              <div class="profile-panel__header">
-                <h3>{{ t('views.playerProfile.sections.chat') }}</h3>
-                <el-button type="primary" link @click="goToPlayerFilteredPage('ChatHistory')">
-                  {{ t('components.myTable.view') }}
-                </el-button>
-              </div>
-              <el-table :data="chatMessages" size="small" border>
-                <el-table-column :label="t('views.gameChat.history.columns.createdAt')" width="170">
-                  <template #default="{ row }">
-                    {{ formatTime(row.createdAt) }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="chatType" :label="t('views.gameChat.history.columns.chatType')" width="120" />
-                <el-table-column prop="message" :label="t('views.gameChat.history.columns.message')" />
-              </el-table>
-            </section>
-          </div>
+          <PlayerProfileActivityPanel
+            :chat-messages="chatMessages"
+            :game-events="gameEvents"
+            :economy-transactions="economyTransactions"
+            :teleport-logs="teleportLogs"
+            :format-time="formatTime"
+            @view-page="goToPlayerFilteredPage"
+          />
         </el-tab-pane>
 
         <el-tab-pane :label="t('views.playerProfile.tabs.economy')">
-          <section class="profile-panel">
-            <div class="profile-panel__header">
-              <h3>{{ t('views.playerProfile.sections.economyTransactions') }}</h3>
-              <el-button type="primary" link @click="goToPlayerFilteredPage('EconomyTransactions')">
-                {{ t('components.myTable.view') }}
-              </el-button>
-            </div>
-            <el-table :data="economyTransactions" size="small" border>
-              <el-table-column :label="t('views.economy.transactions.columns.occurredAt')" width="170">
-                <template #default="{ row }">
-                  {{ formatTime(row.occurredAt) }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="type" :label="t('views.economy.transactions.columns.type')" />
-              <el-table-column prop="amount" :label="t('views.economy.transactions.columns.amount')" />
-              <el-table-column prop="balanceAfter" :label="t('views.economy.transactions.columns.balanceAfter')" />
-              <el-table-column prop="source" :label="t('views.economy.transactions.columns.source')" />
-            </el-table>
-          </section>
+          <PlayerProfileEconomyPanel
+            :economy-transactions="economyTransactions"
+            :format-time="formatTime"
+            @view-page="goToPlayerFilteredPage"
+          />
         </el-tab-pane>
 
         <el-tab-pane :label="t('views.playerProfile.tabs.teleport')">
-          <section class="profile-panel">
-            <div class="profile-panel__header">
-              <h3>{{ t('views.playerProfile.sections.teleportLogs') }}</h3>
-              <el-button type="primary" link @click="goToPlayerFilteredPage('TeleportLogs')">
-                {{ t('components.myTable.view') }}
-              </el-button>
-            </div>
-            <el-table :data="teleportLogs" size="small" border>
-              <el-table-column :label="t('views.teleport.logs.columns.timestamp')" width="170">
-                <template #default="{ row }">
-                  {{ formatTime(row.timestamp) }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="subSystem" :label="t('views.teleport.logs.columns.subSystem')" />
-              <el-table-column :label="t('views.playerProfile.fields.from')">
-                <template #default="{ row }">
-                  {{ formatTeleportPosition(row, 'from') }}
-                </template>
-              </el-table-column>
-              <el-table-column :label="t('views.playerProfile.fields.to')">
-                <template #default="{ row }">
-                  {{ formatTeleportPosition(row, 'to') }}
-                </template>
-              </el-table-column>
-              <el-table-column prop="costPaid" :label="t('views.teleport.logs.columns.costPaid')" />
-            </el-table>
-          </section>
+          <PlayerProfileTeleportPanel
+            :teleport-logs="teleportLogs"
+            :format-time="formatTime"
+            @view-page="goToPlayerFilteredPage"
+          />
         </el-tab-pane>
       </el-tabs>
 
@@ -596,8 +339,7 @@ watch(playerId, loadProfile);
   gap: 12px;
 }
 
-.player-profile-summary__item,
-.profile-panel {
+.player-profile-summary__item {
   border: 1px solid var(--el-border-color-light);
   border-radius: 8px;
   background: color-mix(in srgb, var(--el-bg-color) 96%, white 4%);
@@ -624,86 +366,6 @@ watch(playerId, loadProfile);
   min-height: 0;
 }
 
-.player-profile-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.profile-panel-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.profile-panel {
-  min-width: 0;
-  padding: 14px;
-}
-
-.profile-panel h3 {
-  margin: 0 0 12px;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.profile-panel__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.profile-panel__header h3 {
-  margin: 0;
-}
-
-.profile-panel dl {
-  display: grid;
-  grid-template-columns: minmax(96px, 34%) minmax(0, 1fr);
-  gap: 10px 14px;
-  margin: 0;
-}
-
-.profile-panel dt {
-  color: var(--el-text-color-secondary);
-}
-
-.profile-panel dd {
-  min-width: 0;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.player-profile-timeline {
-  padding-left: 2px;
-}
-
-.player-profile-timeline__item {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-}
-
-.player-profile-timeline__header {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.player-profile-timeline__header strong,
-.player-profile-timeline__item p {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.player-profile-timeline__item p {
-  margin: 0;
-  color: var(--el-text-color-secondary);
-}
-
 .player-profile-footer {
   color: var(--el-text-color-secondary);
   font-size: 12px;
@@ -717,8 +379,7 @@ watch(playerId, loadProfile);
     flex-direction: column;
   }
 
-  .player-profile-summary,
-  .player-profile-grid {
+  .player-profile-summary {
     grid-template-columns: 1fr;
   }
 }
