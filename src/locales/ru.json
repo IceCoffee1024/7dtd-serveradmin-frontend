@@ -2567,7 +2567,9 @@
         "emptyTemplates": "No templates",
         "stateScopes": "State Scopes",
         "emptyStateScopes": "No state scopes",
-        "emptyConfigurationIssues": "No configuration issues"
+        "emptyConfigurationIssues": "No configuration issues",
+        "runtimeStates": "Runtime State",
+        "runtimeStateCount": "Latest {0}"
       },
       "permissionLevel": "Level {0}",
       "permissionFlags": {
@@ -2671,7 +2673,8 @@
         "voteInvalidPassThreshold": "Vote pass threshold must be greater than 0 and no more than 100: {0}.",
         "voteKickInvalidTargetImmunity": "Vote kick target immunity seconds cannot be negative: {0}.",
         "voteKickMissingKickReason": "Vote kick reason is empty; kicked players may see a fallback reason.",
-        "commandConflict": "Command \"{0}\" conflicts across modules: {1}."
+        "commandConflict": "Command \"{0}\" conflicts across modules: {1}.",
+        "eventAutomationEconomyDependencyDisabled": "Rules \"{0}\" use economy actions, but the economy module is disabled."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2706,7 +2709,14 @@
       "issueFirst": "Issues first",
       "enableConfirm": "Enable {0}?",
       "disableConfirm": "Disable {0}? This may stop related commands and automation.",
-      "actionUnavailable": "This action is not available for this module."
+      "actionUnavailable": "This action is not available for this module.",
+      "state": {
+        "scope": "Scope",
+        "scopeKey": "Scope Key",
+        "stateKey": "State Key",
+        "updatedAt": "Updated At",
+        "value": "Value"
+      }
     },
     "eventAutomation": {
       "triggers": {

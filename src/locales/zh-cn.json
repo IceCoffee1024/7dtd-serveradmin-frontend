@@ -2567,7 +2567,16 @@
         "emptyTemplates": "无模板",
         "stateScopes": "状态范围",
         "emptyStateScopes": "无状态范围",
+        "runtimeStates": "运行状态",
+        "runtimeStateCount": "最近 {0} 条",
         "emptyConfigurationIssues": "无配置问题"
+      },
+      "state": {
+        "scope": "范围",
+        "scopeKey": "范围键",
+        "stateKey": "状态键",
+        "updatedAt": "更新时间",
+        "value": "值"
       },
       "permissionLevel": "等级 {0}",
       "permissionFlags": {
@@ -2660,6 +2669,7 @@
         "restartInvalidBloodMoonDeferMinutes": "启用血月延迟时，延迟分钟数必须大于 0：{0}。",
         "scheduledCommandInvalidHistoryRetentionDays": "计划命令历史保留天数不能为负数：{0}。",
         "eventAutomationInvalidHistoryRetentionDays": "事件自动化历史保留天数不能为负数：{0}。",
+        "eventAutomationEconomyDependencyDisabled": "规则“{0}”使用经济动作，但经济模块未启用。",
         "scheduledCommandMissingFailureNotifyMessage": "已启用失败通知，但未配置通知消息。",
         "gameNoticeInvalidRotatingInterval": "存在轮播公告时，轮播间隔必须大于 0：{0}。",
         "onlineRewardInvalidInterval": "在线奖励周期必须大于 0 分钟：{0}。",

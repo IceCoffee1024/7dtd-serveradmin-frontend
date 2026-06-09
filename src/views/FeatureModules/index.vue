@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables/usePopup';
+import { client } from '~/generated/api/client.gen';
 import {
   featureModulesDisableModule,
   featureModulesEnableModule,
@@ -36,6 +37,22 @@ type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus 
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
 
+interface ModuleStateRow {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  moduleKey: string;
+  scope: string;
+  scopeKey: string;
+  stateKey: string;
+  valueJson: string;
+}
+
+interface PagedModuleStateResult {
+  total: number;
+  items: ModuleStateRow[];
+}
+
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
@@ -53,6 +70,9 @@ const actionLoadingKey = ref('');
 const modules = ref<FeatureModuleStatusDto[]>([]);
 const selectedModule = ref<FeatureModuleStatusDto | null>(null);
 const detailVisible = ref(false);
+const moduleStates = ref<ModuleStateRow[]>([]);
+const moduleStateTotal = ref(0);
+const moduleStateLoading = ref(false);
 const filter = ref<ModuleFilter>('all');
 const keyword = ref('');
 const issueFirst = ref(true);
@@ -386,6 +406,26 @@ function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
     : t(capability.labelKey);
 }
 
+function formatModuleStateValue(valueJson: string): string {
+  if (valueJson.length === 0)
+    return '-';
+
+  try {
+    const parsed = JSON.parse(valueJson);
+    if (typeof parsed === 'string')
+      return parsed;
+
+    return JSON.stringify(parsed);
+  }
+  catch {
+    return valueJson;
+  }
+}
+
+function formatModuleStateTime(value: string | null | undefined): string {
+  return value == null ? '-' : dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+}
+
 function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
   if (status === 'Ok')
     return 'success';
@@ -414,6 +454,37 @@ async function loadModules() {
   }
   finally {
     loading.value = false;
+  }
+}
+
+async function loadModuleStates(moduleKey: string) {
+  moduleStateLoading.value = true;
+  moduleStates.value = [];
+  moduleStateTotal.value = 0;
+  try {
+    const { data } = await client.get<PagedModuleStateResult, unknown, true>({
+      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+      url: '/api/FeatureModules/{key}/States',
+      path: {
+        key: moduleKey,
+      },
+      query: {
+        pageNumber: 1,
+        pageSize: 20,
+      },
+      throwOnError: true,
+    });
+    moduleStates.value = data?.items ?? [];
+    moduleStateTotal.value = data?.total ?? 0;
+  }
+  catch (error) {
+    toast({
+      type: 'error',
+      text: error instanceof Error ? error.message : String(error),
+    });
+  }
+  finally {
+    moduleStateLoading.value = false;
   }
 }
 
@@ -506,6 +577,13 @@ function openRoute(link: FeatureModuleRouteDto) {
 function openDetails(item: unknown) {
   selectedModule.value = toModuleStatus(item);
   detailVisible.value = true;
+  if (getModuleStateScopes(selectedModule.value).length > 0) {
+    void loadModuleStates(selectedModule.value.key);
+  }
+  else {
+    moduleStates.value = [];
+    moduleStateTotal.value = 0;
+  }
 }
 
 onMounted(loadModules);
@@ -812,6 +890,34 @@ onMounted(loadModules);
           <el-empty v-else :description="t('views.featureModules.detail.emptyStateScopes')" :image-size="72" />
         </section>
 
+        <section v-if="getModuleStateScopes(selectedModule).length > 0" class="feature-module-detail__section">
+          <div class="feature-module-detail__section-header">
+            <h3>{{ t('views.featureModules.detail.runtimeStates') }}</h3>
+            <span>{{ t('views.featureModules.detail.runtimeStateCount', [moduleStateTotal]) }}</span>
+          </div>
+          <el-table
+            v-loading="moduleStateLoading"
+            :data="moduleStates"
+            size="small"
+            border
+            class="feature-module-detail__state-table"
+          >
+            <el-table-column prop="scope" :label="t('views.featureModules.state.scope')" width="92" />
+            <el-table-column prop="scopeKey" :label="t('views.featureModules.state.scopeKey')" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="stateKey" :label="t('views.featureModules.state.stateKey')" width="122" show-overflow-tooltip />
+            <el-table-column :label="t('views.featureModules.state.updatedAt')" width="150">
+              <template #default="{ row }">
+                {{ formatModuleStateTime(row.updatedAt) }}
+              </template>
+            </el-table-column>
+            <el-table-column :label="t('views.featureModules.state.value')" min-width="180" show-overflow-tooltip>
+              <template #default="{ row }">
+                <code>{{ formatModuleStateValue(row.valueJson) }}</code>
+              </template>
+            </el-table-column>
+          </el-table>
+        </section>
+
         <section class="feature-module-detail__section">
           <h3>{{ t('views.featureModules.detail.configurationIssues') }}</h3>
           <div v-if="getConfigurationIssues(selectedModule).length > 0" class="feature-module-detail__issues">
@@ -1073,11 +1179,33 @@ onMounted(loadModules);
   }
 }
 
+.feature-module-detail__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  span {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
 .feature-module-detail__list,
 .feature-module-detail__tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.feature-module-detail__state-table {
+  width: 100%;
+
+  code {
+    color: var(--el-text-color-regular);
+    font-size: 12px;
+  }
 }
 
 .feature-module-detail__commands {

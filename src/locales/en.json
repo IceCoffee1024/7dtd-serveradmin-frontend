@@ -2567,7 +2567,16 @@
         "emptyTemplates": "No templates",
         "stateScopes": "State Scopes",
         "emptyStateScopes": "No state scopes",
+        "runtimeStates": "Runtime State",
+        "runtimeStateCount": "Latest {0}",
         "emptyConfigurationIssues": "No configuration issues"
+      },
+      "state": {
+        "scope": "Scope",
+        "scopeKey": "Scope Key",
+        "stateKey": "State Key",
+        "updatedAt": "Updated At",
+        "value": "Value"
       },
       "permissionLevel": "Level {0}",
       "permissionFlags": {
@@ -2660,6 +2669,7 @@
         "restartInvalidBloodMoonDeferMinutes": "Blood moon defer minutes must be greater than 0 when defer is enabled: {0}.",
         "scheduledCommandInvalidHistoryRetentionDays": "Scheduled command history retention days cannot be negative: {0}.",
         "eventAutomationInvalidHistoryRetentionDays": "Event automation history retention days cannot be negative: {0}.",
+        "eventAutomationEconomyDependencyDisabled": "Rules \"{0}\" use economy actions, but the economy module is disabled.",
         "scheduledCommandMissingFailureNotifyMessage": "Failure notification is enabled but no message is configured.",
         "gameNoticeInvalidRotatingInterval": "Rotating notice interval must be greater than 0 when rotating notices exist: {0}.",
         "onlineRewardInvalidInterval": "Online reward interval must be greater than 0 minutes: {0}.",
