@@ -873,8 +873,18 @@ defineExpose({
     transition: background-color 0.2s ease;
   }
 
+  :deep(.el-table__body tr > td.el-table-fixed-column--left),
+  :deep(.el-table__body tr > td.el-table-fixed-column--right) {
+    background: var(--el-table-tr-bg-color, var(--el-bg-color));
+  }
+
   :deep(.el-table__body tr:hover > td.el-table__cell) {
     background: color-mix(in srgb, var(--colors-primary) 5%, transparent);
+  }
+
+  :deep(.el-table__body tr:hover > td.el-table-fixed-column--left),
+  :deep(.el-table__body tr:hover > td.el-table-fixed-column--right) {
+    background: color-mix(in srgb, var(--colors-primary) 5%, var(--el-table-tr-bg-color, var(--el-bg-color)));
   }
 
   :deep(.el-tag) {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { LiveChatTypeFilter } from '../chatType';
 import type { ChatType, OnlinePlayerDto } from '~/generated/api/types.gen';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
@@ -12,7 +13,7 @@ import {
 } from '~/generated/api/@pinia/colada.gen';
 import { useGameEventStore } from '~/stores/gameEvent';
 import { formatPosition } from '~/utils';
-import { getChatTypeLabel, getChatTypeOptions, type LiveChatTypeFilter } from '../chatType';
+import { getChatTypeLabel, getChatTypeOptions } from '../chatType';
 
 defineOptions({ name: 'LiveChat' });
 

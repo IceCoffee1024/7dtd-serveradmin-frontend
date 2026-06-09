@@ -566,6 +566,7 @@ async function onDelete(row: RuleRow) {
         :fetch-data="fetchData"
         :show-index="true"
         :auto-column-width="true"
+        :operation-column-width="220"
         :search-collapsible="true"
         @add="onAdd"
       >
@@ -596,7 +597,7 @@ async function onDelete(row: RuleRow) {
         </template>
 
         <template #operation="{ row }">
-          <div class="flex gap-1.5 justify-center">
+          <div class="flex flex-nowrap gap-1.5 justify-center">
             <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('components.myTable.edit')" @click="onEdit(row)">
               <icon-mdi-pencil />
             </IconButton>

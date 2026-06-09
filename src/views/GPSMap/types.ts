@@ -1,8 +1,8 @@
 import type { Coordinate } from 'ol/coordinate';
 import type Feature from 'ol/Feature';
-import type Map from 'ol/Map';
 import type { Point } from 'ol/geom';
 import type BaseLayer from 'ol/layer/Base';
+import type Map from 'ol/Map';
 import type VectorSource from 'ol/source/Vector';
 import type { Style } from 'ol/style';
 import type { LAYER_ID } from './constants';

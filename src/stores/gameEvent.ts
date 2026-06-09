@@ -1,6 +1,6 @@
+import type { ChatType } from '~/generated/api/types.gen';
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
-import type { ChatType } from '~/generated/api/types.gen';
 
 /**
  * Represents a single server log entry shown in the console page.
@@ -59,9 +59,7 @@ export const useGameEventStore = defineStore('gameEvent', () => {
 
   /**
    * Appends a chat message and trims the buffer to a bounded size.
-   * @param message - Chat message text.
-   * @param timestamp - Server timestamp for the message.
-   * @param senderName - Sender display name.
+   * @param payload - Chat message data received from the backend.
    * @returns Promise that resolves after the buffer trimming completes.
    */
   const addChatMessage = async (payload: AddChatMessagePayload): Promise<void> => {

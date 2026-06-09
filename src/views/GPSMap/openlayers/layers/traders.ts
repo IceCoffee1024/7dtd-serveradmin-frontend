@@ -1,7 +1,7 @@
 import type { OpenLayersModuleContext, TraderLocationFeatureData } from '../../types';
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from 'ol/style';
-import { i18n } from '~/plugins/i18n';
 import { client } from '~/generated/api/client.gen';
+import { i18n } from '~/plugins/i18n';
 import { useLocaleStore } from '~/stores/locale';
 import { LAYER_ID } from '../../constants';
 import { setupPointLocationLayer } from '../mapUtils';
