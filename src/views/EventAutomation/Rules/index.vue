@@ -3,6 +3,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type { EventAutomationDryRunSampleContext } from './eventAutomationSamples';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type {
+  EventAutomationRecentFailureDto,
   EventAutomationRuleDryRunRequestDto,
   EventAutomationRuleDryRunResultDto,
   EventAutomationRuleDto,
@@ -721,6 +722,17 @@ function onViewRuns(row: RuleRow) {
   });
 }
 
+function onViewFailureRuns(failure: EventAutomationRecentFailureDto) {
+  const query: Record<string, string> = { succeeded: 'false' };
+  if (failure.ruleId != null)
+    query.ruleId = String(failure.ruleId);
+
+  router.push({
+    name: 'EventAutomationRuns',
+    query,
+  });
+}
+
 function toPayload(): EventAutomationRuleUpsertDto {
   return {
     name: form.name.trim(),
@@ -975,6 +987,11 @@ onMounted(() => {
             v-for="(failure, index) in runStats?.recentFailures ?? []"
             :key="failure.id ?? `${failure.startedAt}-${index}`"
             class="event-automation-run-stats__failure"
+            role="button"
+            tabindex="0"
+            @click="onViewFailureRuns(failure)"
+            @keydown.enter="onViewFailureRuns(failure)"
+            @keydown.space.prevent="onViewFailureRuns(failure)"
           >
             <div class="event-automation-run-stats__failure-main">
               <el-tag size="small" type="danger" effect="plain">
@@ -1351,7 +1368,16 @@ onMounted(() => {
   gap: 3px;
   border-radius: 4px;
   background: var(--el-fill-color-extra-light);
+  cursor: pointer;
   padding: 6px 8px;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.event-automation-run-stats__failure:hover,
+.event-automation-run-stats__failure:focus-visible {
+  background: var(--el-fill-color-light);
+  box-shadow: inset 0 0 0 1px var(--el-border-color);
+  outline: none;
 }
 
 .event-automation-run-stats__failure-main {

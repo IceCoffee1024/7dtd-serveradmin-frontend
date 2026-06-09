@@ -14,7 +14,15 @@ defineOptions({ name: 'EventAutomationRunsPage' });
 
 type RunRow = EventAutomationRunLogDto;
 
-const TRIGGER_TYPES = ['PlayerJoined', 'ChatMessage'] as const;
+const TRIGGER_TYPES = [
+  'PlayerJoined',
+  'PlayerLeft',
+  'PlayerDied',
+  'PlayerKilledPlayer',
+  'PlayerKilledZombie',
+  'ChatMessage',
+  'Cron',
+] as const;
 
 const { t } = useI18n();
 const route = useRoute();
@@ -41,6 +49,16 @@ const routeRuleId = computed(() => {
 
   const id = Number(value);
   return Number.isInteger(id) && id > 0 ? id : undefined;
+});
+
+const routeSucceeded = computed(() => {
+  const value = Array.isArray(route.query.succeeded) ? route.query.succeeded[0] : route.query.succeeded;
+  if (value === 'true')
+    return true;
+  if (value === 'false')
+    return false;
+
+  return undefined;
 });
 
 const columns = computed<MyTableColumn<RunRow>[]>(() => [
@@ -87,6 +105,7 @@ const columns = computed<MyTableColumn<RunRow>[]>(() => [
       el: 'el-select',
       props: { clearable: true },
       options: succeededOptions,
+      defaultValue: routeSucceeded.value,
       order: 2,
       span: 8,
     },
@@ -129,7 +148,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
       keyword: toOptionalString(params.search?.keyword),
       ruleId: toOptionalPositiveInteger(params.search?.ruleId ?? routeRuleId.value),
       triggerType: toOptionalString(params.search?.triggerType),
-      succeeded: typeof params.search?.succeeded === 'boolean' ? params.search.succeeded : undefined,
+      succeeded: toOptionalBoolean(params.search?.succeeded ?? routeSucceeded.value),
       startTime: toOptionalString(params.search?.startTime),
       endTime: toOptionalString(params.search?.endTime),
       order: toOrder(params.sortField),
@@ -150,6 +169,17 @@ function toOptionalString(value: unknown): string | undefined {
 
   const trimmed = value.trim();
   return trimmed || undefined;
+}
+
+function toOptionalBoolean(value: unknown): boolean | undefined {
+  if (typeof value === 'boolean')
+    return value;
+  if (value === 'true')
+    return true;
+  if (value === 'false')
+    return false;
+
+  return undefined;
 }
 
 function toOptionalPositiveInteger(value: unknown): number | undefined {
