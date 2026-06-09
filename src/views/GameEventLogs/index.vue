@@ -157,50 +157,52 @@ function onViewPlayerProfile(playerId: string | null | undefined, playerName: st
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :show-index="true"
-      :show-add-btn="false"
-      :auto-column-width="true"
-      :search-collapsible="true"
-    >
-      <template #createdAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
-      </template>
+  <div class="flex flex-col gap-4 h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :show-index="true"
+        :show-add-btn="false"
+        :auto-column-width="true"
+        :search-collapsible="true"
+      >
+        <template #createdAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
+        </template>
 
-      <template #eventType="{ row }">
-        <el-tag :type="resolveEventTypeTag(row.eventType)">
-          {{ resolveEventTypeLabel(row.eventType) }}
-        </el-tag>
-      </template>
+        <template #eventType="{ row }">
+          <el-tag :type="resolveEventTypeTag(row.eventType)">
+            {{ resolveEventTypeLabel(row.eventType) }}
+          </el-tag>
+        </template>
 
-      <template #playerName="{ row }">
-        <el-button
-          v-if="row.playerId"
-          type="primary"
-          link
-          @click="onViewPlayerProfile(row.playerId, row.playerName)"
-        >
-          {{ row.playerName || row.playerId }}
-        </el-button>
-        <span v-else>{{ row.playerName || '--' }}</span>
-      </template>
+        <template #playerName="{ row }">
+          <el-button
+            v-if="row.playerId"
+            type="primary"
+            link
+            @click="onViewPlayerProfile(row.playerId, row.playerName)"
+          >
+            {{ row.playerName || row.playerId }}
+          </el-button>
+          <span v-else>{{ row.playerName || '--' }}</span>
+        </template>
 
-      <template #targetPlayerName="{ row }">
-        <el-button
-          v-if="row.targetPlayerId"
-          type="primary"
-          link
-          @click="onViewPlayerProfile(row.targetPlayerId, row.targetPlayerName)"
-        >
-          {{ row.targetPlayerName || row.targetPlayerId }}
-        </el-button>
-        <span v-else>{{ row.targetPlayerName || '--' }}</span>
-      </template>
-    </MyTable>
+        <template #targetPlayerName="{ row }">
+          <el-button
+            v-if="row.targetPlayerId"
+            type="primary"
+            link
+            @click="onViewPlayerProfile(row.targetPlayerId, row.targetPlayerName)"
+          >
+            {{ row.targetPlayerName || row.targetPlayerId }}
+          </el-button>
+          <span v-else>{{ row.targetPlayerName || '--' }}</span>
+        </template>
+      </MyTable>
+    </div>
   </div>
 </template>

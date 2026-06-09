@@ -8,7 +8,7 @@ const activeTab = ref('config');
 </script>
 
 <template>
-  <el-card class="backup-shell h-full" shadow="never">
+  <el-card class="backup-shell h-full min-h-0" shadow="never">
     <el-tabs v-model="activeTab" class="backup-shell__tabs">
       <el-tab-pane :label="$t('views.backup.tabs.config')" name="config">
         <ConfigTab />
@@ -30,20 +30,29 @@ const activeTab = ref('config');
     linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
 
   :deep(.el-card__body) {
+    display: flex;
+    flex-direction: column;
     height: 100%;
+    min-height: 0;
     padding: 1rem 1rem 0.85rem;
   }
 }
 
 .backup-shell__tabs {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   height: 100%;
+  min-height: 0;
 
   :deep(.el-tabs__content) {
-    height: calc(100% - 54px);
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   :deep(.el-tab-pane) {
     height: 100%;
+    min-height: 0;
   }
 }
 </style>

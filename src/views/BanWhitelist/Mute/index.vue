@@ -108,32 +108,34 @@ function formatTimestamp(value: string | null | undefined): string {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-250px)]">
-    <MyTable
-      ref="tableRef"
-      v-model:selection="selectedRows"
-      row-key="playerId"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :batch-menu-items="batchMenuItems"
-      :show-index="true"
-      :auto-column-width="true"
-      show-edit-btn
-      show-delete-btn
-      @add="onAdd"
-      @edit="onEdit"
-      @delete="onDelete"
-    >
-      <template #mutedUntil="{ row }">
-        <span v-if="row.mutedUntil">{{ formatTimestamp(row.mutedUntil) }}</span>
-        <el-tag v-else type="danger" size="small">
-          {{ $t('views.banWhitelist.permanent') }}
-        </el-tag>
-      </template>
-      <template #createdAt="{ row }">
-        {{ formatTimestamp(row.createdAt) }}
-      </template>
-    </MyTable>
+  <div class="flex flex-col h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        v-model:selection="selectedRows"
+        row-key="playerId"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :batch-menu-items="batchMenuItems"
+        :show-index="true"
+        :auto-column-width="true"
+        show-edit-btn
+        show-delete-btn
+        @add="onAdd"
+        @edit="onEdit"
+        @delete="onDelete"
+      >
+        <template #mutedUntil="{ row }">
+          <span v-if="row.mutedUntil">{{ formatTimestamp(row.mutedUntil) }}</span>
+          <el-tag v-else type="danger" size="small">
+            {{ $t('views.banWhitelist.permanent') }}
+          </el-tag>
+        </template>
+        <template #createdAt="{ row }">
+          {{ formatTimestamp(row.createdAt) }}
+        </template>
+      </MyTable>
+    </div>
     <AddOrEditDialog ref="addOrEditDialogRef" :edit-data="editData" @saved="onSaved" />
   </div>
 </template>

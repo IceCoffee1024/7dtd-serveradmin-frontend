@@ -379,52 +379,54 @@ async function onDelete(row: EconomyShopItemDto) {
 </script>
 
 <template>
-  <div>
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :selectable="false"
-      :operation-column-width="112"
-      :auto-column-width="true"
-      :search-collapsible="true"
-      @add="openAdd"
-    >
-      <template #price="{ row }">
-        <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.price }}</span>
-      </template>
+  <div class="flex flex-col h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :selectable="false"
+        :operation-column-width="112"
+        :auto-column-width="true"
+        :search-collapsible="true"
+        @add="openAdd"
+      >
+        <template #price="{ row }">
+          <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.price }}</span>
+        </template>
 
-      <template #isEnabled="{ row }">
-        <el-tag :type="row.isEnabled ? 'success' : 'info'">
-          {{ row.isEnabled ? t('common.yes') : t('common.no') }}
-        </el-tag>
-      </template>
+        <template #isEnabled="{ row }">
+          <el-tag :type="row.isEnabled ? 'success' : 'info'">
+            {{ row.isEnabled ? t('common.yes') : t('common.no') }}
+          </el-tag>
+        </template>
 
-      <template #operation="{ row }">
-        <div class="inline-flex gap-1 justify-center">
-          <IconButton
-            round
-            border
-            button-size="small"
-            :tooltip-content="t('views.economy.shop.actions.edit')"
-            @click="openEdit(row)"
-          >
-            <icon-mdi-pencil-outline />
-          </IconButton>
-          <IconButton
-            round
-            border
-            button-size="small"
-            type="danger"
-            :tooltip-content="t('views.economy.shop.actions.delete')"
-            @click="onDelete(row)"
-          >
-            <icon-mdi-delete-outline />
-          </IconButton>
-        </div>
-      </template>
-    </MyTable>
+        <template #operation="{ row }">
+          <div class="inline-flex gap-1 justify-center">
+            <IconButton
+              round
+              border
+              button-size="small"
+              :tooltip-content="t('views.economy.shop.actions.edit')"
+              @click="openEdit(row)"
+            >
+              <icon-mdi-pencil-outline />
+            </IconButton>
+            <IconButton
+              round
+              border
+              button-size="small"
+              type="danger"
+              :tooltip-content="t('views.economy.shop.actions.delete')"
+              @click="onDelete(row)"
+            >
+              <icon-mdi-delete-outline />
+            </IconButton>
+          </div>
+        </template>
+      </MyTable>
+    </div>
 
     <MyDialog
       ref="dialogRef"

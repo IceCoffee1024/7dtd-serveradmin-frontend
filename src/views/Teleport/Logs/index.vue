@@ -118,38 +118,40 @@ function onViewPlayerProfile(row: LogRow) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :show-index="true"
-      :show-add-btn="false"
-      :auto-column-width="true"
-      :search-collapsible="true"
-    >
-      <template #timestamp="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.timestamp) }}</span>
-      </template>
+  <div class="flex flex-col gap-4 h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :show-index="true"
+        :show-add-btn="false"
+        :auto-column-width="true"
+        :search-collapsible="true"
+      >
+        <template #timestamp="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.timestamp) }}</span>
+        </template>
 
-      <template #playerName="{ row }">
-        <el-button
-          v-if="row.playerId"
-          type="primary"
-          link
-          @click="onViewPlayerProfile(row as LogRow)"
-        >
-          {{ row.playerName || row.playerId }}
-        </el-button>
-        <span v-else>{{ row.playerName || '--' }}</span>
-      </template>
+        <template #playerName="{ row }">
+          <el-button
+            v-if="row.playerId"
+            type="primary"
+            link
+            @click="onViewPlayerProfile(row as LogRow)"
+          >
+            {{ row.playerName || row.playerId }}
+          </el-button>
+          <span v-else>{{ row.playerName || '--' }}</span>
+        </template>
 
-      <template #subSystem="{ row }">
-        <el-tag :type="resolveSubSystemTag(row.subSystem)">
-          {{ row.subSystem }}
-        </el-tag>
-      </template>
-    </MyTable>
+        <template #subSystem="{ row }">
+          <el-tag :type="resolveSubSystemTag(row.subSystem)">
+            {{ row.subSystem }}
+          </el-tag>
+        </template>
+      </MyTable>
+    </div>
   </div>
 </template>

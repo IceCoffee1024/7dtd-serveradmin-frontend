@@ -11,7 +11,7 @@ const activeTab = ref('ban');
 </script>
 
 <template>
-  <el-card class="ban-whitelist-shell h-full" shadow="never">
+  <el-card class="ban-whitelist-shell h-full min-h-0" shadow="never">
     <el-tabs v-model="activeTab" class="ban-whitelist-shell__tabs">
       <el-tab-pane :label="$t('views.banWhitelist.ban')" name="ban">
         <Ban />
@@ -36,20 +36,33 @@ const activeTab = ref('ban');
     linear-gradient(180deg, color-mix(in srgb, var(--el-bg-color) 97%, white 3%), var(--el-bg-color));
 
   :deep(.el-card__body) {
+    display: flex;
+    flex-direction: column;
     height: 100%;
+    min-height: 0;
     padding: 1rem 1rem 0.85rem;
   }
 }
 
 .ban-whitelist-shell__tabs {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   height: 100%;
+  min-height: 0;
+
+  :deep(.el-tabs__header) {
+    flex: 0 0 auto;
+  }
 
   :deep(.el-tabs__content) {
-    height: calc(100% - 54px);
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
   :deep(.el-tab-pane) {
     height: 100%;
+    min-height: 0;
   }
 }
 </style>

@@ -245,47 +245,49 @@ function getColorSwatch(value: string | null | undefined): string | undefined {
 </script>
 
 <template>
-  <div class="h-[calc(100vh-250px)]">
-    <MyTable
-      ref="tableRef"
-      v-model:selection="selectedRows"
-      row-key="playerId"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :batch-menu-items="batchMenuItems"
-      :show-index="true"
-      :auto-column-width="true"
-      :search-collapsible="true"
-      @add="onAdd"
-      @edit="onEdit"
-      @delete="onDelete"
-    >
-      <template #nameColor="{ row }">
-        <div class="flex gap-2 min-w-0 items-center">
-          <span
-            class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
-            :style="{ backgroundColor: getColorSwatch(row.nameColor) ?? 'transparent' }"
-          />
-          <span
-            class="font-medium truncate"
-            :style="{ color: getColorSwatch(row.nameColor) }"
-          >{{ row.customName || row.playerId }}</span>
-        </div>
-      </template>
+  <div class="flex flex-col h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        v-model:selection="selectedRows"
+        row-key="playerId"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :batch-menu-items="batchMenuItems"
+        :show-index="true"
+        :auto-column-width="true"
+        :search-collapsible="true"
+        @add="onAdd"
+        @edit="onEdit"
+        @delete="onDelete"
+      >
+        <template #nameColor="{ row }">
+          <div class="flex gap-2 min-w-0 items-center">
+            <span
+              class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
+              :style="{ backgroundColor: getColorSwatch(row.nameColor) ?? 'transparent' }"
+            />
+            <span
+              class="font-medium truncate"
+              :style="{ color: getColorSwatch(row.nameColor) }"
+            >{{ row.customName || row.playerId }}</span>
+          </div>
+        </template>
 
-      <template #textColor="{ row }">
-        <div class="flex gap-2 min-w-0 items-center">
-          <span
-            class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
-            :style="{ backgroundColor: getColorSwatch(row.textColor) ?? 'transparent' }"
-          />
-          <span
-            class="truncate"
-            :style="{ color: getColorSwatch(row.textColor) }"
-          >{{ formatColorLabel(row.textColor) }}</span>
-        </div>
-      </template>
-    </MyTable>
+        <template #textColor="{ row }">
+          <div class="flex gap-2 min-w-0 items-center">
+            <span
+              class="border border-gray-300 rounded-full shrink-0 h-4 w-4 dark:border-gray-600"
+              :style="{ backgroundColor: getColorSwatch(row.textColor) ?? 'transparent' }"
+            />
+            <span
+              class="truncate"
+              :style="{ color: getColorSwatch(row.textColor) }"
+            >{{ formatColorLabel(row.textColor) }}</span>
+          </div>
+        </template>
+      </MyTable>
+    </div>
     <AddOrEditDialog ref="addOrEditDialogRef" :edit-data="editData" @saved="onSaved" />
   </div>
 </template>

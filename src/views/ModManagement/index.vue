@@ -113,7 +113,17 @@ defineExpose({ reload: () => tableRef.value?.reload() });
 </script>
 
 <template>
-  <el-card class="h-full" shadow="never">
+  <el-card
+    class="h-full min-h-0"
+    shadow="never"
+    :body-style="{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      minHeight: '0',
+      overflow: 'hidden',
+    }"
+  >
     <MyTable
       ref="tableRef"
       row-key="folderName"

@@ -152,38 +152,40 @@ async function onDelete(row: RecordRow) {
 </script>
 
 <template>
-  <div>
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :selectable="false"
-      :operation-column-width="72"
-      :auto-column-width="true"
-      :search-collapsible="true"
-      :show-add-btn="false"
-    >
-      <template #economyRewarded="{ row }">
-        <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.economyRewarded }}</span>
-      </template>
+  <div class="flex flex-col h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :selectable="false"
+        :operation-column-width="72"
+        :auto-column-width="true"
+        :search-collapsible="true"
+        :show-add-btn="false"
+      >
+        <template #economyRewarded="{ row }">
+          <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.economyRewarded }}</span>
+        </template>
 
-      <template #createdAt="{ row }">
-        {{ dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
-      </template>
+        <template #createdAt="{ row }">
+          {{ dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') }}
+        </template>
 
-      <template #operation="{ row }">
-        <IconButton
-          round
-          border
-          button-size="small"
-          type="danger"
-          :tooltip-content="t('common.delete')"
-          @click="onDelete(row)"
-        >
-          <icon-mdi-delete-outline />
-        </IconButton>
-      </template>
-    </MyTable>
+        <template #operation="{ row }">
+          <IconButton
+            round
+            border
+            button-size="small"
+            type="danger"
+            :tooltip-content="t('common.delete')"
+            @click="onDelete(row)"
+          >
+            <icon-mdi-delete-outline />
+          </IconButton>
+        </template>
+      </MyTable>
+    </div>
   </div>
 </template>

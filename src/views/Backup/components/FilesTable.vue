@@ -158,51 +158,55 @@ defineExpose({ reload });
 </script>
 
 <template>
-  <MyTable
-    ref="tableRef"
-    row-key="fileName"
-    :columns="columns"
-    :fetch-data="fetchData"
-    :show-index="true"
-    :show-add-btn="false"
-    :operation-column-width="140"
-  >
-    <template #fileName="{ row }">
-      <span class="text-sm font-mono inline-flex gap-1 items-center">
-        <el-icon v-if="row.isDirectory"><icon-mdi-folder-outline /></el-icon>
-        <el-icon v-else><icon-mdi-file-outline /></el-icon>
-        {{ row.fileName }}
-      </span>
-    </template>
-    <template #size="{ row }">
-      <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatSize(row.sizeBytes) }}</span>
-    </template>
-    <template #createdAt="{ row }">
-      <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTime(row.createdAt) }}</span>
-    </template>
-    <template #operation="{ row }">
-      <IconButton
-        button-size="small"
-        icon-size="18"
-        plain
-        :disabled="row.isDirectory"
-        :loading="isDownloading"
-        :tooltip-content="t('views.backup.actions.download')"
-        @click="onDownload(row)"
+  <div class="flex flex-col h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="fileName"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :show-index="true"
+        :show-add-btn="false"
+        :operation-column-width="140"
       >
-        <icon-mdi-download />
-      </IconButton>
-      <IconButton
-        button-size="small"
-        icon-size="18"
-        plain
-        type="danger"
-        :loading="isDeleting"
-        :tooltip-content="t('views.backup.actions.delete')"
-        @click="onDelete(row)"
-      >
-        <icon-mdi-delete-outline />
-      </IconButton>
-    </template>
-  </MyTable>
+        <template #fileName="{ row }">
+          <span class="text-sm font-mono inline-flex gap-1 items-center">
+            <el-icon v-if="row.isDirectory"><icon-mdi-folder-outline /></el-icon>
+            <el-icon v-else><icon-mdi-file-outline /></el-icon>
+            {{ row.fileName }}
+          </span>
+        </template>
+        <template #size="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatSize(row.sizeBytes) }}</span>
+        </template>
+        <template #createdAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTime(row.createdAt) }}</span>
+        </template>
+        <template #operation="{ row }">
+          <IconButton
+            button-size="small"
+            icon-size="18"
+            plain
+            :disabled="row.isDirectory"
+            :loading="isDownloading"
+            :tooltip-content="t('views.backup.actions.download')"
+            @click="onDownload(row)"
+          >
+            <icon-mdi-download />
+          </IconButton>
+          <IconButton
+            button-size="small"
+            icon-size="18"
+            plain
+            type="danger"
+            :loading="isDeleting"
+            :tooltip-content="t('views.backup.actions.delete')"
+            @click="onDelete(row)"
+          >
+            <icon-mdi-delete-outline />
+          </IconButton>
+        </template>
+      </MyTable>
+    </div>
+  </div>
 </template>

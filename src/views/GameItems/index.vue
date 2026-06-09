@@ -121,7 +121,7 @@ onMounted(loadItems);
   <el-card
     class="game-items-page h-full"
     shadow="never"
-    :body-style="{ display: 'flex', flexDirection: 'column', height: '100%', padding: '12px', boxSizing: 'border-box' }"
+    :body-style="{ display: 'flex', flexDirection: 'column', height: '100%', padding: '12px' }"
   >
     <!-- Toolbar -->
     <div class="mb-3 flex flex-shrink-0 flex-wrap gap-3 items-center">

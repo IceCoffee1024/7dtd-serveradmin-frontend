@@ -135,51 +135,53 @@ function onView(row: RunRow) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :show-index="true"
-      :show-add-btn="false"
-      :auto-column-width="true"
-      :search-collapsible="true"
-    >
-      <template #taskType="{ row }">
-        <span class="text-gray-900 font-medium dark:text-gray-100">{{ resolveTaskTypeLabel(row.taskType) }}</span>
-      </template>
-      <template #triggerSource="{ row }">
-        <el-tag type="info">
-          {{ resolveTriggerSourceLabel(row.triggerSource) }}
-        </el-tag>
-      </template>
-      <template #succeeded="{ row }">
-        <el-tag :type="row.succeeded ? 'success' : 'danger'">
-          {{ row.succeeded ? t('common.yes') : t('common.no') }}
-        </el-tag>
-      </template>
-      <template #startedAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.startedAt) }}</span>
-      </template>
-      <template #endedAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.endedAt) }}</span>
-      </template>
-      <template #durationMs="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatDuration(row.durationMs) }}</span>
-      </template>
-      <template #summary="{ row }">
-        <span class="text-sm text-gray-800 line-clamp-2 dark:text-gray-100">{{ row.summary }}</span>
-      </template>
-      <template #errorMessage="{ row }">
-        <span class="text-sm text-red-600 line-clamp-2 dark:text-red-400">{{ row.errorMessage || '--' }}</span>
-      </template>
-      <template #operation="{ row }">
-        <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.history.actions.viewDetails')" @click="onView(row)">
-          <icon-mdi-eye-outline />
-        </IconButton>
-      </template>
-    </MyTable>
+  <div class="flex flex-col gap-4 h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :show-index="true"
+        :show-add-btn="false"
+        :auto-column-width="true"
+        :search-collapsible="true"
+      >
+        <template #taskType="{ row }">
+          <span class="text-gray-900 font-medium dark:text-gray-100">{{ resolveTaskTypeLabel(row.taskType) }}</span>
+        </template>
+        <template #triggerSource="{ row }">
+          <el-tag type="info">
+            {{ resolveTriggerSourceLabel(row.triggerSource) }}
+          </el-tag>
+        </template>
+        <template #succeeded="{ row }">
+          <el-tag :type="row.succeeded ? 'success' : 'danger'">
+            {{ row.succeeded ? t('common.yes') : t('common.no') }}
+          </el-tag>
+        </template>
+        <template #startedAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.startedAt) }}</span>
+        </template>
+        <template #endedAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.endedAt) }}</span>
+        </template>
+        <template #durationMs="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatDuration(row.durationMs) }}</span>
+        </template>
+        <template #summary="{ row }">
+          <span class="text-sm text-gray-800 line-clamp-2 dark:text-gray-100">{{ row.summary }}</span>
+        </template>
+        <template #errorMessage="{ row }">
+          <span class="text-sm text-red-600 line-clamp-2 dark:text-red-400">{{ row.errorMessage || '--' }}</span>
+        </template>
+        <template #operation="{ row }">
+          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.history.actions.viewDetails')" @click="onView(row)">
+            <icon-mdi-eye-outline />
+          </IconButton>
+        </template>
+      </MyTable>
+    </div>
 
     <RunDetailDialog ref="detailDialogRef" :run-data="currentRun" />
   </div>

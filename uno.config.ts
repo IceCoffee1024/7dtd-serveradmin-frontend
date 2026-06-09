@@ -35,6 +35,7 @@ export default defineConfig({
         theme: {
           mode: true,
         },
+        reset: true,
       },
     }),
     presetTypography(),

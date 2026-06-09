@@ -324,60 +324,62 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
 </script>
 
 <template>
-  <div>
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :selectable="false"
-      :operation-column-width="112"
-      :auto-column-width="true"
-      :search-collapsible="true"
-      @add="openAdd"
-    >
-      <template #amount="{ row }">
-        <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.amount }}</span>
-      </template>
+  <div class="flex flex-col h-full min-h-0">
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :selectable="false"
+        :operation-column-width="112"
+        :auto-column-width="true"
+        :search-collapsible="true"
+        @add="openAdd"
+      >
+        <template #amount="{ row }">
+          <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.amount }}</span>
+        </template>
 
-      <template #isEnabled="{ row }">
-        <el-tag :type="row.isEnabled ? 'success' : 'info'">
-          {{ row.isEnabled ? t('common.yes') : t('common.no') }}
-        </el-tag>
-      </template>
+        <template #isEnabled="{ row }">
+          <el-tag :type="row.isEnabled ? 'success' : 'info'">
+            {{ row.isEnabled ? t('common.yes') : t('common.no') }}
+          </el-tag>
+        </template>
 
-      <template #expiresAt="{ row }">
-        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.expiresAt) }}</span>
-      </template>
+        <template #expiresAt="{ row }">
+          <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.expiresAt) }}</span>
+        </template>
 
-      <template #createdAt="{ row }">
-        <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
-      </template>
+        <template #createdAt="{ row }">
+          <span class="text-xs text-gray-700 font-mono dark:text-gray-200">{{ formatTimestamp(row.createdAt) }}</span>
+        </template>
 
-      <template #operation="{ row }">
-        <div class="redeem-codes-page__actions">
-          <IconButton
-            round
-            border
-            button-size="small"
-            :tooltip-content="t('views.economy.redeemCodes.actions.viewRedemptions')"
-            @click="onViewRedemptions(row)"
-          >
-            <icon-mdi-history />
-          </IconButton>
-          <IconButton
-            round
-            border
-            button-size="small"
-            type="danger"
-            :tooltip-content="t('views.economy.redeemCodes.actions.delete')"
-            @click="onDelete(row)"
-          >
-            <icon-mdi-delete-outline />
-          </IconButton>
-        </div>
-      </template>
-    </MyTable>
+        <template #operation="{ row }">
+          <div class="redeem-codes-page__actions">
+            <IconButton
+              round
+              border
+              button-size="small"
+              :tooltip-content="t('views.economy.redeemCodes.actions.viewRedemptions')"
+              @click="onViewRedemptions(row)"
+            >
+              <icon-mdi-history />
+            </IconButton>
+            <IconButton
+              round
+              border
+              button-size="small"
+              type="danger"
+              :tooltip-content="t('views.economy.redeemCodes.actions.delete')"
+              @click="onDelete(row)"
+            >
+              <icon-mdi-delete-outline />
+            </IconButton>
+          </div>
+        </template>
+      </MyTable>
+    </div>
 
     <!-- Create dialog -->
     <MyDialog

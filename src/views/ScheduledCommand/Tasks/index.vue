@@ -222,7 +222,7 @@ function onSaved() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 h-full min-h-0">
     <el-alert
       :title="t('views.scheduler.tasks.hints.defaultSettings', { timeZone: schedulerSettings?.defaultTimeZoneId || t('common.serverLocalTime') })"
       type="info"
@@ -230,68 +230,70 @@ function onSaved() {
       :closable="false"
     />
 
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :show-index="true"
-      :auto-column-width="true"
-      :search-collapsible="true"
-      @add="onAdd"
-    >
-      <template #isEnabled="{ row }">
-        <el-tag :type="row.isEnabled ? 'success' : 'info'">
-          {{ row.isEnabled ? t('common.yes') : t('common.no') }}
-        </el-tag>
-      </template>
+    <div class="flex flex-1 min-h-0">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :show-index="true"
+        :auto-column-width="true"
+        :search-collapsible="true"
+        @add="onAdd"
+      >
+        <template #isEnabled="{ row }">
+          <el-tag :type="row.isEnabled ? 'success' : 'info'">
+            {{ row.isEnabled ? t('common.yes') : t('common.no') }}
+          </el-tag>
+        </template>
 
-      <template #cronExpression="{ row }">
-        <span class="text-sm text-gray-700 font-mono dark:text-gray-200">{{ row.cronExpression }}</span>
-      </template>
+        <template #cronExpression="{ row }">
+          <span class="text-sm text-gray-700 font-mono dark:text-gray-200">{{ row.cronExpression }}</span>
+        </template>
 
-      <template #timeZoneId="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ row.timeZoneId || 'UTC' }}</span>
-      </template>
+        <template #timeZoneId="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ row.timeZoneId || 'UTC' }}</span>
+        </template>
 
-      <template #allowConcurrentExecution="{ row }">
-        <el-tag :type="row.allowConcurrentExecution ? 'warning' : 'info'">
-          {{ row.allowConcurrentExecution ? t('common.yes') : t('common.no') }}
-        </el-tag>
-      </template>
+        <template #allowConcurrentExecution="{ row }">
+          <el-tag :type="row.allowConcurrentExecution ? 'warning' : 'info'">
+            {{ row.allowConcurrentExecution ? t('common.yes') : t('common.no') }}
+          </el-tag>
+        </template>
 
-      <template #lastRunAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.lastRunAt) }}</span>
-      </template>
+        <template #lastRunAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.lastRunAt) }}</span>
+        </template>
 
-      <template #nextRunAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.nextRunAt) }}</span>
-      </template>
+        <template #nextRunAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.nextRunAt) }}</span>
+        </template>
 
-      <template #lastStatus="{ row }">
-        <el-tag :type="resolveStatusType(row.lastStatus)">
-          {{ row.lastStatus || t('common.unknown') }}
-        </el-tag>
-      </template>
+        <template #lastStatus="{ row }">
+          <el-tag :type="resolveStatusType(row.lastStatus)">
+            {{ row.lastStatus || t('common.unknown') }}
+          </el-tag>
+        </template>
 
-      <template #updatedAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.updatedAt) }}</span>
-      </template>
+        <template #updatedAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.updatedAt) }}</span>
+        </template>
 
-      <template #operation="{ row }">
-        <div class="flex gap-1.5 justify-center">
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.tasks.actions.run')" @click="onRun(row)">
-            <icon-mdi-play-circle-outline />
-          </IconButton>
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('components.myTable.edit')" @click="onEdit(row)">
-            <icon-mdi-pencil />
-          </IconButton>
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.tasks.actions.delete')" @click="onDelete(row)">
-            <icon-mdi-delete-outline />
-          </IconButton>
-        </div>
-      </template>
-    </MyTable>
+        <template #operation="{ row }">
+          <div class="flex gap-1.5 justify-center">
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.tasks.actions.run')" @click="onRun(row)">
+              <icon-mdi-play-circle-outline />
+            </IconButton>
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('components.myTable.edit')" @click="onEdit(row)">
+              <icon-mdi-pencil />
+            </IconButton>
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.scheduler.tasks.actions.delete')" @click="onDelete(row)">
+              <icon-mdi-delete-outline />
+            </IconButton>
+          </div>
+        </template>
+      </MyTable>
+    </div>
 
     <TaskEditorDialog
       ref="taskDialogRef"
