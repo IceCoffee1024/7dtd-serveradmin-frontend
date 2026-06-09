@@ -486,362 +486,369 @@ onMounted(loadModules);
 </script>
 
 <template>
-  <el-card class="feature-modules-page h-full min-h-0" shadow="never">
-    <div class="flex flex-col gap-4 h-full min-h-0">
-      <div class="feature-modules-page__header">
-        <div>
-          <h2 class="text-lg text-gray-800 leading-6 font-semibold dark:text-gray-100">
-            {{ t('menus.featureModules') }}
-          </h2>
-          <p class="text-sm text-gray-500 mt-1 dark:text-gray-400">
-            {{ t('views.featureModules.description') }}
-          </p>
-        </div>
+  <div class="feature-modules-page-root h-full min-h-0">
+    <el-card class="feature-modules-page h-full min-h-0" shadow="never">
+      <div class="flex flex-col gap-4 h-full min-h-0">
+        <div class="feature-modules-page__header">
+          <div>
+            <h2 class="text-lg text-gray-800 leading-6 font-semibold dark:text-gray-100">
+              {{ t('menus.featureModules') }}
+            </h2>
+            <p class="text-sm text-gray-500 mt-1 dark:text-gray-400">
+              {{ t('views.featureModules.description') }}
+            </p>
+          </div>
 
-        <el-button :icon="iconRefresh" :loading="loading" @click="loadModules">
-          {{ t('components.myTable.refresh') }}
-        </el-button>
-      </div>
-
-      <div class="feature-modules-page__summary">
-        <div class="feature-modules-page__summary-item">
-          <span>{{ t('views.featureModules.summary.total') }}</span>
-          <strong>{{ summary.total }}</strong>
-        </div>
-        <div class="feature-modules-page__summary-item is-success">
-          <span>{{ t('views.featureModules.summary.enabled') }}</span>
-          <strong>{{ summary.enabled }}</strong>
-        </div>
-        <div class="feature-modules-page__summary-item">
-          <span>{{ t('views.featureModules.summary.disabled') }}</span>
-          <strong>{{ summary.disabled }}</strong>
-        </div>
-        <div class="feature-modules-page__summary-item is-danger">
-          <span>{{ t('views.featureModules.summary.unavailable') }}</span>
-          <strong>{{ summary.unavailable }}</strong>
-        </div>
-      </div>
-
-      <div class="feature-modules-page__toolbar">
-        <el-segmented
-          v-model="filter"
-          :options="[
-            { label: t('views.featureModules.filterAll'), value: 'all' },
-            { label: t('views.featureModules.filterEnabled'), value: 'enabled' },
-            { label: t('views.featureModules.filterDisabled'), value: 'disabled' },
-            { label: t('views.featureModules.filterIssues'), value: 'issues' },
-            { label: t('views.featureModules.filterUnavailable'), value: 'unavailable' },
-          ]"
-        />
-        <div class="feature-modules-page__toolbar-right">
-          <el-input
-            v-model="keyword"
-            clearable
-            :placeholder="t('views.featureModules.searchPlaceholder')"
-            class="feature-modules-page__search"
-          />
-          <el-switch
-            v-model="issueFirst"
-            :active-text="t('views.featureModules.issueFirst')"
-          />
-        </div>
-      </div>
-
-      <el-table
-        v-loading="loading"
-        :data="filteredModules"
-        row-key="key"
-
-        stripe border
-        class="feature-modules-page__table"
-      >
-        <el-table-column :label="t('views.featureModules.columns.module')" min-width="180">
-          <template #default="{ row }">
-            <div class="feature-modules-page__module-name">
-              <span>{{ getModuleName(row) }}</span>
-              <code>{{ row.key }}</code>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="t('views.featureModules.columns.status')" width="130" align="center">
-          <template #default="{ row }">
-            <el-tag :type="getHealthTagType(row.health)" effect="plain">
-              {{ getHealthLabel(row.health) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="t('views.featureModules.columns.enabled')" width="110" align="center">
-          <template #default="{ row }">
-            <el-tag :type="row.enabled ? 'success' : 'info'" effect="plain">
-              {{ row.enabled ? t('common.yes') : t('common.no') }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column
-          :label="t('views.featureModules.columns.details')"
-          min-width="230"
-          show-overflow-tooltip
-        >
-          <template #default="{ row }">
-            <span class="feature-modules-page__status-detail">
-              {{ getStatusDetail(row) }}
-            </span>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="t('views.featureModules.columns.configuration')" min-width="220">
-          <template #default="{ row }">
-            <div class="feature-modules-page__configuration">
-              <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
-                {{ getConfigurationText(row) }}
-              </el-tag>
-              <span v-if="getConfigurationIssueCount(row) > 0" class="feature-modules-page__issue-count">
-                {{ t('views.featureModules.issueCount', [getConfigurationIssueCount(row)]) }}
-              </span>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="t('views.featureModules.columns.subModules')" width="130" align="center">
-          <template #default="{ row }">
-            <span v-if="row.subModules.length > 0" class="feature-modules-page__count">
-              {{ getSubModuleSummary(row) }}
-            </span>
-            <span v-else class="text-sm text-gray-400">
-              -
-            </span>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="t('views.featureModules.columns.commands')" width="130" align="center">
-          <template #default="{ row }">
-            <span v-if="getModuleCommands(row).length > 0" class="feature-modules-page__count">
-              {{ getCommandSummary(row) }}
-            </span>
-            <span v-else class="text-sm text-gray-400">
-              -
-            </span>
-          </template>
-        </el-table-column>
-
-        <el-table-column :label="t('views.featureModules.columns.actions')" width="420" fixed="right">
-          <template #default="{ row }">
-            <div class="feature-modules-page__actions">
-              <el-button
-                :icon="iconDetails"
-                size="small"
-                @click="openDetails(row)"
-              >
-                {{ t('views.featureModules.detailsAction') }}
-              </el-button>
-              <el-button
-                v-if="canRunModuleAction(row, 'Validate')"
-                :icon="iconValidate"
-                :loading="isModuleActionLoading(row, 'Validate')"
-                size="small"
-                @click="postModuleAction(row, 'Validate')"
-              >
-                {{ t('views.featureModules.actions.validate') }}
-              </el-button>
-              <el-button
-                v-if="canRunModuleAction(row, row.enabled ? 'Disable' : 'Enable')"
-                :icon="iconPower"
-                :loading="isModuleActionLoading(row, row.enabled ? 'Disable' : 'Enable')"
-                :type="row.enabled ? 'warning' : 'success'"
-                size="small"
-                @click="postModuleAction(row, row.enabled ? 'Disable' : 'Enable')"
-              >
-                {{ row.enabled ? t('views.featureModules.actions.disable') : t('views.featureModules.actions.enable') }}
-              </el-button>
-              <el-button
-                v-for="link in getModuleRoutes(row)"
-                :key="link.name"
-                :icon="iconOpen"
-                size="small"
-                @click="openRoute(link)"
-              >
-                {{ t(link.labelKey) }}
-              </el-button>
-              <span v-if="getModuleRoutes(row).length === 0" class="text-sm text-gray-400">
-                -
-              </span>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-  </el-card>
-
-  <el-drawer
-    v-model="detailVisible"
-    :title="selectedModule == null ? t('views.featureModules.detail.title') : getModuleName(selectedModule)"
-    size="520px"
-    append-to-body
-  >
-    <div v-if="selectedModule != null" class="feature-module-detail">
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.detail.overview') }}</h3>
-        <el-descriptions :column="1" size="small" border>
-          <el-descriptions-item :label="t('views.featureModules.columns.key')">
-            <code>{{ selectedModule.key }}</code>
-          </el-descriptions-item>
-          <el-descriptions-item :label="t('views.featureModules.columns.status')">
-            <el-tag :type="getHealthTagType(selectedModule.health)" effect="plain">
-              {{ getHealthLabel(selectedModule.health) }}
-            </el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item :label="t('views.featureModules.columns.enabled')">
-            <el-tag :type="selectedModule.enabled ? 'success' : 'info'" effect="plain">
-              {{ selectedModule.enabled ? t('common.yes') : t('common.no') }}
-            </el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item :label="t('views.featureModules.columns.settingsType')">
-            {{ selectedModule.settingsType ?? '-' }}
-          </el-descriptions-item>
-          <el-descriptions-item :label="t('views.featureModules.columns.configuration')">
-            <el-tag :type="getConfigurationTagType(getConfigurationStatus(selectedModule))" effect="plain">
-              {{ getConfigurationText(selectedModule) }}
-            </el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item :label="t('views.featureModules.columns.issueCount')">
-            {{ getConfigurationIssueCount(selectedModule) }}
-          </el-descriptions-item>
-          <el-descriptions-item :label="t('views.featureModules.columns.checkedAt')">
-            {{ getConfigurationCheckedAt(selectedModule) }}
-          </el-descriptions-item>
-        </el-descriptions>
-      </section>
-
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.detail.capabilities') }}</h3>
-        <div v-if="getModuleCapabilities(selectedModule).length > 0" class="feature-module-detail__tags">
-          <el-tag
-            v-for="capability in getModuleCapabilities(selectedModule)"
-            :key="capability.key"
-            effect="plain"
-          >
-            {{ getCapabilityLabel(capability) }}
-          </el-tag>
-        </div>
-        <el-empty v-else :description="t('views.featureModules.detail.emptyCapabilities')" :image-size="72" />
-      </section>
-
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.detail.configurationIssues') }}</h3>
-        <div v-if="getConfigurationIssues(selectedModule).length > 0" class="feature-module-detail__issues">
-          <template v-for="severity in issueSeverities" :key="severity">
-            <div v-if="getIssuesBySeverity(selectedModule, severity).length > 0" class="feature-module-detail__issue-group">
-              <div class="feature-module-detail__issue-group-title">
-                {{ getIssueSeverityLabel(severity) }}
-              </div>
-              <div
-                v-for="issue in getIssuesBySeverity(selectedModule, severity)"
-                :key="issue.code ?? issue.messageCode ?? getIssueText(issue)"
-                class="feature-module-detail__issue"
-              >
-                <el-tag :type="getIssueTagType(issue.severity)" effect="plain" size="small">
-                  {{ getIssueSeverityLabel(issue.severity) }}
-                </el-tag>
-                <span>{{ getIssueText(issue) }}</span>
-              </div>
-            </div>
-          </template>
-        </div>
-        <el-empty v-else :description="t('views.featureModules.detail.emptyConfigurationIssues')" :image-size="72" />
-      </section>
-
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.detail.routes') }}</h3>
-        <div v-if="getModuleRoutes(selectedModule).length > 0" class="feature-module-detail__list">
-          <el-button
-            v-for="link in getModuleRoutes(selectedModule)"
-            :key="link.name"
-            :icon="iconOpen"
-            size="small"
-            @click="openRoute(link)"
-          >
-            {{ t(link.labelKey) }}
+          <el-button :icon="iconRefresh" :loading="loading" @click="loadModules">
+            {{ t('components.myTable.refresh') }}
           </el-button>
         </div>
-        <el-empty v-else :description="t('views.featureModules.detail.emptyRoutes')" :image-size="72" />
-      </section>
 
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.columns.commands') }}</h3>
-        <div v-if="getModuleCommands(selectedModule).length > 0" class="feature-module-detail__commands">
-          <div
-            v-for="command in getModuleCommands(selectedModule)"
-            :key="command.name"
-            class="feature-module-detail__command"
-          >
-            <div class="feature-module-detail__command-main">
-              <el-tag :type="getCommandTagType(command)" effect="plain">
-                {{ command.name }}
+        <div class="feature-modules-page__summary">
+          <div class="feature-modules-page__summary-item">
+            <span>{{ t('views.featureModules.summary.total') }}</span>
+            <strong>{{ summary.total }}</strong>
+          </div>
+          <div class="feature-modules-page__summary-item is-success">
+            <span>{{ t('views.featureModules.summary.enabled') }}</span>
+            <strong>{{ summary.enabled }}</strong>
+          </div>
+          <div class="feature-modules-page__summary-item">
+            <span>{{ t('views.featureModules.summary.disabled') }}</span>
+            <strong>{{ summary.disabled }}</strong>
+          </div>
+          <div class="feature-modules-page__summary-item is-danger">
+            <span>{{ t('views.featureModules.summary.unavailable') }}</span>
+            <strong>{{ summary.unavailable }}</strong>
+          </div>
+        </div>
+
+        <div class="feature-modules-page__toolbar">
+          <el-segmented
+            v-model="filter"
+            :options="[
+              { label: t('views.featureModules.filterAll'), value: 'all' },
+              { label: t('views.featureModules.filterEnabled'), value: 'enabled' },
+              { label: t('views.featureModules.filterDisabled'), value: 'disabled' },
+              { label: t('views.featureModules.filterIssues'), value: 'issues' },
+              { label: t('views.featureModules.filterUnavailable'), value: 'unavailable' },
+            ]"
+          />
+          <div class="feature-modules-page__toolbar-right">
+            <el-input
+              v-model="keyword"
+              clearable
+              :placeholder="t('views.featureModules.searchPlaceholder')"
+              class="feature-modules-page__search"
+            />
+            <el-switch
+              v-model="issueFirst"
+              :active-text="t('views.featureModules.issueFirst')"
+            />
+          </div>
+        </div>
+
+        <el-table
+          v-loading="loading"
+          :data="filteredModules"
+          row-key="key"
+
+          stripe border
+          class="feature-modules-page__table"
+        >
+          <el-table-column :label="t('views.featureModules.columns.module')" min-width="180">
+            <template #default="{ row }">
+              <div class="feature-modules-page__module-name">
+                <span>{{ getModuleName(row) }}</span>
+                <code>{{ row.key }}</code>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column :label="t('views.featureModules.columns.status')" width="130" align="center">
+            <template #default="{ row }">
+              <el-tag :type="getHealthTagType(row.health)" effect="plain">
+                {{ getHealthLabel(row.health) }}
               </el-tag>
-              <span v-if="command.aliases.length > 0" class="feature-module-detail__aliases">
-                {{ t('views.featureModules.detail.aliases') }}: {{ command.aliases.join(', ') }}
+            </template>
+          </el-table-column>
+
+          <el-table-column :label="t('views.featureModules.columns.enabled')" width="110" align="center">
+            <template #default="{ row }">
+              <el-tag :type="row.enabled ? 'success' : 'info'" effect="plain">
+                {{ row.enabled ? t('common.yes') : t('common.no') }}
+              </el-tag>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            :label="t('views.featureModules.columns.details')"
+            min-width="230"
+            show-overflow-tooltip
+          >
+            <template #default="{ row }">
+              <span class="feature-modules-page__status-detail">
+                {{ getStatusDetail(row) }}
               </span>
-            </div>
-            <p>{{ getCommandDescription(command) }}</p>
-          </div>
-        </div>
-        <el-empty v-else :description="t('views.featureModules.emptyCommands')" :image-size="72" />
-      </section>
+            </template>
+          </el-table-column>
 
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.detail.permissions') }}</h3>
-        <div v-if="getModulePermissions(selectedModule).length > 0" class="feature-module-detail__permissions">
-          <div
-            v-for="permission in getModulePermissions(selectedModule)"
-            :key="permission.scope"
-            class="feature-module-detail__permission"
-          >
-            <div class="feature-module-detail__permission-main">
-              <strong>{{ t(permission.labelKey) }}</strong>
-              <el-tag v-if="permission.requiresAuthentication" type="warning" effect="plain" size="small">
-                {{ t('views.featureModules.permissionFlags.authenticated') }}
-              </el-tag>
-              <el-tag v-if="permission.requiresGameStartDone" type="info" effect="plain" size="small">
-                {{ t('views.featureModules.permissionFlags.gameReady') }}
-              </el-tag>
-              <el-tag v-if="permission.requiresAdmin" type="danger" effect="plain" size="small">
-                {{ t('views.featureModules.permissionFlags.admin') }}
-              </el-tag>
-              <el-tag v-if="permission.requiresOnlinePlayer" type="success" effect="plain" size="small">
-                {{ t('views.featureModules.permissionFlags.onlinePlayer') }}
-              </el-tag>
-              <el-tag v-if="permission.permissionLevel != null" type="danger" effect="plain" size="small">
-                {{ t('views.featureModules.permissionLevel', [permission.permissionLevel]) }}
-              </el-tag>
-            </div>
-            <p>{{ t(permission.descriptionKey) }}</p>
-          </div>
-        </div>
-        <el-empty v-else :description="t('views.featureModules.detail.emptyPermissions')" :image-size="72" />
-      </section>
+          <el-table-column :label="t('views.featureModules.columns.configuration')" min-width="220">
+            <template #default="{ row }">
+              <div class="feature-modules-page__configuration">
+                <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
+                  {{ getConfigurationText(row) }}
+                </el-tag>
+                <span v-if="getConfigurationIssueCount(row) > 0" class="feature-modules-page__issue-count">
+                  {{ t('views.featureModules.issueCount', [getConfigurationIssueCount(row)]) }}
+                </span>
+              </div>
+            </template>
+          </el-table-column>
 
-      <section class="feature-module-detail__section">
-        <h3>{{ t('views.featureModules.columns.subModules') }}</h3>
-        <div v-if="selectedModule.subModules.length > 0" class="feature-module-detail__tags">
-          <el-tag
-            v-for="subModule in selectedModule.subModules"
-            :key="subModule.key"
-            :type="getHealthTagType(subModule.health)"
-            effect="plain"
-          >
-            {{ getSubModuleName(subModule) }}
-          </el-tag>
-        </div>
-        <el-empty v-else :description="t('views.featureModules.emptySubModules')" :image-size="72" />
-      </section>
-    </div>
-  </el-drawer>
+          <el-table-column :label="t('views.featureModules.columns.subModules')" width="130" align="center">
+            <template #default="{ row }">
+              <span v-if="row.subModules.length > 0" class="feature-modules-page__count">
+                {{ getSubModuleSummary(row) }}
+              </span>
+              <span v-else class="text-sm text-gray-400">
+                -
+              </span>
+            </template>
+          </el-table-column>
+
+          <el-table-column :label="t('views.featureModules.columns.commands')" width="130" align="center">
+            <template #default="{ row }">
+              <span v-if="getModuleCommands(row).length > 0" class="feature-modules-page__count">
+                {{ getCommandSummary(row) }}
+              </span>
+              <span v-else class="text-sm text-gray-400">
+                -
+              </span>
+            </template>
+          </el-table-column>
+
+          <el-table-column :label="t('views.featureModules.columns.actions')" width="420" fixed="right">
+            <template #default="{ row }">
+              <div class="feature-modules-page__actions">
+                <el-button
+                  :icon="iconDetails"
+                  size="small"
+                  @click="openDetails(row)"
+                >
+                  {{ t('views.featureModules.detailsAction') }}
+                </el-button>
+                <el-button
+                  v-if="canRunModuleAction(row, 'Validate')"
+                  :icon="iconValidate"
+                  :loading="isModuleActionLoading(row, 'Validate')"
+                  size="small"
+                  @click="postModuleAction(row, 'Validate')"
+                >
+                  {{ t('views.featureModules.actions.validate') }}
+                </el-button>
+                <el-button
+                  v-if="canRunModuleAction(row, row.enabled ? 'Disable' : 'Enable')"
+                  :icon="iconPower"
+                  :loading="isModuleActionLoading(row, row.enabled ? 'Disable' : 'Enable')"
+                  :type="row.enabled ? 'warning' : 'success'"
+                  size="small"
+                  @click="postModuleAction(row, row.enabled ? 'Disable' : 'Enable')"
+                >
+                  {{ row.enabled ? t('views.featureModules.actions.disable') : t('views.featureModules.actions.enable') }}
+                </el-button>
+                <el-button
+                  v-for="link in getModuleRoutes(row)"
+                  :key="link.name"
+                  :icon="iconOpen"
+                  size="small"
+                  @click="openRoute(link)"
+                >
+                  {{ t(link.labelKey) }}
+                </el-button>
+                <span v-if="getModuleRoutes(row).length === 0" class="text-sm text-gray-400">
+                  -
+                </span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-card>
+
+    <el-drawer
+      v-model="detailVisible"
+      :title="selectedModule == null ? t('views.featureModules.detail.title') : getModuleName(selectedModule)"
+      size="520px"
+      append-to-body
+    >
+      <div v-if="selectedModule != null" class="feature-module-detail">
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.overview') }}</h3>
+          <el-descriptions :column="1" size="small" border>
+            <el-descriptions-item :label="t('views.featureModules.columns.key')">
+              <code>{{ selectedModule.key }}</code>
+            </el-descriptions-item>
+            <el-descriptions-item :label="t('views.featureModules.columns.status')">
+              <el-tag :type="getHealthTagType(selectedModule.health)" effect="plain">
+                {{ getHealthLabel(selectedModule.health) }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item :label="t('views.featureModules.columns.enabled')">
+              <el-tag :type="selectedModule.enabled ? 'success' : 'info'" effect="plain">
+                {{ selectedModule.enabled ? t('common.yes') : t('common.no') }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item :label="t('views.featureModules.columns.settingsType')">
+              {{ selectedModule.settingsType ?? '-' }}
+            </el-descriptions-item>
+            <el-descriptions-item :label="t('views.featureModules.columns.configuration')">
+              <el-tag :type="getConfigurationTagType(getConfigurationStatus(selectedModule))" effect="plain">
+                {{ getConfigurationText(selectedModule) }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item :label="t('views.featureModules.columns.issueCount')">
+              {{ getConfigurationIssueCount(selectedModule) }}
+            </el-descriptions-item>
+            <el-descriptions-item :label="t('views.featureModules.columns.checkedAt')">
+              {{ getConfigurationCheckedAt(selectedModule) }}
+            </el-descriptions-item>
+          </el-descriptions>
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.capabilities') }}</h3>
+          <div v-if="getModuleCapabilities(selectedModule).length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="capability in getModuleCapabilities(selectedModule)"
+              :key="capability.key"
+              effect="plain"
+            >
+              {{ getCapabilityLabel(capability) }}
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyCapabilities')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.configurationIssues') }}</h3>
+          <div v-if="getConfigurationIssues(selectedModule).length > 0" class="feature-module-detail__issues">
+            <template v-for="severity in issueSeverities" :key="severity">
+              <div v-if="getIssuesBySeverity(selectedModule, severity).length > 0" class="feature-module-detail__issue-group">
+                <div class="feature-module-detail__issue-group-title">
+                  {{ getIssueSeverityLabel(severity) }}
+                </div>
+                <div
+                  v-for="issue in getIssuesBySeverity(selectedModule, severity)"
+                  :key="issue.code ?? issue.messageCode ?? getIssueText(issue)"
+                  class="feature-module-detail__issue"
+                >
+                  <el-tag :type="getIssueTagType(issue.severity)" effect="plain" size="small">
+                    {{ getIssueSeverityLabel(issue.severity) }}
+                  </el-tag>
+                  <span>{{ getIssueText(issue) }}</span>
+                </div>
+              </div>
+            </template>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyConfigurationIssues')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.routes') }}</h3>
+          <div v-if="getModuleRoutes(selectedModule).length > 0" class="feature-module-detail__list">
+            <el-button
+              v-for="link in getModuleRoutes(selectedModule)"
+              :key="link.name"
+              :icon="iconOpen"
+              size="small"
+              @click="openRoute(link)"
+            >
+              {{ t(link.labelKey) }}
+            </el-button>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyRoutes')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.columns.commands') }}</h3>
+          <div v-if="getModuleCommands(selectedModule).length > 0" class="feature-module-detail__commands">
+            <div
+              v-for="command in getModuleCommands(selectedModule)"
+              :key="command.name"
+              class="feature-module-detail__command"
+            >
+              <div class="feature-module-detail__command-main">
+                <el-tag :type="getCommandTagType(command)" effect="plain">
+                  {{ command.name }}
+                </el-tag>
+                <span v-if="command.aliases.length > 0" class="feature-module-detail__aliases">
+                  {{ t('views.featureModules.detail.aliases') }}: {{ command.aliases.join(', ') }}
+                </span>
+              </div>
+              <p>{{ getCommandDescription(command) }}</p>
+            </div>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.emptyCommands')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.permissions') }}</h3>
+          <div v-if="getModulePermissions(selectedModule).length > 0" class="feature-module-detail__permissions">
+            <div
+              v-for="permission in getModulePermissions(selectedModule)"
+              :key="permission.scope"
+              class="feature-module-detail__permission"
+            >
+              <div class="feature-module-detail__permission-main">
+                <strong>{{ t(permission.labelKey) }}</strong>
+                <el-tag v-if="permission.requiresAuthentication" type="warning" effect="plain" size="small">
+                  {{ t('views.featureModules.permissionFlags.authenticated') }}
+                </el-tag>
+                <el-tag v-if="permission.requiresGameStartDone" type="info" effect="plain" size="small">
+                  {{ t('views.featureModules.permissionFlags.gameReady') }}
+                </el-tag>
+                <el-tag v-if="permission.requiresAdmin" type="danger" effect="plain" size="small">
+                  {{ t('views.featureModules.permissionFlags.admin') }}
+                </el-tag>
+                <el-tag v-if="permission.requiresOnlinePlayer" type="success" effect="plain" size="small">
+                  {{ t('views.featureModules.permissionFlags.onlinePlayer') }}
+                </el-tag>
+                <el-tag v-if="permission.permissionLevel != null" type="danger" effect="plain" size="small">
+                  {{ t('views.featureModules.permissionLevel', [permission.permissionLevel]) }}
+                </el-tag>
+              </div>
+              <p>{{ t(permission.descriptionKey) }}</p>
+            </div>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyPermissions')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.columns.subModules') }}</h3>
+          <div v-if="selectedModule.subModules.length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="subModule in selectedModule.subModules"
+              :key="subModule.key"
+              :type="getHealthTagType(subModule.health)"
+              effect="plain"
+            >
+              {{ getSubModuleName(subModule) }}
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.emptySubModules')" :image-size="72" />
+        </section>
+      </div>
+    </el-drawer>
+  </div>
 </template>
 
 <style scoped lang="scss">
+.feature-modules-page-root {
+  display: flex;
+  flex-direction: column;
+}
+
 .feature-modules-page {
   overflow: hidden;
 
