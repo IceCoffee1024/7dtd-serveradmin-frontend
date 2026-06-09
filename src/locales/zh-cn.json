@@ -2464,7 +2464,8 @@
         "entityType": "实体类型"
       },
       "eventTypes": {
-        "PlayerJoined": "玩家加入",
+        "PlayerLogin": "玩家登录",
+        "PlayerJoined": "玩家进入世界",
         "PlayerLeft": "玩家离开",
         "PlayerDied": "玩家死亡",
         "PlayerKilledZombie": "击杀僵尸",
@@ -2674,14 +2675,14 @@
     },
     "eventAutomation": {
       "triggers": {
-        "PlayerJoined": "玩家加入",
+        "PlayerJoined": "玩家进入世界",
         "PlayerLeft": "玩家离开",
         "PlayerDied": "玩家死亡",
         "ChatMessage": "聊天消息",
         "Cron": "定时触发"
       },
       "rules": {
-        "hint": "当前支持玩家加入和聊天消息触发。动作支持全服消息、私聊、给物品和调整经济余额。",
+        "hint": "当前支持玩家进入世界和聊天消息触发。动作支持全服消息、私聊、给物品和调整经济余额。",
         "columns": {
           "name": "名称",
           "isEnabled": "启用",
@@ -2732,22 +2733,22 @@
         "templates": {
           "welcomePrivateMessage": {
             "name": "进服私聊欢迎",
-            "description": "玩家加入时向该玩家发送一条私聊欢迎消息。",
+            "description": "玩家进入世界时向该玩家发送一条私聊欢迎消息。",
             "message": "欢迎 {playerName} 加入服务器！"
           },
           "welcomeBroadcast": {
             "name": "进服全服广播",
-            "description": "玩家加入时向全服广播提示。",
+            "description": "玩家进入世界时向全服广播提示。",
             "message": "{playerName} 加入了服务器。"
           },
           "newPlayerGift": {
             "name": "新人礼包",
-            "description": "玩家加入时发放木头并私聊提示。",
+            "description": "玩家进入世界时发放木头并私聊提示。",
             "message": "新人礼包已发放：100 个木头。"
           },
           "economyWelcomeReward": {
             "name": "进服经济奖励",
-            "description": "玩家加入时增加经济账户余额。",
+            "description": "玩家进入世界时增加经济账户余额。",
             "reason": "进服欢迎奖励",
             "message": "欢迎奖励已到账：100 金币。"
           },

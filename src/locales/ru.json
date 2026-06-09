@@ -2464,6 +2464,7 @@
         "entityType": "Тип объекта"
       },
       "eventTypes": {
+        "PlayerLogin": "Player Login",
         "PlayerJoined": "Игрок присоединился",
         "PlayerLeft": "Игрок слева",
         "PlayerDied": "Игрок умер",

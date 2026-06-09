@@ -17,7 +17,7 @@ const { viewPlayerProfile } = usePlayerProfileNavigation();
 const tableRef = useTemplateRef('tableRef');
 useRoutePlayerTableSearch(tableRef, 'keyword');
 
-const EVENT_TYPES = ['PlayerJoined', 'PlayerLeft', 'PlayerDied', 'PlayerKilledZombie', 'PlayerKilledPlayer'] as const;
+const EVENT_TYPES = ['PlayerLogin', 'PlayerJoined', 'PlayerLeft', 'PlayerDied', 'PlayerKilledZombie', 'PlayerKilledPlayer'] as const;
 
 const eventTypeOptions = computed(() =>
   EVENT_TYPES.map(type => ({
@@ -27,6 +27,7 @@ const eventTypeOptions = computed(() =>
 );
 
 const EVENT_TYPE_TAG_MAP: Record<string, 'success' | 'danger' | 'warning' | 'info' | undefined> = {
+  PlayerLogin: 'info',
   PlayerJoined: 'success',
   PlayerLeft: 'info',
   PlayerDied: 'danger',

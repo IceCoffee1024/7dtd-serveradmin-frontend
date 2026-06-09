@@ -2464,6 +2464,7 @@
         "entityType": "Varlık Türü"
       },
       "eventTypes": {
+        "PlayerLogin": "Player Login",
         "PlayerJoined": "Oyuncu Katıldı",
         "PlayerLeft": "Oyuncu Sol",
         "PlayerDied": "Oyuncu Öldü",

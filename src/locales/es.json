@@ -2464,6 +2464,7 @@
         "entityType": "Tipo de entidad"
       },
       "eventTypes": {
+        "PlayerLogin": "Player Login",
         "PlayerJoined": "Jugador unido",
         "PlayerLeft": "Jugador izquierdo",
         "PlayerDied": "Jugador muerto",

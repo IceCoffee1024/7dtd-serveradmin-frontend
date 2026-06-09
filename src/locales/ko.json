@@ -2464,6 +2464,7 @@
         "entityType": "엔터티 유형"
       },
       "eventTypes": {
+        "PlayerLogin": "Player Login",
         "PlayerJoined": "플레이어가 합류했습니다",
         "PlayerLeft": "플레이어 왼쪽",
         "PlayerDied": "플레이어 사망",

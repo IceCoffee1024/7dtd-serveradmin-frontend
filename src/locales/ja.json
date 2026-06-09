@@ -2464,7 +2464,8 @@
         "entityType": "エンティティの種類"
       },
       "eventTypes": {
-        "PlayerJoined": "プレイヤーが参加しました",
+        "PlayerLogin": "プレイヤーログイン",
+        "PlayerJoined": "プレイヤーがワールドに入りました",
         "PlayerLeft": "プレーヤー左",
         "PlayerDied": "プレイヤーが死亡しました",
         "PlayerKilledZombie": "殺されたゾンビ",
@@ -2674,14 +2675,14 @@
     },
     "eventAutomation": {
       "triggers": {
-        "PlayerJoined": "Player Joined",
+        "PlayerJoined": "Player Entered World",
         "PlayerLeft": "Player Left",
         "PlayerDied": "Player Died",
         "ChatMessage": "Chat Message",
         "Cron": "Scheduled Time"
       },
       "rules": {
-        "hint": "Currently supports PlayerJoined and ChatMessage triggers. Actions support global messages, private messages, item grants, and economy balance adjustments.",
+        "hint": "Currently supports player-entered-world and chat message triggers. Actions support global messages, private messages, item grants, and economy balance adjustments.",
         "columns": {
           "name": "Name",
           "isEnabled": "Enabled",
