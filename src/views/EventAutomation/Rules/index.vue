@@ -1032,108 +1032,76 @@ onMounted(() => {
     <el-dialog
       v-model="dialogVisible"
       :title="editingRule == null ? t('views.eventAutomation.rules.dialog.createTitle') : t('views.eventAutomation.rules.dialog.editTitle')"
-      width="920px"
+      class="event-automation-rule-dialog"
+      width="min(1040px, calc(100vw - 48px))"
+      top="4vh"
       destroy-on-close
+      :close-on-click-modal="false"
     >
-      <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
-        <el-row :gutter="16">
-          <el-col :xs="24">
-            <el-form-item :label="t('views.eventAutomation.rules.form.template')">
-              <el-select
-                v-model="selectedTemplateKey"
-                class="w-full"
-                clearable
-                filterable
-                :placeholder="t('views.eventAutomation.rules.form.templatePlaceholder')"
-                @change="applyRuleTemplate"
-              >
-                <el-option
-                  v-for="option in ruleTemplateOptions"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                >
-                  <div class="event-automation-template-option">
-                    <span>{{ option.label }}</span>
-                    <small>{{ option.description }}</small>
-                  </div>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24">
-            <el-collapse class="event-automation-reference">
-              <el-collapse-item :title="t('views.eventAutomation.rules.reference.title')" name="reference">
-                <div class="event-automation-reference__section">
-                  <div class="event-automation-reference__title">
-                    {{ t('views.eventAutomation.rules.reference.variables') }}
-                  </div>
-                  <div class="event-automation-reference__tokens">
-                    <el-tag v-for="token in variableTokens" :key="token" type="info">
-                      {{ token }}
-                    </el-tag>
-                  </div>
-                </div>
+      <div class="event-automation-rule-dialog__body">
+        <el-form ref="formRef" :model="form" :rules="rules" label-position="top" class="event-automation-rule-form">
+          <section class="event-automation-rule-panel event-automation-rule-panel--basic">
+            <el-row :gutter="16">
+              <el-col :xs="24">
+                <el-form-item :label="t('views.eventAutomation.rules.form.template')">
+                  <el-select
+                    v-model="selectedTemplateKey"
+                    class="w-full"
+                    clearable
+                    filterable
+                    :placeholder="t('views.eventAutomation.rules.form.templatePlaceholder')"
+                    @change="applyRuleTemplate"
+                  >
+                    <el-option
+                      v-for="option in ruleTemplateOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    >
+                      <div class="event-automation-template-option">
+                        <span>{{ option.label }}</span>
+                        <small>{{ option.description }}</small>
+                      </div>
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item prop="name" :label="t('views.eventAutomation.rules.form.name')">
+                  <el-input v-model="form.name" clearable />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item prop="triggerType" :label="t('views.eventAutomation.rules.form.triggerType')">
+                  <el-select v-model="form.triggerType" class="w-full" filterable allow-create @change="onTriggerTypeChange">
+                    <el-option
+                      v-for="option in triggerTypeOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="8">
+                <el-form-item prop="isEnabled" :label="t('views.eventAutomation.rules.form.isEnabled')">
+                  <el-switch
+                    v-model="form.isEnabled"
+                    inline-prompt
+                    :active-text="t('common.yes')"
+                    :inactive-text="t('common.no')"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :md="16">
+                <el-form-item prop="description" :label="t('views.eventAutomation.rules.form.description')">
+                  <el-input v-model="form.description" clearable />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </section>
 
-                <div class="event-automation-reference__section">
-                  <div class="event-automation-reference__title">
-                    {{ t('views.eventAutomation.rules.reference.conditionsTitle') }}
-                  </div>
-                  <div class="event-automation-reference__list">
-                    <div v-for="item in conditionReferences" :key="item.label" class="event-automation-reference__item">
-                      <code>{{ item.value }}</code>
-                      <span>{{ item.description }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="event-automation-reference__section">
-                  <div class="event-automation-reference__title">
-                    {{ t('views.eventAutomation.rules.reference.actionsTitle') }}
-                  </div>
-                  <div class="event-automation-reference__list">
-                    <div v-for="item in actionReferences" :key="item.label" class="event-automation-reference__item">
-                      <code>{{ item.value }}</code>
-                      <span>{{ item.description }}</span>
-                    </div>
-                  </div>
-                </div>
-              </el-collapse-item>
-            </el-collapse>
-          </el-col>
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="name" :label="t('views.eventAutomation.rules.form.name')">
-              <el-input v-model="form.name" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="triggerType" :label="t('views.eventAutomation.rules.form.triggerType')">
-              <el-select v-model="form.triggerType" class="w-full" filterable allow-create @change="onTriggerTypeChange">
-                <el-option
-                  v-for="option in triggerTypeOptions"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="isEnabled" :label="t('views.eventAutomation.rules.form.isEnabled')">
-              <el-switch
-                v-model="form.isEnabled"
-                inline-prompt
-                :active-text="t('common.yes')"
-                :inactive-text="t('common.no')"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24">
-            <el-form-item prop="description" :label="t('views.eventAutomation.rules.form.description')">
-              <el-input v-model="form.description" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24">
+          <section class="event-automation-rule-panel">
             <el-tabs v-model="editorMode" class="event-automation-rule-editor">
               <el-tab-pane :label="t('views.eventAutomation.rules.editorModes.builder')" name="builder">
                 <div class="event-automation-rule-editor__builder">
@@ -1183,68 +1151,184 @@ onMounted(() => {
                 </el-row>
               </el-tab-pane>
             </el-tabs>
-          </el-col>
-        </el-row>
-      </el-form>
+          </section>
 
-      <section class="event-automation-dry-run-samples">
-        <div class="event-automation-dry-run-samples__title">
-          {{ t('views.eventAutomation.rules.samples.title') }}
-        </div>
-        <RuleDryRunSampleEditor
-          v-model="dryRunSampleContext"
-          v-model:selected-sample-key="selectedDryRunSampleKey"
-          :trigger-type="form.triggerType"
-          @update:model-value="resetDryRun"
-          @update:selected-sample-key="resetDryRun"
-        />
-      </section>
+          <section class="event-automation-rule-panel event-automation-rule-panel--reference">
+            <el-collapse class="event-automation-reference">
+              <el-collapse-item :title="t('views.eventAutomation.rules.reference.title')" name="reference">
+                <div class="event-automation-reference__grid">
+                  <div class="event-automation-reference__section">
+                    <div class="event-automation-reference__title">
+                      {{ t('views.eventAutomation.rules.reference.variables') }}
+                    </div>
+                    <div class="event-automation-reference__tokens">
+                      <el-tag v-for="token in variableTokens" :key="token" type="info">
+                        {{ token }}
+                      </el-tag>
+                    </div>
+                  </div>
 
-      <el-alert
-        v-if="dryRunResult"
-        class="event-automation-dry-run"
-        :type="dryRunResult.matched ? 'success' : 'warning'"
-        :title="dryRunResult.matched ? t('views.eventAutomation.rules.messages.dryRunMatched') : t('views.eventAutomation.rules.messages.dryRunNotMatched')"
-        show-icon
-        :closable="false"
-      >
-        <div class="event-automation-dry-run__content">
-          <div class="event-automation-dry-run__sample">
-            {{ t('views.eventAutomation.rules.messages.dryRunSampleContext') }}：{{ formatDryRunSample(dryRunSample) }}
+                  <div class="event-automation-reference__section">
+                    <div class="event-automation-reference__title">
+                      {{ t('views.eventAutomation.rules.reference.conditionsTitle') }}
+                    </div>
+                    <div class="event-automation-reference__list">
+                      <div v-for="item in conditionReferences" :key="item.label" class="event-automation-reference__item">
+                        <code>{{ item.value }}</code>
+                        <span>{{ item.description }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="event-automation-reference__section">
+                    <div class="event-automation-reference__title">
+                      {{ t('views.eventAutomation.rules.reference.actionsTitle') }}
+                    </div>
+                    <div class="event-automation-reference__list">
+                      <div v-for="item in actionReferences" :key="item.label" class="event-automation-reference__item">
+                        <code>{{ item.value }}</code>
+                        <span>{{ item.description }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </section>
+        </el-form>
+
+        <section class="event-automation-rule-panel event-automation-dry-run-samples">
+          <div class="event-automation-dry-run-samples__title">
+            {{ t('views.eventAutomation.rules.samples.title') }}
           </div>
-          <div v-if="dryRunResult.actions.length === 0" class="event-automation-dry-run__empty">
-            {{ t('views.eventAutomation.rules.messages.dryRunNoActions') }}
-          </div>
-          <div v-else class="event-automation-dry-run__actions">
-            <div v-for="action in dryRunResult.actions" :key="action.index" class="event-automation-dry-run__action">
-              <el-tag effect="plain" size="small">
-                {{ action.type }}
-              </el-tag>
-              <span>{{ action.summary }}</span>
+          <RuleDryRunSampleEditor
+            v-model="dryRunSampleContext"
+            v-model:selected-sample-key="selectedDryRunSampleKey"
+            :trigger-type="form.triggerType"
+            @update:model-value="resetDryRun"
+            @update:selected-sample-key="resetDryRun"
+          />
+        </section>
+
+        <el-alert
+          v-if="dryRunResult"
+          class="event-automation-dry-run"
+          :type="dryRunResult.matched ? 'success' : 'warning'"
+          :title="dryRunResult.matched ? t('views.eventAutomation.rules.messages.dryRunMatched') : t('views.eventAutomation.rules.messages.dryRunNotMatched')"
+          show-icon
+          :closable="false"
+        >
+          <div class="event-automation-dry-run__content">
+            <div class="event-automation-dry-run__sample">
+              {{ t('views.eventAutomation.rules.messages.dryRunSampleContext') }}：{{ formatDryRunSample(dryRunSample) }}
+            </div>
+            <div v-if="dryRunResult.actions.length === 0" class="event-automation-dry-run__empty">
+              {{ t('views.eventAutomation.rules.messages.dryRunNoActions') }}
+            </div>
+            <div v-else class="event-automation-dry-run__actions">
+              <div v-for="action in dryRunResult.actions" :key="action.index" class="event-automation-dry-run__action">
+                <el-tag effect="plain" size="small">
+                  {{ action.type }}
+                </el-tag>
+                <span>{{ action.summary }}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </el-alert>
+        </el-alert>
+      </div>
 
       <template #footer>
-        <el-button :disabled="isSubmitting" @click="dialogVisible = false">
-          {{ t('common.cancel') }}
-        </el-button>
-        <el-button :loading="isDryRunningRule" :disabled="isSubmitting || isValidatingRule" @click="onDryRunRule">
-          {{ t('views.eventAutomation.rules.actions.dryRun') }}
-        </el-button>
-        <el-button :loading="isValidatingRule" :disabled="isSubmitting" @click="onValidateRule">
-          {{ t('views.featureModules.actions.validate') }}
-        </el-button>
-        <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
-          {{ t('common.save') }}
-        </el-button>
+        <div class="event-automation-rule-dialog__footer">
+          <el-button :disabled="isSubmitting" @click="dialogVisible = false">
+            {{ t('common.cancel') }}
+          </el-button>
+          <el-button :loading="isDryRunningRule" :disabled="isSubmitting || isValidatingRule" @click="onDryRunRule">
+            {{ t('views.eventAutomation.rules.actions.dryRun') }}
+          </el-button>
+          <el-button :loading="isValidatingRule" :disabled="isSubmitting" @click="onValidateRule">
+            {{ t('views.featureModules.actions.validate') }}
+          </el-button>
+          <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
+            {{ t('common.save') }}
+          </el-button>
+        </div>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <style scoped>
+:global(.event-automation-rule-dialog) {
+  display: flex;
+  max-height: 92vh;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+:global(.event-automation-rule-dialog .el-dialog__header) {
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  padding: 14px 18px;
+}
+
+:global(.event-automation-rule-dialog .el-dialog__body) {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  background: var(--el-fill-color-extra-light);
+  padding: 14px 18px;
+}
+
+:global(.event-automation-rule-dialog .el-dialog__footer) {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--el-border-color-lighter);
+  background: var(--el-bg-color);
+  padding: 10px 18px;
+}
+
+.event-automation-rule-dialog__body {
+  display: grid;
+  max-height: calc(92vh - 116px);
+  gap: 12px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.event-automation-rule-dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.event-automation-rule-dialog__footer :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+
+.event-automation-rule-form {
+  display: grid;
+  gap: 12px;
+}
+
+.event-automation-rule-panel {
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  background: var(--el-bg-color);
+  padding: 14px;
+}
+
+.event-automation-rule-panel :deep(.el-form-item:last-child) {
+  margin-bottom: 0;
+}
+
+.event-automation-rule-panel--basic :deep(.el-row) {
+  row-gap: 2px;
+}
+
+.event-automation-rule-panel--reference {
+  padding: 0 12px;
+}
+
 .event-automation-json :deep(textarea) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 13px;
@@ -1403,13 +1487,29 @@ onMounted(() => {
 }
 
 .event-automation-reference {
-  margin-bottom: 8px;
-  border-color: var(--el-border-color-lighter);
+  border: 0;
 }
 
 .event-automation-reference :deep(.el-collapse-item__header) {
+  height: 42px;
+  border-bottom-color: var(--el-border-color-lighter);
+  background: transparent;
   color: var(--el-text-color-regular);
   font-size: 13px;
+}
+
+.event-automation-reference :deep(.el-collapse-item__wrap) {
+  border-bottom: 0;
+}
+
+.event-automation-reference :deep(.el-collapse-item__content) {
+  padding: 12px 0 14px;
+}
+
+.event-automation-reference__grid {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.8fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
 }
 
 .event-automation-reference__section {
@@ -1419,7 +1519,7 @@ onMounted(() => {
 }
 
 .event-automation-reference__section + .event-automation-reference__section {
-  margin-top: 14px;
+  margin-top: 0;
 }
 
 .event-automation-reference__title {
@@ -1437,11 +1537,16 @@ onMounted(() => {
 .event-automation-reference__list {
   display: grid;
   gap: 8px;
+  max-height: 180px;
+  overflow: auto;
+  padding-right: 2px;
 }
 
 .event-automation-reference__item {
   display: grid;
-  gap: 4px;
+  grid-template-columns: minmax(104px, 0.55fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
 }
 
 .event-automation-reference__item code {
@@ -1459,12 +1564,16 @@ onMounted(() => {
 }
 
 .event-automation-rule-editor {
-  margin-top: 2px;
+  margin-top: 0;
+}
+
+.event-automation-rule-editor :deep(.el-tabs__header) {
+  margin-bottom: 12px;
 }
 
 .event-automation-rule-editor__builder {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .event-automation-rule-editor__section {
@@ -1489,7 +1598,11 @@ onMounted(() => {
 .event-automation-dry-run-samples {
   display: grid;
   gap: 10px;
-  margin-top: 14px;
+}
+
+.event-automation-dry-run-samples :deep(.rule-dry-run-sample-editor) {
+  border: 0;
+  padding: 0;
 }
 
 .event-automation-dry-run-samples__title {
@@ -1499,7 +1612,7 @@ onMounted(() => {
 }
 
 .event-automation-dry-run {
-  margin-top: 12px;
+  margin-top: 0;
 }
 
 .event-automation-dry-run__content {
@@ -1526,5 +1639,33 @@ onMounted(() => {
 
 .event-automation-dry-run__action span {
   overflow-wrap: anywhere;
+}
+
+@media (width <= 720px) {
+  :global(.event-automation-rule-dialog) {
+    width: calc(100vw - 20px) !important;
+    max-height: 96vh;
+  }
+
+  :global(.event-automation-rule-dialog .el-dialog__body) {
+    padding: 12px;
+  }
+
+  .event-automation-rule-dialog__body {
+    max-height: calc(96vh - 116px);
+  }
+
+  .event-automation-reference__grid,
+  .event-automation-reference__item {
+    grid-template-columns: 1fr;
+  }
+
+  .event-automation-rule-dialog__footer {
+    justify-content: stretch;
+  }
+
+  .event-automation-rule-dialog__footer :deep(.el-button) {
+    flex: 1 1 auto;
+  }
 }
 </style>

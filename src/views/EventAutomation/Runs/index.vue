@@ -17,9 +17,6 @@ type RunRow = EventAutomationRunLogDto;
 const TRIGGER_TYPES = [
   'PlayerJoined',
   'PlayerLeft',
-  'PlayerDied',
-  'PlayerKilledPlayer',
-  'PlayerKilledZombie',
   'ChatMessage',
   'Cron',
 ] as const;
