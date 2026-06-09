@@ -1214,6 +1214,30 @@ export const vEventAutomationRunStatsDto = v.strictObject({
 });
 
 /**
+ * Result of an event automation run history cleanup request.
+ */
+export const vEventAutomationRunLogCleanupResultDto = v.strictObject({
+    matchedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    deletedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    previewOnly: v.optional(v.boolean()),
+    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    criteria: v.string(),
+    oldestStartedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    newestStartedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Request payload for controlled event automation run history cleanup.
+ */
+export const vEventAutomationRunLogCleanupRequestDto = v.strictObject({
+    deleteTestRuns: v.optional(v.boolean()),
+    olderThanDays: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    keyword: v.nullish(v.string()),
+    previewOnly: v.optional(v.boolean())
+});
+
+/**
  * Severity for one event automation validation issue.
  */
 export const vEventAutomationRuleValidationSeverity = v.picklist([
@@ -1410,6 +1434,18 @@ export const vFeatureModuleConfigurationDto = v.strictObject({
 });
 
 /**
+ * Read-only metadata for one strongly typed settings property.
+ */
+export const vFeatureModuleSettingsFieldDto = v.strictObject({
+    name: v.string(),
+    type: v.string(),
+    clrType: v.string(),
+    isNullable: v.boolean(),
+    isCollection: v.boolean(),
+    isEnableFlag: v.boolean()
+});
+
+/**
  * Represents the runtime status of a server-admin feature module.
  */
 export const vFeatureModuleStatusDto = v.strictObject({
@@ -1425,7 +1461,8 @@ export const vFeatureModuleStatusDto = v.strictObject({
     configuration: vFeatureModuleConfigurationDto,
     canEnable: v.boolean(),
     canDisable: v.boolean(),
-    canValidate: v.boolean()
+    canValidate: v.boolean(),
+    settingsFields: v.array(vFeatureModuleSettingsFieldDto)
 });
 
 /**
@@ -1439,8 +1476,46 @@ export const vFeatureModuleSettingsSummaryDto = v.strictObject({
     canDisable: v.boolean(),
     canValidate: v.boolean(),
     settingsRouteName: v.nullish(v.string()),
-    validation: vFeatureModuleConfigurationDto
+    validation: vFeatureModuleConfigurationDto,
+    settingsFields: v.array(vFeatureModuleSettingsFieldDto)
 });
+
+/**
+ * Read-only projection of module-owned runtime state.
+ */
+export const vModuleStateDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    updatedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    moduleKey: v.string(),
+    scope: v.string(),
+    scopeKey: v.string(),
+    stateKey: v.string(),
+    valueJson: v.string()
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfModuleStateDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vModuleStateDto)
+});
+
+/**
+ * Sortable columns supported by the module state list endpoint.
+ */
+export const vModuleStateQueryOrder = v.picklist([
+    'CreatedAt',
+    'UpdatedAt',
+    'Scope',
+    'ScopeKey',
+    'StateKey'
+]);
 
 /**
  * Read-only projection of a persisted game event record returned by the management API.
@@ -2936,6 +3011,8 @@ export const vEventAutomationGetRunsQuery = v.object({
     desc: v.optional(v.boolean())
 });
 
+export const vEventAutomationCleanupRunsBody = vEventAutomationRunLogCleanupRequestDto;
+
 export const vEventAutomationValidateRuleBody = vEventAutomationRuleUpsertDto;
 
 export const vEventAutomationDryRunRuleBody = vEventAutomationRuleDryRunRequestDto;
@@ -2956,6 +3033,21 @@ export const vEventAutomationUpdateRulePath = v.object({
 
 export const vFeatureModulesGetSettingsSummaryPath = v.object({
     key: v.string()
+});
+
+export const vFeatureModulesGetStatesPath = v.object({
+    key: v.string()
+});
+
+export const vFeatureModulesGetStatesQuery = v.object({
+    scope: v.nullish(v.string()),
+    scopeKey: v.nullish(v.string()),
+    stateKey: v.nullish(v.string()),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(vModuleStateQueryOrder),
+    desc: v.optional(v.boolean())
 });
 
 export const vFeatureModulesValidateSettingsPath = v.object({

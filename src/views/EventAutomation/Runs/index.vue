@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type {
+  EventAutomationRunLogCleanupRequestDto,
+  EventAutomationRunLogCleanupResultDto,
   EventAutomationRunLogDto,
   EventAutomationRunLogQueryOrder,
 } from '~/generated/api/types.gen';
@@ -8,31 +10,12 @@ import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { usePopup } from '~/composables';
-import { client } from '~/generated/api/client.gen';
-import { eventAutomationGetRuns } from '~/generated/api/sdk.gen';
+import { eventAutomationCleanupRuns, eventAutomationGetRuns } from '~/generated/api/sdk.gen';
 import RunDetailDialog from './RunDetailDialog.vue';
 
 defineOptions({ name: 'EventAutomationRunsPage' });
 
 type RunRow = EventAutomationRunLogDto;
-
-interface EventAutomationRunLogCleanupRequest {
-  deleteTestRuns?: boolean;
-  olderThanDays?: number;
-  olderThanUtc?: string;
-  keyword?: string;
-  previewOnly: boolean;
-}
-
-interface EventAutomationRunLogCleanupResult {
-  matchedCount: number;
-  deletedCount: number;
-  previewOnly: boolean;
-  olderThanUtc?: string | null;
-  criteria: string;
-  oldestStartedAt?: string | null;
-  newestStartedAt?: string | null;
-}
 
 const TRIGGER_TYPES = [
   'PlayerJoined',
@@ -247,10 +230,8 @@ function onView(row: RunRow) {
   detailDialogRef.value?.show();
 }
 
-async function cleanupRuns(request: EventAutomationRunLogCleanupRequest): Promise<EventAutomationRunLogCleanupResult> {
-  const { data } = await client.delete<EventAutomationRunLogCleanupResult, unknown, true>({
-    security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
-    url: '/api/EventAutomation/Runs/Cleanup',
+async function cleanupRuns(request: EventAutomationRunLogCleanupRequestDto): Promise<EventAutomationRunLogCleanupResultDto> {
+  const { data } = await eventAutomationCleanupRuns({
     body: request,
     throwOnError: true,
   });
@@ -265,8 +246,9 @@ async function onCleanupTestRuns() {
       deleteTestRuns: true,
       previewOnly: true,
     });
+    const matchedCount = preview.matchedCount ?? 0;
 
-    if (preview.matchedCount <= 0) {
+    if (matchedCount <= 0) {
       toast({ type: 'info', text: t('views.eventAutomation.runs.cleanup.noMatches') });
       return;
     }
@@ -274,7 +256,7 @@ async function onCleanupTestRuns() {
     const ok = await confirm({
       type: 'warning',
       title: t('views.eventAutomation.runs.cleanup.testRunsTitle'),
-      text: t('views.eventAutomation.runs.cleanup.confirmDelete', [preview.matchedCount]),
+      text: t('views.eventAutomation.runs.cleanup.confirmDelete', [matchedCount]),
     });
     if (!ok)
       return;
@@ -285,7 +267,7 @@ async function onCleanupTestRuns() {
     });
     toast({
       type: 'success',
-      text: t('views.eventAutomation.runs.cleanup.deleted', [result.deletedCount]),
+      text: t('views.eventAutomation.runs.cleanup.deleted', [result.deletedCount ?? 0]),
     });
     await tableRef.value?.reload();
   }
@@ -320,8 +302,9 @@ async function onCleanupExpiredRuns() {
       olderThanDays,
       previewOnly: true,
     });
+    const matchedCount = preview.matchedCount ?? 0;
 
-    if (preview.matchedCount <= 0) {
+    if (matchedCount <= 0) {
       toast({ type: 'info', text: t('views.eventAutomation.runs.cleanup.noMatches') });
       return;
     }
@@ -330,7 +313,7 @@ async function onCleanupExpiredRuns() {
       type: 'warning',
       title: t('views.eventAutomation.runs.cleanup.expiredTitle'),
       text: t('views.eventAutomation.runs.cleanup.confirmDeleteExpired', [
-        preview.matchedCount,
+        matchedCount,
         olderThanDays,
       ]),
     });
@@ -343,7 +326,7 @@ async function onCleanupExpiredRuns() {
     });
     toast({
       type: 'success',
-      text: t('views.eventAutomation.runs.cleanup.deleted', [result.deletedCount]),
+      text: t('views.eventAutomation.runs.cleanup.deleted', [result.deletedCount ?? 0]),
     });
     await tableRef.value?.reload();
   }

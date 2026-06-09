@@ -2074,6 +2074,66 @@ export type EventAutomationRecentFailureDto = {
 };
 
 /**
+ * Result of an event automation run history cleanup request.
+ */
+export type EventAutomationRunLogCleanupResultDto = {
+    /**
+     * Number of rows matching the cleanup criteria.
+     */
+    matchedCount?: number;
+    /**
+     * Number of rows deleted. This is zero for preview requests.
+     */
+    deletedCount?: number;
+    /**
+     * True when the request only previewed matching rows.
+     */
+    previewOnly?: boolean;
+    /**
+     * Effective UTC cutoff when a retention criterion was used.
+     */
+    olderThanUtc?: string | null;
+    /**
+     * Human-readable criteria summary for audit and UI display.
+     */
+    criteria: string;
+    /**
+     * Earliest matching run start time.
+     */
+    oldestStartedAt?: string | null;
+    /**
+     * Latest matching run start time.
+     */
+    newestStartedAt?: string | null;
+};
+
+/**
+ * Request payload for controlled event automation run history cleanup.
+ */
+export type EventAutomationRunLogCleanupRequestDto = {
+    /**
+     * When true, matches known validation/test rows such as [codex-validation].
+     */
+    deleteTestRuns?: boolean;
+    /**
+     * Optional retention window in days. Rows older than this number of days can be removed.
+     */
+    olderThanDays?: number | null;
+    /**
+     * Optional UTC cutoff. Rows started before this timestamp can be removed.
+     */
+    olderThanUtc?: string | null;
+    /**
+     * Optional keyword matched against rule name, player, summary, error and details. Must be at least 3 chars.
+     */
+    keyword?: string | null;
+    /**
+     * When true, returns the match count without deleting anything.
+     */
+    previewOnly?: boolean;
+};
+
+/**
  * Validation result for an event automation rule payload.
  */
 export type EventAutomationRuleValidationResultDto = {
@@ -2310,6 +2370,10 @@ export type FeatureModuleStatusDto = {
      * True when this module supports unified validation.
      */
     canValidate: boolean;
+    /**
+     * Read-only settings field metadata for configuration schema preview.
+     */
+    settingsFields: Array<FeatureModuleSettingsFieldDto>;
 };
 
 /**
@@ -2540,6 +2604,36 @@ export type FeatureModuleConfigurationIssueDto = {
 export type FeatureModuleConfigurationIssueSeverity = 'Info' | 'Warning' | 'Error';
 
 /**
+ * Read-only metadata for one strongly typed settings property.
+ */
+export type FeatureModuleSettingsFieldDto = {
+    /**
+     * Property name on the settings object.
+     */
+    name: string;
+    /**
+     * User-facing type category such as Boolean, Number, String, Array or Object.
+     */
+    type: string;
+    /**
+     * CLR type name for troubleshooting.
+     */
+    clrType: string;
+    /**
+     * True when the value can be null.
+     */
+    isNullable: boolean;
+    /**
+     * True when the value is an array or enumerable collection.
+     */
+    isCollection: boolean;
+    /**
+     * True when this field controls module or sub-module enablement.
+     */
+    isEnableFlag: boolean;
+};
+
+/**
  * Unified read-only settings summary for a feature module.
  */
 export type FeatureModuleSettingsSummaryDto = {
@@ -2575,7 +2669,68 @@ export type FeatureModuleSettingsSummaryDto = {
      * Current validation result for the module settings.
      */
     validation: FeatureModuleConfigurationDto;
+    /**
+     * Read-only settings field metadata for configuration schema preview.
+     */
+    settingsFields: Array<FeatureModuleSettingsFieldDto>;
 };
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfModuleStateDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<ModuleStateDto>;
+};
+
+/**
+ * Read-only projection of module-owned runtime state.
+ */
+export type ModuleStateDto = {
+    /**
+     * Database identity of the state row.
+     */
+    id?: number;
+    /**
+     * UTC timestamp recorded when the row was created.
+     */
+    createdAt?: string;
+    /**
+     * UTC timestamp recorded when the row was last updated.
+     */
+    updatedAt?: string;
+    /**
+     * Feature module key that owns this state row.
+     */
+    moduleKey: string;
+    /**
+     * State scope, for example Cooldown or FirstJoin.
+     */
+    scope: string;
+    /**
+     * Scope-local identity, for example rule id or rule/player pair.
+     */
+    scopeKey: string;
+    /**
+     * State value key within the scope.
+     */
+    stateKey: string;
+    /**
+     * JSON encoded state value.
+     */
+    valueJson: string;
+};
+
+/**
+ * Sortable columns supported by the module state list endpoint.
+ */
+export type ModuleStateQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Scope' | 'ScopeKey' | 'StateKey';
 
 /**
  * Represents a paged query result with total count and current page items.
@@ -7271,6 +7426,26 @@ export type EventAutomationGetRunStatsResponses = {
 
 export type EventAutomationGetRunStatsResponse = EventAutomationGetRunStatsResponses[keyof EventAutomationGetRunStatsResponses];
 
+export type EventAutomationCleanupRunsData = {
+    body: EventAutomationRunLogCleanupRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Runs/Cleanup';
+};
+
+export type EventAutomationCleanupRunsErrors = {
+    400: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationCleanupRunsError = EventAutomationCleanupRunsErrors[keyof EventAutomationCleanupRunsErrors];
+
+export type EventAutomationCleanupRunsResponses = {
+    200: EventAutomationRunLogCleanupResultDto;
+};
+
+export type EventAutomationCleanupRunsResponse = EventAutomationCleanupRunsResponses[keyof EventAutomationCleanupRunsResponses];
+
 export type EventAutomationValidateRuleData = {
     body: EventAutomationRuleUpsertDto;
     path?: never;
@@ -7413,6 +7588,64 @@ export type FeatureModulesGetSettingsSummaryResponses = {
 };
 
 export type FeatureModulesGetSettingsSummaryResponse = FeatureModulesGetSettingsSummaryResponses[keyof FeatureModulesGetSettingsSummaryResponses];
+
+export type FeatureModulesGetStatesData = {
+    body?: never;
+    path: {
+        /**
+         * Stable feature module key.
+         */
+        key: string;
+    };
+    query?: {
+        /**
+         * Optional state scope filter, for example Cooldown or FirstJoin.
+         */
+        scope?: string | null;
+        /**
+         * Optional scope-local identity filter.
+         */
+        scopeKey?: string | null;
+        /**
+         * Optional state key filter.
+         */
+        stateKey?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Column to sort by; null retains the default order.
+         */
+        order?: ModuleStateQueryOrder | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/FeatureModules/{key}/States';
+};
+
+export type FeatureModulesGetStatesErrors = {
+    404: unknown;
+};
+
+export type FeatureModulesGetStatesResponses = {
+    /**
+     * A paged collection of module state rows.
+     */
+    200: PagedDtoOfModuleStateDto;
+};
+
+export type FeatureModulesGetStatesResponse = FeatureModulesGetStatesResponses[keyof FeatureModulesGetStatesResponses];
 
 export type FeatureModulesValidateSettingsData = {
     body?: never;
