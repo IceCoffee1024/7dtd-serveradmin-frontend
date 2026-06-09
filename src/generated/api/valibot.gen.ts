@@ -1254,11 +1254,19 @@ export const vEventAutomationRuleDryRunRequestDto = v.strictObject({
     playerId: v.nullish(v.string()),
     playerName: v.nullish(v.string()),
     entityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    targetPlayerId: v.nullish(v.string()),
+    targetPlayerName: v.nullish(v.string()),
+    targetEntityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    targetEntityName: v.nullish(v.string()),
+    entityType: v.nullish(v.string()),
     message: v.nullish(v.string()),
     chatType: v.nullish(v.string()),
     x: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     y: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    z: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+    z: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    gameShuttingDown: v.nullish(v.boolean()),
+    cronExpression: v.nullish(v.string()),
+    timeZoneId: v.nullish(v.string())
 });
 
 /**

@@ -2141,6 +2141,26 @@ export type EventAutomationRuleDryRunRequestDto = {
      */
     entityId?: number | null;
     /**
+     * Target player id used by kill/death trigger previews when available.
+     */
+    targetPlayerId?: string | null;
+    /**
+     * Target player name used by kill/death trigger previews when available.
+     */
+    targetPlayerName?: string | null;
+    /**
+     * Target entity id used by kill/death trigger previews when available.
+     */
+    targetEntityId?: number | null;
+    /**
+     * Target entity name used by kill/death trigger previews when available.
+     */
+    targetEntityName?: string | null;
+    /**
+     * Target entity type used by kill/death trigger previews when available.
+     */
+    entityType?: string | null;
+    /**
      * Chat message used by ChatMessage trigger previews.
      */
     message?: string | null;
@@ -2160,6 +2180,18 @@ export type EventAutomationRuleDryRunRequestDto = {
      * Optional Z coordinate used by template rendering.
      */
     z?: number | null;
+    /**
+     * Indicates whether a disconnect preview represents server shutdown.
+     */
+    gameShuttingDown?: boolean | null;
+    /**
+     * Cron expression used by Cron trigger previews.
+     */
+    cronExpression?: string | null;
+    /**
+     * Time zone id used by Cron trigger previews.
+     */
+    timeZoneId?: string | null;
 };
 
 /**

@@ -779,8 +779,11 @@ function buildDryRunRequest(rule: EventAutomationRuleUpsertDto): EventAutomation
   const messageContains = toOptionalString(conditions.messageContains);
   const messageEquals = toOptionalString(conditions.messageEquals);
   const playerNameContains = toOptionalString(conditions.playerNameContains);
+  const targetPlayerNameContains = toOptionalString(conditions.targetPlayerNameContains);
+  const entityNameContains = toOptionalString(conditions.entityNameContains);
+  const entityType = toOptionalString(conditions.entityType);
 
-  return {
+  const request: EventAutomationRuleDryRunRequestDto = {
     rule,
     playerId: 'EOS_00000000000000000',
     playerName: playerNameContains ? `Sample${playerNameContains}Player` : 'SamplePlayer',
@@ -791,6 +794,48 @@ function buildDryRunRequest(rule: EventAutomationRuleUpsertDto): EventAutomation
     y: 64,
     z: -100,
   };
+
+  switch (rule.triggerType) {
+    case 'PlayerLeft':
+      request.message = null;
+      request.chatType = null;
+      request.gameShuttingDown = false;
+      break;
+    case 'PlayerDied':
+      request.message = null;
+      request.chatType = null;
+      request.targetEntityId = 2001;
+      request.targetEntityName = entityNameContains ? `Sample${entityNameContains}Entity` : 'Zombie';
+      request.entityType = entityType ?? 'Zombie';
+      break;
+    case 'PlayerKilledPlayer':
+      request.message = null;
+      request.chatType = null;
+      request.targetPlayerId = 'EOS_11111111111111111';
+      request.targetPlayerName = targetPlayerNameContains ? `Target${targetPlayerNameContains}Player` : 'TargetPlayer';
+      request.targetEntityId = 2002;
+      request.targetEntityName = request.targetPlayerName;
+      request.entityType = entityType ?? 'OnlinePlayer';
+      break;
+    case 'PlayerKilledZombie':
+      request.message = null;
+      request.chatType = null;
+      request.targetEntityId = 2003;
+      request.targetEntityName = entityNameContains ? `Sample${entityNameContains}Entity` : 'Zombie';
+      request.entityType = entityType ?? 'Zombie';
+      break;
+    case 'Cron':
+      request.playerId = null;
+      request.playerName = 'System';
+      request.entityId = null;
+      request.message = rule.name;
+      request.chatType = null;
+      request.cronExpression = toOptionalString(conditions.cronExpression) ?? '0 0/30 * * * ?';
+      request.timeZoneId = toOptionalString(conditions.timeZoneId) ?? 'Asia/Shanghai';
+      break;
+  }
+
+  return request;
 }
 
 function parseConditions(conditionsJson: string): Record<string, unknown> {
@@ -812,6 +857,11 @@ function formatDryRunSample(sample: EventAutomationRuleDryRunRequestDto | null):
 
   return [
     `${sample.playerName ?? '--'} (${sample.playerId ?? '--'})`,
+    sample.targetPlayerName ? `${sample.targetPlayerName} (${sample.targetPlayerId ?? '--'})` : null,
+    sample.targetEntityName ? `${sample.targetEntityName}#${sample.targetEntityId ?? '--'}` : null,
+    sample.entityType,
+    sample.cronExpression,
+    sample.timeZoneId,
     sample.chatType,
     sample.message,
   ].filter(Boolean).join(' · ');
