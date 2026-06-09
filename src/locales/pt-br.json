@@ -2707,7 +2707,8 @@
         },
         "actions": {
           "formatJson": "Format JSON",
-          "duplicate": "Duplicate"
+          "duplicate": "Duplicate",
+          "viewRuns": "View run history"
         },
         "validation": {
           "nameRequired": "Rule name is required.",
@@ -2803,7 +2804,8 @@
           "status": "Status",
           "summary": "Summary",
           "errorMessage": "Error",
-          "message": "Message"
+          "message": "Message",
+          "ruleId": "Rule ID"
         },
         "filters": {
           "succeeded": "Succeeded",

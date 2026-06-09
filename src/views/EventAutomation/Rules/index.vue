@@ -8,6 +8,7 @@ import type {
 } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { usePopup } from '~/composables';
 import {
   eventAutomationCreateRule,
@@ -47,6 +48,7 @@ interface ReferenceItem {
 }
 
 const { t } = useI18n();
+const router = useRouter();
 const { confirm, toast } = usePopup();
 
 const tableRef = useTemplateRef('tableRef');
@@ -466,6 +468,16 @@ function onDuplicate(row: RuleRow) {
   nextTick(() => formRef.value?.clearValidate());
 }
 
+function onViewRuns(row: RuleRow) {
+  if (row.id == null)
+    return;
+
+  router.push({
+    name: 'EventAutomationRuns',
+    query: { ruleId: String(row.id) },
+  });
+}
+
 function toPayload(): EventAutomationRuleUpsertDto {
   return {
     name: form.name.trim(),
@@ -589,6 +601,9 @@ async function onDelete(row: RuleRow) {
           </IconButton>
           <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.duplicate')" @click="onDuplicate(row)">
             <icon-mdi-content-copy />
+          </IconButton>
+          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.viewRuns')" @click="onViewRuns(row)">
+            <icon-mdi-history />
           </IconButton>
           <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('common.delete')" @click="onDelete(row)">
             <icon-mdi-delete-outline />

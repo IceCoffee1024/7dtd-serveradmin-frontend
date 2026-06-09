@@ -1136,6 +1136,60 @@ export const vEventAutomationRuleQueryOrder = v.picklist([
 ]);
 
 /**
+ * Represents one event automation rule execution returned to the management UI.
+ */
+export const vEventAutomationRunLogDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    ruleId: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    ruleName: v.string(),
+    triggerType: v.string(),
+    playerId: v.nullish(v.string()),
+    playerName: v.string(),
+    entityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    chatType: v.nullish(v.string()),
+    message: v.nullish(v.string()),
+    startedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    endedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    succeeded: v.optional(v.boolean()),
+    status: v.string(),
+    summary: v.string(),
+    errorMessage: v.nullish(v.string()),
+    detailsJson: v.nullish(v.string()),
+    durationMs: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')))
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfEventAutomationRunLogDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vEventAutomationRunLogDto)
+});
+
+/**
+ * Sortable columns supported by the event automation run history endpoint.
+ */
+export const vEventAutomationRunLogQueryOrder = v.picklist([
+    'CreatedAt',
+    'RuleName',
+    'TriggerType',
+    'PlayerName',
+    'StartedAt',
+    'EndedAt',
+    'Succeeded',
+    'DurationMs'
+]);
+
+/**
  * Request model for creating or updating an event automation rule.
  */
 export const vEventAutomationRuleUpsertDto = v.strictObject({
@@ -2694,6 +2748,20 @@ export const vEventAutomationGetRulesQuery = v.object({
 });
 
 export const vEventAutomationCreateRuleBody = vEventAutomationRuleUpsertDto;
+
+export const vEventAutomationGetRunsQuery = v.object({
+    ruleId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    triggerType: v.nullish(v.string()),
+    playerId: v.nullish(v.string()),
+    succeeded: v.nullish(v.boolean()),
+    startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(vEventAutomationRunLogQueryOrder),
+    desc: v.optional(v.boolean())
+});
 
 export const vEventAutomationDeleteRulePath = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))

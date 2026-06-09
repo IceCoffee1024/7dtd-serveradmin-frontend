@@ -2707,7 +2707,8 @@
         },
         "actions": {
           "formatJson": "格式化 JSON",
-          "duplicate": "複製規則"
+          "duplicate": "複製規則",
+          "viewRuns": "查看執行歷史"
         },
         "validation": {
           "nameRequired": "請輸入規則名稱。",
@@ -2803,7 +2804,8 @@
           "status": "狀態",
           "summary": "摘要",
           "errorMessage": "錯誤",
-          "message": "訊息內容"
+          "message": "訊息內容",
+          "ruleId": "規則 ID"
         },
         "filters": {
           "succeeded": "是否成功",

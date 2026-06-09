@@ -2707,7 +2707,8 @@
         },
         "actions": {
           "formatJson": "格式化 JSON",
-          "duplicate": "复制规则"
+          "duplicate": "复制规则",
+          "viewRuns": "查看执行历史"
         },
         "validation": {
           "nameRequired": "请输入规则名称。",
@@ -2803,7 +2804,8 @@
           "status": "状态",
           "summary": "摘要",
           "errorMessage": "错误",
-          "message": "消息内容"
+          "message": "消息内容",
+          "ruleId": "规则 ID"
         },
         "filters": {
           "succeeded": "是否成功",

@@ -1,32 +1,23 @@
 <script setup lang="ts">
-import type { EventAutomationRunLogRow } from './RunDetailDialog.vue';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
+import type {
+  EventAutomationRunLogDto,
+  EventAutomationRunLogQueryOrder,
+} from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-import { client } from '~/generated/api/client.gen';
+import { useRoute } from 'vue-router';
+import { eventAutomationGetRuns } from '~/generated/api/sdk.gen';
 import RunDetailDialog from './RunDetailDialog.vue';
 
 defineOptions({ name: 'EventAutomationRunsPage' });
 
-type RunRow = EventAutomationRunLogRow;
-type EventAutomationRunLogQueryOrder
-  = | 'CreatedAt'
-    | 'RuleName'
-    | 'TriggerType'
-    | 'PlayerName'
-    | 'StartedAt'
-    | 'EndedAt'
-    | 'Succeeded'
-    | 'DurationMs';
-
-interface PagedResult<T> {
-  items?: T[];
-  total?: number;
-}
+type RunRow = EventAutomationRunLogDto;
 
 const TRIGGER_TYPES = ['PlayerJoined', 'ChatMessage'] as const;
 
 const { t } = useI18n();
+const route = useRoute();
 
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const currentRun = ref<RunRow | null>(null);
@@ -43,7 +34,29 @@ const succeededOptions = computed(() => [
   { label: t('common.no'), value: false },
 ]);
 
+const routeRuleId = computed(() => {
+  const value = Array.isArray(route.query.ruleId) ? route.query.ruleId[0] : route.query.ruleId;
+  if (typeof value !== 'string')
+    return undefined;
+
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : undefined;
+});
+
 const columns = computed<MyTableColumn<RunRow>[]>(() => [
+  {
+    prop: 'ruleId',
+    label: t('views.eventAutomation.runs.columns.ruleId'),
+    show: false,
+    exportable: false,
+    search: {
+      el: 'el-input',
+      defaultValue: routeRuleId.value,
+      transform: value => ({
+        ruleId: typeof value === 'number' ? value : Number(value) || undefined,
+      }),
+    },
+  },
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
@@ -109,13 +122,12 @@ const columns = computed<MyTableColumn<RunRow>[]>(() => [
 ]);
 
 async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<RunRow>> {
-  const { data } = await client.get<PagedResult<RunRow>, unknown, true>({
-    security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
-    url: '/api/EventAutomation/Runs',
+  const { data } = await eventAutomationGetRuns({
     query: {
       pageNumber: params.pageNumber,
       pageSize: params.pageSize,
       keyword: toOptionalString(params.search?.keyword),
+      ruleId: toOptionalPositiveInteger(params.search?.ruleId ?? routeRuleId.value),
       triggerType: toOptionalString(params.search?.triggerType),
       succeeded: typeof params.search?.succeeded === 'boolean' ? params.search.succeeded : undefined,
       startTime: toOptionalString(params.search?.startTime),
@@ -138,6 +150,11 @@ function toOptionalString(value: unknown): string | undefined {
 
   const trimmed = value.trim();
   return trimmed || undefined;
+}
+
+function toOptionalPositiveInteger(value: unknown): number | undefined {
+  const id = typeof value === 'number' ? value : Number(value);
+  return Number.isInteger(id) && id > 0 ? id : undefined;
 }
 
 function toOrder(sortField: string | undefined): EventAutomationRunLogQueryOrder | undefined {

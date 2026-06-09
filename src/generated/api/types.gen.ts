@@ -1917,6 +1917,103 @@ export type EventAutomationRuleDto = {
 export type EventAutomationRuleQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Name' | 'IsEnabled' | 'TriggerType' | 'LastMatchedAt';
 
 /**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfEventAutomationRunLogDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<EventAutomationRunLogDto>;
+};
+
+/**
+ * Represents one event automation rule execution returned to the management UI.
+ */
+export type EventAutomationRunLogDto = {
+    /**
+     * Database identity of the run row.
+     */
+    id?: number;
+    /**
+     * UTC timestamp recorded when the run row was created.
+     */
+    createdAt?: string;
+    /**
+     * Database identity of the matched rule.
+     */
+    ruleId?: number;
+    /**
+     * Rule name snapshot stored at execution time.
+     */
+    ruleName: string;
+    /**
+     * Trigger type snapshot stored at execution time.
+     */
+    triggerType: string;
+    /**
+     * Triggering player identifier when available.
+     */
+    playerId?: string | null;
+    /**
+     * Triggering player name snapshot.
+     */
+    playerName: string;
+    /**
+     * Triggering entity identifier when available.
+     */
+    entityId?: number | null;
+    /**
+     * Chat channel name when the trigger came from chat.
+     */
+    chatType?: string | null;
+    /**
+     * Chat message content when the trigger came from chat.
+     */
+    message?: string | null;
+    /**
+     * UTC timestamp recorded when execution started.
+     */
+    startedAt?: string;
+    /**
+     * UTC timestamp recorded when execution ended.
+     */
+    endedAt?: string;
+    /**
+     * Indicates whether all actions completed successfully.
+     */
+    succeeded?: boolean;
+    /**
+     * Result status such as Success or Failed.
+     */
+    status: string;
+    /**
+     * Short human-readable execution summary.
+     */
+    summary: string;
+    /**
+     * Failure message captured when execution did not succeed.
+     */
+    errorMessage?: string | null;
+    /**
+     * Structured JSON payload with execution details.
+     */
+    detailsJson?: string | null;
+    /**
+     * Total execution duration in milliseconds.
+     */
+    durationMs?: number;
+};
+
+/**
+ * Sortable columns supported by the event automation run history endpoint.
+ */
+export type EventAutomationRunLogQueryOrder = 'CreatedAt' | 'RuleName' | 'TriggerType' | 'PlayerName' | 'StartedAt' | 'EndedAt' | 'Succeeded' | 'DurationMs';
+
+/**
  * Request model for creating or updating an event automation rule.
  */
 export type EventAutomationRuleUpsertDto = {
@@ -6712,6 +6809,64 @@ export type EventAutomationCreateRuleResponses = {
 };
 
 export type EventAutomationCreateRuleResponse = EventAutomationCreateRuleResponses[keyof EventAutomationCreateRuleResponses];
+
+export type EventAutomationGetRunsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Optional matched rule identifier filter.
+         */
+        ruleId?: number | null;
+        /**
+         * Optional trigger type filter.
+         */
+        triggerType?: string | null;
+        /**
+         * Optional triggering player identifier filter.
+         */
+        playerId?: string | null;
+        /**
+         * Optional success-state filter.
+         */
+        succeeded?: boolean | null;
+        /**
+         * Optional inclusive execution start-time lower bound in UTC.
+         */
+        startTime?: string | null;
+        /**
+         * Optional inclusive execution end-time upper bound in UTC.
+         */
+        endTime?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Column to sort by; null retains the default order.
+         */
+        order?: EventAutomationRunLogQueryOrder | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/EventAutomation/Runs';
+};
+
+export type EventAutomationGetRunsResponses = {
+    200: PagedDtoOfEventAutomationRunLogDto;
+};
+
+export type EventAutomationGetRunsResponse = EventAutomationGetRunsResponses[keyof EventAutomationGetRunsResponses];
 
 export type EventAutomationDeleteRuleData = {
     body?: never;

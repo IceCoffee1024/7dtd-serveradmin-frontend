@@ -1,30 +1,10 @@
 <script setup lang="ts">
+import type { EventAutomationRunLogDto } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 
-export interface EventAutomationRunLogRow {
-  id: number;
-  createdAt: string;
-  ruleId: number;
-  ruleName: string;
-  triggerType: string;
-  playerId?: string | null;
-  playerName: string;
-  entityId?: number | null;
-  chatType?: string | null;
-  message?: string | null;
-  startedAt: string;
-  endedAt: string;
-  succeeded: boolean;
-  status: string;
-  summary: string;
-  errorMessage?: string | null;
-  detailsJson?: string | null;
-  durationMs: number;
-}
-
 const props = defineProps<{
-  runData: EventAutomationRunLogRow | null;
+  runData: EventAutomationRunLogDto | null;
 }>();
 
 const { t } = useI18n();
@@ -44,6 +24,19 @@ const formattedDetailsJson = computed(() => {
 
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+}
+
+function formatDuration(value: number | null | undefined): string {
+  return value == null ? '--' : `${value} ms`;
+}
+
+function resolveStatusType(succeeded: boolean | undefined): 'success' | 'danger' | 'info' {
+  if (succeeded === true)
+    return 'success';
+  if (succeeded === false)
+    return 'danger';
+
+  return 'info';
 }
 
 function show() {
@@ -88,11 +81,11 @@ defineExpose({ show });
         </div>
         <div>
           <span>{{ t('views.eventAutomation.runs.columns.durationMs') }}</span>
-          <strong>{{ runData.durationMs }} ms</strong>
+          <strong>{{ formatDuration(runData.durationMs) }}</strong>
         </div>
         <div>
           <span>{{ t('views.eventAutomation.runs.columns.status') }}</span>
-          <el-tag :type="runData.succeeded ? 'success' : 'danger'">
+          <el-tag :type="resolveStatusType(runData.succeeded)">
             {{ runData.status }}
           </el-tag>
         </div>
