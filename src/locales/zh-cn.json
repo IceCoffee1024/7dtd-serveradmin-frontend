@@ -525,7 +525,8 @@
         "assets": "资产",
         "activity": "活动",
         "economy": "经济",
-        "teleport": "传送"
+        "teleport": "传送",
+        "governance": "治理"
       },
       "sections": {
         "basic": "基础信息",
@@ -538,7 +539,10 @@
         "chat": "最近聊天",
         "economyTransactions": "最近经济流水",
         "teleportLogs": "最近传送记录",
-        "timeline": "玩家时间线"
+        "timeline": "玩家时间线",
+        "punishmentHistory": "处罚历史",
+        "auditLogs": "最近管理员操作",
+        "trends": "长期趋势"
       },
       "fields": {
         "balance": "余额",
@@ -564,7 +568,26 @@
         "chat": "聊天",
         "event": "事件",
         "economy": "经济",
-        "teleport": "传送"
+        "teleport": "传送",
+        "audit": "审计"
+      },
+      "governance": {
+        "auditCount": "审计记录",
+        "failedAuditCount": "失败操作",
+        "punishmentCount": "处罚次数",
+        "lastAdminActionAt": "最近管理操作",
+        "lastPunishmentAt": "最近处罚",
+        "date": "日期",
+        "activityTrend": "活动趋势",
+        "expiresAt": "过期时间"
+      },
+      "punishmentTypes": {
+        "ban": "封禁",
+        "unban": "解封",
+        "mute": "禁言",
+        "unmute": "解除禁言",
+        "kick": "踢出",
+        "other": "其他"
       }
     },
     "map": {

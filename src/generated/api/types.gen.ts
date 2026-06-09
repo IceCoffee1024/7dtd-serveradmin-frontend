@@ -3477,6 +3477,22 @@ export type PlayerProfileOverviewDto = {
      */
     teleportLogs: Array<TeleportLogDto>;
     /**
+     * Recent management audit rows related to the player either as target or operator.
+     */
+    auditLogs: Array<AuditLogDto>;
+    /**
+     * Moderation and punishment history inferred from active state and audit rows.
+     */
+    punishmentHistory: Array<PlayerProfilePunishmentRecordDto>;
+    /**
+     * Aggregated governance counters for the player profile.
+     */
+    governanceSummary: PlayerProfileGovernanceSummaryDto;
+    /**
+     * Daily activity counters used by the long-term trend view.
+     */
+    trendBuckets: Array<PlayerProfileTrendBucketDto>;
+    /**
      * Matching admin ACL entry when the player is an admin.
      */
     adminEntry?: AdminUserDto | null;
@@ -3668,6 +3684,104 @@ export type TeleportLogDto = {
 };
 
 /**
+ * One moderation or punishment row shown on the player profile.
+ */
+export type PlayerProfilePunishmentRecordDto = {
+    /**
+     * Normalized punishment type such as Ban, Unban, Mute, Unmute, or Kick.
+     */
+    type: string;
+    /**
+     * Whether the operation succeeded when the row comes from audit logs.
+     */
+    succeeded?: boolean;
+    /**
+     * Human-readable reason or audit summary.
+     */
+    reason?: string | null;
+    /**
+     * Operator display name when available.
+     */
+    operatorName?: string | null;
+    /**
+     * Timestamp when the punishment state or audit row was recorded.
+     */
+    occurredAt?: string;
+    /**
+     * Expiry timestamp for temporary punishments when available.
+     */
+    expiresAt?: string | null;
+    /**
+     * Audit source such as Api, ConsoleCommand, ChatCommand, or System.
+     */
+    source?: string | null;
+    /**
+     * Linked audit log id when the record is derived from an audit row.
+     */
+    auditLogId?: number | null;
+};
+
+/**
+ * Summary counters for player-centric governance data.
+ */
+export type PlayerProfileGovernanceSummaryDto = {
+    /**
+     * Total audit rows currently matched to the player.
+     */
+    auditCount?: number;
+    /**
+     * Total failed audit rows currently matched to the player.
+     */
+    failedAuditCount?: number;
+    /**
+     * Number of punishment records currently available for the profile.
+     */
+    punishmentCount?: number;
+    /**
+     * Most recent moderation or punishment timestamp.
+     */
+    lastPunishmentAt?: string | null;
+    /**
+     * Most recent administrative action timestamp matched to the player.
+     */
+    lastAdminActionAt?: string | null;
+};
+
+/**
+ * Daily profile trend bucket.
+ */
+export type PlayerProfileTrendBucketDto = {
+    /**
+     * UTC date representing the bucket start.
+     */
+    date?: string;
+    /**
+     * Number of chat messages in the bucket.
+     */
+    chatCount?: number;
+    /**
+     * Number of game events in the bucket.
+     */
+    gameEventCount?: number;
+    /**
+     * Number of economy transactions in the bucket.
+     */
+    economyTransactionCount?: number;
+    /**
+     * Number of teleport logs in the bucket.
+     */
+    teleportCount?: number;
+    /**
+     * Number of audit rows in the bucket.
+     */
+    auditCount?: number;
+    /**
+     * Number of punishment records in the bucket.
+     */
+    punishmentCount?: number;
+};
+
+/**
  * Represents a paged query result with total count and current page items.
  */
 export type PagedDtoOfPlayerProfileTimelineItemDto = {
@@ -3714,7 +3828,7 @@ export type PlayerProfileTimelineItemDto = {
 /**
  * Timeline item type used by the player profile page.
  */
-export type PlayerProfileTimelineItemType = 'Chat' | 'Event' | 'Economy' | 'Teleport';
+export type PlayerProfileTimelineItemType = 'Chat' | 'Event' | 'Economy' | 'Teleport' | 'Audit';
 
 /**
  * Represents a player's inventory partitioned by gameplay container type.

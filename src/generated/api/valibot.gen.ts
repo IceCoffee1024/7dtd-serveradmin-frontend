@@ -1879,6 +1879,44 @@ export const vTeleportLogDto = v.strictObject({
 });
 
 /**
+ * One moderation or punishment row shown on the player profile.
+ */
+export const vPlayerProfilePunishmentRecordDto = v.strictObject({
+    type: v.string(),
+    succeeded: v.optional(v.boolean()),
+    reason: v.nullish(v.string()),
+    operatorName: v.nullish(v.string()),
+    occurredAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    source: v.nullish(v.string()),
+    auditLogId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Summary counters for player-centric governance data.
+ */
+export const vPlayerProfileGovernanceSummaryDto = v.strictObject({
+    auditCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    failedAuditCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    punishmentCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    lastPunishmentAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastAdminActionAt: v.nullish(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Daily profile trend bucket.
+ */
+export const vPlayerProfileTrendBucketDto = v.strictObject({
+    date: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    chatCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    gameEventCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    economyTransactionCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    teleportCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    auditCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    punishmentCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
  * Aggregates the data blocks needed by the player profile page.
  */
 export const vPlayerProfileOverviewDto = v.strictObject({
@@ -1891,6 +1929,10 @@ export const vPlayerProfileOverviewDto = v.strictObject({
     gameEvents: v.array(vGameEventLogDto),
     economyTransactions: v.array(vEconomyTransactionDto),
     teleportLogs: v.array(vTeleportLogDto),
+    auditLogs: v.array(vAuditLogDto),
+    punishmentHistory: v.array(vPlayerProfilePunishmentRecordDto),
+    governanceSummary: vPlayerProfileGovernanceSummaryDto,
+    trendBuckets: v.array(vPlayerProfileTrendBucketDto),
     adminEntry: v.nullish(vAdminUserDto),
     banEntry: v.nullish(vBanEntryDto),
     muteEntry: v.nullish(vMuteEntryDto),
@@ -1904,7 +1946,8 @@ export const vPlayerProfileTimelineItemType = v.picklist([
     'Chat',
     'Event',
     'Economy',
-    'Teleport'
+    'Teleport',
+    'Audit'
 ]);
 
 /**

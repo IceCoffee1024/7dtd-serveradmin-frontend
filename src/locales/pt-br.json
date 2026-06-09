@@ -525,7 +525,8 @@
         "assets": "Assets",
         "activity": "Activity",
         "economy": "Economy",
-        "teleport": "Teleport"
+        "teleport": "Teleport",
+        "governance": "Governance"
       },
       "sections": {
         "basic": "Basic Info",
@@ -538,7 +539,10 @@
         "chat": "Recent Chat",
         "economyTransactions": "Recent Economy Transactions",
         "teleportLogs": "Recent Teleport Logs",
-        "timeline": "Player Timeline"
+        "timeline": "Player Timeline",
+        "punishmentHistory": "Punishment History",
+        "auditLogs": "Recent Admin Actions",
+        "trends": "Long-term Trends"
       },
       "fields": {
         "balance": "Balance",
@@ -564,7 +568,26 @@
         "chat": "Chat",
         "event": "Event",
         "economy": "Economy",
-        "teleport": "Teleport"
+        "teleport": "Teleport",
+        "audit": "Audit"
+      },
+      "governance": {
+        "auditCount": "Audit Rows",
+        "failedAuditCount": "Failed Actions",
+        "punishmentCount": "Punishments",
+        "lastAdminActionAt": "Last Admin Action",
+        "lastPunishmentAt": "Last Punishment",
+        "date": "Date",
+        "activityTrend": "Activity Trend",
+        "expiresAt": "Expires At"
+      },
+      "punishmentTypes": {
+        "ban": "Ban",
+        "unban": "Unban",
+        "mute": "Mute",
+        "unmute": "Unmute",
+        "kick": "Kick",
+        "other": "Other"
       }
     },
     "map": {

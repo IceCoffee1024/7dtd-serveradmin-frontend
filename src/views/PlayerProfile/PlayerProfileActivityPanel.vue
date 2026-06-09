@@ -53,6 +53,10 @@ const timelineTypeOptions = computed(() => [
     label: t('views.playerProfile.timeline.teleport'),
     value: 'Teleport' as const,
   },
+  {
+    label: t('views.playerProfile.timeline.audit'),
+    value: 'Audit' as const,
+  },
 ]);
 
 function toTimelineType(type: PlayerProfileTimelineItemType): TimelineType {
@@ -63,7 +67,7 @@ function normalizeTimelineItemType(type: PlayerProfileTimelineItemType | undefin
   return type ?? 'Event';
 }
 
-function resolveTimelineTagType(type: PlayerProfileTimelineItemType | undefined): 'primary' | 'success' | 'warning' | 'info' {
+function resolveTimelineTagType(type: PlayerProfileTimelineItemType | undefined): 'primary' | 'success' | 'warning' | 'info' | 'danger' {
   switch (type) {
     case 'Chat':
       return 'primary';
@@ -73,6 +77,8 @@ function resolveTimelineTagType(type: PlayerProfileTimelineItemType | undefined)
       return 'success';
     case 'Teleport':
       return 'info';
+    case 'Audit':
+      return 'danger';
     default:
       return 'info';
   }

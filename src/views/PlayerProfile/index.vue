@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import type { ProfileStatus } from './types';
+import type {
+  ProfileStatus,
+} from './types';
 import type {
   AdminUserDto,
+  AuditLogDto,
   BanEntryDto,
   ChatMessageDto,
   ClaimOwnerDto,
@@ -12,8 +15,11 @@ import type {
   Language,
   MuteEntryDto,
   PlayerDetailsDto,
+  PlayerProfileGovernanceSummaryDto,
+  PlayerProfilePunishmentRecordDto,
   PlayerProfileTimelineItemDto,
   PlayerProfileTimelineItemType,
+  PlayerProfileTrendBucketDto,
   TeleportLogDto,
   VehicleLocationDto,
   WhitelistEntryDto,
@@ -27,6 +33,7 @@ import PlayerProfileActions from './PlayerProfileActions.vue';
 import PlayerProfileActivityPanel from './PlayerProfileActivityPanel.vue';
 import PlayerProfileAssetsPanel from './PlayerProfileAssetsPanel.vue';
 import PlayerProfileEconomyPanel from './PlayerProfileEconomyPanel.vue';
+import PlayerProfileGovernancePanel from './PlayerProfileGovernancePanel.vue';
 import PlayerProfileOverviewPanel from './PlayerProfileOverviewPanel.vue';
 import PlayerProfileTeleportPanel from './PlayerProfileTeleportPanel.vue';
 
@@ -54,6 +61,10 @@ const timelineTotal = ref(0);
 const timelinePage = ref(1);
 const timelinePageSize = 8;
 const timelineType = ref<'all' | PlayerProfileTimelineItemType>('all');
+const auditLogs = ref<AuditLogDto[]>([]);
+const punishmentHistory = ref<PlayerProfilePunishmentRecordDto[]>([]);
+const governanceSummary = ref<PlayerProfileGovernanceSummaryDto | null>(null);
+const trendBuckets = ref<PlayerProfileTrendBucketDto[]>([]);
 const adminEntry = ref<AdminUserDto | null>(null);
 const banEntry = ref<BanEntryDto | null>(null);
 const muteEntry = ref<MuteEntryDto | null>(null);
@@ -137,6 +148,10 @@ async function loadProfile() {
     gameEvents.value = data?.gameEvents ?? [];
     economyTransactions.value = data?.economyTransactions ?? [];
     teleportLogs.value = data?.teleportLogs ?? [];
+    auditLogs.value = data?.auditLogs ?? [];
+    punishmentHistory.value = data?.punishmentHistory ?? [];
+    governanceSummary.value = data?.governanceSummary ?? null;
+    trendBuckets.value = data?.trendBuckets ?? [];
     adminEntry.value = data?.adminEntry ?? null;
     banEntry.value = data?.banEntry ?? null;
     muteEntry.value = data?.muteEntry ?? null;
@@ -329,6 +344,17 @@ watch(playerId, loadProfile);
         <el-tab-pane :label="t('views.playerProfile.tabs.teleport')">
           <PlayerProfileTeleportPanel
             :teleport-logs="teleportLogs"
+            :format-time="formatTime"
+            @view-page="goToPlayerFilteredPage"
+          />
+        </el-tab-pane>
+
+        <el-tab-pane :label="t('views.playerProfile.tabs.governance')">
+          <PlayerProfileGovernancePanel
+            :governance-summary="governanceSummary"
+            :punishment-history="punishmentHistory"
+            :audit-logs="auditLogs"
+            :trend-buckets="trendBuckets"
             :format-time="formatTime"
             @view-page="goToPlayerFilteredPage"
           />
