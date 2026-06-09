@@ -34,7 +34,15 @@ interface RuleFormModel {
   description: string;
 }
 
-const TRIGGER_TYPES = ['PlayerJoined', 'ChatMessage'] as const;
+const TRIGGER_TYPES = [
+  'PlayerJoined',
+  'PlayerLeft',
+  'PlayerDied',
+  'PlayerKilledPlayer',
+  'PlayerKilledZombie',
+  'ChatMessage',
+  'Cron',
+] as const;
 
 interface RuleTemplate {
   key: string;
@@ -184,6 +192,119 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       },
     ],
   },
+  {
+    key: 'playerLeftAnnouncement',
+    name: t('views.eventAutomation.rules.templates.playerLeftAnnouncement.name'),
+    description: t('views.eventAutomation.rules.templates.playerLeftAnnouncement.description'),
+    triggerType: 'PlayerLeft',
+    conditions: {},
+    actions: [
+      {
+        type: 'SendAnnouncement',
+        message: t('views.eventAutomation.rules.templates.playerLeftAnnouncement.message'),
+      },
+    ],
+  },
+  {
+    key: 'playerDeathAnnouncement',
+    name: t('views.eventAutomation.rules.templates.playerDeathAnnouncement.name'),
+    description: t('views.eventAutomation.rules.templates.playerDeathAnnouncement.description'),
+    triggerType: 'PlayerDied',
+    conditions: {},
+    actions: [
+      {
+        type: 'SendAnnouncement',
+        message: t('views.eventAutomation.rules.templates.playerDeathAnnouncement.message'),
+      },
+    ],
+  },
+  {
+    key: 'pvpKillAnnouncement',
+    name: t('views.eventAutomation.rules.templates.pvpKillAnnouncement.name'),
+    description: t('views.eventAutomation.rules.templates.pvpKillAnnouncement.description'),
+    triggerType: 'PlayerKilledPlayer',
+    conditions: {},
+    actions: [
+      {
+        type: 'SendAnnouncement',
+        message: t('views.eventAutomation.rules.templates.pvpKillAnnouncement.message'),
+      },
+    ],
+  },
+  {
+    key: 'zombieKillReward',
+    name: t('views.eventAutomation.rules.templates.zombieKillReward.name'),
+    description: t('views.eventAutomation.rules.templates.zombieKillReward.description'),
+    triggerType: 'PlayerKilledZombie',
+    conditions: {
+      entityType: 'Zombie',
+    },
+    actions: [
+      {
+        type: 'AdjustEconomy',
+        target: 'TriggerPlayer',
+        amount: 5,
+        reason: t('views.eventAutomation.rules.templates.zombieKillReward.reason'),
+      },
+    ],
+  },
+  {
+    key: 'scheduledAnnouncement',
+    name: t('views.eventAutomation.rules.templates.scheduledAnnouncement.name'),
+    description: t('views.eventAutomation.rules.templates.scheduledAnnouncement.description'),
+    triggerType: 'Cron',
+    conditions: {
+      cronExpression: '0 0/30 * * * ?',
+      timeZoneId: 'Asia/Shanghai',
+      allowConcurrentExecution: false,
+    },
+    actions: [
+      {
+        type: 'SendAnnouncement',
+        message: t('views.eventAutomation.rules.templates.scheduledAnnouncement.message'),
+      },
+    ],
+  },
+  {
+    key: 'chatKeywordMute',
+    name: t('views.eventAutomation.rules.templates.chatKeywordMute.name'),
+    description: t('views.eventAutomation.rules.templates.chatKeywordMute.description'),
+    triggerType: 'ChatMessage',
+    conditions: {
+      chatType: 'Global',
+      messageContains: 'spam',
+      ignoreCase: true,
+    },
+    actions: [
+      {
+        type: 'MutePlayer',
+        target: 'TriggerPlayer',
+        durationMinutes: 30,
+        reason: t('views.eventAutomation.rules.templates.chatKeywordMute.reason'),
+        allowMute: true,
+      },
+    ],
+  },
+  {
+    key: 'scheduledSaveWorld',
+    name: t('views.eventAutomation.rules.templates.scheduledSaveWorld.name'),
+    description: t('views.eventAutomation.rules.templates.scheduledSaveWorld.description'),
+    triggerType: 'Cron',
+    conditions: {
+      cronExpression: '0 0/15 * * * ?',
+      timeZoneId: 'Asia/Shanghai',
+      allowConcurrentExecution: false,
+    },
+    actions: [
+      {
+        type: 'ExecuteConsoleCommand',
+        command: 'saveworld',
+        allowedCommands: ['saveworld'],
+        allowConsoleCommand: true,
+        inMainThread: true,
+      },
+    ],
+  },
 ]);
 
 const ruleTemplateOptions = computed(() =>
@@ -194,7 +315,24 @@ const ruleTemplateOptions = computed(() =>
   })),
 );
 
-const variableTokens = ['{triggerType}', '{playerId}', '{playerName}', '{entityId}', '{message}', '{chatType}', '{x}', '{y}', '{z}'] as const;
+const variableTokens = [
+  '{triggerType}',
+  '{playerId}',
+  '{playerName}',
+  '{targetPlayerId}',
+  '{targetPlayerName}',
+  '{targetEntityId}',
+  '{targetEntityName}',
+  '{entityType}',
+  '{entityId}',
+  '{message}',
+  '{chatType}',
+  '{cronExpression}',
+  '{timeZoneId}',
+  '{x}',
+  '{y}',
+  '{z}',
+] as const;
 
 const conditionReferences = computed<ReferenceItem[]>(() => [
   {
@@ -218,6 +356,21 @@ const conditionReferences = computed<ReferenceItem[]>(() => [
     description: t('views.eventAutomation.rules.reference.conditions.playerNameContains'),
   },
   {
+    label: 'targetPlayerNameContains',
+    value: '"targetPlayerNameContains": "Enemy"',
+    description: t('views.eventAutomation.rules.reference.conditions.targetPlayerNameContains'),
+  },
+  {
+    label: 'entityType',
+    value: '"entityType": "Zombie"',
+    description: t('views.eventAutomation.rules.reference.conditions.entityType'),
+  },
+  {
+    label: 'cronExpression',
+    value: '"cronExpression": "0 0/30 * * * ?"',
+    description: t('views.eventAutomation.rules.reference.conditions.cronExpression'),
+  },
+  {
     label: 'ignoreCase',
     value: '"ignoreCase": true',
     description: t('views.eventAutomation.rules.reference.conditions.ignoreCase'),
@@ -236,6 +389,11 @@ const actionReferences = computed<ReferenceItem[]>(() => [
     description: t('views.eventAutomation.rules.reference.actions.sendPrivateMessage'),
   },
   {
+    label: 'SendAnnouncement',
+    value: '{ "type": "SendAnnouncement", "message": "Server notice" }',
+    description: t('views.eventAutomation.rules.reference.actions.sendAnnouncement'),
+  },
+  {
     label: 'GiveItem',
     value: '{ "type": "GiveItem", "target": "TriggerPlayer", "itemName": "resourceWood", "count": 100, "quality": 1 }',
     description: t('views.eventAutomation.rules.reference.actions.giveItem'),
@@ -244,6 +402,21 @@ const actionReferences = computed<ReferenceItem[]>(() => [
     label: 'AdjustEconomy',
     value: '{ "type": "AdjustEconomy", "target": "TriggerPlayer", "amount": 100, "reason": "Reward" }',
     description: t('views.eventAutomation.rules.reference.actions.adjustEconomy'),
+  },
+  {
+    label: 'KickPlayer',
+    value: '{ "type": "KickPlayer", "target": "TriggerPlayer", "reason": "Rule violation", "allowKick": true }',
+    description: t('views.eventAutomation.rules.reference.actions.kickPlayer'),
+  },
+  {
+    label: 'MutePlayer',
+    value: '{ "type": "MutePlayer", "target": "TriggerPlayer", "durationMinutes": 30, "reason": "Spam", "allowMute": true }',
+    description: t('views.eventAutomation.rules.reference.actions.mutePlayer'),
+  },
+  {
+    label: 'ExecuteConsoleCommand',
+    value: '{ "type": "ExecuteConsoleCommand", "command": "saveworld", "allowedCommands": ["saveworld"], "allowConsoleCommand": true, "inMainThread": true }',
+    description: t('views.eventAutomation.rules.reference.actions.executeConsoleCommand'),
   },
 ]);
 

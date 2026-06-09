@@ -2679,10 +2679,12 @@
         "PlayerLeft": "玩家離開",
         "PlayerDied": "玩家死亡",
         "ChatMessage": "聊天訊息",
-        "Cron": "定時觸發"
+        "Cron": "定時觸發",
+        "PlayerKilledPlayer": "Player Killed Player",
+        "PlayerKilledZombie": "Player Killed Entity"
       },
       "rules": {
-        "hint": "目前支援玩家進入世界和聊天訊息觸發。動作支援全服訊息、私聊、給物品和調整經濟餘額。",
+        "hint": "Supports player join/leave, death, kills, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, kicks, mutes, and restricted console commands.",
         "columns": {
           "name": "名稱",
           "isEnabled": "啟用",
@@ -2709,7 +2711,8 @@
         "actions": {
           "formatJson": "格式化 JSON",
           "duplicate": "複製規則",
-          "viewRuns": "查看執行歷史"
+          "viewRuns": "查看執行歷史",
+          "dryRun": "試運行"
         },
         "validation": {
           "nameRequired": "請輸入規則名稱。",
@@ -2722,7 +2725,12 @@
           "updateSuccess": "規則更新成功。",
           "deleteSuccess": "規則刪除成功。",
           "deleteConfirm": "確認刪除規則「{name}」？",
-          "duplicateName": "{name} 副本"
+          "duplicateName": "{name} 副本",
+          "validationPassed": "規則校驗通過。",
+          "dryRunMatched": "樣例上下文會觸發此規則。",
+          "dryRunNotMatched": "樣例上下文不會觸發此規則。",
+          "dryRunNoActions": "沒有可預覽的動作。",
+          "dryRunSampleContext": "樣例上下文"
         },
         "templates": {
           "welcomePrivateMessage": {
@@ -2755,6 +2763,40 @@
             "name": "聊天命令廣播",
             "description": "全域聊天命中指定命令前綴時傳送固定廣播。",
             "message": "{playerName} 觸發了一條伺服器公告。"
+          },
+          "playerLeftAnnouncement": {
+            "name": "Leave announcement",
+            "description": "Send an announcement when a player leaves.",
+            "message": "{playerName} left the server."
+          },
+          "playerDeathAnnouncement": {
+            "name": "Death announcement",
+            "description": "Send an announcement when a player dies.",
+            "message": "{playerName} died."
+          },
+          "pvpKillAnnouncement": {
+            "name": "PVP kill announcement",
+            "description": "Send an announcement when one player kills another player.",
+            "message": "{playerName} killed {targetPlayerName}."
+          },
+          "zombieKillReward": {
+            "name": "Kill reward",
+            "description": "Reward a player when they kill a zombie or other entity.",
+            "reason": "Kill reward"
+          },
+          "scheduledAnnouncement": {
+            "name": "Scheduled announcement",
+            "description": "Send a server announcement on a Cron schedule.",
+            "message": "Scheduled server notice: stay safe."
+          },
+          "chatKeywordMute": {
+            "name": "Keyword mute",
+            "description": "Temporarily mute the triggering player when chat matches a keyword.",
+            "reason": "Chat keyword mute"
+          },
+          "scheduledSaveWorld": {
+            "name": "Scheduled saveworld",
+            "description": "Run the restricted saveworld console command on a Cron schedule."
           }
         },
         "status": {
@@ -2771,13 +2813,20 @@
             "messageContains": "聊天訊息包含指定文字時匹配。",
             "messageStartsWith": "聊天訊息以指定文字開頭時匹配。",
             "playerNameContains": "玩家名稱包含指定文字時匹配。",
-            "ignoreCase": "文字匹配時忽略大小寫。"
+            "ignoreCase": "文字匹配時忽略大小寫。",
+            "targetPlayerNameContains": "Matches when the target player name contains this text.",
+            "entityType": "Matches the target entity type, such as Zombie, Animal, or OnlinePlayer.",
+            "cronExpression": "Cron trigger rules must provide a Cron expression."
           },
           "actions": {
             "sendGlobalMessage": "向所有線上玩家傳送訊息。",
             "sendPrivateMessage": "向觸發規則的玩家傳送私聊訊息。",
             "giveItem": "向觸發規則的玩家發放物品。",
-            "adjustEconomy": "增加或扣除觸發規則玩家的經濟帳戶餘額。"
+            "adjustEconomy": "增加或扣除觸發規則玩家的經濟帳戶餘額。",
+            "sendAnnouncement": "Sends an audited server announcement.",
+            "kickPlayer": "Kicks the target player. Requires allowKick=true.",
+            "mutePlayer": "Mutes the target player. Requires allowMute=true.",
+            "executeConsoleCommand": "Runs a console command restricted by allowedCommands. Dangerous commands also require allowUnsafe=true."
           }
         }
       },

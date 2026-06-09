@@ -2679,10 +2679,12 @@
         "PlayerLeft": "Player Left",
         "PlayerDied": "Player Died",
         "ChatMessage": "Chat Message",
-        "Cron": "Scheduled Time"
+        "Cron": "Scheduled Time",
+        "PlayerKilledPlayer": "Player Killed Player",
+        "PlayerKilledZombie": "Player Killed Entity"
       },
       "rules": {
-        "hint": "Currently supports PlayerJoined and ChatMessage triggers. Actions support global messages, private messages, item grants, and economy balance adjustments.",
+        "hint": "Supports player join/leave, death, kills, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, kicks, mutes, and restricted console commands.",
         "columns": {
           "name": "Name",
           "isEnabled": "Enabled",
@@ -2709,7 +2711,8 @@
         "actions": {
           "formatJson": "Format JSON",
           "duplicate": "Duplicate",
-          "viewRuns": "View run history"
+          "viewRuns": "View run history",
+          "dryRun": "Dry run"
         },
         "validation": {
           "nameRequired": "Rule name is required.",
@@ -2722,7 +2725,12 @@
           "updateSuccess": "Rule updated successfully.",
           "deleteSuccess": "Rule deleted successfully.",
           "deleteConfirm": "Delete rule \"{name}\"?",
-          "duplicateName": "{name} Copy"
+          "duplicateName": "{name} Copy",
+          "validationPassed": "Rule validation passed.",
+          "dryRunMatched": "The sample context would trigger this rule.",
+          "dryRunNotMatched": "The sample context would not trigger this rule.",
+          "dryRunNoActions": "No actions to preview.",
+          "dryRunSampleContext": "Sample context"
         },
         "templates": {
           "welcomePrivateMessage": {
@@ -2755,6 +2763,40 @@
             "name": "Chat command broadcast",
             "description": "Broadcast a fixed message when a global chat command is detected.",
             "message": "Server notice triggered by {playerName}."
+          },
+          "playerLeftAnnouncement": {
+            "name": "Leave announcement",
+            "description": "Send an announcement when a player leaves.",
+            "message": "{playerName} left the server."
+          },
+          "playerDeathAnnouncement": {
+            "name": "Death announcement",
+            "description": "Send an announcement when a player dies.",
+            "message": "{playerName} died."
+          },
+          "pvpKillAnnouncement": {
+            "name": "PVP kill announcement",
+            "description": "Send an announcement when one player kills another player.",
+            "message": "{playerName} killed {targetPlayerName}."
+          },
+          "zombieKillReward": {
+            "name": "Kill reward",
+            "description": "Reward a player when they kill a zombie or other entity.",
+            "reason": "Kill reward"
+          },
+          "scheduledAnnouncement": {
+            "name": "Scheduled announcement",
+            "description": "Send a server announcement on a Cron schedule.",
+            "message": "Scheduled server notice: stay safe."
+          },
+          "chatKeywordMute": {
+            "name": "Keyword mute",
+            "description": "Temporarily mute the triggering player when chat matches a keyword.",
+            "reason": "Chat keyword mute"
+          },
+          "scheduledSaveWorld": {
+            "name": "Scheduled saveworld",
+            "description": "Run the restricted saveworld console command on a Cron schedule."
           }
         },
         "status": {
@@ -2771,13 +2813,20 @@
             "messageContains": "Matches when the chat message contains this text.",
             "messageStartsWith": "Matches when the chat message starts with this text.",
             "playerNameContains": "Matches when the player name contains this text.",
-            "ignoreCase": "Makes text matching case-insensitive."
+            "ignoreCase": "Makes text matching case-insensitive.",
+            "targetPlayerNameContains": "Matches when the target player name contains this text.",
+            "entityType": "Matches the target entity type, such as Zombie, Animal, or OnlinePlayer.",
+            "cronExpression": "Cron trigger rules must provide a Cron expression."
           },
           "actions": {
             "sendGlobalMessage": "Sends a message to all online players.",
             "sendPrivateMessage": "Sends a private message to the triggering player.",
             "giveItem": "Gives an item to the triggering player.",
-            "adjustEconomy": "Adds or deducts currency from the triggering player account."
+            "adjustEconomy": "Adds or deducts currency from the triggering player account.",
+            "sendAnnouncement": "Sends an audited server announcement.",
+            "kickPlayer": "Kicks the target player. Requires allowKick=true.",
+            "mutePlayer": "Mutes the target player. Requires allowMute=true.",
+            "executeConsoleCommand": "Runs a console command restricted by allowedCommands. Dangerous commands also require allowUnsafe=true."
           }
         }
       },

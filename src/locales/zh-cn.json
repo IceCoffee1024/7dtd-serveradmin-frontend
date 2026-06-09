@@ -2679,10 +2679,12 @@
         "PlayerLeft": "玩家离开",
         "PlayerDied": "玩家死亡",
         "ChatMessage": "聊天消息",
-        "Cron": "定时触发"
+        "Cron": "定时触发",
+        "PlayerKilledPlayer": "玩家击杀玩家",
+        "PlayerKilledZombie": "玩家击杀实体"
       },
       "rules": {
-        "hint": "当前支持玩家进入世界和聊天消息触发。动作支持全服消息、私聊、给物品和调整经济余额。",
+        "hint": "支持玩家进入/离开、死亡、击杀、聊天和定时触发。动作支持消息、私聊、公告、给物品、经济调整、踢出、禁言和受限控制台命令。",
         "columns": {
           "name": "名称",
           "isEnabled": "启用",
@@ -2761,6 +2763,40 @@
             "name": "聊天命令广播",
             "description": "全局聊天命中指定命令前缀时发送固定广播。",
             "message": "{playerName} 触发了一条服务器公告。"
+          },
+          "playerLeftAnnouncement": {
+            "name": "离服公告",
+            "description": "玩家离开服务器时发送公告。",
+            "message": "{playerName} 离开了服务器。"
+          },
+          "playerDeathAnnouncement": {
+            "name": "死亡公告",
+            "description": "玩家死亡时发送公告。",
+            "message": "{playerName} 死亡了。"
+          },
+          "pvpKillAnnouncement": {
+            "name": "PVP 击杀公告",
+            "description": "玩家击杀另一名玩家时发送公告。",
+            "message": "{playerName} 击杀了 {targetPlayerName}。"
+          },
+          "zombieKillReward": {
+            "name": "击杀奖励",
+            "description": "玩家击杀僵尸等实体时发放经济奖励。",
+            "reason": "击杀奖励"
+          },
+          "scheduledAnnouncement": {
+            "name": "定时公告",
+            "description": "按 Cron 表达式定时发送服务器公告。",
+            "message": "服务器定时公告：请注意安全。"
+          },
+          "chatKeywordMute": {
+            "name": "关键词禁言",
+            "description": "聊天命中关键词时自动临时禁言触发玩家。",
+            "reason": "聊天关键词触发禁言"
+          },
+          "scheduledSaveWorld": {
+            "name": "定时保存世界",
+            "description": "按 Cron 表达式执行受限控制台命令 saveworld。"
           }
         },
         "status": {
@@ -2777,13 +2813,20 @@
             "messageContains": "聊天消息包含指定文本时匹配。",
             "messageStartsWith": "聊天消息以指定文本开头时匹配。",
             "playerNameContains": "玩家名称包含指定文本时匹配。",
-            "ignoreCase": "文本匹配时忽略大小写。"
+            "ignoreCase": "文本匹配时忽略大小写。",
+            "targetPlayerNameContains": "目标玩家名称包含指定文本时匹配。",
+            "entityType": "匹配目标实体类型，例如 Zombie、Animal 或 OnlinePlayer。",
+            "cronExpression": "定时触发规则必须提供 Cron 表达式。"
           },
           "actions": {
             "sendGlobalMessage": "向所有在线玩家发送消息。",
             "sendPrivateMessage": "向触发规则的玩家发送私聊消息。",
             "giveItem": "向触发规则的玩家发放物品。",
-            "adjustEconomy": "增加或扣除触发规则玩家的经济账户余额。"
+            "adjustEconomy": "增加或扣除触发规则玩家的经济账户余额。",
+            "sendAnnouncement": "发送带审计记录的服务器公告。",
+            "kickPlayer": "踢出目标玩家，必须显式设置 allowKick=true。",
+            "mutePlayer": "禁言目标玩家，必须显式设置 allowMute=true。",
+            "executeConsoleCommand": "执行受 allowedCommands 限制的控制台命令，高风险命令还需要 allowUnsafe=true。"
           }
         }
       },
