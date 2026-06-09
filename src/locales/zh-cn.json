@@ -2569,7 +2569,11 @@
         "emptyStateScopes": "无状态范围",
         "runtimeStates": "运行状态",
         "runtimeStateCount": "最近 {0} 条",
-        "emptyConfigurationIssues": "无配置问题"
+        "emptyConfigurationIssues": "无配置问题",
+        "runtimeStateScopeSummary": "{0} 条，最近 {1}",
+        "emptyRuntimeStates": "暂无运行状态记录",
+        "settingsSchema": "配置 Schema 摘要",
+        "emptySettingsSchema": "暂无配置 Schema 元数据"
       },
       "state": {
         "scope": "范围",
@@ -2693,7 +2697,12 @@
         "status": "状态",
         "configurationCheck": "配置检查",
         "settings": "设置",
-        "routes": "入口"
+        "routes": "入口",
+        "settingsSchema": "配置 Schema",
+        "visualRuleBuilder": "可视化规则构建器",
+        "dryRun": "试运行预览",
+        "runHistory": "执行历史",
+        "runHistoryCleanup": "执行历史清理"
       },
       "stateScopes": {
         "cooldown": "冷却状态",
@@ -2716,7 +2725,24 @@
       "issueFirst": "问题优先",
       "enableConfirm": "确认启用 {0}？",
       "disableConfirm": "确认禁用 {0}？这可能停止相关命令和自动化。",
-      "actionUnavailable": "此模块不支持该操作。"
+      "actionUnavailable": "此模块不支持该操作。",
+      "settingsSchema": {
+        "name": "字段名",
+        "type": "类型",
+        "clrType": "CLR 类型",
+        "flags": "标记",
+        "enableFlag": "启用开关",
+        "collection": "集合",
+        "nullable": "可为空"
+      },
+      "settingTypes": {
+        "boolean": "布尔",
+        "number": "数字",
+        "string": "字符串",
+        "array": "数组",
+        "enum": "枚举",
+        "object": "对象"
+      }
     },
     "eventAutomation": {
       "triggers": {
@@ -3076,6 +3102,18 @@
         "detail": {
           "title": "执行详情",
           "detailsJson": "详情 JSON"
+        },
+        "cleanup": {
+          "testRuns": "清理测试记录",
+          "expired": "清理过期记录",
+          "testRunsTitle": "清理测试运行历史",
+          "expiredTitle": "清理过期运行历史",
+          "daysPrompt": "删除多少天以前的运行日志？",
+          "invalidDays": "请输入大于 0 的整数。",
+          "noMatches": "没有匹配的运行日志。",
+          "confirmDelete": "匹配到 {0} 条测试运行日志，确认删除？",
+          "confirmDeleteExpired": "匹配到 {0} 条早于 {1} 天的运行日志，确认删除？",
+          "deleted": "已删除 {0} 条运行日志。"
         }
       }
     }

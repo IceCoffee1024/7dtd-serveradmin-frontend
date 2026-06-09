@@ -32,10 +32,22 @@ type ExtendedFeatureModuleDefinition = NonNullable<FeatureModuleStatusDto['defin
   stateScopes?: FeatureModuleCapabilityDto[];
   templates?: FeatureModuleCapabilityDto[];
 };
+type ExtendedFeatureModuleStatus = FeatureModuleStatusDto & {
+  settingsFields?: FeatureModuleSettingsField[];
+};
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
+
+interface FeatureModuleSettingsField {
+  name: string;
+  type: string;
+  clrType: string;
+  isNullable: boolean;
+  isCollection: boolean;
+  isEnableFlag: boolean;
+}
 
 interface ModuleStateRow {
   id: number;
@@ -152,8 +164,8 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): FeatureModuleStatusDto {
-  return item as FeatureModuleStatusDto;
+function toModuleStatus(item: unknown): ExtendedFeatureModuleStatus {
+  return item as ExtendedFeatureModuleStatus;
 }
 
 function getModuleDefinition(item: unknown): ExtendedFeatureModuleDefinition | null {
@@ -400,6 +412,10 @@ function getModuleStateScopes(item: unknown): FeatureModuleCapabilityDto[] {
   return getModuleDefinition(item)?.stateScopes ?? [];
 }
 
+function getModuleSettingsFields(item: unknown): FeatureModuleSettingsField[] {
+  return toModuleStatus(item).settingsFields ?? [];
+}
+
 function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
   return capability.labelKey == null || capability.labelKey.length === 0
     ? capability.key
@@ -424,6 +440,32 @@ function formatModuleStateValue(valueJson: string): string {
 
 function formatModuleStateTime(value: string | null | undefined): string {
   return value == null ? '-' : dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+}
+
+function getModuleStateScopeSummaries() {
+  return [...moduleStates.value.reduce((map, row) => {
+    const current = map.get(row.scope);
+    if (current == null) {
+      map.set(row.scope, {
+        scope: row.scope,
+        total: 1,
+        latestUpdatedAt: row.updatedAt,
+      });
+      return map;
+    }
+
+    current.total += 1;
+    if (dayjs(row.updatedAt).isAfter(dayjs(current.latestUpdatedAt))) {
+      current.latestUpdatedAt = row.updatedAt;
+    }
+    return map;
+  }, new Map<string, { scope: string; total: number; latestUpdatedAt: string }>()).values()];
+}
+
+function getSettingsFieldTypeLabel(type: string): string {
+  const key = `views.featureModules.settingTypes.${type.toLowerCase()}`;
+  const label = t(key);
+  return label === key ? type : label;
 }
 
 function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
@@ -893,7 +935,22 @@ onMounted(loadModules);
         <section v-if="getModuleStateScopes(selectedModule).length > 0" class="feature-module-detail__section">
           <div class="feature-module-detail__section-header">
             <h3>{{ t('views.featureModules.detail.runtimeStates') }}</h3>
-            <span>{{ t('views.featureModules.detail.runtimeStateCount', [moduleStateTotal]) }}</span>
+            <div class="feature-module-detail__section-actions">
+              <span>{{ t('views.featureModules.detail.runtimeStateCount', [moduleStateTotal]) }}</span>
+              <el-button size="small" :loading="moduleStateLoading" @click="loadModuleStates(selectedModule.key)">
+                {{ t('components.myTable.refresh') }}
+              </el-button>
+            </div>
+          </div>
+          <div v-if="getModuleStateScopeSummaries().length > 0" class="feature-module-detail__state-summary">
+            <div
+              v-for="summaryItem in getModuleStateScopeSummaries()"
+              :key="summaryItem.scope"
+              class="feature-module-detail__state-summary-item"
+            >
+              <strong>{{ summaryItem.scope }}</strong>
+              <span>{{ t('views.featureModules.detail.runtimeStateScopeSummary', [summaryItem.total, formatModuleStateTime(summaryItem.latestUpdatedAt)]) }}</span>
+            </div>
           </div>
           <el-table
             v-loading="moduleStateLoading"
@@ -916,6 +973,48 @@ onMounted(loadModules);
               </template>
             </el-table-column>
           </el-table>
+          <el-empty v-if="!moduleStateLoading && moduleStates.length === 0" :description="t('views.featureModules.detail.emptyRuntimeStates')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.settingsSchema') }}</h3>
+          <el-table
+            v-if="getModuleSettingsFields(selectedModule).length > 0"
+            :data="getModuleSettingsFields(selectedModule)"
+            size="small"
+            border
+            class="feature-module-detail__schema-table"
+          >
+            <el-table-column prop="name" :label="t('views.featureModules.settingsSchema.name')" min-width="170" show-overflow-tooltip>
+              <template #default="{ row }">
+                <code>{{ row.name }}</code>
+              </template>
+            </el-table-column>
+            <el-table-column :label="t('views.featureModules.settingsSchema.type')" width="110">
+              <template #default="{ row }">
+                <el-tag effect="plain" size="small">
+                  {{ getSettingsFieldTypeLabel(row.type) }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="clrType" :label="t('views.featureModules.settingsSchema.clrType')" min-width="130" show-overflow-tooltip />
+            <el-table-column :label="t('views.featureModules.settingsSchema.flags')" min-width="150">
+              <template #default="{ row }">
+                <div class="feature-module-detail__schema-flags">
+                  <el-tag v-if="row.isEnableFlag" type="success" effect="plain" size="small">
+                    {{ t('views.featureModules.settingsSchema.enableFlag') }}
+                  </el-tag>
+                  <el-tag v-if="row.isCollection" type="info" effect="plain" size="small">
+                    {{ t('views.featureModules.settingsSchema.collection') }}
+                  </el-tag>
+                  <el-tag v-if="row.isNullable" type="warning" effect="plain" size="small">
+                    {{ t('views.featureModules.settingsSchema.nullable') }}
+                  </el-tag>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-empty v-else :description="t('views.featureModules.detail.emptySettingsSchema')" :image-size="72" />
         </section>
 
         <section class="feature-module-detail__section">
@@ -1192,6 +1291,12 @@ onMounted(loadModules);
   }
 }
 
+.feature-module-detail__section-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .feature-module-detail__list,
 .feature-module-detail__tags {
   display: flex;
@@ -1206,6 +1311,49 @@ onMounted(loadModules);
     color: var(--el-text-color-regular);
     font-size: 12px;
   }
+}
+
+.feature-module-detail__state-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.feature-module-detail__state-summary-item {
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: var(--el-fill-color-extra-light);
+
+  strong {
+    display: block;
+    color: var(--el-text-color-primary);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  span {
+    display: block;
+    margin-top: 2px;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.feature-module-detail__schema-table {
+  width: 100%;
+
+  code {
+    color: var(--el-text-color-regular);
+    font-size: 12px;
+  }
+}
+
+.feature-module-detail__schema-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .feature-module-detail__commands {

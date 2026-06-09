@@ -7,12 +7,32 @@ import type {
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { usePopup } from '~/composables';
+import { client } from '~/generated/api/client.gen';
 import { eventAutomationGetRuns } from '~/generated/api/sdk.gen';
 import RunDetailDialog from './RunDetailDialog.vue';
 
 defineOptions({ name: 'EventAutomationRunsPage' });
 
 type RunRow = EventAutomationRunLogDto;
+
+interface EventAutomationRunLogCleanupRequest {
+  deleteTestRuns?: boolean;
+  olderThanDays?: number;
+  olderThanUtc?: string;
+  keyword?: string;
+  previewOnly: boolean;
+}
+
+interface EventAutomationRunLogCleanupResult {
+  matchedCount: number;
+  deletedCount: number;
+  previewOnly: boolean;
+  olderThanUtc?: string | null;
+  criteria: string;
+  oldestStartedAt?: string | null;
+  newestStartedAt?: string | null;
+}
 
 const TRIGGER_TYPES = [
   'PlayerJoined',
@@ -23,9 +43,12 @@ const TRIGGER_TYPES = [
 
 const { t } = useI18n();
 const route = useRoute();
+const { confirm, prompt, toast } = usePopup();
 
+const tableRef = useTemplateRef('tableRef');
 const detailDialogRef = useTemplateRef('detailDialogRef');
 const currentRun = ref<RunRow | null>(null);
+const cleanupLoading = ref(false);
 
 const triggerTypeOptions = computed(() =>
   TRIGGER_TYPES.map(type => ({
@@ -223,12 +246,121 @@ function onView(row: RunRow) {
   currentRun.value = row;
   detailDialogRef.value?.show();
 }
+
+async function cleanupRuns(request: EventAutomationRunLogCleanupRequest): Promise<EventAutomationRunLogCleanupResult> {
+  const { data } = await client.delete<EventAutomationRunLogCleanupResult, unknown, true>({
+    security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+    url: '/api/EventAutomation/Runs/Cleanup',
+    body: request,
+    throwOnError: true,
+  });
+
+  return data;
+}
+
+async function onCleanupTestRuns() {
+  cleanupLoading.value = true;
+  try {
+    const preview = await cleanupRuns({
+      deleteTestRuns: true,
+      previewOnly: true,
+    });
+
+    if (preview.matchedCount <= 0) {
+      toast({ type: 'info', text: t('views.eventAutomation.runs.cleanup.noMatches') });
+      return;
+    }
+
+    const ok = await confirm({
+      type: 'warning',
+      title: t('views.eventAutomation.runs.cleanup.testRunsTitle'),
+      text: t('views.eventAutomation.runs.cleanup.confirmDelete', [preview.matchedCount]),
+    });
+    if (!ok)
+      return;
+
+    const result = await cleanupRuns({
+      deleteTestRuns: true,
+      previewOnly: false,
+    });
+    toast({
+      type: 'success',
+      text: t('views.eventAutomation.runs.cleanup.deleted', [result.deletedCount]),
+    });
+    await tableRef.value?.reload();
+  }
+  catch (error) {
+    toast({ type: 'error', text: error instanceof Error ? error.message : String(error) });
+  }
+  finally {
+    cleanupLoading.value = false;
+  }
+}
+
+async function onCleanupExpiredRuns() {
+  const value = await prompt({
+    type: 'warning',
+    title: t('views.eventAutomation.runs.cleanup.expiredTitle'),
+    text: t('views.eventAutomation.runs.cleanup.daysPrompt'),
+    inputValue: '30',
+    inputValidator: (input) => {
+      const days = Number(input);
+      return Number.isInteger(days) && days > 0
+        ? true
+        : t('views.eventAutomation.runs.cleanup.invalidDays');
+    },
+  });
+  if (value == null)
+    return;
+
+  const olderThanDays = Number(value);
+  cleanupLoading.value = true;
+  try {
+    const preview = await cleanupRuns({
+      olderThanDays,
+      previewOnly: true,
+    });
+
+    if (preview.matchedCount <= 0) {
+      toast({ type: 'info', text: t('views.eventAutomation.runs.cleanup.noMatches') });
+      return;
+    }
+
+    const ok = await confirm({
+      type: 'warning',
+      title: t('views.eventAutomation.runs.cleanup.expiredTitle'),
+      text: t('views.eventAutomation.runs.cleanup.confirmDeleteExpired', [
+        preview.matchedCount,
+        olderThanDays,
+      ]),
+    });
+    if (!ok)
+      return;
+
+    const result = await cleanupRuns({
+      olderThanDays,
+      previewOnly: false,
+    });
+    toast({
+      type: 'success',
+      text: t('views.eventAutomation.runs.cleanup.deleted', [result.deletedCount]),
+    });
+    await tableRef.value?.reload();
+  }
+  catch (error) {
+    toast({ type: 'error', text: error instanceof Error ? error.message : String(error) });
+  }
+  finally {
+    cleanupLoading.value = false;
+  }
+}
 </script>
 
 <template>
   <div class="event-automation-runs-page flex flex-col gap-4 h-full min-h-0">
     <div class="event-automation-runs-page__table">
       <MyTable
+        ref="tableRef"
         row-key="id"
         :columns="columns"
         :fetch-data="fetchData"
@@ -237,6 +369,17 @@ function onView(row: RunRow) {
         :auto-column-width="true"
         :search-collapsible="true"
       >
+        <template #toolbar-right>
+          <div class="event-automation-runs-page__cleanup-actions">
+            <el-button size="small" :loading="cleanupLoading" @click="onCleanupTestRuns">
+              {{ t('views.eventAutomation.runs.cleanup.testRuns') }}
+            </el-button>
+            <el-button size="small" :loading="cleanupLoading" @click="onCleanupExpiredRuns">
+              {{ t('views.eventAutomation.runs.cleanup.expired') }}
+            </el-button>
+          </div>
+        </template>
+
         <template #triggerType="{ row }">
           <el-tag type="info">
             {{ resolveTriggerTypeLabel(row.triggerType) }}
@@ -282,5 +425,11 @@ function onView(row: RunRow) {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
+}
+
+.event-automation-runs-page__cleanup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 </style>

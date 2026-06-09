@@ -2569,7 +2569,11 @@
         "emptyStateScopes": "No state scopes",
         "emptyConfigurationIssues": "No configuration issues",
         "runtimeStates": "Runtime State",
-        "runtimeStateCount": "Latest {0}"
+        "runtimeStateCount": "Latest {0}",
+        "runtimeStateScopeSummary": "{0} rows, latest {1}",
+        "emptyRuntimeStates": "No runtime state rows",
+        "settingsSchema": "Settings Schema",
+        "emptySettingsSchema": "No settings schema metadata"
       },
       "permissionLevel": "Level {0}",
       "permissionFlags": {
@@ -2686,7 +2690,12 @@
         "status": "Status",
         "configurationCheck": "Configuration Check",
         "settings": "Settings",
-        "routes": "Entry Points"
+        "routes": "Entry Points",
+        "settingsSchema": "Settings Schema",
+        "visualRuleBuilder": "Visual Rule Builder",
+        "dryRun": "Dry-run Preview",
+        "runHistory": "Run History",
+        "runHistoryCleanup": "Run History Cleanup"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -2716,6 +2725,23 @@
         "stateKey": "State Key",
         "updatedAt": "Updated At",
         "value": "Value"
+      },
+      "settingsSchema": {
+        "name": "Name",
+        "type": "Type",
+        "clrType": "CLR Type",
+        "flags": "Flags",
+        "enableFlag": "Enable Flag",
+        "collection": "Collection",
+        "nullable": "Nullable"
+      },
+      "settingTypes": {
+        "boolean": "Boolean",
+        "number": "Number",
+        "string": "String",
+        "array": "Array",
+        "enum": "Enum",
+        "object": "Object"
       }
     },
     "eventAutomation": {
@@ -3076,6 +3102,18 @@
         "detail": {
           "title": "Execution Details",
           "detailsJson": "Details JSON"
+        },
+        "cleanup": {
+          "testRuns": "Clean test runs",
+          "expired": "Clean expired",
+          "testRunsTitle": "Clean test run history",
+          "expiredTitle": "Clean expired run history",
+          "daysPrompt": "Delete run logs older than how many days?",
+          "invalidDays": "Enter an integer greater than 0.",
+          "noMatches": "No matching run logs found.",
+          "confirmDelete": "Matched {0} test run logs. Delete them now?",
+          "confirmDeleteExpired": "Matched {0} run logs older than {1} days. Delete them now?",
+          "deleted": "Deleted {0} run logs."
         }
       }
     }
