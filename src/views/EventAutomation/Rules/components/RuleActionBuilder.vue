@@ -227,6 +227,23 @@ function isPlayerTargetAction(type: string) {
 function shouldShowPlayerId(action: ActionModel) {
   return getStringValue(action, 'target') === 'PlayerId';
 }
+
+function isHighRiskAction(type: string) {
+  return ['ExecuteConsoleCommand', 'KickPlayer', 'MutePlayer'].includes(type);
+}
+
+function resolveHighRiskDescription(type: string) {
+  switch (type) {
+    case 'KickPlayer':
+      return t('views.eventAutomation.rules.builder.highRiskDescriptions.KickPlayer');
+    case 'MutePlayer':
+      return t('views.eventAutomation.rules.builder.highRiskDescriptions.MutePlayer');
+    case 'ExecuteConsoleCommand':
+      return t('views.eventAutomation.rules.builder.highRiskDescriptions.ExecuteConsoleCommand');
+    default:
+      return '';
+  }
+}
 </script>
 
 <template>
@@ -276,6 +293,17 @@ function shouldShowPlayerId(action: ActionModel) {
         </div>
 
         <el-row :gutter="12">
+          <el-col v-if="isHighRiskAction(getStringValue(action, 'type'))" :xs="24">
+            <el-alert
+              class="rule-action-builder__risk-alert"
+              type="warning"
+              show-icon
+              :closable="false"
+              :title="t('views.eventAutomation.rules.builder.highRiskTitle')"
+              :description="resolveHighRiskDescription(getStringValue(action, 'type'))"
+            />
+          </el-col>
+
           <el-col :xs="24" :md="12">
             <el-form-item :label="t('views.eventAutomation.rules.builder.fields.actionType')">
               <el-select
@@ -565,5 +593,9 @@ function shouldShowPlayerId(action: ActionModel) {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.rule-action-builder__risk-alert {
+  margin-bottom: 12px;
 }
 </style>

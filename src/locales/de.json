@@ -2900,7 +2900,17 @@
             "KickPlayer": "Kick player",
             "MutePlayer": "Mute player",
             "ExecuteConsoleCommand": "Execute console command"
+          },
+          "highRiskTitle": "High-risk action",
+          "highRiskDescriptions": {
+            "KickPlayer": "This action can remove a player from the server when the rule is triggered. Keep allowKick enabled only when the condition is narrow enough.",
+            "MutePlayer": "This action can restrict player chat when the rule is triggered. Check duration and permanent mute authorization carefully.",
+            "ExecuteConsoleCommand": "This action can execute a server console command. Keep allowedCommands minimal and enable unsafe commands only when required."
           }
+        },
+        "highRiskConfirm": {
+          "title": "Confirm high-risk automation",
+          "text": "This enabled rule contains high-risk actions: {actions}. These actions can affect players or execute server commands when triggered. Continue saving?"
         }
       },
       "settings": {

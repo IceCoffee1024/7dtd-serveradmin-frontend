@@ -2779,6 +2779,12 @@
             "KickPlayer": "踢出玩家",
             "MutePlayer": "禁言玩家",
             "ExecuteConsoleCommand": "执行控制台命令"
+          },
+          "highRiskTitle": "高风险动作",
+          "highRiskDescriptions": {
+            "KickPlayer": "此动作会在规则触发时踢出玩家。请确认条件足够精确，并且只在确实需要时开启 allowKick。",
+            "MutePlayer": "此动作会在规则触发时限制玩家聊天。请仔细确认禁言时长和永久禁言授权。",
+            "ExecuteConsoleCommand": "此动作会执行服务器控制台命令。请尽量收窄 allowedCommands，只有确实需要时才允许高风险命令。"
           }
         },
         "actions": {
@@ -2901,6 +2907,10 @@
             "mutePlayer": "禁言目标玩家，必须显式设置 allowMute=true。",
             "executeConsoleCommand": "执行受 allowedCommands 限制的控制台命令，高风险命令还需要 allowUnsafe=true。"
           }
+        },
+        "highRiskConfirm": {
+          "title": "确认高风险自动化",
+          "text": "当前启用的规则包含高风险动作：{actions}。这些动作触发后可能影响玩家或执行服务器命令，确认继续保存？"
         }
       },
       "settings": {

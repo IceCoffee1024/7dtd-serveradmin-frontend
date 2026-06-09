@@ -46,6 +46,8 @@ const TRIGGER_TYPES = [
   'Cron',
 ] as const;
 
+const HIGH_RISK_ACTION_TYPES = ['KickPlayer', 'MutePlayer', 'ExecuteConsoleCommand'] as const;
+
 interface RuleTemplate {
   key: string;
   name: string;
@@ -696,6 +698,10 @@ async function onSubmit() {
       return;
     }
 
+    const confirmedHighRiskActions = await confirmHighRiskRuleSave(payload);
+    if (!confirmedHighRiskActions)
+      return;
+
     if (editingRule.value?.id != null) {
       await eventAutomationUpdateRule({
         path: { id: editingRule.value.id },
@@ -856,6 +862,49 @@ function parseConditions(conditionsJson: string): Record<string, unknown> {
   }
 
   return {};
+}
+
+function parseActions(actionsJson: string): Array<Record<string, unknown>> {
+  try {
+    const parsed = JSON.parse(actionsJson || '[]');
+    if (Array.isArray(parsed))
+      return parsed.filter(item => item != null && typeof item === 'object') as Array<Record<string, unknown>>;
+  }
+  catch {
+    // Form validation reports the JSON error before this path is normally reached.
+  }
+
+  return [];
+}
+
+async function confirmHighRiskRuleSave(rule: EventAutomationRuleUpsertDto): Promise<boolean> {
+  if (rule.isEnabled !== true)
+    return true;
+
+  const highRiskActions = collectHighRiskActions(rule.actionsJson ?? '[]');
+  if (highRiskActions.length === 0)
+    return true;
+
+  const actionLabels = highRiskActions
+    .map(type => t(`views.eventAutomation.rules.builder.actionTypes.${type}`))
+    .join(', ');
+
+  return confirm({
+    type: 'warning',
+    title: t('views.eventAutomation.rules.highRiskConfirm.title'),
+    text: t('views.eventAutomation.rules.highRiskConfirm.text', { actions: actionLabels }),
+  });
+}
+
+function collectHighRiskActions(actionsJson: string): string[] {
+  const result = new Set<string>();
+  for (const action of parseActions(actionsJson)) {
+    const type = toOptionalString(action.type);
+    if (type != null && HIGH_RISK_ACTION_TYPES.includes(type as (typeof HIGH_RISK_ACTION_TYPES)[number]))
+      result.add(type);
+  }
+
+  return [...result];
 }
 
 function formatDryRunSample(sample: EventAutomationRuleDryRunRequestDto | null): string {
