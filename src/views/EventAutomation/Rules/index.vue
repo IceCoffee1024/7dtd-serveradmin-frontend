@@ -550,7 +550,7 @@ async function onDelete(row: RuleRow) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="event-automation-rules-page flex flex-col gap-4 h-full min-h-0">
     <el-alert
       :title="t('views.eventAutomation.rules.hint')"
       type="info"
@@ -558,59 +558,61 @@ async function onDelete(row: RuleRow) {
       :closable="false"
     />
 
-    <MyTable
-      ref="tableRef"
-      row-key="id"
-      :columns="columns"
-      :fetch-data="fetchData"
-      :show-index="true"
-      :auto-column-width="true"
-      :search-collapsible="true"
-      @add="onAdd"
-    >
-      <template #isEnabled="{ row }">
-        <el-tag :type="row.isEnabled ? 'success' : 'info'">
-          {{ row.isEnabled ? t('common.yes') : t('common.no') }}
-        </el-tag>
-      </template>
+    <div class="event-automation-rules-page__table">
+      <MyTable
+        ref="tableRef"
+        row-key="id"
+        :columns="columns"
+        :fetch-data="fetchData"
+        :show-index="true"
+        :auto-column-width="true"
+        :search-collapsible="true"
+        @add="onAdd"
+      >
+        <template #isEnabled="{ row }">
+          <el-tag :type="row.isEnabled ? 'success' : 'info'">
+            {{ row.isEnabled ? t('common.yes') : t('common.no') }}
+          </el-tag>
+        </template>
 
-      <template #triggerType="{ row }">
-        <el-tag type="info">
-          {{ resolveTriggerTypeLabel(row.triggerType) }}
-        </el-tag>
-      </template>
+        <template #triggerType="{ row }">
+          <el-tag type="info">
+            {{ resolveTriggerTypeLabel(row.triggerType) }}
+          </el-tag>
+        </template>
 
-      <template #lastMatchedAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.lastMatchedAt) }}</span>
-      </template>
+        <template #lastMatchedAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.lastMatchedAt) }}</span>
+        </template>
 
-      <template #lastStatus="{ row }">
-        <el-tag :type="resolveLastStatusType(row.lastStatus)">
-          {{ resolveLastStatusLabel(row.lastStatus) }}
-        </el-tag>
-      </template>
+        <template #lastStatus="{ row }">
+          <el-tag :type="resolveLastStatusType(row.lastStatus)">
+            {{ resolveLastStatusLabel(row.lastStatus) }}
+          </el-tag>
+        </template>
 
-      <template #updatedAt="{ row }">
-        <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.updatedAt) }}</span>
-      </template>
+        <template #updatedAt="{ row }">
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ formatTimestamp(row.updatedAt) }}</span>
+        </template>
 
-      <template #operation="{ row }">
-        <div class="flex gap-1.5 justify-center">
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('components.myTable.edit')" @click="onEdit(row)">
-            <icon-mdi-pencil />
-          </IconButton>
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.duplicate')" @click="onDuplicate(row)">
-            <icon-mdi-content-copy />
-          </IconButton>
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.viewRuns')" @click="onViewRuns(row)">
-            <icon-mdi-history />
-          </IconButton>
-          <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('common.delete')" @click="onDelete(row)">
-            <icon-mdi-delete-outline />
-          </IconButton>
-        </div>
-      </template>
-    </MyTable>
+        <template #operation="{ row }">
+          <div class="flex gap-1.5 justify-center">
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('components.myTable.edit')" @click="onEdit(row)">
+              <icon-mdi-pencil />
+            </IconButton>
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.duplicate')" @click="onDuplicate(row)">
+              <icon-mdi-content-copy />
+            </IconButton>
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('views.eventAutomation.rules.actions.viewRuns')" @click="onViewRuns(row)">
+              <icon-mdi-history />
+            </IconButton>
+            <IconButton button-size="small" icon-size="18" plain :tooltip-content="t('common.delete')" @click="onDelete(row)">
+              <icon-mdi-delete-outline />
+            </IconButton>
+          </div>
+        </template>
+      </MyTable>
+    </div>
 
     <el-dialog
       v-model="dialogVisible"
@@ -752,6 +754,12 @@ async function onDelete(row: RuleRow) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.event-automation-rules-page__table {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .event-automation-template-option {
