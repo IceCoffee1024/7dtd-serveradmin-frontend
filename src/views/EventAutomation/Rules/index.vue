@@ -20,6 +20,8 @@ import {
   eventAutomationUpdateRule,
   eventAutomationValidateRule,
 } from '~/generated/api/sdk.gen';
+import RuleActionBuilder from './components/RuleActionBuilder.vue';
+import RuleConditionBuilder from './components/RuleConditionBuilder.vue';
 
 defineOptions({ name: 'EventAutomationRulesPage' });
 
@@ -73,6 +75,7 @@ const isDryRunningRule = ref(false);
 const dryRunResult = ref<EventAutomationRuleDryRunResultDto | null>(null);
 const dryRunSample = ref<EventAutomationRuleDryRunRequestDto | null>(null);
 const selectedTemplateKey = ref<string>();
+const editorMode = ref<'builder' | 'json'>('builder');
 
 const form = reactive<RuleFormModel>(buildDefaults());
 
@@ -590,6 +593,7 @@ function formatJsonField(prop: 'actionsJson' | 'conditionsJson') {
   try {
     const parsed = JSON.parse(form[prop] || (prop === 'conditionsJson' ? '{}' : '[]'));
     form[prop] = JSON.stringify(parsed, null, 2);
+    resetDryRun();
     formRef.value?.validateField(prop);
   }
   catch {
@@ -628,6 +632,7 @@ function applyRuleToForm(rule: RuleRow | null) {
 function onAdd() {
   editingRule.value = null;
   selectedTemplateKey.value = undefined;
+  editorMode.value = 'builder';
   applyRuleToForm(null);
   resetDryRun();
   dialogVisible.value = true;
@@ -637,6 +642,7 @@ function onAdd() {
 function onEdit(row: RuleRow) {
   editingRule.value = row;
   selectedTemplateKey.value = undefined;
+  editorMode.value = 'builder';
   applyRuleToForm(row);
   resetDryRun();
   dialogVisible.value = true;
@@ -646,6 +652,7 @@ function onEdit(row: RuleRow) {
 function onDuplicate(row: RuleRow) {
   editingRule.value = null;
   selectedTemplateKey.value = undefined;
+  editorMode.value = 'builder';
   applyRuleToForm(row);
   form.name = t('views.eventAutomation.rules.messages.duplicateName', { name: row.name });
   resetDryRun();
@@ -961,7 +968,7 @@ async function onDelete(row: RuleRow) {
     <el-dialog
       v-model="dialogVisible"
       :title="editingRule == null ? t('views.eventAutomation.rules.dialog.createTitle') : t('views.eventAutomation.rules.dialog.editTitle')"
-      width="760px"
+      width="920px"
       destroy-on-close
     >
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
@@ -1037,7 +1044,7 @@ async function onDelete(row: RuleRow) {
           </el-col>
           <el-col :xs="24" :md="12">
             <el-form-item prop="triggerType" :label="t('views.eventAutomation.rules.form.triggerType')">
-              <el-select v-model="form.triggerType" class="w-full" filterable allow-create>
+              <el-select v-model="form.triggerType" class="w-full" filterable allow-create @change="resetDryRun">
                 <el-option
                   v-for="option in triggerTypeOptions"
                   :key="option.value"
@@ -1062,21 +1069,56 @@ async function onDelete(row: RuleRow) {
               <el-input v-model="form.description" clearable />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="conditionsJson" :label="t('views.eventAutomation.rules.form.conditionsJson')">
-              <el-input v-model="form.conditionsJson" type="textarea" :rows="10" spellcheck="false" class="event-automation-json" />
-            </el-form-item>
-            <el-button size="small" @click="formatJsonField('conditionsJson')">
-              {{ t('views.eventAutomation.rules.actions.formatJson') }}
-            </el-button>
-          </el-col>
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="actionsJson" :label="t('views.eventAutomation.rules.form.actionsJson')">
-              <el-input v-model="form.actionsJson" type="textarea" :rows="10" spellcheck="false" class="event-automation-json" />
-            </el-form-item>
-            <el-button size="small" @click="formatJsonField('actionsJson')">
-              {{ t('views.eventAutomation.rules.actions.formatJson') }}
-            </el-button>
+          <el-col :xs="24">
+            <el-tabs v-model="editorMode" class="event-automation-rule-editor">
+              <el-tab-pane :label="t('views.eventAutomation.rules.editorModes.builder')" name="builder">
+                <div class="event-automation-rule-editor__builder">
+                  <section class="event-automation-rule-editor__section">
+                    <div class="event-automation-rule-editor__section-title">
+                      {{ t('views.eventAutomation.rules.builder.conditions') }}
+                    </div>
+                    <el-form-item prop="conditionsJson" class="event-automation-rule-editor__form-item">
+                      <RuleConditionBuilder
+                        v-model="form.conditionsJson"
+                        :trigger-type="form.triggerType"
+                        @update:model-value="resetDryRun"
+                      />
+                    </el-form-item>
+                  </section>
+                  <section class="event-automation-rule-editor__section">
+                    <div class="event-automation-rule-editor__section-title">
+                      {{ t('views.eventAutomation.rules.builder.actions') }}
+                    </div>
+                    <el-form-item prop="actionsJson" class="event-automation-rule-editor__form-item">
+                      <RuleActionBuilder
+                        v-model="form.actionsJson"
+                        @update:model-value="resetDryRun"
+                      />
+                    </el-form-item>
+                  </section>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane :label="t('views.eventAutomation.rules.editorModes.json')" name="json">
+                <el-row :gutter="16">
+                  <el-col :xs="24" :md="12">
+                    <el-form-item prop="conditionsJson" :label="t('views.eventAutomation.rules.form.conditionsJson')">
+                      <el-input v-model="form.conditionsJson" type="textarea" :rows="12" spellcheck="false" class="event-automation-json" @input="resetDryRun" />
+                    </el-form-item>
+                    <el-button size="small" @click="formatJsonField('conditionsJson')">
+                      {{ t('views.eventAutomation.rules.actions.formatJson') }}
+                    </el-button>
+                  </el-col>
+                  <el-col :xs="24" :md="12">
+                    <el-form-item prop="actionsJson" :label="t('views.eventAutomation.rules.form.actionsJson')">
+                      <el-input v-model="form.actionsJson" type="textarea" :rows="12" spellcheck="false" class="event-automation-json" @input="resetDryRun" />
+                    </el-form-item>
+                    <el-button size="small" @click="formatJsonField('actionsJson')">
+                      {{ t('views.eventAutomation.rules.actions.formatJson') }}
+                    </el-button>
+                  </el-col>
+                </el-row>
+              </el-tab-pane>
+            </el-tabs>
           </el-col>
         </el-row>
       </el-form>
@@ -1204,6 +1246,34 @@ async function onDelete(row: RuleRow) {
 .event-automation-reference__item span {
   color: var(--el-text-color-secondary);
   font-size: 12px;
+}
+
+.event-automation-rule-editor {
+  margin-top: 2px;
+}
+
+.event-automation-rule-editor__builder {
+  display: grid;
+  gap: 14px;
+}
+
+.event-automation-rule-editor__section {
+  display: grid;
+  gap: 10px;
+}
+
+.event-automation-rule-editor__section-title {
+  color: var(--el-text-color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.event-automation-rule-editor__form-item {
+  margin-bottom: 0;
+}
+
+.event-automation-rule-editor__form-item :deep(.el-form-item__content) {
+  display: block;
 }
 
 .event-automation-dry-run {
