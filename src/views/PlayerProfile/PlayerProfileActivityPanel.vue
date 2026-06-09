@@ -4,9 +4,10 @@ import type {
   ChatMessageDto,
   EconomyTransactionDto,
   GameEventLogDto,
+  PlayerProfileTimelineItemDto,
+  PlayerProfileTimelineItemType,
   TeleportLogDto,
 } from '~/generated/api/types.gen';
-import type { PlayerProfileTimelineItemDto, PlayerProfileTimelineItemType } from '~/services/playerProfile';
 import { useI18n } from 'vue-i18n';
 
 defineProps<{
@@ -58,7 +59,11 @@ function toTimelineType(type: PlayerProfileTimelineItemType): TimelineType {
   return type.toLowerCase() as TimelineType;
 }
 
-function resolveTimelineTagType(type: PlayerProfileTimelineItemType): 'primary' | 'success' | 'warning' | 'info' {
+function normalizeTimelineItemType(type: PlayerProfileTimelineItemType | undefined): PlayerProfileTimelineItemType {
+  return type ?? 'Event';
+}
+
+function resolveTimelineTagType(type: PlayerProfileTimelineItemType | undefined): 'primary' | 'success' | 'warning' | 'info' {
   switch (type) {
     case 'Chat':
       return 'primary';
@@ -67,6 +72,8 @@ function resolveTimelineTagType(type: PlayerProfileTimelineItemType): 'primary' 
     case 'Economy':
       return 'success';
     case 'Teleport':
+      return 'info';
+    default:
       return 'info';
   }
 }
@@ -99,7 +106,7 @@ function resolveTimelineTagType(type: PlayerProfileTimelineItemType): 'primary' 
             <div class="player-profile-timeline__item">
               <div class="player-profile-timeline__header">
                 <el-tag :type="resolveTimelineTagType(item.type)" effect="plain" size="small">
-                  {{ t(`views.playerProfile.timeline.${toTimelineType(item.type)}`) }}
+                  {{ t(`views.playerProfile.timeline.${toTimelineType(normalizeTimelineItemType(item.type))}`) }}
                 </el-tag>
                 <strong>{{ item.title }}</strong>
               </div>

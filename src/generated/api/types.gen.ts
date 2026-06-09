@@ -1838,7 +1838,7 @@ export type EventAutomationFeatureSettingsDto = {
      */
     isEnabled?: boolean;
     /**
-     * Number of days to retain automation execution history when it is added later.
+     * Number of days to retain automation execution history.
      */
     historyRetentionDays?: number;
 };
@@ -2014,6 +2014,43 @@ export type EventAutomationRunLogDto = {
 export type EventAutomationRunLogQueryOrder = 'CreatedAt' | 'RuleName' | 'TriggerType' | 'PlayerName' | 'StartedAt' | 'EndedAt' | 'Succeeded' | 'DurationMs';
 
 /**
+ * Validation result for an event automation rule payload.
+ */
+export type EventAutomationRuleValidationResultDto = {
+    /**
+     * Whether the rule has no blocking validation errors.
+     */
+    isValid?: boolean;
+    /**
+     * Issues found during validation.
+     */
+    issues: Array<EventAutomationRuleValidationIssueDto>;
+};
+
+/**
+ * One validation issue found while checking an event automation rule.
+ */
+export type EventAutomationRuleValidationIssueDto = {
+    /**
+     * JSON path or logical field path related to the issue.
+     */
+    path: string;
+    /**
+     * Issue severity.
+     */
+    severity?: EventAutomationRuleValidationSeverity;
+    /**
+     * Human-readable issue message.
+     */
+    message: string;
+};
+
+/**
+ * Severity for one event automation validation issue.
+ */
+export type EventAutomationRuleValidationSeverity = 'Info' | 'Warning' | 'Error';
+
+/**
  * Request model for creating or updating an event automation rule.
  */
 export type EventAutomationRuleUpsertDto = {
@@ -2041,6 +2078,88 @@ export type EventAutomationRuleUpsertDto = {
      * Optional human-readable description shown in the management UI.
      */
     description?: string | null;
+};
+
+/**
+ * Dry-run result for an event automation rule payload.
+ */
+export type EventAutomationRuleDryRunResultDto = {
+    /**
+     * Validation result for the supplied rule.
+     */
+    validation: EventAutomationRuleValidationResultDto;
+    /**
+     * Whether the sample context matches the rule conditions.
+     */
+    matched?: boolean;
+    /**
+     * Preview of actions that would execute when the rule matches.
+     */
+    actions: Array<EventAutomationRuleDryRunActionDto>;
+};
+
+/**
+ * One action preview generated during an event automation dry run.
+ */
+export type EventAutomationRuleDryRunActionDto = {
+    /**
+     * Zero-based action index from the rule JSON array.
+     */
+    index?: number;
+    /**
+     * Action type.
+     */
+    type: string;
+    /**
+     * Target player id when the action targets a player.
+     */
+    targetPlayerId?: string | null;
+    /**
+     * Rendered message, item name, amount, or other human-readable summary.
+     */
+    summary: string;
+};
+
+/**
+ * Request model for previewing an event automation rule without executing actions.
+ */
+export type EventAutomationRuleDryRunRequestDto = {
+    /**
+     * Rule payload to validate and preview.
+     */
+    rule: EventAutomationRuleUpsertDto;
+    /**
+     * Triggering player id used when rendering templates.
+     */
+    playerId?: string | null;
+    /**
+     * Triggering player name used when rendering templates.
+     */
+    playerName?: string | null;
+    /**
+     * Triggering entity id used when rendering templates.
+     */
+    entityId?: number | null;
+    /**
+     * Chat message used by ChatMessage trigger previews.
+     */
+    message?: string | null;
+    /**
+     * Chat channel used by ChatMessage trigger previews.
+     */
+    chatType?: string | null;
+    /**
+     * Optional X coordinate used by template rendering.
+     */
+    x?: number | null;
+    /**
+     * Optional Y coordinate used by template rendering.
+     */
+    y?: number | null;
+    /**
+     * Optional Z coordinate used by template rendering.
+     */
+    z?: number | null;
 };
 
 /**
@@ -2377,8 +2496,8 @@ export type GameEventLogDto = {
      */
     createdAt?: string;
     /**
-     * Normalized event type: PlayerJoined, PlayerLeft, PlayerDied,
-     * PlayerKilledZombie, PlayerKilledPlayer.
+     * Normalized event type: PlayerLogin, PlayerJoined, PlayerLeft,
+     * PlayerDied, PlayerKilledZombie, PlayerKilledPlayer.
      */
     eventType: string;
     /**
@@ -3439,6 +3558,55 @@ export type TeleportLogDto = {
      */
     remark?: string | null;
 };
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerProfileTimelineItemDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerProfileTimelineItemDto>;
+};
+
+/**
+ * One merged timeline row for a player profile.
+ */
+export type PlayerProfileTimelineItemDto = {
+    /**
+     * Stable client-side row key built from source type and source id.
+     */
+    id: string;
+    /**
+     * Source item type.
+     */
+    type?: PlayerProfileTimelineItemType;
+    /**
+     * Source database identifier when available.
+     */
+    sourceId?: number | null;
+    /**
+     * Main row title.
+     */
+    title: string;
+    /**
+     * Short human-readable row details.
+     */
+    description: string;
+    /**
+     * UTC timestamp used for global timeline ordering.
+     */
+    timestamp?: string;
+};
+
+/**
+ * Timeline item type used by the player profile page.
+ */
+export type PlayerProfileTimelineItemType = 'Chat' | 'Event' | 'Economy' | 'Teleport';
 
 /**
  * Represents a player's inventory partitioned by gameplay container type.
@@ -6868,6 +7036,44 @@ export type EventAutomationGetRunsResponses = {
 
 export type EventAutomationGetRunsResponse = EventAutomationGetRunsResponses[keyof EventAutomationGetRunsResponses];
 
+export type EventAutomationValidateRuleData = {
+    body: EventAutomationRuleUpsertDto;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Rules/Validate';
+};
+
+export type EventAutomationValidateRuleErrors = {
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationValidateRuleError = EventAutomationValidateRuleErrors[keyof EventAutomationValidateRuleErrors];
+
+export type EventAutomationValidateRuleResponses = {
+    200: EventAutomationRuleValidationResultDto;
+};
+
+export type EventAutomationValidateRuleResponse = EventAutomationValidateRuleResponses[keyof EventAutomationValidateRuleResponses];
+
+export type EventAutomationDryRunRuleData = {
+    body: EventAutomationRuleDryRunRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Rules/DryRun';
+};
+
+export type EventAutomationDryRunRuleErrors = {
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationDryRunRuleError = EventAutomationDryRunRuleErrors[keyof EventAutomationDryRunRuleErrors];
+
+export type EventAutomationDryRunRuleResponses = {
+    200: EventAutomationRuleDryRunResultDto;
+};
+
+export type EventAutomationDryRunRuleResponse = EventAutomationDryRunRuleResponses[keyof EventAutomationDryRunRuleResponses];
+
 export type EventAutomationDeleteRuleData = {
     body?: never;
     path: {
@@ -7053,7 +7259,7 @@ export type GameEventLogGetGameEventLogsData = {
     path?: never;
     query?: {
         /**
-         * Filter by event type such as PlayerJoined.
+         * Filter by event type such as PlayerLogin or PlayerJoined.
          */
         eventType?: string | null;
         /**
@@ -7753,6 +7959,56 @@ export type GameServerGetPlayerProfileOverviewResponses = {
 };
 
 export type GameServerGetPlayerProfileOverviewResponse = GameServerGetPlayerProfileOverviewResponses[keyof GameServerGetPlayerProfileOverviewResponses];
+
+export type GameServerGetPlayerProfileTimelineData = {
+    body?: never;
+    path: {
+        /**
+         * Combined platform player identifier.
+         */
+        playerId: string;
+    };
+    query?: {
+        /**
+         * Optional item type filter. When null, all supported sources are merged.
+         */
+        type?: PlayerProfileTimelineItemType | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/GameServer/PlayerProfiles/{playerId}/Timeline';
+};
+
+export type GameServerGetPlayerProfileTimelineErrors = {
+    404: unknown;
+};
+
+export type GameServerGetPlayerProfileTimelineResponses = {
+    /**
+     * HTTP 200 with merged timeline rows when found; otherwise HTTP 404.
+     */
+    200: PagedDtoOfPlayerProfileTimelineItemDto;
+};
+
+export type GameServerGetPlayerProfileTimelineResponse = GameServerGetPlayerProfileTimelineResponses[keyof GameServerGetPlayerProfileTimelineResponses];
 
 export type GameServerGetPlayerInventoryData = {
     body?: never;

@@ -2,14 +2,12 @@
 import type { FormInstance, FormRules } from 'element-plus';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type {
+  EventAutomationRuleDryRunRequestDto,
+  EventAutomationRuleDryRunResultDto,
   EventAutomationRuleDto,
   EventAutomationRuleQueryOrder,
   EventAutomationRuleUpsertDto,
 } from '~/generated/api/types.gen';
-import type {
-  EventAutomationRuleDryRunRequestDto,
-  EventAutomationRuleDryRunResultDto,
-} from '~/services/eventAutomationSafety';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -17,10 +15,11 @@ import { usePopup } from '~/composables';
 import {
   eventAutomationCreateRule,
   eventAutomationDeleteRule,
+  eventAutomationDryRunRule,
   eventAutomationGetRules,
   eventAutomationUpdateRule,
+  eventAutomationValidateRule,
 } from '~/generated/api/sdk.gen';
-import { eventAutomationDryRunRule, eventAutomationValidateRule } from '~/services/eventAutomationSafety';
 
 defineOptions({ name: 'EventAutomationRulesPage' });
 
@@ -510,7 +509,7 @@ async function onSubmit() {
   try {
     isSubmitting.value = true;
     const payload = toPayload();
-    const validation = await eventAutomationValidateRule(payload);
+    const validation = await eventAutomationValidateRule({ body: payload, throwOnError: true });
     const blockingIssue = validation.data?.issues?.find(issue => issue.severity === 'Error');
     if (blockingIssue != null) {
       toast({ type: 'error', text: `${blockingIssue.path}: ${blockingIssue.message}` });
@@ -551,7 +550,7 @@ async function onValidateRule() {
 
   isValidatingRule.value = true;
   try {
-    const validation = await eventAutomationValidateRule(toPayload());
+    const validation = await eventAutomationValidateRule({ body: toPayload(), throwOnError: true });
     const issues = validation.data?.issues ?? [];
     const blockingIssue = issues.find(issue => issue.severity === 'Error');
     if (blockingIssue != null) {
@@ -584,7 +583,7 @@ async function onDryRunRule() {
   try {
     const payload = toPayload();
     const request = buildDryRunRequest(payload);
-    const { data } = await eventAutomationDryRunRule(request);
+    const { data } = await eventAutomationDryRunRule({ body: request, throwOnError: true });
     dryRunResult.value = data ?? null;
     dryRunSample.value = request;
   }

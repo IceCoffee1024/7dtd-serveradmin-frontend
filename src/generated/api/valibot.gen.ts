@@ -1190,6 +1190,32 @@ export const vEventAutomationRunLogQueryOrder = v.picklist([
 ]);
 
 /**
+ * Severity for one event automation validation issue.
+ */
+export const vEventAutomationRuleValidationSeverity = v.picklist([
+    'Info',
+    'Warning',
+    'Error'
+]);
+
+/**
+ * One validation issue found while checking an event automation rule.
+ */
+export const vEventAutomationRuleValidationIssueDto = v.strictObject({
+    path: v.string(),
+    severity: v.optional(vEventAutomationRuleValidationSeverity),
+    message: v.string()
+});
+
+/**
+ * Validation result for an event automation rule payload.
+ */
+export const vEventAutomationRuleValidationResultDto = v.strictObject({
+    isValid: v.optional(v.boolean()),
+    issues: v.array(vEventAutomationRuleValidationIssueDto)
+});
+
+/**
  * Request model for creating or updating an event automation rule.
  */
 export const vEventAutomationRuleUpsertDto = v.strictObject({
@@ -1199,6 +1225,40 @@ export const vEventAutomationRuleUpsertDto = v.strictObject({
     conditionsJson: v.nullish(v.string()),
     actionsJson: v.nullish(v.string()),
     description: v.nullish(v.string())
+});
+
+/**
+ * One action preview generated during an event automation dry run.
+ */
+export const vEventAutomationRuleDryRunActionDto = v.strictObject({
+    index: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    type: v.string(),
+    targetPlayerId: v.nullish(v.string()),
+    summary: v.string()
+});
+
+/**
+ * Dry-run result for an event automation rule payload.
+ */
+export const vEventAutomationRuleDryRunResultDto = v.strictObject({
+    validation: vEventAutomationRuleValidationResultDto,
+    matched: v.optional(v.boolean()),
+    actions: v.array(vEventAutomationRuleDryRunActionDto)
+});
+
+/**
+ * Request model for previewing an event automation rule without executing actions.
+ */
+export const vEventAutomationRuleDryRunRequestDto = v.strictObject({
+    rule: vEventAutomationRuleUpsertDto,
+    playerId: v.nullish(v.string()),
+    playerName: v.nullish(v.string()),
+    entityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    message: v.nullish(v.string()),
+    chatType: v.nullish(v.string()),
+    x: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    y: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    z: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
 });
 
 /**
@@ -1799,6 +1859,40 @@ export const vPlayerProfileOverviewDto = v.strictObject({
     banEntry: v.nullish(vBanEntryDto),
     muteEntry: v.nullish(vMuteEntryDto),
     whitelistEntry: v.nullish(vWhitelistEntryDto)
+});
+
+/**
+ * Timeline item type used by the player profile page.
+ */
+export const vPlayerProfileTimelineItemType = v.picklist([
+    'Chat',
+    'Event',
+    'Economy',
+    'Teleport'
+]);
+
+/**
+ * One merged timeline row for a player profile.
+ */
+export const vPlayerProfileTimelineItemDto = v.strictObject({
+    id: v.string(),
+    type: v.optional(vPlayerProfileTimelineItemType),
+    sourceId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    title: v.string(),
+    description: v.string(),
+    timestamp: v.optional(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfPlayerProfileTimelineItemDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vPlayerProfileTimelineItemDto)
 });
 
 /**
@@ -2763,6 +2857,10 @@ export const vEventAutomationGetRunsQuery = v.object({
     desc: v.optional(v.boolean())
 });
 
+export const vEventAutomationValidateRuleBody = vEventAutomationRuleUpsertDto;
+
+export const vEventAutomationDryRunRuleBody = vEventAutomationRuleDryRunRequestDto;
+
 export const vEventAutomationDeleteRulePath = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
 });
@@ -2910,6 +3008,19 @@ export const vGameServerGetPlayerProfileOverviewPath = v.object({
 export const vGameServerGetPlayerProfileOverviewQuery = v.object({
     language: v.nullish(vLanguage),
     activityLimit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 8)
+});
+
+export const vGameServerGetPlayerProfileTimelinePath = v.object({
+    playerId: v.string()
+});
+
+export const vGameServerGetPlayerProfileTimelineQuery = v.object({
+    type: v.nullish(vPlayerProfileTimelineItemType),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(v.string()),
+    desc: v.optional(v.boolean())
 });
 
 export const vGameServerGetPlayerInventoryPath = v.object({

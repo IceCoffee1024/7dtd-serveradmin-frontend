@@ -12,16 +12,16 @@ import type {
   Language,
   MuteEntryDto,
   PlayerDetailsDto,
+  PlayerProfileTimelineItemDto,
+  PlayerProfileTimelineItemType,
   TeleportLogDto,
   VehicleLocationDto,
   WhitelistEntryDto,
 } from '~/generated/api/types.gen';
-import type { PlayerProfileTimelineItemDto, PlayerProfileTimelineItemType } from '~/services/playerProfile';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { gameServerGetPlayerProfileOverview } from '~/generated/api/sdk.gen';
-import { getPlayerProfileTimeline } from '~/services/playerProfile';
+import { gameServerGetPlayerProfileOverview, gameServerGetPlayerProfileTimeline } from '~/generated/api/sdk.gen';
 import { useLocaleStore } from '~/stores/locale';
 import PlayerProfileActions from './PlayerProfileActions.vue';
 import PlayerProfileActivityPanel from './PlayerProfileActivityPanel.vue';
@@ -159,11 +159,16 @@ async function loadTimeline() {
 
   timelineLoading.value = true;
   try {
-    const { data } = await getPlayerProfileTimeline({
-      playerId: playerId.value,
-      pageNumber: timelinePage.value,
-      pageSize: timelinePageSize,
-      type: timelineType.value === 'all' ? null : timelineType.value,
+    const { data } = await gameServerGetPlayerProfileTimeline({
+      path: {
+        playerId: playerId.value,
+      },
+      query: {
+        pageNumber: timelinePage.value,
+        pageSize: timelinePageSize,
+        type: timelineType.value === 'all' ? null : timelineType.value,
+      },
+      throwOnError: true,
     });
 
     timelineItems.value = data?.items ?? [];
