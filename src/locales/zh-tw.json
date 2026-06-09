@@ -2536,6 +2536,14 @@
         "capabilities": "能力",
         "emptyCapabilities": "无能力信息",
         "configurationIssues": "配置问题",
+        "hooks": "Hook 類型",
+        "emptyHooks": "無 Hook 類型",
+        "actions": "動作類型",
+        "emptyActions": "無動作類型",
+        "templates": "範本",
+        "emptyTemplates": "無範本",
+        "stateScopes": "狀態範圍",
+        "emptyStateScopes": "無狀態範圍",
         "emptyConfigurationIssues": "无配置问题"
       },
       "permissionLevel": "等級 {0}",
@@ -2654,6 +2662,10 @@
         "settings": "设置",
         "routes": "入口"
       },
+      "stateScopes": {
+        "cooldown": "冷卻狀態",
+        "firstJoin": "首次加入狀態"
+      },
       "actions": {
         "enable": "启用",
         "disable": "禁用",
@@ -2684,7 +2696,7 @@
         "PlayerKilledZombie": "Player Killed Entity"
       },
       "rules": {
-        "hint": "Supports player join/leave, death, kills, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, kicks, mutes, and restricted console commands.",
+        "hint": "MVP 階段支援玩家進入/離開、聊天和定時觸發。動作支援訊息、私聊、公告、給物品、經濟調整、踢出、禁言和受限控制台命令。",
         "columns": {
           "name": "名稱",
           "isEnabled": "啟用",
@@ -2855,7 +2867,8 @@
             "entity": "Target entity",
             "cron": "Schedule",
             "leave": "Leave event",
-            "matching": "Text matching"
+            "matching": "Text matching",
+            "safety": "安全邊界"
           },
           "fields": {
             "actionType": "Action type",
@@ -2890,12 +2903,19 @@
             "target": "Target",
             "targetPlayerId": "Target player ID",
             "targetPlayerNameContains": "Target player name contains",
-            "timeZoneId": "Time zone"
+            "timeZoneId": "Time zone",
+            "firstJoinOnly": "僅首次加入時觸發",
+            "cooldownSeconds": "冷卻秒數",
+            "cooldownScope": "冷卻範圍"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
             "TargetPlayer": "Target player",
             "PlayerId": "Specific player ID"
+          },
+          "cooldownScopes": {
+            "RulePlayer": "每條規則/每名玩家",
+            "Rule": "每條規則全域"
           },
           "actionTypes": {
             "SendGlobalMessage": "Send global message",

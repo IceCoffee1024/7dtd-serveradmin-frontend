@@ -48,9 +48,6 @@ interface RuleFormModel {
 const TRIGGER_TYPES = [
   'PlayerJoined',
   'PlayerLeft',
-  'PlayerDied',
-  'PlayerKilledPlayer',
-  'PlayerKilledZombie',
   'ChatMessage',
   'Cron',
 ] as const;
@@ -139,7 +136,9 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     name: t('views.eventAutomation.rules.templates.newPlayerGift.name'),
     description: t('views.eventAutomation.rules.templates.newPlayerGift.description'),
     triggerType: 'PlayerJoined',
-    conditions: {},
+    conditions: {
+      firstJoinOnly: true,
+    },
     actions: [
       {
         type: 'GiveItem',
@@ -160,7 +159,9 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     name: t('views.eventAutomation.rules.templates.economyWelcomeReward.name'),
     description: t('views.eventAutomation.rules.templates.economyWelcomeReward.description'),
     triggerType: 'PlayerJoined',
-    conditions: {},
+    conditions: {
+      firstJoinOnly: true,
+    },
     actions: [
       {
         type: 'AdjustEconomy',
@@ -184,6 +185,8 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       chatType: 'Global',
       messageContains: 'help',
       ignoreCase: true,
+      cooldownSeconds: 60,
+      cooldownScope: 'RulePlayer',
     },
     actions: [
       {
@@ -202,6 +205,8 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       chatType: 'Global',
       messageStartsWith: '!notice',
       ignoreCase: true,
+      cooldownSeconds: 300,
+      cooldownScope: 'Rule',
     },
     actions: [
       {
@@ -220,49 +225,6 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendAnnouncement',
         message: t('views.eventAutomation.rules.templates.playerLeftAnnouncement.message'),
-      },
-    ],
-  },
-  {
-    key: 'playerDeathAnnouncement',
-    name: t('views.eventAutomation.rules.templates.playerDeathAnnouncement.name'),
-    description: t('views.eventAutomation.rules.templates.playerDeathAnnouncement.description'),
-    triggerType: 'PlayerDied',
-    conditions: {},
-    actions: [
-      {
-        type: 'SendAnnouncement',
-        message: t('views.eventAutomation.rules.templates.playerDeathAnnouncement.message'),
-      },
-    ],
-  },
-  {
-    key: 'pvpKillAnnouncement',
-    name: t('views.eventAutomation.rules.templates.pvpKillAnnouncement.name'),
-    description: t('views.eventAutomation.rules.templates.pvpKillAnnouncement.description'),
-    triggerType: 'PlayerKilledPlayer',
-    conditions: {},
-    actions: [
-      {
-        type: 'SendAnnouncement',
-        message: t('views.eventAutomation.rules.templates.pvpKillAnnouncement.message'),
-      },
-    ],
-  },
-  {
-    key: 'zombieKillReward',
-    name: t('views.eventAutomation.rules.templates.zombieKillReward.name'),
-    description: t('views.eventAutomation.rules.templates.zombieKillReward.description'),
-    triggerType: 'PlayerKilledZombie',
-    conditions: {
-      entityType: 'Zombie',
-    },
-    actions: [
-      {
-        type: 'AdjustEconomy',
-        target: 'TriggerPlayer',
-        amount: 5,
-        reason: t('views.eventAutomation.rules.templates.zombieKillReward.reason'),
       },
     ],
   },
@@ -292,6 +254,8 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       chatType: 'Global',
       messageContains: 'spam',
       ignoreCase: true,
+      cooldownSeconds: 60,
+      cooldownScope: 'RulePlayer',
     },
     actions: [
       {
@@ -1370,7 +1334,9 @@ onMounted(() => {
   background: var(--el-fill-color-extra-light);
   cursor: pointer;
   padding: 6px 8px;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .event-automation-run-stats__failure:hover,

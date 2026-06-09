@@ -4,9 +4,12 @@ import { useI18n } from 'vue-i18n';
 type ConditionKey
   = | 'allowConcurrentExecution'
     | 'chatType'
+    | 'cooldownScope'
+    | 'cooldownSeconds'
     | 'cronExpression'
     | 'entityNameContains'
     | 'entityType'
+    | 'firstJoinOnly'
     | 'gameShuttingDown'
     | 'ignoreCase'
     | 'messageContains'
@@ -32,6 +35,7 @@ const { t } = useI18n();
 const chatTypeOptions = ['Global', 'Friends', 'Allies', 'Whisper'];
 const entityTypeOptions = ['Zombie', 'Animal', 'OnlinePlayer', 'Vehicle'];
 const timeZoneOptions = ['Asia/Shanghai', 'UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo'];
+const cooldownScopeOptions = ['RulePlayer', 'Rule'];
 
 const parsedConditions = computed(() => parseObject(props.modelValue));
 const hasInvalidJson = computed(() => parsedConditions.value == null);
@@ -81,6 +85,11 @@ function getStringValue(key: ConditionKey): string {
 function getBooleanValue(key: ConditionKey): boolean {
   return conditions.value[key] === true;
 }
+
+function getNumberValue(key: ConditionKey): number | undefined {
+  const value = conditions.value[key];
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
 </script>
 
 <template>
@@ -92,6 +101,50 @@ function getBooleanValue(key: ConditionKey): boolean {
       :closable="false"
       :title="t('views.eventAutomation.rules.builder.invalidConditionsJson')"
     />
+
+    <div class="rule-condition-builder__section">
+      <div class="rule-condition-builder__title">
+        {{ t('views.eventAutomation.rules.builder.sections.safety') }}
+      </div>
+      <el-row :gutter="12">
+        <el-col v-if="triggerType === 'PlayerJoined'" :xs="24" :md="8">
+          <el-checkbox
+            :model-value="getBooleanValue('firstJoinOnly')"
+            @update:model-value="setConditionValue('firstJoinOnly', $event)"
+          >
+            {{ t('views.eventAutomation.rules.builder.fields.firstJoinOnly') }}
+          </el-checkbox>
+        </el-col>
+        <el-col :xs="24" :md="8">
+          <el-form-item :label="t('views.eventAutomation.rules.builder.fields.cooldownSeconds')">
+            <el-input-number
+              :model-value="getNumberValue('cooldownSeconds')"
+              :min="1"
+              :max="86400"
+              class="w-full"
+              controls-position="right"
+              @update:model-value="setConditionValue('cooldownSeconds', $event)"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :md="8">
+          <el-form-item :label="t('views.eventAutomation.rules.builder.fields.cooldownScope')">
+            <el-select
+              :model-value="getStringValue('cooldownScope') || 'RulePlayer'"
+              class="w-full"
+              @update:model-value="setConditionValue('cooldownScope', $event)"
+            >
+              <el-option
+                v-for="option in cooldownScopeOptions"
+                :key="option"
+                :label="t(`views.eventAutomation.rules.builder.cooldownScopes.${option}`)"
+                :value="option"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </div>
 
     <div v-if="isCronTrigger" class="rule-condition-builder__section">
       <div class="rule-condition-builder__title">

@@ -2349,6 +2349,22 @@ export type FeatureModuleDefinitionDto = {
      * Static capability hints used by management UIs to decide which affordances to show.
      */
     capabilities: Array<FeatureModuleCapabilityDto>;
+    /**
+     * Event or schedule hooks declared by this module.
+     */
+    hookTypes: Array<FeatureModuleCapabilityDto>;
+    /**
+     * Automation actions declared by this module.
+     */
+    actionTypes: Array<FeatureModuleCapabilityDto>;
+    /**
+     * Built-in templates declared by this module.
+     */
+    templates: Array<FeatureModuleCapabilityDto>;
+    /**
+     * Persisted state scopes declared by this module.
+     */
+    stateScopes: Array<FeatureModuleCapabilityDto>;
 };
 
 /**

@@ -25,6 +25,12 @@ import { markIcon } from '~/utils';
 
 defineOptions({ name: 'FeatureModulesPage' });
 
+type ExtendedFeatureModuleDefinition = NonNullable<FeatureModuleStatusDto['definition']> & {
+  actionTypes?: FeatureModuleCapabilityDto[];
+  hookTypes?: FeatureModuleCapabilityDto[];
+  stateScopes?: FeatureModuleCapabilityDto[];
+  templates?: FeatureModuleCapabilityDto[];
+};
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
@@ -128,6 +134,11 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
 
 function toModuleStatus(item: unknown): FeatureModuleStatusDto {
   return item as FeatureModuleStatusDto;
+}
+
+function getModuleDefinition(item: unknown): ExtendedFeatureModuleDefinition | null {
+  const module = toModuleStatus(item);
+  return module.definition == null ? null : module.definition as ExtendedFeatureModuleDefinition;
 }
 
 function matchesFilter(item: FeatureModuleStatusDto): boolean {
@@ -350,8 +361,23 @@ function getIssuesBySeverity(item: unknown, severity: FeatureModuleConfiguration
 }
 
 function getModuleCapabilities(item: unknown): FeatureModuleCapabilityDto[] {
-  const module = toModuleStatus(item);
-  return module.definition?.capabilities ?? [];
+  return getModuleDefinition(item)?.capabilities ?? [];
+}
+
+function getModuleHookTypes(item: unknown): FeatureModuleCapabilityDto[] {
+  return getModuleDefinition(item)?.hookTypes ?? [];
+}
+
+function getModuleActionTypes(item: unknown): FeatureModuleCapabilityDto[] {
+  return getModuleDefinition(item)?.actionTypes ?? [];
+}
+
+function getModuleTemplates(item: unknown): FeatureModuleCapabilityDto[] {
+  return getModuleDefinition(item)?.templates ?? [];
+}
+
+function getModuleStateScopes(item: unknown): FeatureModuleCapabilityDto[] {
+  return getModuleDefinition(item)?.stateScopes ?? [];
 }
 
 function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
@@ -728,6 +754,62 @@ onMounted(loadModules);
             </el-tag>
           </div>
           <el-empty v-else :description="t('views.featureModules.detail.emptyCapabilities')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.hooks') }}</h3>
+          <div v-if="getModuleHookTypes(selectedModule).length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="hook in getModuleHookTypes(selectedModule)"
+              :key="hook.key"
+              effect="plain"
+            >
+              {{ getCapabilityLabel(hook) }}
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyHooks')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.actions') }}</h3>
+          <div v-if="getModuleActionTypes(selectedModule).length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="action in getModuleActionTypes(selectedModule)"
+              :key="action.key"
+              effect="plain"
+            >
+              {{ getCapabilityLabel(action) }}
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyActions')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.templates') }}</h3>
+          <div v-if="getModuleTemplates(selectedModule).length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="template in getModuleTemplates(selectedModule)"
+              :key="template.key"
+              effect="plain"
+            >
+              {{ getCapabilityLabel(template) }}
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyTemplates')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.stateScopes') }}</h3>
+          <div v-if="getModuleStateScopes(selectedModule).length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="scope in getModuleStateScopes(selectedModule)"
+              :key="scope.key"
+              effect="plain"
+            >
+              {{ getCapabilityLabel(scope) }}
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyStateScopes')" :image-size="72" />
         </section>
 
         <section class="feature-module-detail__section">

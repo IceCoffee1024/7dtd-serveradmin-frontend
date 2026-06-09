@@ -2536,6 +2536,14 @@
         "capabilities": "Capabilities",
         "emptyCapabilities": "No capabilities",
         "configurationIssues": "Configuration Issues",
+        "hooks": "Hook Types",
+        "emptyHooks": "No hook types",
+        "actions": "Action Types",
+        "emptyActions": "No action types",
+        "templates": "Templates",
+        "emptyTemplates": "No templates",
+        "stateScopes": "State Scopes",
+        "emptyStateScopes": "No state scopes",
         "emptyConfigurationIssues": "No configuration issues"
       },
       "permissionLevel": "Level {0}",
@@ -2654,6 +2662,10 @@
         "settings": "Settings",
         "routes": "Entry Points"
       },
+      "stateScopes": {
+        "cooldown": "Cooldown State",
+        "firstJoin": "First Join State"
+      },
       "actions": {
         "enable": "Enable",
         "disable": "Disable",
@@ -2684,7 +2696,7 @@
         "PlayerKilledZombie": "Player Killed Entity"
       },
       "rules": {
-        "hint": "Supports player join/leave, death, kills, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, kicks, mutes, and restricted console commands.",
+        "hint": "MVP supports player join/leave, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, kicks, mutes, and restricted console commands.",
         "columns": {
           "name": "Name",
           "isEnabled": "Enabled",
@@ -2734,7 +2746,8 @@
             "entity": "Target entity",
             "cron": "Schedule",
             "leave": "Leave event",
-            "matching": "Text matching"
+            "matching": "Text matching",
+            "safety": "Safety"
           },
           "fields": {
             "actionType": "Action type",
@@ -2769,12 +2782,19 @@
             "target": "Target",
             "targetPlayerId": "Target player ID",
             "targetPlayerNameContains": "Target player name contains",
-            "timeZoneId": "Time zone"
+            "timeZoneId": "Time zone",
+            "firstJoinOnly": "Only trigger on first join",
+            "cooldownSeconds": "Cooldown seconds",
+            "cooldownScope": "Cooldown scope"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
             "TargetPlayer": "Target player",
             "PlayerId": "Specific player ID"
+          },
+          "cooldownScopes": {
+            "RulePlayer": "Per rule/player",
+            "Rule": "Per rule globally"
           },
           "actionTypes": {
             "SendGlobalMessage": "Send global message",

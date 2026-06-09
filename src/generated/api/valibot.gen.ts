@@ -1338,7 +1338,11 @@ export const vFeatureModuleDefinitionDto = v.strictObject({
     settingsRouteName: v.nullish(v.string()),
     routes: v.array(vFeatureModuleRouteDto),
     commands: v.array(vFeatureModuleCommandDto),
-    capabilities: v.array(vFeatureModuleCapabilityDto)
+    capabilities: v.array(vFeatureModuleCapabilityDto),
+    hookTypes: v.array(vFeatureModuleCapabilityDto),
+    actionTypes: v.array(vFeatureModuleCapabilityDto),
+    templates: v.array(vFeatureModuleCapabilityDto),
+    stateScopes: v.array(vFeatureModuleCapabilityDto)
 });
 
 /**

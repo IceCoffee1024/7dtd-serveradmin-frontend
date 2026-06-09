@@ -2536,6 +2536,14 @@
         "capabilities": "能力",
         "emptyCapabilities": "无能力信息",
         "configurationIssues": "配置问题",
+        "hooks": "Hook 类型",
+        "emptyHooks": "无 Hook 类型",
+        "actions": "动作类型",
+        "emptyActions": "无动作类型",
+        "templates": "模板",
+        "emptyTemplates": "无模板",
+        "stateScopes": "状态范围",
+        "emptyStateScopes": "无状态范围",
         "emptyConfigurationIssues": "无配置问题"
       },
       "permissionLevel": "等级 {0}",
@@ -2654,6 +2662,10 @@
         "settings": "设置",
         "routes": "入口"
       },
+      "stateScopes": {
+        "cooldown": "冷却状态",
+        "firstJoin": "首次加入状态"
+      },
       "actions": {
         "enable": "启用",
         "disable": "禁用",
@@ -2684,7 +2696,7 @@
         "PlayerKilledZombie": "玩家击杀实体"
       },
       "rules": {
-        "hint": "支持玩家进入/离开、死亡、击杀、聊天和定时触发。动作支持消息、私聊、公告、给物品、经济调整、踢出、禁言和受限控制台命令。",
+        "hint": "MVP 阶段支持玩家进入/离开、聊天和定时触发。动作支持消息、私聊、公告、给物品、经济调整、踢出、禁言和受限控制台命令。",
         "columns": {
           "name": "名称",
           "isEnabled": "启用",
@@ -2734,7 +2746,8 @@
             "entity": "目标实体",
             "cron": "定时设置",
             "leave": "离开事件",
-            "matching": "文本匹配"
+            "matching": "文本匹配",
+            "safety": "安全边界"
           },
           "fields": {
             "actionType": "动作类型",
@@ -2769,12 +2782,19 @@
             "target": "目标",
             "targetPlayerId": "目标玩家 ID",
             "targetPlayerNameContains": "目标玩家名包含",
-            "timeZoneId": "时区"
+            "timeZoneId": "时区",
+            "firstJoinOnly": "仅首次加入时触发",
+            "cooldownSeconds": "冷却秒数",
+            "cooldownScope": "冷却范围"
           },
           "targets": {
             "TriggerPlayer": "触发玩家",
             "TargetPlayer": "目标玩家",
             "PlayerId": "指定玩家 ID"
+          },
+          "cooldownScopes": {
+            "RulePlayer": "每条规则/每名玩家",
+            "Rule": "每条规则全局"
           },
           "actionTypes": {
             "SendGlobalMessage": "发送全服消息",
