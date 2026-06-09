@@ -27,6 +27,10 @@ const contextJson = ref(formatJson(props.modelValue));
 const jsonError = ref(false);
 
 const sampleOptions = computed(() => getDryRunSamplesByTrigger(props.triggerType));
+const editorModeOptions = computed(() => [
+  { label: t('views.eventAutomation.rules.samples.editorModes.form'), value: 'builder' },
+  { label: t('views.eventAutomation.rules.samples.editorModes.json'), value: 'json' },
+]);
 
 watch(
   () => props.modelValue,
@@ -136,14 +140,7 @@ function formatJson(value: unknown) {
           </div>
         </el-option>
       </el-select>
-      <el-radio-group v-model="editorMode" size="small">
-        <el-radio-button value="builder">
-          {{ t('views.eventAutomation.rules.samples.editorModes.form') }}
-        </el-radio-button>
-        <el-radio-button value="json">
-          {{ t('views.eventAutomation.rules.samples.editorModes.json') }}
-        </el-radio-button>
-      </el-radio-group>
+      <el-segmented v-model="editorMode" :options="editorModeOptions" size="small" />
     </div>
 
     <el-alert
@@ -154,17 +151,17 @@ function formatJson(value: unknown) {
       :title="t('views.eventAutomation.rules.samples.invalidJson')"
     />
 
-    <el-row v-if="editorMode === 'builder'" :gutter="12">
-      <el-col v-if="triggerType !== 'Cron'" :xs="24" :md="12">
+    <div v-if="editorMode === 'builder'" class="rule-dry-run-sample-editor__form">
+      <div class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--two">
         <el-form-item :label="t('views.eventAutomation.rules.samples.fields.playerId')">
           <el-input
+            v-if="triggerType !== 'Cron'"
             :model-value="getStringValue('playerId')"
             clearable
             @update:model-value="setContextValue('playerId', $event)"
           />
+          <el-input v-else model-value="-" disabled />
         </el-form-item>
-      </el-col>
-      <el-col :xs="24" :md="12">
         <el-form-item :label="t('views.eventAutomation.rules.samples.fields.playerName')">
           <el-input
             :model-value="getStringValue('playerName')"
@@ -172,46 +169,41 @@ function formatJson(value: unknown) {
             @update:model-value="setContextValue('playerName', $event)"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-if="triggerType !== 'Cron'" :xs="24" :md="8">
+      </div>
+
+      <div v-if="triggerType !== 'Cron'" class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--position">
         <el-form-item :label="t('views.eventAutomation.rules.samples.fields.entityId')">
           <el-input-number
             :model-value="getNumberValue('entityId')"
-            class="w-full"
+            class="rule-dry-run-sample-editor__number"
             @update:model-value="setContextValue('entityId', $event)"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-if="triggerType !== 'Cron'" :xs="24" :md="8">
         <el-form-item label="X">
           <el-input-number
             :model-value="getNumberValue('x')"
-            class="w-full"
+            class="rule-dry-run-sample-editor__number"
             @update:model-value="setContextValue('x', $event)"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-if="triggerType !== 'Cron'" :xs="24" :md="8">
         <el-form-item label="Y">
           <el-input-number
             :model-value="getNumberValue('y')"
-            class="w-full"
+            class="rule-dry-run-sample-editor__number"
             @update:model-value="setContextValue('y', $event)"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-if="triggerType !== 'Cron'" :xs="24" :md="8">
         <el-form-item label="Z">
           <el-input-number
             :model-value="getNumberValue('z')"
-            class="w-full"
+            class="rule-dry-run-sample-editor__number"
             @update:model-value="setContextValue('z', $event)"
           />
         </el-form-item>
-      </el-col>
+      </div>
 
       <template v-if="triggerType === 'ChatMessage'">
-        <el-col :xs="24" :md="8">
+        <div class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--chat">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.chatType')">
             <el-select
               :model-value="getStringValue('chatType')"
@@ -226,8 +218,6 @@ function formatJson(value: unknown) {
               <el-option label="Allies" value="Allies" />
             </el-select>
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="16">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.message')">
             <el-input
               :model-value="getStringValue('message')"
@@ -235,11 +225,11 @@ function formatJson(value: unknown) {
               @update:model-value="setContextValue('message', $event)"
             />
           </el-form-item>
-        </el-col>
+        </div>
       </template>
 
       <template v-if="['PlayerDied', 'PlayerKilledPlayer', 'PlayerKilledZombie'].includes(triggerType)">
-        <el-col v-if="triggerType === 'PlayerKilledPlayer'" :xs="24" :md="12">
+        <div v-if="triggerType === 'PlayerKilledPlayer'" class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--two">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetPlayerId')">
             <el-input
               :model-value="getStringValue('targetPlayerId')"
@@ -247,8 +237,6 @@ function formatJson(value: unknown) {
               @update:model-value="setContextValue('targetPlayerId', $event)"
             />
           </el-form-item>
-        </el-col>
-        <el-col v-if="triggerType === 'PlayerKilledPlayer'" :xs="24" :md="12">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetPlayerName')">
             <el-input
               :model-value="getStringValue('targetPlayerName')"
@@ -256,17 +244,15 @@ function formatJson(value: unknown) {
               @update:model-value="setContextValue('targetPlayerName', $event)"
             />
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="8">
+        </div>
+        <div class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--three">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetEntityId')">
             <el-input-number
               :model-value="getNumberValue('targetEntityId')"
-              class="w-full"
+              class="rule-dry-run-sample-editor__number"
               @update:model-value="setContextValue('targetEntityId', $event)"
             />
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="8">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetEntityName')">
             <el-input
               :model-value="getStringValue('targetEntityName')"
@@ -274,8 +260,6 @@ function formatJson(value: unknown) {
               @update:model-value="setContextValue('targetEntityName', $event)"
             />
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="8">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.entityType')">
             <el-select
               :model-value="getStringValue('entityType')"
@@ -290,20 +274,20 @@ function formatJson(value: unknown) {
               <el-option label="Vehicle" value="Vehicle" />
             </el-select>
           </el-form-item>
-        </el-col>
+        </div>
       </template>
 
-      <el-col v-if="triggerType === 'PlayerLeft'" :xs="24">
+      <div v-if="triggerType === 'PlayerLeft'" class="rule-dry-run-sample-editor__check-row">
         <el-checkbox
           :model-value="getBooleanValue('gameShuttingDown')"
           @update:model-value="setContextValue('gameShuttingDown', $event)"
         >
           {{ t('views.eventAutomation.rules.samples.fields.gameShuttingDown') }}
         </el-checkbox>
-      </el-col>
+      </div>
 
       <template v-if="triggerType === 'Cron'">
-        <el-col :xs="24" :md="12">
+        <div class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--two">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.cronExpression')">
             <el-input
               :model-value="getStringValue('cronExpression')"
@@ -311,8 +295,6 @@ function formatJson(value: unknown) {
               @update:model-value="setContextValue('cronExpression', $event)"
             />
           </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="12">
           <el-form-item :label="t('views.eventAutomation.rules.samples.fields.timeZoneId')">
             <el-input
               :model-value="getStringValue('timeZoneId')"
@@ -320,18 +302,16 @@ function formatJson(value: unknown) {
               @update:model-value="setContextValue('timeZoneId', $event)"
             />
           </el-form-item>
-        </el-col>
-        <el-col :xs="24">
-          <el-form-item :label="t('views.eventAutomation.rules.samples.fields.message')">
-            <el-input
-              :model-value="getStringValue('message')"
-              clearable
-              @update:model-value="setContextValue('message', $event)"
-            />
-          </el-form-item>
-        </el-col>
+        </div>
+        <el-form-item :label="t('views.eventAutomation.rules.samples.fields.message')">
+          <el-input
+            :model-value="getStringValue('message')"
+            clearable
+            @update:model-value="setContextValue('message', $event)"
+          />
+        </el-form-item>
       </template>
-    </el-row>
+    </div>
 
     <el-input
       v-else
@@ -348,16 +328,13 @@ function formatJson(value: unknown) {
 <style scoped>
 .rule-dry-run-sample-editor {
   display: grid;
-  gap: 12px;
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 6px;
-  padding: 12px;
+  gap: 10px;
 }
 
 .rule-dry-run-sample-editor__toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
 }
 
 .rule-dry-run-sample-editor__select {
@@ -380,5 +357,68 @@ function formatJson(value: unknown) {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.rule-dry-run-sample-editor__form {
+  display: grid;
+  gap: 10px;
+}
+
+.rule-dry-run-sample-editor__grid {
+  display: grid;
+  gap: 10px;
+}
+
+.rule-dry-run-sample-editor__grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rule-dry-run-sample-editor__grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rule-dry-run-sample-editor__grid--position {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.rule-dry-run-sample-editor__grid--chat {
+  grid-template-columns: minmax(160px, 0.45fr) minmax(0, 1fr);
+}
+
+.rule-dry-run-sample-editor__number {
+  width: 100%;
+}
+
+.rule-dry-run-sample-editor__check-row {
+  min-height: 32px;
+}
+
+.rule-dry-run-sample-editor :deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.rule-dry-run-sample-editor :deep(.el-form-item__label) {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  margin-bottom: 4px;
+}
+
+.rule-dry-run-sample-editor :deep(.el-input-number .el-input__inner) {
+  text-align: left;
+}
+
+@media (max-width: 720px) {
+  .rule-dry-run-sample-editor__toolbar,
+  .rule-dry-run-sample-editor__grid--two,
+  .rule-dry-run-sample-editor__grid--three,
+  .rule-dry-run-sample-editor__grid--position,
+  .rule-dry-run-sample-editor__grid--chat {
+    grid-template-columns: 1fr;
+  }
+
+  .rule-dry-run-sample-editor__select {
+    width: 100%;
+  }
 }
 </style>

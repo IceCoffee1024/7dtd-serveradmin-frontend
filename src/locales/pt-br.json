@@ -2975,8 +2975,8 @@
           "title": "Test sample",
           "invalidJson": "Sample context must be a JSON object.",
           "editorModes": {
-            "form": "Form",
-            "json": "JSON"
+            "form": "Form context",
+            "json": "JSON context"
           },
           "fields": {
             "playerId": "Player ID",
@@ -3032,7 +3032,8 @@
           "cronDefault": {
             "name": "Scheduled trigger",
             "description": "A Cron trigger sample with schedule and time zone."
-          }
+          },
+          "description": "Used to preview rule matching and action summaries. It does not execute actions."
         }
       },
       "settings": {

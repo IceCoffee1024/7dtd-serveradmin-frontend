@@ -1197,17 +1197,24 @@ onMounted(() => {
           </section>
         </el-form>
 
-        <section class="event-automation-rule-panel event-automation-dry-run-samples">
-          <div class="event-automation-dry-run-samples__title">
-            {{ t('views.eventAutomation.rules.samples.title') }}
-          </div>
-          <RuleDryRunSampleEditor
-            v-model="dryRunSampleContext"
-            v-model:selected-sample-key="selectedDryRunSampleKey"
-            :trigger-type="form.triggerType"
-            @update:model-value="resetDryRun"
-            @update:selected-sample-key="resetDryRun"
-          />
+        <section class="event-automation-dry-run-samples">
+          <el-collapse class="event-automation-dry-run-samples__collapse">
+            <el-collapse-item name="samples">
+              <template #title>
+                <div class="event-automation-dry-run-samples__header">
+                  <span>{{ t('views.eventAutomation.rules.samples.title') }}</span>
+                  <small>{{ t('views.eventAutomation.rules.samples.description') }}</small>
+                </div>
+              </template>
+              <RuleDryRunSampleEditor
+                v-model="dryRunSampleContext"
+                v-model:selected-sample-key="selectedDryRunSampleKey"
+                :trigger-type="form.triggerType"
+                @update:model-value="resetDryRun"
+                @update:selected-sample-key="resetDryRun"
+              />
+            </el-collapse-item>
+          </el-collapse>
         </section>
 
         <el-alert
@@ -1291,6 +1298,7 @@ onMounted(() => {
   max-height: calc(92vh - 116px);
   gap: 12px;
   overflow: auto;
+  padding-bottom: 72px;
   padding-right: 2px;
 }
 
@@ -1595,20 +1603,47 @@ onMounted(() => {
   display: block;
 }
 
-.event-automation-dry-run-samples {
-  display: grid;
-  gap: 10px;
+.event-automation-dry-run-samples__collapse {
+  overflow: hidden;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  background: var(--el-bg-color);
 }
 
-.event-automation-dry-run-samples :deep(.rule-dry-run-sample-editor) {
-  border: 0;
-  padding: 0;
+.event-automation-dry-run-samples__collapse :deep(.el-collapse-item__header) {
+  height: auto;
+  min-height: 46px;
+  border-bottom: 0;
+  padding: 10px 14px;
 }
 
-.event-automation-dry-run-samples__title {
+.event-automation-dry-run-samples__collapse :deep(.el-collapse-item__wrap) {
+  border-bottom: 0;
+}
+
+.event-automation-dry-run-samples__collapse :deep(.el-collapse-item__content) {
+  background: var(--el-fill-color-extra-light);
+  padding: 12px 14px 14px;
+}
+
+.event-automation-dry-run-samples__header {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+}
+
+.event-automation-dry-run-samples__header span {
   color: var(--el-text-color-primary);
   font-size: 14px;
   font-weight: 600;
+}
+
+.event-automation-dry-run-samples__header small {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .event-automation-dry-run {
@@ -1641,7 +1676,7 @@ onMounted(() => {
   overflow-wrap: anywhere;
 }
 
-@media (width <= 720px) {
+@media (max-width: 720px) {
   :global(.event-automation-rule-dialog) {
     width: calc(100vw - 20px) !important;
     max-height: 96vh;
