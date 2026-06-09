@@ -16,10 +16,12 @@ import type {
   VehicleLocationDto,
   WhitelistEntryDto,
 } from '~/generated/api/types.gen';
+import type { PlayerProfileTimelineItemDto, PlayerProfileTimelineItemType } from '~/services/playerProfile';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { gameServerGetPlayerProfileOverview } from '~/generated/api/sdk.gen';
+import { getPlayerProfileTimeline } from '~/services/playerProfile';
 import { useLocaleStore } from '~/stores/locale';
 import PlayerProfileActions from './PlayerProfileActions.vue';
 import PlayerProfileActivityPanel from './PlayerProfileActivityPanel.vue';
@@ -46,6 +48,12 @@ const chatMessages = ref<ChatMessageDto[]>([]);
 const gameEvents = ref<GameEventLogDto[]>([]);
 const economyTransactions = ref<EconomyTransactionDto[]>([]);
 const teleportLogs = ref<TeleportLogDto[]>([]);
+const timelineLoading = ref(false);
+const timelineItems = ref<PlayerProfileTimelineItemDto[]>([]);
+const timelineTotal = ref(0);
+const timelinePage = ref(1);
+const timelinePageSize = 8;
+const timelineType = ref<'all' | PlayerProfileTimelineItemType>('all');
 const adminEntry = ref<AdminUserDto | null>(null);
 const banEntry = ref<BanEntryDto | null>(null);
 const muteEntry = ref<MuteEntryDto | null>(null);
@@ -134,6 +142,8 @@ async function loadProfile() {
     muteEntry.value = data?.muteEntry ?? null;
     whitelistEntry.value = data?.whitelistEntry ?? null;
     loadedAt.value = new Date();
+    timelinePage.value = 1;
+    await loadTimeline();
   }
   catch (error) {
     console.error(error);
@@ -141,6 +151,43 @@ async function loadProfile() {
   finally {
     loading.value = false;
   }
+}
+
+async function loadTimeline() {
+  if (!playerId.value)
+    return;
+
+  timelineLoading.value = true;
+  try {
+    const { data } = await getPlayerProfileTimeline({
+      playerId: playerId.value,
+      pageNumber: timelinePage.value,
+      pageSize: timelinePageSize,
+      type: timelineType.value === 'all' ? null : timelineType.value,
+    });
+
+    timelineItems.value = data?.items ?? [];
+    timelineTotal.value = data?.total ?? 0;
+  }
+  catch (error) {
+    console.error(error);
+    timelineItems.value = [];
+    timelineTotal.value = 0;
+  }
+  finally {
+    timelineLoading.value = false;
+  }
+}
+
+function onTimelineTypeChange(value: 'all' | PlayerProfileTimelineItemType) {
+  timelineType.value = value;
+  timelinePage.value = 1;
+  void loadTimeline();
+}
+
+function onTimelinePageChange(value: number) {
+  timelinePage.value = value;
+  void loadTimeline();
 }
 
 function goBack() {
@@ -249,11 +296,19 @@ watch(playerId, loadProfile);
 
         <el-tab-pane :label="t('views.playerProfile.tabs.activity')">
           <PlayerProfileActivityPanel
+            :timeline-items="timelineItems"
+            :timeline-total="timelineTotal"
+            :timeline-loading="timelineLoading"
+            :timeline-page="timelinePage"
+            :timeline-page-size="timelinePageSize"
+            :timeline-type="timelineType"
             :chat-messages="chatMessages"
             :game-events="gameEvents"
             :economy-transactions="economyTransactions"
             :teleport-logs="teleportLogs"
             :format-time="formatTime"
+            @update:timeline-type="onTimelineTypeChange"
+            @update:timeline-page="onTimelinePageChange"
             @view-page="goToPlayerFilteredPage"
           />
         </el-tab-pane>

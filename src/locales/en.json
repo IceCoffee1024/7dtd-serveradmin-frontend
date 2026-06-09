@@ -2707,6 +2707,7 @@
         },
         "actions": {
           "formatJson": "Format JSON",
+          "dryRun": "Dry run",
           "duplicate": "Duplicate",
           "viewRuns": "View run history"
         },
@@ -2720,6 +2721,11 @@
           "createSuccess": "Rule created successfully.",
           "updateSuccess": "Rule updated successfully.",
           "deleteSuccess": "Rule deleted successfully.",
+          "validationPassed": "Rule validation passed.",
+          "dryRunMatched": "The sample context would trigger this rule.",
+          "dryRunNotMatched": "The sample context would not trigger this rule.",
+          "dryRunNoActions": "No actions to preview.",
+          "dryRunSampleContext": "Sample context",
           "deleteConfirm": "Delete rule \"{name}\"?",
           "duplicateName": "{name} Copy"
         },

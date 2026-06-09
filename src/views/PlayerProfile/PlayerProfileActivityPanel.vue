@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import type { TimelineItem, TimelineType } from './types';
+import type { TimelineType } from './types';
 import type {
   ChatMessageDto,
   EconomyTransactionDto,
   GameEventLogDto,
   TeleportLogDto,
 } from '~/generated/api/types.gen';
-import dayjs from 'dayjs';
+import type { PlayerProfileTimelineItemDto, PlayerProfileTimelineItemType } from '~/services/playerProfile';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
+defineProps<{
+  timelineItems: PlayerProfileTimelineItemDto[];
+  timelineTotal: number;
+  timelineLoading: boolean;
+  timelinePage: number;
+  timelinePageSize: number;
+  timelineType: 'all' | PlayerProfileTimelineItemType;
   chatMessages: ChatMessageDto[];
   gameEvents: GameEventLogDto[];
   economyTransactions: EconomyTransactionDto[];
@@ -18,78 +24,12 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  viewPage: [name: string];
+  'update:timelineType': [value: 'all' | PlayerProfileTimelineItemType];
+  'update:timelinePage': [value: number];
+  'viewPage': [name: string];
 }>();
 
 const { t } = useI18n();
-const selectedTimelineType = ref<'all' | TimelineType>('all');
-const timelinePage = ref(1);
-const timelinePageSize = 8;
-
-const timelineItems = computed<TimelineItem[]>(() => {
-  const items: TimelineItem[] = [
-    ...props.chatMessages.map((message, index) => ({
-      id: `chat-${message.id ?? index}`,
-      type: 'chat' as const,
-      title: t('views.playerProfile.timeline.chat'),
-      description: [
-        message.chatType,
-        message.message,
-      ].filter(Boolean).join(' · '),
-      timestamp: message.createdAt ?? '',
-      tagType: 'primary' as const,
-    })),
-    ...props.gameEvents.map((event, index) => ({
-      id: `event-${event.id ?? index}`,
-      type: 'event' as const,
-      title: event.eventType ?? t('views.playerProfile.timeline.event'),
-      description: [
-        event.playerName,
-        event.targetPlayerName,
-      ].filter(Boolean).join(' -> ') || event.details || '--',
-      timestamp: event.createdAt ?? '',
-      tagType: 'warning' as const,
-    })),
-    ...props.economyTransactions.map((transaction, index) => ({
-      id: `economy-${transaction.id ?? index}`,
-      type: 'economy' as const,
-      title: t('views.playerProfile.timeline.economy'),
-      description: [
-        transaction.type,
-        transaction.amount != null ? `${t('views.economy.transactions.columns.amount')}: ${transaction.amount}` : '',
-        transaction.balanceAfter != null ? `${t('views.economy.transactions.columns.balanceAfter')}: ${transaction.balanceAfter}` : '',
-        transaction.source,
-      ].filter(Boolean).join(' · '),
-      timestamp: transaction.occurredAt ?? '',
-      tagType: 'success' as const,
-    })),
-    ...props.teleportLogs.map((log, index) => ({
-      id: `teleport-${log.id ?? index}`,
-      type: 'teleport' as const,
-      title: t('views.playerProfile.timeline.teleport'),
-      description: [
-        log.subSystem,
-        `${formatTeleportPosition(log, 'from')} -> ${formatTeleportPosition(log, 'to')}`,
-        log.costPaid != null ? `${t('views.teleport.logs.columns.costPaid')}: ${log.costPaid}` : '',
-      ].filter(Boolean).join(' · '),
-      timestamp: log.timestamp ?? '',
-      tagType: 'info' as const,
-    })),
-  ].filter(item => item.timestamp);
-
-  return items.sort((a, b) => dayjs(b.timestamp).valueOf() - dayjs(a.timestamp).valueOf());
-});
-
-const filteredTimelineItems = computed(() => {
-  if (selectedTimelineType.value === 'all')
-    return timelineItems.value;
-  return timelineItems.value.filter(item => item.type === selectedTimelineType.value);
-});
-
-const pagedTimelineItems = computed(() => {
-  const start = (timelinePage.value - 1) * timelinePageSize;
-  return filteredTimelineItems.value.slice(start, start + timelinePageSize);
-});
 
 const timelineTypeOptions = computed(() => [
   {
@@ -98,40 +38,37 @@ const timelineTypeOptions = computed(() => [
   },
   {
     label: t('views.playerProfile.timeline.chat'),
-    value: 'chat' as const,
+    value: 'Chat' as const,
   },
   {
     label: t('views.playerProfile.timeline.event'),
-    value: 'event' as const,
+    value: 'Event' as const,
   },
   {
     label: t('views.playerProfile.timeline.economy'),
-    value: 'economy' as const,
+    value: 'Economy' as const,
   },
   {
     label: t('views.playerProfile.timeline.teleport'),
-    value: 'teleport' as const,
+    value: 'Teleport' as const,
   },
 ]);
 
-watch(selectedTimelineType, () => {
-  timelinePage.value = 1;
-});
+function toTimelineType(type: PlayerProfileTimelineItemType): TimelineType {
+  return type.toLowerCase() as TimelineType;
+}
 
-watch(filteredTimelineItems, () => {
-  const maxPage = Math.max(1, Math.ceil(filteredTimelineItems.value.length / timelinePageSize));
-  if (timelinePage.value > maxPage) {
-    timelinePage.value = maxPage;
+function resolveTimelineTagType(type: PlayerProfileTimelineItemType): 'primary' | 'success' | 'warning' | 'info' {
+  switch (type) {
+    case 'Chat':
+      return 'primary';
+    case 'Event':
+      return 'warning';
+    case 'Economy':
+      return 'success';
+    case 'Teleport':
+      return 'info';
   }
-});
-
-function formatTeleportPosition(log: TeleportLogDto, side: 'from' | 'to'): string {
-  const x = side === 'from' ? log.fromX : log.toX;
-  const y = side === 'from' ? log.fromY : log.toY;
-  const z = side === 'from' ? log.fromZ : log.toZ;
-  if (x == null || y == null || z == null)
-    return '--';
-  return `${x}, ${y}, ${z}`;
 }
 </script>
 
@@ -140,24 +77,29 @@ function formatTeleportPosition(log: TeleportLogDto, side: 'from' | 'to'): strin
     <section class="profile-panel">
       <div class="profile-panel__header">
         <h3>{{ t('views.playerProfile.sections.timeline') }}</h3>
-        <el-segmented v-model="selectedTimelineType" :options="timelineTypeOptions" size="small" />
+        <el-segmented
+          :model-value="timelineType"
+          :options="timelineTypeOptions"
+          size="small"
+          @update:model-value="emit('update:timelineType', $event as 'all' | PlayerProfileTimelineItemType)"
+        />
       </div>
       <el-empty
-        v-if="filteredTimelineItems.length === 0"
+        v-if="timelineItems.length === 0 && !timelineLoading"
         :description="t('components.myTable.noData')"
       />
       <template v-else>
         <el-timeline class="player-profile-timeline">
           <el-timeline-item
-            v-for="item in pagedTimelineItems"
+            v-for="item in timelineItems"
             :key="item.id"
             :timestamp="formatTime(item.timestamp)"
             placement="top"
           >
             <div class="player-profile-timeline__item">
               <div class="player-profile-timeline__header">
-                <el-tag :type="item.tagType" effect="plain" size="small">
-                  {{ t(`views.playerProfile.timeline.${item.type}`) }}
+                <el-tag :type="resolveTimelineTagType(item.type)" effect="plain" size="small">
+                  {{ t(`views.playerProfile.timeline.${toTimelineType(item.type)}`) }}
                 </el-tag>
                 <strong>{{ item.title }}</strong>
               </div>
@@ -166,13 +108,14 @@ function formatTeleportPosition(log: TeleportLogDto, side: 'from' | 'to'): strin
           </el-timeline-item>
         </el-timeline>
         <el-pagination
-          v-model:current-page="timelinePage"
+          :current-page="timelinePage"
           :page-size="timelinePageSize"
-          :total="filteredTimelineItems.length"
+          :total="timelineTotal"
           background
           layout="prev, pager, next"
           small
           class="player-profile-timeline__pagination"
+          @current-change="emit('update:timelinePage', $event)"
         />
       </template>
     </section>

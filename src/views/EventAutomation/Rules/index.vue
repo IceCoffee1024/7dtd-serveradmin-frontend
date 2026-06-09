@@ -6,6 +6,10 @@ import type {
   EventAutomationRuleQueryOrder,
   EventAutomationRuleUpsertDto,
 } from '~/generated/api/types.gen';
+import type {
+  EventAutomationRuleDryRunRequestDto,
+  EventAutomationRuleDryRunResultDto,
+} from '~/services/eventAutomationSafety';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -16,6 +20,7 @@ import {
   eventAutomationGetRules,
   eventAutomationUpdateRule,
 } from '~/generated/api/sdk.gen';
+import { eventAutomationDryRunRule, eventAutomationValidateRule } from '~/services/eventAutomationSafety';
 
 defineOptions({ name: 'EventAutomationRulesPage' });
 
@@ -56,6 +61,10 @@ const formRef = useTemplateRef<FormInstance>('formRef');
 const dialogVisible = ref(false);
 const editingRule = ref<RuleRow | null>(null);
 const isSubmitting = ref(false);
+const isValidatingRule = ref(false);
+const isDryRunningRule = ref(false);
+const dryRunResult = ref<EventAutomationRuleDryRunResultDto | null>(null);
+const dryRunSample = ref<EventAutomationRuleDryRunRequestDto | null>(null);
 const selectedTemplateKey = ref<string>();
 
 const form = reactive<RuleFormModel>(buildDefaults());
@@ -430,6 +439,7 @@ function applyRuleTemplate(templateKey: string | undefined) {
   form.conditionsJson = JSON.stringify(template.conditions, null, 2);
   form.actionsJson = JSON.stringify(template.actions, null, 2);
   form.description = template.description;
+  resetDryRun();
   nextTick(() => formRef.value?.clearValidate());
 }
 
@@ -447,6 +457,7 @@ function onAdd() {
   editingRule.value = null;
   selectedTemplateKey.value = undefined;
   applyRuleToForm(null);
+  resetDryRun();
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -455,6 +466,7 @@ function onEdit(row: RuleRow) {
   editingRule.value = row;
   selectedTemplateKey.value = undefined;
   applyRuleToForm(row);
+  resetDryRun();
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -464,6 +476,7 @@ function onDuplicate(row: RuleRow) {
   selectedTemplateKey.value = undefined;
   applyRuleToForm(row);
   form.name = t('views.eventAutomation.rules.messages.duplicateName', { name: row.name });
+  resetDryRun();
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -497,6 +510,13 @@ async function onSubmit() {
   try {
     isSubmitting.value = true;
     const payload = toPayload();
+    const validation = await eventAutomationValidateRule(payload);
+    const blockingIssue = validation.data?.issues?.find(issue => issue.severity === 'Error');
+    if (blockingIssue != null) {
+      toast({ type: 'error', text: `${blockingIssue.path}: ${blockingIssue.message}` });
+      return;
+    }
+
     if (editingRule.value?.id != null) {
       await eventAutomationUpdateRule({
         path: { id: editingRule.value.id },
@@ -522,6 +542,107 @@ async function onSubmit() {
   finally {
     isSubmitting.value = false;
   }
+}
+
+async function onValidateRule() {
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid)
+    return;
+
+  isValidatingRule.value = true;
+  try {
+    const validation = await eventAutomationValidateRule(toPayload());
+    const issues = validation.data?.issues ?? [];
+    const blockingIssue = issues.find(issue => issue.severity === 'Error');
+    if (blockingIssue != null) {
+      toast({ type: 'error', text: `${blockingIssue.path}: ${blockingIssue.message}` });
+      return;
+    }
+
+    const warningIssue = issues.find(issue => issue.severity === 'Warning');
+    if (warningIssue != null) {
+      toast({ type: 'warning', text: `${warningIssue.path}: ${warningIssue.message}` });
+      return;
+    }
+
+    toast({ type: 'success', text: t('views.eventAutomation.rules.messages.validationPassed') });
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isValidatingRule.value = false;
+  }
+}
+
+async function onDryRunRule() {
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid)
+    return;
+
+  isDryRunningRule.value = true;
+  try {
+    const payload = toPayload();
+    const request = buildDryRunRequest(payload);
+    const { data } = await eventAutomationDryRunRule(request);
+    dryRunResult.value = data ?? null;
+    dryRunSample.value = request;
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isDryRunningRule.value = false;
+  }
+}
+
+function resetDryRun() {
+  dryRunResult.value = null;
+  dryRunSample.value = null;
+}
+
+function buildDryRunRequest(rule: EventAutomationRuleUpsertDto): EventAutomationRuleDryRunRequestDto {
+  const conditions = parseConditions(rule.conditionsJson ?? '{}');
+  const messageStartsWith = toOptionalString(conditions.messageStartsWith);
+  const messageContains = toOptionalString(conditions.messageContains);
+  const messageEquals = toOptionalString(conditions.messageEquals);
+  const playerNameContains = toOptionalString(conditions.playerNameContains);
+
+  return {
+    rule,
+    playerId: 'EOS_00000000000000000',
+    playerName: playerNameContains ? `Sample${playerNameContains}Player` : 'SamplePlayer',
+    entityId: 1001,
+    message: messageEquals ?? (messageStartsWith ? `${messageStartsWith} sample` : `sample ${messageContains ?? 'help'} message`),
+    chatType: toOptionalString(conditions.chatType) ?? 'Global',
+    x: 100,
+    y: 64,
+    z: -100,
+  };
+}
+
+function parseConditions(conditionsJson: string): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(conditionsJson || '{}');
+    if (parsed != null && !Array.isArray(parsed) && typeof parsed === 'object')
+      return parsed as Record<string, unknown>;
+  }
+  catch {
+    // Form validation reports the JSON error before this path is normally reached.
+  }
+
+  return {};
+}
+
+function formatDryRunSample(sample: EventAutomationRuleDryRunRequestDto | null): string {
+  if (sample == null)
+    return '--';
+
+  return [
+    `${sample.playerName ?? '--'} (${sample.playerId ?? '--'})`,
+    sample.chatType,
+    sample.message,
+  ].filter(Boolean).join(' · ');
 }
 
 async function onDelete(row: RuleRow) {
@@ -738,9 +859,41 @@ async function onDelete(row: RuleRow) {
         </el-row>
       </el-form>
 
+      <el-alert
+        v-if="dryRunResult"
+        class="event-automation-dry-run"
+        :type="dryRunResult.matched ? 'success' : 'warning'"
+        :title="dryRunResult.matched ? t('views.eventAutomation.rules.messages.dryRunMatched') : t('views.eventAutomation.rules.messages.dryRunNotMatched')"
+        show-icon
+        :closable="false"
+      >
+        <div class="event-automation-dry-run__content">
+          <div class="event-automation-dry-run__sample">
+            {{ t('views.eventAutomation.rules.messages.dryRunSampleContext') }}：{{ formatDryRunSample(dryRunSample) }}
+          </div>
+          <div v-if="dryRunResult.actions.length === 0" class="event-automation-dry-run__empty">
+            {{ t('views.eventAutomation.rules.messages.dryRunNoActions') }}
+          </div>
+          <div v-else class="event-automation-dry-run__actions">
+            <div v-for="action in dryRunResult.actions" :key="action.index" class="event-automation-dry-run__action">
+              <el-tag effect="plain" size="small">
+                {{ action.type }}
+              </el-tag>
+              <span>{{ action.summary }}</span>
+            </div>
+          </div>
+        </div>
+      </el-alert>
+
       <template #footer>
         <el-button :disabled="isSubmitting" @click="dialogVisible = false">
           {{ t('common.cancel') }}
+        </el-button>
+        <el-button :loading="isDryRunningRule" :disabled="isSubmitting || isValidatingRule" @click="onDryRunRule">
+          {{ t('views.eventAutomation.rules.actions.dryRun') }}
+        </el-button>
+        <el-button :loading="isValidatingRule" :disabled="isSubmitting" @click="onValidateRule">
+          {{ t('views.featureModules.actions.validate') }}
         </el-button>
         <el-button type="primary" :loading="isSubmitting" @click="onSubmit">
           {{ t('common.save') }}
@@ -829,5 +982,35 @@ async function onDelete(row: RuleRow) {
 .event-automation-reference__item span {
   color: var(--el-text-color-secondary);
   font-size: 12px;
+}
+
+.event-automation-dry-run {
+  margin-top: 12px;
+}
+
+.event-automation-dry-run__content {
+  display: grid;
+  gap: 8px;
+}
+
+.event-automation-dry-run__sample,
+.event-automation-dry-run__empty {
+  color: var(--el-text-color-secondary);
+  font-size: 13px;
+}
+
+.event-automation-dry-run__actions {
+  display: grid;
+  gap: 6px;
+}
+
+.event-automation-dry-run__action {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.event-automation-dry-run__action span {
+  overflow-wrap: anywhere;
 }
 </style>
