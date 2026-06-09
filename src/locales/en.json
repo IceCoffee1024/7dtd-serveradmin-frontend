@@ -2708,6 +2708,12 @@
           "createTitle": "Create Rule",
           "editTitle": "Edit Rule"
         },
+        "stats": {
+          "todayTriggerCount": "Triggered today",
+          "todayFailureCount": "Failed today",
+          "recentFailures": "Recent failed rules",
+          "noRecentFailures": "No recent failures"
+        },
         "editorModes": {
           "builder": "Visual Builder",
           "json": "JSON Advanced Mode"

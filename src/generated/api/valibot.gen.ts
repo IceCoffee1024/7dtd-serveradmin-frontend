@@ -1190,6 +1190,30 @@ export const vEventAutomationRunLogQueryOrder = v.picklist([
 ]);
 
 /**
+ * One recent failed event automation execution summarized for the rules dashboard.
+ */
+export const vEventAutomationRecentFailureDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    ruleId: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    ruleName: v.string(),
+    triggerType: v.string(),
+    startedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    status: v.string(),
+    summary: v.string(),
+    errorMessage: v.nullish(v.string())
+});
+
+/**
+ * Aggregated operational metrics for event automation execution history.
+ */
+export const vEventAutomationRunStatsDto = v.strictObject({
+    todayStartUtc: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    todayTriggerCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    todayFailureCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    recentFailures: v.array(vEventAutomationRecentFailureDto)
+});
+
+/**
  * Severity for one event automation validation issue.
  */
 export const vEventAutomationRuleValidationSeverity = v.picklist([

@@ -2708,6 +2708,12 @@
           "createTitle": "创建规则",
           "editTitle": "编辑规则"
         },
+        "stats": {
+          "todayTriggerCount": "今日触发",
+          "todayFailureCount": "今日失败",
+          "recentFailures": "最近失败规则",
+          "noRecentFailures": "暂无失败记录"
+        },
         "editorModes": {
           "builder": "可视化配置",
           "json": "JSON 高级模式"

@@ -8,6 +8,7 @@ import type {
   EventAutomationRuleDto,
   EventAutomationRuleQueryOrder,
   EventAutomationRuleUpsertDto,
+  EventAutomationRunStatsDto,
 } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
@@ -18,6 +19,7 @@ import {
   eventAutomationDeleteRule,
   eventAutomationDryRunRule,
   eventAutomationGetRules,
+  eventAutomationGetRunStats,
   eventAutomationUpdateRule,
   eventAutomationValidateRule,
 } from '~/generated/api/sdk.gen';
@@ -86,6 +88,8 @@ const selectedTemplateKey = ref<string>();
 const editorMode = ref<'builder' | 'json'>('builder');
 const selectedDryRunSampleKey = ref<string>();
 const dryRunSampleContext = ref<EventAutomationDryRunSampleContext>(cloneDryRunSampleContext(getDefaultDryRunSample('PlayerJoined').context));
+const runStats = ref<EventAutomationRunStatsDto | null>(null);
+const isLoadingRunStats = ref(false);
 
 const form = reactive<RuleFormModel>(buildDefaults());
 
@@ -483,6 +487,8 @@ const columns = computed<MyTableColumn<RuleRow>[]>(() => [
   { prop: 'updatedAt', label: t('views.eventAutomation.rules.columns.updatedAt'), slot: 'updatedAt', sortable: true },
 ]);
 
+const latestFailure = computed(() => runStats.value?.recentFailures?.[0] ?? null);
+
 function buildDefaults(): RuleFormModel {
   return {
     name: '',
@@ -549,6 +555,10 @@ function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
 
+function formatShortTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('MM-DD HH:mm:ss') : '--';
+}
+
 function resolveTriggerTypeLabel(triggerType: string): string {
   const key = `views.eventAutomation.triggers.${triggerType}`;
   const label = t(key);
@@ -571,6 +581,22 @@ function resolveLastStatusLabel(status: string | null | undefined): string {
   const key = `views.eventAutomation.rules.status.${status}`;
   const label = t(key);
   return label === key ? status : label;
+}
+
+async function fetchRunStats() {
+  isLoadingRunStats.value = true;
+  try {
+    const { data } = await eventAutomationGetRunStats({
+      throwOnError: true,
+    });
+    runStats.value = data;
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isLoadingRunStats.value = false;
+  }
 }
 
 function validateJsonObject(_rule: unknown, value: string, callback: (error?: Error) => void) {
@@ -743,6 +769,7 @@ async function onSubmit() {
 
     dialogVisible.value = false;
     tableRef.value?.reload();
+    fetchRunStats();
   }
   catch (error) {
     console.error(error);
@@ -893,11 +920,16 @@ async function onDelete(row: RuleRow) {
     });
     toast({ type: 'success', text: t('views.eventAutomation.rules.messages.deleteSuccess') });
     tableRef.value?.reload();
+    fetchRunStats();
   }
   catch (error) {
     console.error(error);
   }
 }
+
+onMounted(() => {
+  fetchRunStats();
+});
 </script>
 
 <template>
@@ -908,6 +940,56 @@ async function onDelete(row: RuleRow) {
       show-icon
       :closable="false"
     />
+
+    <section v-loading="isLoadingRunStats" class="event-automation-run-stats">
+      <div class="event-automation-run-stats__metric">
+        <div class="event-automation-run-stats__label">
+          {{ t('views.eventAutomation.rules.stats.todayTriggerCount') }}
+        </div>
+        <div class="event-automation-run-stats__value">
+          {{ runStats?.todayTriggerCount ?? 0 }}
+        </div>
+      </div>
+
+      <div class="event-automation-run-stats__metric">
+        <div class="event-automation-run-stats__label">
+          {{ t('views.eventAutomation.rules.stats.todayFailureCount') }}
+        </div>
+        <div class="event-automation-run-stats__value event-automation-run-stats__value--danger">
+          {{ runStats?.todayFailureCount ?? 0 }}
+        </div>
+      </div>
+
+      <div class="event-automation-run-stats__recent">
+        <div class="event-automation-run-stats__recent-header">
+          <span>{{ t('views.eventAutomation.rules.stats.recentFailures') }}</span>
+          <el-button size="small" text :loading="isLoadingRunStats" @click="fetchRunStats">
+            {{ t('components.myTable.refresh') }}
+          </el-button>
+        </div>
+        <div v-if="latestFailure == null" class="event-automation-run-stats__empty">
+          {{ t('views.eventAutomation.rules.stats.noRecentFailures') }}
+        </div>
+        <div v-else class="event-automation-run-stats__failure-list">
+          <div
+            v-for="(failure, index) in runStats?.recentFailures ?? []"
+            :key="failure.id ?? `${failure.startedAt}-${index}`"
+            class="event-automation-run-stats__failure"
+          >
+            <div class="event-automation-run-stats__failure-main">
+              <el-tag size="small" type="danger" effect="plain">
+                {{ resolveTriggerTypeLabel(failure.triggerType) }}
+              </el-tag>
+              <span class="event-automation-run-stats__failure-rule">{{ failure.ruleName }}</span>
+              <span class="event-automation-run-stats__failure-time">{{ formatShortTimestamp(failure.startedAt) }}</span>
+            </div>
+            <div class="event-automation-run-stats__failure-message">
+              {{ failure.errorMessage || failure.summary || '--' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="event-automation-rules-page__table">
       <MyTable
@@ -1192,6 +1274,128 @@ async function onDelete(row: RuleRow) {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
+}
+
+.event-automation-run-stats {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: minmax(132px, 168px) minmax(132px, 168px) minmax(0, 1fr);
+  gap: 12px;
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 6px;
+  background: var(--el-bg-color);
+  padding: 12px;
+}
+
+.event-automation-run-stats__metric {
+  display: flex;
+  min-height: 76px;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  background: var(--el-fill-color-extra-light);
+  padding: 10px 12px;
+}
+
+.event-automation-run-stats__label,
+.event-automation-run-stats__empty,
+.event-automation-run-stats__failure-time,
+.event-automation-run-stats__failure-message {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+}
+
+.event-automation-run-stats__value {
+  margin-top: 6px;
+  color: var(--el-text-color-primary);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.event-automation-run-stats__value--danger {
+  color: var(--el-color-danger);
+}
+
+.event-automation-run-stats__recent {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-automation-run-stats__recent-header {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--el-text-color-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.event-automation-run-stats__failure-list {
+  display: grid;
+  max-height: 112px;
+  gap: 6px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.event-automation-run-stats__failure {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  border-radius: 4px;
+  background: var(--el-fill-color-extra-light);
+  padding: 6px 8px;
+}
+
+.event-automation-run-stats__failure-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-automation-run-stats__failure-rule {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: var(--el-text-color-primary);
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-automation-run-stats__failure-time {
+  flex: 0 0 auto;
+}
+
+.event-automation-run-stats__failure-message {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (width <= 960px) {
+  .event-automation-run-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .event-automation-run-stats__recent {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (width <= 560px) {
+  .event-automation-run-stats {
+    grid-template-columns: 1fr;
+  }
 }
 
 .event-automation-template-option {

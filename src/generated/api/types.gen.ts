@@ -2014,6 +2014,66 @@ export type EventAutomationRunLogDto = {
 export type EventAutomationRunLogQueryOrder = 'CreatedAt' | 'RuleName' | 'TriggerType' | 'PlayerName' | 'StartedAt' | 'EndedAt' | 'Succeeded' | 'DurationMs';
 
 /**
+ * Aggregated operational metrics for event automation execution history.
+ */
+export type EventAutomationRunStatsDto = {
+    /**
+     * UTC start time used for today's aggregation window.
+     */
+    todayStartUtc?: string;
+    /**
+     * Number of rule executions started today.
+     */
+    todayTriggerCount?: number;
+    /**
+     * Number of failed rule executions started today.
+     */
+    todayFailureCount?: number;
+    /**
+     * Latest failed rule executions.
+     */
+    recentFailures: Array<EventAutomationRecentFailureDto>;
+};
+
+/**
+ * One recent failed event automation execution summarized for the rules dashboard.
+ */
+export type EventAutomationRecentFailureDto = {
+    /**
+     * Database identity of the failed run row.
+     */
+    id?: number;
+    /**
+     * Database identity of the matched rule.
+     */
+    ruleId?: number;
+    /**
+     * Rule name snapshot stored at execution time.
+     */
+    ruleName: string;
+    /**
+     * Trigger type snapshot stored at execution time.
+     */
+    triggerType: string;
+    /**
+     * UTC timestamp recorded when execution started.
+     */
+    startedAt?: string;
+    /**
+     * Result status such as Failed.
+     */
+    status: string;
+    /**
+     * Short human-readable execution summary.
+     */
+    summary: string;
+    /**
+     * Failure message captured when execution did not succeed.
+     */
+    errorMessage?: string | null;
+};
+
+/**
  * Validation result for an event automation rule payload.
  */
 export type EventAutomationRuleValidationResultDto = {
@@ -7067,6 +7127,19 @@ export type EventAutomationGetRunsResponses = {
 };
 
 export type EventAutomationGetRunsResponse = EventAutomationGetRunsResponses[keyof EventAutomationGetRunsResponses];
+
+export type EventAutomationGetRunStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/RunStats';
+};
+
+export type EventAutomationGetRunStatsResponses = {
+    200: EventAutomationRunStatsDto;
+};
+
+export type EventAutomationGetRunStatsResponse = EventAutomationGetRunStatsResponses[keyof EventAutomationGetRunStatsResponses];
 
 export type EventAutomationValidateRuleData = {
     body: EventAutomationRuleUpsertDto;

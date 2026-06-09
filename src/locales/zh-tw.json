@@ -2708,6 +2708,12 @@
           "createTitle": "建立規則",
           "editTitle": "編輯規則"
         },
+        "stats": {
+          "todayTriggerCount": "今日觸發",
+          "todayFailureCount": "今日失敗",
+          "recentFailures": "最近失敗規則",
+          "noRecentFailures": "暫無失敗記錄"
+        },
         "actions": {
           "formatJson": "格式化 JSON",
           "duplicate": "複製規則",
