@@ -2911,6 +2911,69 @@
         "highRiskConfirm": {
           "title": "Confirm high-risk automation",
           "text": "This enabled rule contains high-risk actions: {actions}. These actions can affect players or execute server commands when triggered. Continue saving?"
+        },
+        "samples": {
+          "title": "Test sample",
+          "invalidJson": "Sample context must be a JSON object.",
+          "editorModes": {
+            "form": "Form",
+            "json": "JSON"
+          },
+          "fields": {
+            "playerId": "Player ID",
+            "playerName": "Player name",
+            "entityId": "Entity ID",
+            "chatType": "Chat channel",
+            "message": "Message",
+            "targetPlayerId": "Target player ID",
+            "targetPlayerName": "Target player name",
+            "targetEntityId": "Target entity ID",
+            "targetEntityName": "Target entity name",
+            "entityType": "Entity type",
+            "gameShuttingDown": "Server shutdown disconnect",
+            "cronExpression": "Cron expression",
+            "timeZoneId": "Time zone"
+          },
+          "playerJoinedDefault": {
+            "name": "Player joined world",
+            "description": "A normal player enters the world and is ready for join automation."
+          },
+          "playerLeftDefault": {
+            "name": "Player left normally",
+            "description": "A player disconnects without server shutdown."
+          },
+          "playerLeftShutdown": {
+            "name": "Player left during shutdown",
+            "description": "A player disconnects because the server is shutting down."
+          },
+          "playerDiedByZombie": {
+            "name": "Player died by zombie",
+            "description": "A player death event with a zombie as the source entity."
+          },
+          "playerKilledPlayer": {
+            "name": "Player killed player",
+            "description": "A PVP kill event with killer and target player data."
+          },
+          "playerKilledZombie": {
+            "name": "Player killed zombie",
+            "description": "A player kills a zombie and can trigger reward automation."
+          },
+          "globalHelpChat": {
+            "name": "Global help chat",
+            "description": "A global chat message containing help."
+          },
+          "whisperChat": {
+            "name": "Whisper chat",
+            "description": "A private chat sample for whisper rules."
+          },
+          "alliesChat": {
+            "name": "Allies chat",
+            "description": "An allies channel chat message sample."
+          },
+          "cronDefault": {
+            "name": "Scheduled trigger",
+            "description": "A Cron trigger sample with schedule and time zone."
+          }
         }
       },
       "settings": {

@@ -2911,6 +2911,69 @@
         "highRiskConfirm": {
           "title": "确认高风险自动化",
           "text": "当前启用的规则包含高风险动作：{actions}。这些动作触发后可能影响玩家或执行服务器命令，确认继续保存？"
+        },
+        "samples": {
+          "title": "测试样例",
+          "invalidJson": "样例上下文必须是 JSON 对象。",
+          "editorModes": {
+            "form": "表单",
+            "json": "JSON"
+          },
+          "fields": {
+            "playerId": "玩家 ID",
+            "playerName": "玩家名",
+            "entityId": "实体 ID",
+            "chatType": "聊天频道",
+            "message": "消息内容",
+            "targetPlayerId": "目标玩家 ID",
+            "targetPlayerName": "目标玩家名",
+            "targetEntityId": "目标实体 ID",
+            "targetEntityName": "目标实体名",
+            "entityType": "实体类型",
+            "gameShuttingDown": "服务器关闭导致离开",
+            "cronExpression": "Cron 表达式",
+            "timeZoneId": "时区"
+          },
+          "playerJoinedDefault": {
+            "name": "玩家进入世界",
+            "description": "普通玩家进入世界并可触发进服自动化。"
+          },
+          "playerLeftDefault": {
+            "name": "玩家正常离开",
+            "description": "玩家断开连接，且不是服务器关闭导致。"
+          },
+          "playerLeftShutdown": {
+            "name": "服务器关闭离开",
+            "description": "玩家因为服务器关闭而断开连接。"
+          },
+          "playerDiedByZombie": {
+            "name": "玩家被僵尸击杀",
+            "description": "玩家死亡事件，来源实体为僵尸。"
+          },
+          "playerKilledPlayer": {
+            "name": "玩家击杀玩家",
+            "description": "PVP 击杀事件，包含击杀者和目标玩家。"
+          },
+          "playerKilledZombie": {
+            "name": "玩家击杀僵尸",
+            "description": "玩家击杀僵尸，可用于测试击杀奖励。"
+          },
+          "globalHelpChat": {
+            "name": "全局 help 聊天",
+            "description": "包含 help 的全局聊天消息。"
+          },
+          "whisperChat": {
+            "name": "私聊消息",
+            "description": "用于测试私聊规则的聊天样例。"
+          },
+          "alliesChat": {
+            "name": "盟友频道消息",
+            "description": "盟友频道聊天消息样例。"
+          },
+          "cronDefault": {
+            "name": "定时触发",
+            "description": "包含 Cron 表达式和时区的定时触发样例。"
+          }
         }
       },
       "settings": {

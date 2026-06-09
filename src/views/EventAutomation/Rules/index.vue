@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
+import type { EventAutomationDryRunSampleContext } from './eventAutomationSamples';
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type {
   EventAutomationRuleDryRunRequestDto,
@@ -22,6 +23,11 @@ import {
 } from '~/generated/api/sdk.gen';
 import RuleActionBuilder from './components/RuleActionBuilder.vue';
 import RuleConditionBuilder from './components/RuleConditionBuilder.vue';
+import RuleDryRunSampleEditor from './components/RuleDryRunSampleEditor.vue';
+import {
+  cloneDryRunSampleContext,
+  getDefaultDryRunSample,
+} from './eventAutomationSamples';
 
 defineOptions({ name: 'EventAutomationRulesPage' });
 
@@ -78,6 +84,8 @@ const dryRunResult = ref<EventAutomationRuleDryRunResultDto | null>(null);
 const dryRunSample = ref<EventAutomationRuleDryRunRequestDto | null>(null);
 const selectedTemplateKey = ref<string>();
 const editorMode = ref<'builder' | 'json'>('builder');
+const selectedDryRunSampleKey = ref<string>();
+const dryRunSampleContext = ref<EventAutomationDryRunSampleContext>(cloneDryRunSampleContext(getDefaultDryRunSample('PlayerJoined').context));
 
 const form = reactive<RuleFormModel>(buildDefaults());
 
@@ -617,6 +625,7 @@ function applyRuleTemplate(templateKey: string | undefined) {
   form.conditionsJson = JSON.stringify(template.conditions, null, 2);
   form.actionsJson = JSON.stringify(template.actions, null, 2);
   form.description = template.description;
+  resetDryRunSampleForTrigger(form.triggerType);
   resetDryRun();
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -636,6 +645,7 @@ function onAdd() {
   selectedTemplateKey.value = undefined;
   editorMode.value = 'builder';
   applyRuleToForm(null);
+  resetDryRunSampleForTrigger(form.triggerType);
   resetDryRun();
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
@@ -646,6 +656,7 @@ function onEdit(row: RuleRow) {
   selectedTemplateKey.value = undefined;
   editorMode.value = 'builder';
   applyRuleToForm(row);
+  resetDryRunSampleForTrigger(form.triggerType);
   resetDryRun();
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
@@ -657,9 +668,21 @@ function onDuplicate(row: RuleRow) {
   editorMode.value = 'builder';
   applyRuleToForm(row);
   form.name = t('views.eventAutomation.rules.messages.duplicateName', { name: row.name });
+  resetDryRunSampleForTrigger(form.triggerType);
   resetDryRun();
   dialogVisible.value = true;
   nextTick(() => formRef.value?.clearValidate());
+}
+
+function onTriggerTypeChange() {
+  resetDryRunSampleForTrigger(form.triggerType);
+  resetDryRun();
+}
+
+function resetDryRunSampleForTrigger(triggerType: string) {
+  const sample = getDefaultDryRunSample(triggerType);
+  selectedDryRunSampleKey.value = sample.key;
+  dryRunSampleContext.value = cloneDryRunSampleContext(sample.context);
 }
 
 function onViewRuns(row: RuleRow) {
@@ -787,81 +810,10 @@ function resetDryRun() {
 }
 
 function buildDryRunRequest(rule: EventAutomationRuleUpsertDto): EventAutomationRuleDryRunRequestDto {
-  const conditions = parseConditions(rule.conditionsJson ?? '{}');
-  const messageStartsWith = toOptionalString(conditions.messageStartsWith);
-  const messageContains = toOptionalString(conditions.messageContains);
-  const messageEquals = toOptionalString(conditions.messageEquals);
-  const playerNameContains = toOptionalString(conditions.playerNameContains);
-  const targetPlayerNameContains = toOptionalString(conditions.targetPlayerNameContains);
-  const entityNameContains = toOptionalString(conditions.entityNameContains);
-  const entityType = toOptionalString(conditions.entityType);
-
-  const request: EventAutomationRuleDryRunRequestDto = {
+  return {
+    ...dryRunSampleContext.value,
     rule,
-    playerId: 'EOS_00000000000000000',
-    playerName: playerNameContains ? `Sample${playerNameContains}Player` : 'SamplePlayer',
-    entityId: 1001,
-    message: messageEquals ?? (messageStartsWith ? `${messageStartsWith} sample` : `sample ${messageContains ?? 'help'} message`),
-    chatType: toOptionalString(conditions.chatType) ?? 'Global',
-    x: 100,
-    y: 64,
-    z: -100,
   };
-
-  switch (rule.triggerType) {
-    case 'PlayerLeft':
-      request.message = null;
-      request.chatType = null;
-      request.gameShuttingDown = false;
-      break;
-    case 'PlayerDied':
-      request.message = null;
-      request.chatType = null;
-      request.targetEntityId = 2001;
-      request.targetEntityName = entityNameContains ? `Sample${entityNameContains}Entity` : 'Zombie';
-      request.entityType = entityType ?? 'Zombie';
-      break;
-    case 'PlayerKilledPlayer':
-      request.message = null;
-      request.chatType = null;
-      request.targetPlayerId = 'EOS_11111111111111111';
-      request.targetPlayerName = targetPlayerNameContains ? `Target${targetPlayerNameContains}Player` : 'TargetPlayer';
-      request.targetEntityId = 2002;
-      request.targetEntityName = request.targetPlayerName;
-      request.entityType = entityType ?? 'OnlinePlayer';
-      break;
-    case 'PlayerKilledZombie':
-      request.message = null;
-      request.chatType = null;
-      request.targetEntityId = 2003;
-      request.targetEntityName = entityNameContains ? `Sample${entityNameContains}Entity` : 'Zombie';
-      request.entityType = entityType ?? 'Zombie';
-      break;
-    case 'Cron':
-      request.playerId = null;
-      request.playerName = 'System';
-      request.entityId = null;
-      request.message = rule.name;
-      request.chatType = null;
-      request.cronExpression = toOptionalString(conditions.cronExpression) ?? '0 0/30 * * * ?';
-      request.timeZoneId = toOptionalString(conditions.timeZoneId) ?? 'Asia/Shanghai';
-      break;
-  }
-
-  return request;
-}
-
-function parseConditions(conditionsJson: string): Record<string, unknown> {
-  try {
-    const parsed = JSON.parse(conditionsJson || '{}');
-    if (parsed != null && !Array.isArray(parsed) && typeof parsed === 'object')
-      return parsed as Record<string, unknown>;
-  }
-  catch {
-    // Form validation reports the JSON error before this path is normally reached.
-  }
-
-  return {};
 }
 
 function parseActions(actionsJson: string): Array<Record<string, unknown>> {
@@ -1093,7 +1045,7 @@ async function onDelete(row: RuleRow) {
           </el-col>
           <el-col :xs="24" :md="12">
             <el-form-item prop="triggerType" :label="t('views.eventAutomation.rules.form.triggerType')">
-              <el-select v-model="form.triggerType" class="w-full" filterable allow-create @change="resetDryRun">
+              <el-select v-model="form.triggerType" class="w-full" filterable allow-create @change="onTriggerTypeChange">
                 <el-option
                   v-for="option in triggerTypeOptions"
                   :key="option.value"
@@ -1171,6 +1123,19 @@ async function onDelete(row: RuleRow) {
           </el-col>
         </el-row>
       </el-form>
+
+      <section class="event-automation-dry-run-samples">
+        <div class="event-automation-dry-run-samples__title">
+          {{ t('views.eventAutomation.rules.samples.title') }}
+        </div>
+        <RuleDryRunSampleEditor
+          v-model="dryRunSampleContext"
+          v-model:selected-sample-key="selectedDryRunSampleKey"
+          :trigger-type="form.triggerType"
+          @update:model-value="resetDryRun"
+          @update:selected-sample-key="resetDryRun"
+        />
+      </section>
 
       <el-alert
         v-if="dryRunResult"
@@ -1323,6 +1288,18 @@ async function onDelete(row: RuleRow) {
 
 .event-automation-rule-editor__form-item :deep(.el-form-item__content) {
   display: block;
+}
+
+.event-automation-dry-run-samples {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.event-automation-dry-run-samples__title {
+  color: var(--el-text-color-primary);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .event-automation-dry-run {
