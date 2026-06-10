@@ -2374,6 +2374,10 @@ export type FeatureModuleStatusDto = {
      * Read-only settings field metadata for configuration schema preview.
      */
     settingsFields: Array<FeatureModuleSettingsFieldDto>;
+    /**
+     * Read-only settings schema summary for configuration preview.
+     */
+    settingsSchema: FeatureModuleSettingsSchemaDto;
 };
 
 /**
@@ -2429,6 +2433,10 @@ export type FeatureModuleDefinitionDto = {
      * Persisted state scopes declared by this module.
      */
     stateScopes: Array<FeatureModuleCapabilityDto>;
+    /**
+     * Other modules or integrations this module depends on.
+     */
+    dependencies: Array<FeatureModuleDependencyDto>;
 };
 
 /**
@@ -2479,6 +2487,24 @@ export type FeatureModuleCapabilityDto = {
      * Frontend i18n key used for capability label.
      */
     labelKey: string;
+};
+
+/**
+ * Describes a module-level dependency or integration point.
+ */
+export type FeatureModuleDependencyDto = {
+    /**
+     * Stable dependency key.
+     */
+    key: string;
+    /**
+     * Frontend i18n key used for dependency label.
+     */
+    labelKey: string;
+    /**
+     * True when this dependency should be enabled for the module capability to work.
+     */
+    required: boolean;
 };
 
 /**
@@ -2631,6 +2657,56 @@ export type FeatureModuleSettingsFieldDto = {
      * True when this field controls module or sub-module enablement.
      */
     isEnableFlag: boolean;
+    /**
+     * Stable frontend i18n key for a coarse settings group.
+     */
+    groupKey: string;
+    /**
+     * Stable frontend i18n key for an optional field description.
+     */
+    descriptionKey?: string | null;
+    /**
+     * True when this field likely contains a secret or credential.
+     */
+    isSensitive: boolean;
+    /**
+     * True when this field is better treated as an advanced setting in a generic UI.
+     */
+    isAdvanced: boolean;
+    /**
+     * Stable display order within the read-only schema preview.
+     */
+    sortOrder: number;
+};
+
+/**
+ * Read-only summary of a module settings schema.
+ */
+export type FeatureModuleSettingsSchemaDto = {
+    /**
+     * Number of exposed settings fields.
+     */
+    totalFieldCount: number;
+    /**
+     * Number of fields that control enablement.
+     */
+    enableFlagCount: number;
+    /**
+     * Number of sensitive fields.
+     */
+    sensitiveFieldCount: number;
+    /**
+     * Number of advanced fields.
+     */
+    advancedFieldCount: number;
+    /**
+     * Number of collection fields.
+     */
+    collectionFieldCount: number;
+    /**
+     * Group labels included by the schema preview.
+     */
+    groupKeys: Array<string>;
 };
 
 /**
@@ -2673,6 +2749,10 @@ export type FeatureModuleSettingsSummaryDto = {
      * Read-only settings field metadata for configuration schema preview.
      */
     settingsFields: Array<FeatureModuleSettingsFieldDto>;
+    /**
+     * Read-only settings schema summary for configuration preview.
+     */
+    settingsSchema: FeatureModuleSettingsSchemaDto;
 };
 
 /**

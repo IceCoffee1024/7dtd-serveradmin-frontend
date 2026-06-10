@@ -5,9 +5,12 @@ import type {
   FeatureModuleConfigurationIssueDto,
   FeatureModuleConfigurationIssueSeverity,
   FeatureModuleConfigurationStatus,
+  FeatureModuleDependencyDto,
   FeatureModuleHealth,
   FeatureModulePermissionDto,
   FeatureModuleRouteDto,
+  FeatureModuleSettingsFieldDto,
+  FeatureModuleSettingsSchemaDto,
   FeatureModuleStatusDto,
   FeatureSubModuleStatusDto,
   ModuleStateDto,
@@ -28,51 +31,11 @@ import { markIcon } from '~/utils';
 
 defineOptions({ name: 'FeatureModulesPage' });
 
-type ExtendedFeatureModuleDefinition = NonNullable<FeatureModuleStatusDto['definition']> & {
-  actionTypes?: FeatureModuleCapabilityDto[];
-  dependencies?: FeatureModuleDependency[];
-  hookTypes?: FeatureModuleCapabilityDto[];
-  stateScopes?: FeatureModuleCapabilityDto[];
-  templates?: FeatureModuleCapabilityDto[];
-};
-type ExtendedFeatureModuleStatus = FeatureModuleStatusDto & {
-  settingsSchema?: FeatureModuleSettingsSchema;
-  settingsFields?: FeatureModuleSettingsField[];
-};
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
 type ModuleStateCategory = 'all' | 'cooldown' | 'daily' | 'firstJoin' | 'other';
-
-interface FeatureModuleSettingsField {
-  name: string;
-  type: string;
-  clrType: string;
-  isNullable: boolean;
-  isCollection: boolean;
-  isEnableFlag: boolean;
-  groupKey?: string;
-  descriptionKey?: string | null;
-  isSensitive?: boolean;
-  isAdvanced?: boolean;
-  sortOrder?: number;
-}
-
-interface FeatureModuleSettingsSchema {
-  totalFieldCount: number;
-  enableFlagCount: number;
-  sensitiveFieldCount: number;
-  advancedFieldCount: number;
-  collectionFieldCount: number;
-  groupKeys: string[];
-}
-
-interface FeatureModuleDependency {
-  key: string;
-  labelKey: string;
-  required: boolean;
-}
 
 const { t } = useI18n();
 const router = useRouter();
@@ -186,7 +149,7 @@ const filteredModules = computed(() => {
 
   return [...items].sort((a, b) => {
     if (issueFirst.value) {
-      const issueDiff = getConfigurationIssueCount(b) - getConfigurationIssueCount(a);
+      const issueDiff = getModuleIssueCount(b) - getModuleIssueCount(a);
       if (issueDiff !== 0)
         return issueDiff;
     }
@@ -225,13 +188,13 @@ function getHealthTagType(value: FeatureModuleHealthPayload) {
   return 'danger';
 }
 
-function toModuleStatus(item: unknown): ExtendedFeatureModuleStatus {
-  return item as ExtendedFeatureModuleStatus;
+function toModuleStatus(item: unknown): FeatureModuleStatusDto {
+  return item as FeatureModuleStatusDto;
 }
 
-function getModuleDefinition(item: unknown): ExtendedFeatureModuleDefinition | null {
+function getModuleDefinition(item: unknown): FeatureModuleStatusDto['definition'] | null {
   const module = toModuleStatus(item);
-  return module.definition == null ? null : module.definition as ExtendedFeatureModuleDefinition;
+  return module.definition ?? null;
 }
 
 function matchesFilter(item: FeatureModuleStatusDto): boolean {
@@ -243,7 +206,7 @@ function matchesFilter(item: FeatureModuleStatusDto): boolean {
   if (filter.value === 'unavailable')
     return health === 'Unavailable';
   if (filter.value === 'issues')
-    return getConfigurationIssueCount(item) > 0;
+    return getModuleIssueCount(item) > 0;
   return true;
 }
 
@@ -378,6 +341,10 @@ function getConfigurationIssueCount(item: unknown): number {
   return module.configuration?.issueCount ?? module.configuration?.issues?.length ?? 0;
 }
 
+function getModuleIssueCount(item: unknown): number {
+  return getConfigurationIssueCount(item) + getRequiredDependencyIssueCount(item);
+}
+
 function getConfigurationCheckedAt(item: unknown): string {
   const module = toModuleStatus(item);
   return module.configuration?.checkedAt == null
@@ -457,7 +424,7 @@ function getModuleCapabilities(item: unknown): FeatureModuleCapabilityDto[] {
   return getModuleDefinition(item)?.capabilities ?? [];
 }
 
-function getModuleDependencies(item: unknown): FeatureModuleDependency[] {
+function getModuleDependencies(item: unknown): FeatureModuleDependencyDto[] {
   return getModuleDefinition(item)?.dependencies ?? [];
 }
 
@@ -477,15 +444,15 @@ function getModuleStateScopes(item: unknown): FeatureModuleCapabilityDto[] {
   return getModuleDefinition(item)?.stateScopes ?? [];
 }
 
-function getModuleSettingsFields(item: unknown): FeatureModuleSettingsField[] {
+function getModuleSettingsFields(item: unknown): FeatureModuleSettingsFieldDto[] {
   return toModuleStatus(item).settingsFields ?? [];
 }
 
-function toSettingsField(row: unknown): FeatureModuleSettingsField {
-  return row as FeatureModuleSettingsField;
+function toSettingsField(row: unknown): FeatureModuleSettingsFieldDto {
+  return row as FeatureModuleSettingsFieldDto;
 }
 
-function getModuleSettingsSchema(item: unknown): FeatureModuleSettingsSchema {
+function getModuleSettingsSchema(item: unknown): FeatureModuleSettingsSchemaDto {
   const module = toModuleStatus(item);
   const fields = getModuleSettingsFields(module);
   return module.settingsSchema ?? {
@@ -504,14 +471,42 @@ function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
     : t(capability.labelKey);
 }
 
-function getDependencyLabel(dependency: FeatureModuleDependency): string {
+function getDependencyLabel(dependency: FeatureModuleDependencyDto): string {
   return dependency.labelKey == null || dependency.labelKey.length === 0
     ? dependency.key
     : t(dependency.labelKey);
 }
 
-function getDependencyTagType(dependency: FeatureModuleDependency) {
+function getDependencyModule(dependency: FeatureModuleDependencyDto): FeatureModuleStatusDto | null {
+  return modules.value.find(module => module.key === dependency.key) ?? null;
+}
+
+function getDependencyHealth(dependency: FeatureModuleDependencyDto): FeatureModuleHealth {
+  const module = getDependencyModule(dependency);
+  return module == null ? 'Unavailable' : normalizeHealth(module.health);
+}
+
+function hasRequiredDependencyIssue(dependency: FeatureModuleDependencyDto): boolean {
+  return dependency.required && getDependencyHealth(dependency) !== 'Healthy';
+}
+
+function getRequiredDependencyIssueCount(item: unknown): number {
+  return getModuleDependencies(item).filter(hasRequiredDependencyIssue).length;
+}
+
+function getDependencyTagType(dependency: FeatureModuleDependencyDto) {
+  if (hasRequiredDependencyIssue(dependency))
+    return 'danger';
   return dependency.required ? 'warning' : 'info';
+}
+
+function getDependencyStatusLabel(dependency: FeatureModuleDependencyDto): string {
+  const health = getDependencyHealth(dependency);
+  if (health === 'Healthy')
+    return t('views.featureModules.dependencies.statusHealthy');
+  if (health === 'Disabled')
+    return t('views.featureModules.dependencies.statusDisabled');
+  return t('views.featureModules.dependencies.statusUnavailable');
 }
 
 function toModuleStateRow(row: unknown): ModuleStateDto {
@@ -678,7 +673,7 @@ function getSettingsFieldTypeLabel(type: string): string {
   return label === key ? type : label;
 }
 
-function getSettingsFieldGroupLabel(field: FeatureModuleSettingsField): string {
+function getSettingsFieldGroupLabel(field: FeatureModuleSettingsFieldDto): string {
   const key = field.groupKey ?? 'views.featureModules.settingsSchema.groups.general';
   const label = t(key);
   return label === key ? key.split('.').at(-1) ?? field.name : label;
@@ -983,8 +978,8 @@ onMounted(loadModules);
                 <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
                   {{ getConfigurationText(row) }}
                 </el-tag>
-                <span v-if="getConfigurationIssueCount(row) > 0" class="feature-modules-page__issue-count">
-                  {{ t('views.featureModules.issueCount', [getConfigurationIssueCount(row)]) }}
+                <span v-if="getModuleIssueCount(row) > 0" class="feature-modules-page__issue-count">
+                  {{ t('views.featureModules.issueCount', [getModuleIssueCount(row)]) }}
                 </span>
               </div>
             </template>
@@ -1092,7 +1087,7 @@ onMounted(loadModules);
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item :label="t('views.featureModules.columns.issueCount')">
-              {{ getConfigurationIssueCount(selectedModule) }}
+              {{ getModuleIssueCount(selectedModule) }}
             </el-descriptions-item>
             <el-descriptions-item :label="t('views.featureModules.columns.checkedAt')">
               {{ getConfigurationCheckedAt(selectedModule) }}
@@ -1126,6 +1121,7 @@ onMounted(loadModules);
               {{ getDependencyLabel(dependency) }}
               <span class="feature-module-detail__tag-suffix">
                 {{ dependency.required ? t('views.featureModules.dependencies.required') : t('views.featureModules.dependencies.optional') }}
+                · {{ getDependencyStatusLabel(dependency) }}
               </span>
             </el-tag>
           </div>

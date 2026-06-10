@@ -1353,6 +1353,15 @@ export const vFeatureModuleCapabilityDto = v.strictObject({
 });
 
 /**
+ * Describes a module-level dependency or integration point.
+ */
+export const vFeatureModuleDependencyDto = v.strictObject({
+    key: v.string(),
+    labelKey: v.string(),
+    required: v.boolean()
+});
+
+/**
  * Static metadata that describes how a feature module is presented in the management UI.
  */
 export const vFeatureModuleDefinitionDto = v.strictObject({
@@ -1366,7 +1375,8 @@ export const vFeatureModuleDefinitionDto = v.strictObject({
     hookTypes: v.array(vFeatureModuleCapabilityDto),
     actionTypes: v.array(vFeatureModuleCapabilityDto),
     templates: v.array(vFeatureModuleCapabilityDto),
-    stateScopes: v.array(vFeatureModuleCapabilityDto)
+    stateScopes: v.array(vFeatureModuleCapabilityDto),
+    dependencies: v.array(vFeatureModuleDependencyDto)
 });
 
 /**
@@ -1442,7 +1452,24 @@ export const vFeatureModuleSettingsFieldDto = v.strictObject({
     clrType: v.string(),
     isNullable: v.boolean(),
     isCollection: v.boolean(),
-    isEnableFlag: v.boolean()
+    isEnableFlag: v.boolean(),
+    groupKey: v.string(),
+    descriptionKey: v.nullish(v.string()),
+    isSensitive: v.boolean(),
+    isAdvanced: v.boolean(),
+    sortOrder: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+/**
+ * Read-only summary of a module settings schema.
+ */
+export const vFeatureModuleSettingsSchemaDto = v.strictObject({
+    totalFieldCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    enableFlagCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    sensitiveFieldCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    advancedFieldCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    collectionFieldCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    groupKeys: v.array(v.string())
 });
 
 /**
@@ -1462,7 +1489,8 @@ export const vFeatureModuleStatusDto = v.strictObject({
     canEnable: v.boolean(),
     canDisable: v.boolean(),
     canValidate: v.boolean(),
-    settingsFields: v.array(vFeatureModuleSettingsFieldDto)
+    settingsFields: v.array(vFeatureModuleSettingsFieldDto),
+    settingsSchema: vFeatureModuleSettingsSchemaDto
 });
 
 /**
@@ -1477,7 +1505,8 @@ export const vFeatureModuleSettingsSummaryDto = v.strictObject({
     canValidate: v.boolean(),
     settingsRouteName: v.nullish(v.string()),
     validation: vFeatureModuleConfigurationDto,
-    settingsFields: v.array(vFeatureModuleSettingsFieldDto)
+    settingsFields: v.array(vFeatureModuleSettingsFieldDto),
+    settingsSchema: vFeatureModuleSettingsSchemaDto
 });
 
 /**
