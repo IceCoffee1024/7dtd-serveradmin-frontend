@@ -661,18 +661,7 @@ async function loadModuleStates(moduleKey: string) {
   moduleStates.value = [];
   moduleStateTotal.value = 0;
   try {
-    const { data } = await featureModulesGetStates({
-      path: {
-        key: moduleKey,
-      },
-      query: {
-        pageNumber: 1,
-        pageSize: 100,
-        order: 'UpdatedAt',
-        desc: true,
-      },
-      throwOnError: true,
-    });
+    const data = await fetchModuleStates(moduleKey, -1) ?? await fetchModuleStates(moduleKey, 100);
     moduleStates.value = data?.items ?? [];
     moduleStateTotal.value = data?.total ?? 0;
   }
@@ -684,6 +673,30 @@ async function loadModuleStates(moduleKey: string) {
   }
   finally {
     moduleStateLoading.value = false;
+  }
+}
+
+async function fetchModuleStates(moduleKey: string, pageSize: number) {
+  try {
+    const { data } = await featureModulesGetStates({
+      path: {
+        key: moduleKey,
+      },
+      query: {
+        pageNumber: 1,
+        pageSize,
+        order: 'UpdatedAt',
+        desc: true,
+      },
+      throwOnError: true,
+    });
+    return data;
+  }
+  catch (error) {
+    if (pageSize < 0) {
+      return null;
+    }
+    throw error;
   }
 }
 
