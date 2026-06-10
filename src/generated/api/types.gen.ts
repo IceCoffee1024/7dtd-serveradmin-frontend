@@ -2808,6 +2808,22 @@ export type FeatureModuleHealthIssueDto = {
      */
     args: Array<string>;
     /**
+     * Optional frontend i18n suggestion code under views.featureModules.healthIssueSuggestions.
+     */
+    suggestionCode?: string | null;
+    /**
+     * Positional suggestion arguments for the frontend i18n formatter.
+     */
+    suggestionArgs?: Array<string> | null;
+    /**
+     * Optional Vue router route name for the most likely repair entry point.
+     */
+    fixRouteName?: string | null;
+    /**
+     * Optional frontend i18n key for the repair entry point label.
+     */
+    fixLabelKey?: string | null;
+    /**
      * Optional related module key for dependency issues.
      */
     relatedModuleKey?: string | null;

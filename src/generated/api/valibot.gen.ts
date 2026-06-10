@@ -1523,6 +1523,10 @@ export const vFeatureModuleHealthIssueDto = v.strictObject({
     source: vFeatureModuleHealthIssueSource,
     messageCode: v.string(),
     args: v.array(v.string()),
+    suggestionCode: v.nullish(v.string()),
+    suggestionArgs: v.nullish(v.array(v.string())),
+    fixRouteName: v.nullish(v.string()),
+    fixLabelKey: v.nullish(v.string()),
     relatedModuleKey: v.nullish(v.string()),
     relatedStateScope: v.nullish(v.string())
 });

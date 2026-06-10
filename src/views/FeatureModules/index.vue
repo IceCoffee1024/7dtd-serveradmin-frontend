@@ -41,12 +41,6 @@ type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfiguration
 type FeatureModuleHealthIssueSourcePayload = FeatureModuleHealthIssueSource | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
 type ModuleStateCategory = 'all' | 'cooldown' | 'daily' | 'firstJoin' | 'other';
-type FeatureModuleHealthIssueWithRepair = FeatureModuleHealthIssueDto & {
-  suggestionCode?: string | null;
-  suggestionArgs?: string[] | null;
-  fixRouteName?: string | null;
-  fixLabelKey?: string | null;
-};
 
 const { t } = useI18n();
 const router = useRouter();
@@ -426,32 +420,28 @@ function getHealthIssueText(issue: FeatureModuleHealthIssueDto): string {
   return t(`views.featureModules.healthIssues.${issue.messageCode}`, issue.args ?? []);
 }
 
-function toHealthIssueWithRepair(issue: FeatureModuleHealthIssueDto): FeatureModuleHealthIssueWithRepair {
-  return issue as FeatureModuleHealthIssueWithRepair;
-}
-
 function getHealthIssueSuggestionText(issue: FeatureModuleHealthIssueDto): string {
-  const suggestionCode = toHealthIssueWithRepair(issue).suggestionCode;
+  const suggestionCode = issue.suggestionCode;
   if (suggestionCode == null || suggestionCode.length === 0)
     return '';
 
-  return t(`views.featureModules.healthIssueSuggestions.${suggestionCode}`, toHealthIssueWithRepair(issue).suggestionArgs ?? []);
+  return t(`views.featureModules.healthIssueSuggestions.${suggestionCode}`, issue.suggestionArgs ?? []);
 }
 
 function canOpenHealthIssueFix(issue: FeatureModuleHealthIssueDto): boolean {
-  const routeName = toHealthIssueWithRepair(issue).fixRouteName;
+  const routeName = issue.fixRouteName;
   return routeName != null && routeName.length > 0 && router.hasRoute(routeName);
 }
 
 function getHealthIssueFixLabel(issue: FeatureModuleHealthIssueDto): string {
-  const labelKey = toHealthIssueWithRepair(issue).fixLabelKey;
+  const labelKey = issue.fixLabelKey;
   return labelKey == null || labelKey.length === 0
     ? t('views.featureModules.healthIssueFixes.open')
     : t(labelKey);
 }
 
 function openHealthIssueFix(issue: FeatureModuleHealthIssueDto) {
-  const routeName = toHealthIssueWithRepair(issue).fixRouteName;
+  const routeName = issue.fixRouteName;
   if (routeName == null || routeName.length === 0 || router.hasRoute(routeName) === false)
     return;
 
