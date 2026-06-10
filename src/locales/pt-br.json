@@ -2569,7 +2569,7 @@
         "emptyStateScopes": "No state scopes",
         "emptyConfigurationIssues": "No configuration issues",
         "runtimeStates": "Runtime State",
-        "runtimeStateCount": "Latest {0}",
+        "runtimeStateCount": "Showing {0}/{1}",
         "runtimeStateScopeSummary": "{0} rows, latest {1}",
         "emptyRuntimeStates": "No runtime state rows",
         "settingsSchema": "Settings Schema",
@@ -2720,11 +2720,39 @@
       "disableConfirm": "Disable {0}? This may stop related commands and automation.",
       "actionUnavailable": "This action is not available for this module.",
       "state": {
+        "category": "Type",
         "scope": "Scope",
         "scopeKey": "Scope Key",
         "stateKey": "State Key",
         "updatedAt": "Updated At",
-        "value": "Value"
+        "value": "Value",
+        "searchPlaceholder": "Search scope key, state key, or value",
+        "categories": {
+          "all": "All",
+          "cooldown": "Cooldown",
+          "firstJoin": "First Join",
+          "daily": "Daily",
+          "other": "Other"
+        },
+        "overview": {
+          "total": "Total State",
+          "cooldown": "Cooldown",
+          "firstJoin": "First Join",
+          "daily": "Daily",
+          "other": "Other",
+          "latestUpdatedAt": "Latest Update"
+        },
+        "duration": {
+          "seconds": "{0} seconds ago",
+          "minutes": "{0} minutes ago",
+          "hours": "{0} hours ago",
+          "days": "{0} days ago"
+        },
+        "readable": {
+          "cooldown": "Last triggered at {0}, {1}",
+          "firstJoin": "Completed at {0}, player {1}",
+          "daily": "Latest daily state at {0}, {1}"
+        }
       },
       "settingsSchema": {
         "name": "Name",
@@ -3119,3 +3147,4 @@
     }
   }
 }
+

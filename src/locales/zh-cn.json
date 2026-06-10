@@ -2568,7 +2568,7 @@
         "stateScopes": "状态范围",
         "emptyStateScopes": "无状态范围",
         "runtimeStates": "运行状态",
-        "runtimeStateCount": "最近 {0} 条",
+        "runtimeStateCount": "显示 {0}/{1} 条",
         "emptyConfigurationIssues": "无配置问题",
         "runtimeStateScopeSummary": "{0} 条，最近 {1}",
         "emptyRuntimeStates": "暂无运行状态记录",
@@ -2576,11 +2576,39 @@
         "emptySettingsSchema": "暂无配置 Schema 元数据"
       },
       "state": {
+        "category": "类型",
         "scope": "范围",
         "scopeKey": "范围键",
         "stateKey": "状态键",
         "updatedAt": "更新时间",
-        "value": "值"
+        "value": "值",
+        "searchPlaceholder": "搜索范围键、状态键或值",
+        "categories": {
+          "all": "全部",
+          "cooldown": "冷却",
+          "firstJoin": "首次加入",
+          "daily": "每日",
+          "other": "其他"
+        },
+        "overview": {
+          "total": "状态总数",
+          "cooldown": "冷却",
+          "firstJoin": "首次加入",
+          "daily": "每日",
+          "other": "其他",
+          "latestUpdatedAt": "最近更新"
+        },
+        "duration": {
+          "seconds": "{0} 秒前",
+          "minutes": "{0} 分钟前",
+          "hours": "{0} 小时前",
+          "days": "{0} 天前"
+        },
+        "readable": {
+          "cooldown": "最近触发 {0}，{1}",
+          "firstJoin": "已完成 {0}，玩家 {1}",
+          "daily": "最近每日状态 {0}，{1}"
+        }
       },
       "permissionLevel": "等级 {0}",
       "permissionFlags": {

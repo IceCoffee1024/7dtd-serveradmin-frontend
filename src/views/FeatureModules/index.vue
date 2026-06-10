@@ -10,16 +10,18 @@ import type {
   FeatureModuleRouteDto,
   FeatureModuleStatusDto,
   FeatureSubModuleStatusDto,
+  ModuleStateDto,
 } from '~/generated/api/types.gen';
+import { useWindowSize } from '@vueuse/core';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables/usePopup';
-import { client } from '~/generated/api/client.gen';
 import {
   featureModulesDisableModule,
   featureModulesEnableModule,
   featureModulesGetFeatureModules,
+  featureModulesGetStates,
   featureModulesValidateSettings,
 } from '~/generated/api/sdk.gen';
 import { markIcon } from '~/utils';
@@ -39,6 +41,7 @@ type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null |
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
+type ModuleStateCategory = 'all' | 'cooldown' | 'daily' | 'firstJoin' | 'other';
 
 interface FeatureModuleSettingsField {
   name: string;
@@ -49,26 +52,11 @@ interface FeatureModuleSettingsField {
   isEnableFlag: boolean;
 }
 
-interface ModuleStateRow {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  moduleKey: string;
-  scope: string;
-  scopeKey: string;
-  stateKey: string;
-  valueJson: string;
-}
-
-interface PagedModuleStateResult {
-  total: number;
-  items: ModuleStateRow[];
-}
-
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const { confirm, toast } = usePopup();
+const { width: windowWidth } = useWindowSize();
 
 const iconRefresh = markIcon(() => import('~icons/mdi/refresh'));
 const iconOpen = markIcon(() => import('~icons/mdi/open-in-new'));
@@ -82,12 +70,63 @@ const actionLoadingKey = ref('');
 const modules = ref<FeatureModuleStatusDto[]>([]);
 const selectedModule = ref<FeatureModuleStatusDto | null>(null);
 const detailVisible = ref(false);
-const moduleStates = ref<ModuleStateRow[]>([]);
+const moduleStates = ref<ModuleStateDto[]>([]);
 const moduleStateTotal = ref(0);
 const moduleStateLoading = ref(false);
+const moduleStateCategory = ref<ModuleStateCategory>('all');
+const moduleStateKeyword = ref('');
 const filter = ref<ModuleFilter>('all');
 const keyword = ref('');
 const issueFirst = ref(true);
+const detailDrawerSize = computed(() => windowWidth.value <= 768 ? '100%' : '520px');
+
+const moduleStateCategoryOptions = computed(() => [
+  { label: t('views.featureModules.state.categories.all'), value: 'all' },
+  { label: t('views.featureModules.state.categories.cooldown'), value: 'cooldown' },
+  { label: t('views.featureModules.state.categories.firstJoin'), value: 'firstJoin' },
+  { label: t('views.featureModules.state.categories.daily'), value: 'daily' },
+  { label: t('views.featureModules.state.categories.other'), value: 'other' },
+]);
+
+const filteredModuleStates = computed(() => {
+  const normalizedKeyword = moduleStateKeyword.value.trim().toLowerCase();
+  return moduleStates.value.filter((row) => {
+    if (moduleStateCategory.value !== 'all' && getModuleStateCategory(row) !== moduleStateCategory.value) {
+      return false;
+    }
+
+    if (normalizedKeyword.length === 0) {
+      return true;
+    }
+
+    return [
+      row.scope,
+      row.scopeKey,
+      row.stateKey,
+      row.valueJson,
+      formatModuleStateValue(row.valueJson),
+      getModuleStateReadableValue(row),
+    ].some(value => String(value ?? '').toLowerCase().includes(normalizedKeyword));
+  });
+});
+
+const moduleStateOverview = computed(() => {
+  const latestUpdatedAt = moduleStates.value
+    .map(row => row.updatedAt)
+    .filter((value): value is string => value != null && value.length > 0)
+    .sort((a, b) => dayjs(b).valueOf() - dayjs(a).valueOf())
+    .at(0);
+
+  return {
+    total: moduleStateTotal.value,
+    loaded: moduleStates.value.length,
+    cooldown: getModuleStateCountByCategory('cooldown'),
+    firstJoin: getModuleStateCountByCategory('firstJoin'),
+    daily: getModuleStateCountByCategory('daily'),
+    other: getModuleStateCountByCategory('other'),
+    latestUpdatedAt,
+  };
+});
 
 const summary = computed(() => {
   const result = {
@@ -422,6 +461,22 @@ function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
     : t(capability.labelKey);
 }
 
+function toModuleStateRow(row: unknown): ModuleStateDto {
+  return row as ModuleStateDto;
+}
+
+function parseModuleStateValue(valueJson: string): unknown {
+  if (valueJson.length === 0)
+    return null;
+
+  try {
+    return JSON.parse(valueJson);
+  }
+  catch {
+    return valueJson;
+  }
+}
+
 function formatModuleStateValue(valueJson: string): string {
   if (valueJson.length === 0)
     return '-';
@@ -438,25 +493,127 @@ function formatModuleStateValue(valueJson: string): string {
   }
 }
 
+function getModuleStateCategory(row: ModuleStateDto): ModuleStateCategory {
+  const scope = row.scope.toLowerCase();
+  const stateKey = row.stateKey.toLowerCase();
+  if (scope.includes('cooldown'))
+    return 'cooldown';
+  if (scope.includes('firstjoin') || scope.includes('first_join'))
+    return 'firstJoin';
+  if (scope.includes('daily') || scope.includes('reward') || stateKey.includes('daily') || stateKey.includes('claim'))
+    return 'daily';
+  return 'other';
+}
+
+function getModuleStateCategoryLabel(row: ModuleStateDto): string {
+  return t(`views.featureModules.state.categories.${getModuleStateCategory(row)}`);
+}
+
+function getModuleStateCategoryTagType(row: ModuleStateDto) {
+  const category = getModuleStateCategory(row);
+  if (category === 'cooldown')
+    return 'warning';
+  if (category === 'firstJoin')
+    return 'success';
+  if (category === 'daily')
+    return 'primary';
+  return 'info';
+}
+
+function getModuleStateCountByCategory(category: ModuleStateCategory): number {
+  return moduleStates.value.filter(row => getModuleStateCategory(row) === category).length;
+}
+
 function formatModuleStateTime(value: string | null | undefined): string {
   return value == null ? '-' : dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+}
+
+function formatDurationFromNow(value: string): string {
+  const timestamp = dayjs(value);
+  if (!timestamp.isValid())
+    return '-';
+
+  const seconds = Math.max(0, dayjs().diff(timestamp, 'second'));
+  if (seconds < 60)
+    return t('views.featureModules.state.duration.seconds', [seconds]);
+
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60)
+    return t('views.featureModules.state.duration.minutes', [minutes]);
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24)
+    return t('views.featureModules.state.duration.hours', [hours]);
+
+  return t('views.featureModules.state.duration.days', [Math.floor(hours / 24)]);
+}
+
+function readDateTimeFromStateValue(value: unknown): string | null {
+  if (typeof value === 'string') {
+    return dayjs(value).isValid() ? value : null;
+  }
+
+  if (value != null && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    for (const key of ['completedAt', 'lastTriggeredAt', 'claimedAt', 'updatedAt']) {
+      const fieldValue = record[key];
+      if (typeof fieldValue === 'string' && dayjs(fieldValue).isValid()) {
+        return fieldValue;
+      }
+    }
+  }
+
+  return null;
+}
+
+function getModuleStateReadableValue(row: ModuleStateDto): string {
+  const parsedValue = parseModuleStateValue(row.valueJson);
+  const timestamp = readDateTimeFromStateValue(parsedValue);
+  const category = getModuleStateCategory(row);
+
+  if (category === 'cooldown' && timestamp != null) {
+    return t('views.featureModules.state.readable.cooldown', [
+      formatModuleStateTime(timestamp),
+      formatDurationFromNow(timestamp),
+    ]);
+  }
+
+  if (category === 'firstJoin') {
+    const playerName = parsedValue != null && typeof parsedValue === 'object'
+      ? (parsedValue as Record<string, unknown>).playerName
+      : null;
+    return t('views.featureModules.state.readable.firstJoin', [
+      timestamp == null ? '-' : formatModuleStateTime(timestamp),
+      typeof playerName === 'string' && playerName.length > 0 ? playerName : '-',
+    ]);
+  }
+
+  if (category === 'daily' && timestamp != null) {
+    return t('views.featureModules.state.readable.daily', [
+      formatModuleStateTime(timestamp),
+      formatDurationFromNow(timestamp),
+    ]);
+  }
+
+  return formatModuleStateValue(row.valueJson);
 }
 
 function getModuleStateScopeSummaries() {
   return [...moduleStates.value.reduce((map, row) => {
     const current = map.get(row.scope);
+    const updatedAt = row.updatedAt ?? '';
     if (current == null) {
       map.set(row.scope, {
         scope: row.scope,
         total: 1,
-        latestUpdatedAt: row.updatedAt,
+        latestUpdatedAt: updatedAt,
       });
       return map;
     }
 
     current.total += 1;
-    if (dayjs(row.updatedAt).isAfter(dayjs(current.latestUpdatedAt))) {
-      current.latestUpdatedAt = row.updatedAt;
+    if (dayjs(updatedAt).isAfter(dayjs(current.latestUpdatedAt))) {
+      current.latestUpdatedAt = updatedAt;
     }
     return map;
   }, new Map<string, { scope: string; total: number; latestUpdatedAt: string }>()).values()];
@@ -504,15 +661,15 @@ async function loadModuleStates(moduleKey: string) {
   moduleStates.value = [];
   moduleStateTotal.value = 0;
   try {
-    const { data } = await client.get<PagedModuleStateResult, unknown, true>({
-      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
-      url: '/api/FeatureModules/{key}/States',
+    const { data } = await featureModulesGetStates({
       path: {
         key: moduleKey,
       },
       query: {
         pageNumber: 1,
-        pageSize: 20,
+        pageSize: 100,
+        order: 'UpdatedAt',
+        desc: true,
       },
       throwOnError: true,
     });
@@ -825,7 +982,7 @@ onMounted(loadModules);
     <el-drawer
       v-model="detailVisible"
       :title="selectedModule == null ? t('views.featureModules.detail.title') : getModuleName(selectedModule)"
-      size="520px"
+      :size="detailDrawerSize"
       append-to-body
     >
       <div v-if="selectedModule != null" class="feature-module-detail">
@@ -936,11 +1093,50 @@ onMounted(loadModules);
           <div class="feature-module-detail__section-header">
             <h3>{{ t('views.featureModules.detail.runtimeStates') }}</h3>
             <div class="feature-module-detail__section-actions">
-              <span>{{ t('views.featureModules.detail.runtimeStateCount', [moduleStateTotal]) }}</span>
+              <span>{{ t('views.featureModules.detail.runtimeStateCount', [filteredModuleStates.length, moduleStateTotal]) }}</span>
               <el-button size="small" :loading="moduleStateLoading" @click="loadModuleStates(selectedModule.key)">
                 {{ t('components.myTable.refresh') }}
               </el-button>
             </div>
+          </div>
+          <div class="feature-module-detail__state-overview">
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.total') }}</span>
+              <strong>{{ moduleStateOverview.total }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.cooldown') }}</span>
+              <strong>{{ moduleStateOverview.cooldown }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.firstJoin') }}</span>
+              <strong>{{ moduleStateOverview.firstJoin }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.daily') }}</span>
+              <strong>{{ moduleStateOverview.daily }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.other') }}</span>
+              <strong>{{ moduleStateOverview.other }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.latestUpdatedAt') }}</span>
+              <strong>{{ formatModuleStateTime(moduleStateOverview.latestUpdatedAt) }}</strong>
+            </div>
+          </div>
+          <div class="feature-module-detail__state-toolbar">
+            <el-segmented
+              v-model="moduleStateCategory"
+              :options="moduleStateCategoryOptions"
+              size="small"
+            />
+            <el-input
+              v-model="moduleStateKeyword"
+              clearable
+              :prefix-icon="iconDetails"
+              :placeholder="t('views.featureModules.state.searchPlaceholder')"
+            />
           </div>
           <div v-if="getModuleStateScopeSummaries().length > 0" class="feature-module-detail__state-summary">
             <div
@@ -954,26 +1150,36 @@ onMounted(loadModules);
           </div>
           <el-table
             v-loading="moduleStateLoading"
-            :data="moduleStates"
+            :data="filteredModuleStates"
             size="small"
             border
             class="feature-module-detail__state-table"
           >
-            <el-table-column prop="scope" :label="t('views.featureModules.state.scope')" width="92" />
+            <el-table-column :label="t('views.featureModules.state.category')" width="96">
+              <template #default="{ row }">
+                <el-tag size="small" :type="getModuleStateCategoryTagType(toModuleStateRow(row))" effect="plain">
+                  {{ getModuleStateCategoryLabel(toModuleStateRow(row)) }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="scope" :label="t('views.featureModules.state.scope')" width="110" />
             <el-table-column prop="scopeKey" :label="t('views.featureModules.state.scopeKey')" min-width="140" show-overflow-tooltip />
-            <el-table-column prop="stateKey" :label="t('views.featureModules.state.stateKey')" width="122" show-overflow-tooltip />
+            <el-table-column prop="stateKey" :label="t('views.featureModules.state.stateKey')" width="130" show-overflow-tooltip />
             <el-table-column :label="t('views.featureModules.state.updatedAt')" width="150">
               <template #default="{ row }">
                 {{ formatModuleStateTime(row.updatedAt) }}
               </template>
             </el-table-column>
-            <el-table-column :label="t('views.featureModules.state.value')" min-width="180" show-overflow-tooltip>
+            <el-table-column :label="t('views.featureModules.state.value')" min-width="260">
               <template #default="{ row }">
-                <code>{{ formatModuleStateValue(row.valueJson) }}</code>
+                <div class="feature-module-detail__state-value">
+                  <span>{{ getModuleStateReadableValue(toModuleStateRow(row)) }}</span>
+                  <code>{{ formatModuleStateValue(row.valueJson) }}</code>
+                </div>
               </template>
             </el-table-column>
           </el-table>
-          <el-empty v-if="!moduleStateLoading && moduleStates.length === 0" :description="t('views.featureModules.detail.emptyRuntimeStates')" :image-size="72" />
+          <el-empty v-if="!moduleStateLoading && filteredModuleStates.length === 0" :description="t('views.featureModules.detail.emptyRuntimeStates')" :image-size="72" />
         </section>
 
         <section class="feature-module-detail__section">
@@ -1313,6 +1519,50 @@ onMounted(loadModules);
   }
 }
 
+.feature-module-detail__state-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.feature-module-detail__state-overview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: var(--el-fill-color-extra-light);
+
+  span {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--el-text-color-primary);
+    font-size: 16px;
+    line-height: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.feature-module-detail__state-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  .el-input {
+    width: 260px;
+  }
+}
+
 .feature-module-detail__state-summary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1338,6 +1588,33 @@ onMounted(loadModules);
     color: var(--el-text-color-secondary);
     font-size: 12px;
     line-height: 18px;
+  }
+}
+
+.feature-module-detail__state-value {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  span,
+  code {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    color: var(--el-text-color-primary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  code {
+    color: var(--el-text-color-secondary);
+    font-size: 11px;
+    line-height: 16px;
   }
 }
 
@@ -1446,6 +1723,25 @@ onMounted(loadModules);
   }
 
   .feature-modules-page__search {
+    width: 100%;
+  }
+
+  .feature-module-detail__section-header,
+  .feature-module-detail__state-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .feature-module-detail__section-actions {
+    justify-content: space-between;
+  }
+
+  .feature-module-detail__state-overview,
+  .feature-module-detail__state-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-module-detail__state-toolbar .el-input {
     width: 100%;
   }
 }
