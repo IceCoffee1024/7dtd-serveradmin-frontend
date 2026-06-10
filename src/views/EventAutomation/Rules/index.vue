@@ -301,11 +301,6 @@ const variableTokens = [
   '{triggerType}',
   '{playerId}',
   '{playerName}',
-  '{targetPlayerId}',
-  '{targetPlayerName}',
-  '{targetEntityId}',
-  '{targetEntityName}',
-  '{entityType}',
   '{entityId}',
   '{message}',
   '{chatType}',
@@ -336,16 +331,6 @@ const conditionReferences = computed<ReferenceItem[]>(() => [
     label: 'playerNameContains',
     value: '"playerNameContains": "Admin"',
     description: t('views.eventAutomation.rules.reference.conditions.playerNameContains'),
-  },
-  {
-    label: 'targetPlayerNameContains',
-    value: '"targetPlayerNameContains": "Enemy"',
-    description: t('views.eventAutomation.rules.reference.conditions.targetPlayerNameContains'),
-  },
-  {
-    label: 'entityType',
-    value: '"entityType": "Zombie"',
-    description: t('views.eventAutomation.rules.reference.conditions.entityType'),
   },
   {
     label: 'cronExpression',
@@ -868,9 +853,6 @@ function formatDryRunSample(sample: EventAutomationRuleDryRunRequestDto | null):
 
   return [
     `${sample.playerName ?? '--'} (${sample.playerId ?? '--'})`,
-    sample.targetPlayerName ? `${sample.targetPlayerName} (${sample.targetPlayerId ?? '--'})` : null,
-    sample.targetEntityName ? `${sample.targetEntityName}#${sample.targetEntityId ?? '--'}` : null,
-    sample.entityType,
     sample.cronExpression,
     sample.timeZoneId,
     sample.chatType,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useWindowScroll } from '@vueuse/core';
+import { useWindowScroll, useWindowSize } from '@vueuse/core';
 import { addUnit } from 'element-plus/es/utils/index';
 import { storeToRefs } from 'pinia';
 import { useTheme } from '~/composables';
@@ -12,7 +12,9 @@ import NavTab from './NavTab/index.vue';
 import Sidebar from './Sidebar/index.vue';
 
 const { y: windowScrollY } = useWindowScroll();
+const { width: windowWidth } = useWindowSize();
 const isScrolled = computed(() => windowScrollY.value > 0);
+const compactLayoutMaxWidth = 768;
 
 const { currentTheme } = useTheme();
 const { currentLocale } = storeToRefs(useLocaleStore());
@@ -60,6 +62,8 @@ const mainAvailableHeight = computed(() =>
 );
 
 const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
+const isCompactViewport = computed(() => windowWidth.value <= compactLayoutMaxWidth);
+const shouldRenderSidebar = computed(() => !isTopMenu.value && !isCompactViewport.value);
 const isInnerScroll = computed(() => currentTheme.value.general.scrollMode === 'inner');
 
 const isTransparentBorder = computed(() => {
@@ -73,20 +77,20 @@ const isTransparentBorder = computed(() => {
       <Header :style="{ height: headerHeight }" class="header" />
       <NavTab
         v-if="currentTheme.layout.tab.visible" class="nav-tab" :style="{
-          marginLeft: isTopMenu ? 0 : sidebarWidth,
-          width: isTopMenu ? '100%' : `calc(100% - ${sidebarWidth})`,
+          marginLeft: shouldRenderSidebar ? sidebarWidth : 0,
+          width: shouldRenderSidebar ? `calc(100% - ${sidebarWidth})` : '100%',
           height: addUnit(tabHeightValue),
         }"
         :tab-style="currentTheme.layout.tab.style"
         :show-icon="currentTheme.layout.tab.showIcon"
       />
     </div>
-    <div v-if="!isTopMenu" class="sidebar" :style="{ width: sidebarWidth, top: headerHeight }">
+    <div v-if="shouldRenderSidebar" class="sidebar" :style="{ width: sidebarWidth, top: headerHeight }">
       <Sidebar :collapse="currentTheme.layout.sidebar.collapsed" />
     </div>
     <div
       class="content" :style="{
-        'marginLeft': isTopMenu ? 0 : sidebarWidth,
+        'marginLeft': shouldRenderSidebar ? sidebarWidth : 0,
         'marginTop': contentOffsetTop,
         'height': isInnerScroll ? contentHeight : undefined,
         'minHeight': contentHeight,
@@ -95,7 +99,7 @@ const isTransparentBorder = computed(() => {
         '--layout-main-padding-y': '32px',
         '--layout-main-available-height': mainAvailableHeight,
       }"
-      :class="{ 'content--inner-scroll': isInnerScroll }"
+      :class="{ 'content--inner-scroll': isInnerScroll, 'content--compact': isCompactViewport }"
     >
       <div class="main">
         <Main />
@@ -162,5 +166,11 @@ const isTransparentBorder = computed(() => {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: contain;
+}
+
+.content--compact {
+  .main {
+    padding: 12px;
+  }
 }
 </style>

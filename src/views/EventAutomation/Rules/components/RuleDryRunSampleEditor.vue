@@ -228,55 +228,6 @@ function formatJson(value: unknown) {
         </div>
       </template>
 
-      <template v-if="['PlayerDied', 'PlayerKilledPlayer', 'PlayerKilledZombie'].includes(triggerType)">
-        <div v-if="triggerType === 'PlayerKilledPlayer'" class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--two">
-          <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetPlayerId')">
-            <el-input
-              :model-value="getStringValue('targetPlayerId')"
-              clearable
-              @update:model-value="setContextValue('targetPlayerId', $event)"
-            />
-          </el-form-item>
-          <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetPlayerName')">
-            <el-input
-              :model-value="getStringValue('targetPlayerName')"
-              clearable
-              @update:model-value="setContextValue('targetPlayerName', $event)"
-            />
-          </el-form-item>
-        </div>
-        <div class="rule-dry-run-sample-editor__grid rule-dry-run-sample-editor__grid--three">
-          <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetEntityId')">
-            <el-input-number
-              :model-value="getNumberValue('targetEntityId')"
-              class="rule-dry-run-sample-editor__number"
-              @update:model-value="setContextValue('targetEntityId', $event)"
-            />
-          </el-form-item>
-          <el-form-item :label="t('views.eventAutomation.rules.samples.fields.targetEntityName')">
-            <el-input
-              :model-value="getStringValue('targetEntityName')"
-              clearable
-              @update:model-value="setContextValue('targetEntityName', $event)"
-            />
-          </el-form-item>
-          <el-form-item :label="t('views.eventAutomation.rules.samples.fields.entityType')">
-            <el-select
-              :model-value="getStringValue('entityType')"
-              class="w-full"
-              filterable
-              allow-create
-              @update:model-value="setContextValue('entityType', $event)"
-            >
-              <el-option label="Zombie" value="Zombie" />
-              <el-option label="Animal" value="Animal" />
-              <el-option label="OnlinePlayer" value="OnlinePlayer" />
-              <el-option label="Vehicle" value="Vehicle" />
-            </el-select>
-          </el-form-item>
-        </div>
-      </template>
-
       <div v-if="triggerType === 'PlayerLeft'" class="rule-dry-run-sample-editor__check-row">
         <el-checkbox
           :model-value="getBooleanValue('gameShuttingDown')"

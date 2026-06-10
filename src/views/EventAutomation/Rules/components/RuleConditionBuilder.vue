@@ -7,8 +7,6 @@ type ConditionKey
     | 'cooldownScope'
     | 'cooldownSeconds'
     | 'cronExpression'
-    | 'entityNameContains'
-    | 'entityType'
     | 'firstJoinOnly'
     | 'gameShuttingDown'
     | 'ignoreCase'
@@ -17,8 +15,6 @@ type ConditionKey
     | 'messageStartsWith'
     | 'playerId'
     | 'playerNameContains'
-    | 'targetPlayerId'
-    | 'targetPlayerNameContains'
     | 'timeZoneId';
 
 const props = defineProps<{
@@ -33,7 +29,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const chatTypeOptions = ['Global', 'Friends', 'Allies', 'Whisper'];
-const entityTypeOptions = ['Zombie', 'Animal', 'OnlinePlayer', 'Vehicle'];
 const timeZoneOptions = ['Asia/Shanghai', 'UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo'];
 const cooldownScopeOptions = ['RulePlayer', 'Rule'];
 
@@ -43,8 +38,6 @@ const conditions = computed(() => parsedConditions.value ?? {});
 const isCronTrigger = computed(() => props.triggerType === 'Cron');
 const shouldShowPlayerConditions = computed(() => props.triggerType !== 'Cron');
 const shouldShowChatConditions = computed(() => props.triggerType === 'ChatMessage');
-const shouldShowTargetPlayerConditions = computed(() => props.triggerType === 'PlayerKilledPlayer');
-const shouldShowEntityConditions = computed(() => ['PlayerDied', 'PlayerKilledZombie'].includes(props.triggerType));
 const shouldShowLeaveConditions = computed(() => props.triggerType === 'PlayerLeft');
 const shouldShowTextMatchOptions = computed(() => props.triggerType !== 'Cron');
 
@@ -255,63 +248,6 @@ function getNumberValue(key: ConditionKey): number | undefined {
               :model-value="getStringValue('messageEquals')"
               clearable
               @update:model-value="setConditionValue('messageEquals', $event)"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </div>
-
-    <div v-if="shouldShowTargetPlayerConditions" class="rule-condition-builder__section">
-      <div class="rule-condition-builder__title">
-        {{ t('views.eventAutomation.rules.builder.sections.targetPlayer') }}
-      </div>
-      <el-row :gutter="12">
-        <el-col :xs="24" :md="12">
-          <el-form-item :label="t('views.eventAutomation.rules.builder.fields.targetPlayerId')">
-            <el-input
-              :model-value="getStringValue('targetPlayerId')"
-              clearable
-              @update:model-value="setConditionValue('targetPlayerId', $event)"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="12">
-          <el-form-item :label="t('views.eventAutomation.rules.builder.fields.targetPlayerNameContains')">
-            <el-input
-              :model-value="getStringValue('targetPlayerNameContains')"
-              clearable
-              @update:model-value="setConditionValue('targetPlayerNameContains', $event)"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </div>
-
-    <div v-if="shouldShowEntityConditions" class="rule-condition-builder__section">
-      <div class="rule-condition-builder__title">
-        {{ t('views.eventAutomation.rules.builder.sections.entity') }}
-      </div>
-      <el-row :gutter="12">
-        <el-col :xs="24" :md="12">
-          <el-form-item :label="t('views.eventAutomation.rules.builder.fields.entityType')">
-            <el-select
-              :model-value="getStringValue('entityType')"
-              class="w-full"
-              clearable
-              filterable
-              allow-create
-              @update:model-value="setConditionValue('entityType', $event)"
-            >
-              <el-option v-for="option in entityTypeOptions" :key="option" :label="option" :value="option" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :md="12">
-          <el-form-item :label="t('views.eventAutomation.rules.builder.fields.entityNameContains')">
-            <el-input
-              :model-value="getStringValue('entityNameContains')"
-              clearable
-              @update:model-value="setConditionValue('entityNameContains', $event)"
             />
           </el-form-item>
         </el-col>

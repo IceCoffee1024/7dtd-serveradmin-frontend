@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useWindowSize } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
 import { useMenus, usePopup, useTheme } from '~/composables';
 import { useUserInfoStore } from '~/stores/userInfo';
@@ -13,8 +14,10 @@ import ThemeConfig from './ThemeConfig/index.vue';
 
 const { currentTheme } = useTheme();
 const { menus } = useMenus();
+const { width: windowWidth } = useWindowSize();
+const compactLayoutMaxWidth = 768;
 
-const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu');
+const isTopMenu = computed(() => currentTheme.value.layout.mode === 'top-menu' || windowWidth.value <= compactLayoutMaxWidth);
 
 const topMenuAlignmentClass = computed(() => {
   switch (currentTheme.value.layout.header.topMenuAlignment) {
@@ -198,6 +201,53 @@ async function handleCommand(command: string) {
 
 @media (max-width: 960px) {
   .header-breadcrumb {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-shell {
+    gap: 0.5rem;
+  }
+
+  .header-brand {
+    flex: 0 1 auto;
+  }
+
+  .header-menu {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    margin-inline: 0;
+  }
+
+  .header-actions {
+    gap: 0.4rem;
+  }
+
+  .header-actions .header-action-group:first-child {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .header-shell {
+    gap: 0.35rem;
+  }
+
+  .header-brand {
+    flex-basis: auto;
+  }
+
+  .header-actions {
+    gap: 0.25rem;
+  }
+
+  .header-action-group {
+    gap: 0.15rem;
+    padding: 0.18rem;
+  }
+
+  :deep(.logo-link__title) {
     display: none;
   }
 }
