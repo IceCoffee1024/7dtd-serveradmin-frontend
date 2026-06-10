@@ -30,11 +30,13 @@ defineOptions({ name: 'FeatureModulesPage' });
 
 type ExtendedFeatureModuleDefinition = NonNullable<FeatureModuleStatusDto['definition']> & {
   actionTypes?: FeatureModuleCapabilityDto[];
+  dependencies?: FeatureModuleDependency[];
   hookTypes?: FeatureModuleCapabilityDto[];
   stateScopes?: FeatureModuleCapabilityDto[];
   templates?: FeatureModuleCapabilityDto[];
 };
 type ExtendedFeatureModuleStatus = FeatureModuleStatusDto & {
+  settingsSchema?: FeatureModuleSettingsSchema;
   settingsFields?: FeatureModuleSettingsField[];
 };
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
@@ -50,6 +52,26 @@ interface FeatureModuleSettingsField {
   isNullable: boolean;
   isCollection: boolean;
   isEnableFlag: boolean;
+  groupKey?: string;
+  descriptionKey?: string | null;
+  isSensitive?: boolean;
+  isAdvanced?: boolean;
+  sortOrder?: number;
+}
+
+interface FeatureModuleSettingsSchema {
+  totalFieldCount: number;
+  enableFlagCount: number;
+  sensitiveFieldCount: number;
+  advancedFieldCount: number;
+  collectionFieldCount: number;
+  groupKeys: string[];
+}
+
+interface FeatureModuleDependency {
+  key: string;
+  labelKey: string;
+  required: boolean;
 }
 
 const { t } = useI18n();
@@ -78,7 +100,7 @@ const moduleStateKeyword = ref('');
 const filter = ref<ModuleFilter>('all');
 const keyword = ref('');
 const issueFirst = ref(true);
-const detailDrawerSize = computed(() => windowWidth.value <= 768 ? '100%' : '520px');
+const detailDrawerSize = computed(() => windowWidth.value <= 768 ? '100%' : '640px');
 
 const moduleStateCategoryOptions = computed(() => [
   { label: t('views.featureModules.state.categories.all'), value: 'all' },
@@ -435,6 +457,10 @@ function getModuleCapabilities(item: unknown): FeatureModuleCapabilityDto[] {
   return getModuleDefinition(item)?.capabilities ?? [];
 }
 
+function getModuleDependencies(item: unknown): FeatureModuleDependency[] {
+  return getModuleDefinition(item)?.dependencies ?? [];
+}
+
 function getModuleHookTypes(item: unknown): FeatureModuleCapabilityDto[] {
   return getModuleDefinition(item)?.hookTypes ?? [];
 }
@@ -455,10 +481,37 @@ function getModuleSettingsFields(item: unknown): FeatureModuleSettingsField[] {
   return toModuleStatus(item).settingsFields ?? [];
 }
 
+function toSettingsField(row: unknown): FeatureModuleSettingsField {
+  return row as FeatureModuleSettingsField;
+}
+
+function getModuleSettingsSchema(item: unknown): FeatureModuleSettingsSchema {
+  const module = toModuleStatus(item);
+  const fields = getModuleSettingsFields(module);
+  return module.settingsSchema ?? {
+    totalFieldCount: fields.length,
+    enableFlagCount: fields.filter(field => field.isEnableFlag).length,
+    sensitiveFieldCount: fields.filter(field => field.isSensitive).length,
+    advancedFieldCount: fields.filter(field => field.isAdvanced).length,
+    collectionFieldCount: fields.filter(field => field.isCollection).length,
+    groupKeys: [...new Set(fields.map(field => field.groupKey).filter((key): key is string => key != null && key.length > 0))],
+  };
+}
+
 function getCapabilityLabel(capability: FeatureModuleCapabilityDto): string {
   return capability.labelKey == null || capability.labelKey.length === 0
     ? capability.key
     : t(capability.labelKey);
+}
+
+function getDependencyLabel(dependency: FeatureModuleDependency): string {
+  return dependency.labelKey == null || dependency.labelKey.length === 0
+    ? dependency.key
+    : t(dependency.labelKey);
+}
+
+function getDependencyTagType(dependency: FeatureModuleDependency) {
+  return dependency.required ? 'warning' : 'info';
 }
 
 function toModuleStateRow(row: unknown): ModuleStateDto {
@@ -623,6 +676,21 @@ function getSettingsFieldTypeLabel(type: string): string {
   const key = `views.featureModules.settingTypes.${type.toLowerCase()}`;
   const label = t(key);
   return label === key ? type : label;
+}
+
+function getSettingsFieldGroupLabel(field: FeatureModuleSettingsField): string {
+  const key = field.groupKey ?? 'views.featureModules.settingsSchema.groups.general';
+  const label = t(key);
+  return label === key ? key.split('.').at(-1) ?? field.name : label;
+}
+
+function getSettingsSchemaGroupLabels(item: unknown): string {
+  const groups = getModuleSettingsSchema(item).groupKeys.map((key) => {
+    const label = t(key);
+    return label === key ? key.split('.').at(-1) ?? key : label;
+  });
+
+  return groups.length === 0 ? '-' : groups.join(' / ');
 }
 
 function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
@@ -1047,6 +1115,24 @@ onMounted(loadModules);
         </section>
 
         <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.dependencies') }}</h3>
+          <div v-if="getModuleDependencies(selectedModule).length > 0" class="feature-module-detail__tags">
+            <el-tag
+              v-for="dependency in getModuleDependencies(selectedModule)"
+              :key="dependency.key"
+              :type="getDependencyTagType(dependency)"
+              effect="plain"
+            >
+              {{ getDependencyLabel(dependency) }}
+              <span class="feature-module-detail__tag-suffix">
+                {{ dependency.required ? t('views.featureModules.dependencies.required') : t('views.featureModules.dependencies.optional') }}
+              </span>
+            </el-tag>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptyDependencies')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
           <h3>{{ t('views.featureModules.detail.hooks') }}</h3>
           <div v-if="getModuleHookTypes(selectedModule).length > 0" class="feature-module-detail__tags">
             <el-tag
@@ -1197,6 +1283,28 @@ onMounted(loadModules);
 
         <section class="feature-module-detail__section">
           <h3>{{ t('views.featureModules.detail.settingsSchema') }}</h3>
+          <div class="feature-module-detail__schema-overview">
+            <div class="feature-module-detail__schema-overview-item">
+              <span>{{ t('views.featureModules.settingsSchema.totalFields') }}</span>
+              <strong>{{ getModuleSettingsSchema(selectedModule).totalFieldCount }}</strong>
+            </div>
+            <div class="feature-module-detail__schema-overview-item">
+              <span>{{ t('views.featureModules.settingsSchema.enableFlags') }}</span>
+              <strong>{{ getModuleSettingsSchema(selectedModule).enableFlagCount }}</strong>
+            </div>
+            <div class="feature-module-detail__schema-overview-item">
+              <span>{{ t('views.featureModules.settingsSchema.advancedFields') }}</span>
+              <strong>{{ getModuleSettingsSchema(selectedModule).advancedFieldCount }}</strong>
+            </div>
+            <div class="feature-module-detail__schema-overview-item">
+              <span>{{ t('views.featureModules.settingsSchema.sensitiveFields') }}</span>
+              <strong>{{ getModuleSettingsSchema(selectedModule).sensitiveFieldCount }}</strong>
+            </div>
+            <div class="feature-module-detail__schema-overview-item is-wide">
+              <span>{{ t('views.featureModules.settingsSchema.groupsLabel') }}</span>
+              <strong>{{ getSettingsSchemaGroupLabels(selectedModule) }}</strong>
+            </div>
+          </div>
           <el-table
             v-if="getModuleSettingsFields(selectedModule).length > 0"
             :data="getModuleSettingsFields(selectedModule)"
@@ -1209,10 +1317,17 @@ onMounted(loadModules);
                 <code>{{ row.name }}</code>
               </template>
             </el-table-column>
+            <el-table-column :label="t('views.featureModules.settingsSchema.group')" width="110">
+              <template #default="{ row }">
+                <el-tag effect="plain" size="small">
+                  {{ getSettingsFieldGroupLabel(toSettingsField(row)) }}
+                </el-tag>
+              </template>
+            </el-table-column>
             <el-table-column :label="t('views.featureModules.settingsSchema.type')" width="110">
               <template #default="{ row }">
                 <el-tag effect="plain" size="small">
-                  {{ getSettingsFieldTypeLabel(row.type) }}
+                  {{ getSettingsFieldTypeLabel(toSettingsField(row).type) }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -1220,14 +1335,20 @@ onMounted(loadModules);
             <el-table-column :label="t('views.featureModules.settingsSchema.flags')" min-width="150">
               <template #default="{ row }">
                 <div class="feature-module-detail__schema-flags">
-                  <el-tag v-if="row.isEnableFlag" type="success" effect="plain" size="small">
+                  <el-tag v-if="toSettingsField(row).isEnableFlag" type="success" effect="plain" size="small">
                     {{ t('views.featureModules.settingsSchema.enableFlag') }}
                   </el-tag>
-                  <el-tag v-if="row.isCollection" type="info" effect="plain" size="small">
+                  <el-tag v-if="toSettingsField(row).isCollection" type="info" effect="plain" size="small">
                     {{ t('views.featureModules.settingsSchema.collection') }}
                   </el-tag>
-                  <el-tag v-if="row.isNullable" type="warning" effect="plain" size="small">
+                  <el-tag v-if="toSettingsField(row).isNullable" type="warning" effect="plain" size="small">
                     {{ t('views.featureModules.settingsSchema.nullable') }}
+                  </el-tag>
+                  <el-tag v-if="toSettingsField(row).isSensitive" type="danger" effect="plain" size="small">
+                    {{ t('views.featureModules.settingsSchema.sensitive') }}
+                  </el-tag>
+                  <el-tag v-if="toSettingsField(row).isAdvanced" type="warning" effect="plain" size="small">
+                    {{ t('views.featureModules.settingsSchema.advanced') }}
                   </el-tag>
                 </div>
               </template>
@@ -1523,6 +1644,11 @@ onMounted(loadModules);
   gap: 8px;
 }
 
+.feature-module-detail__tag-suffix {
+  margin-left: 4px;
+  color: var(--el-text-color-secondary);
+}
+
 .feature-module-detail__state-table {
   width: 100%;
 
@@ -1640,6 +1766,43 @@ onMounted(loadModules);
   }
 }
 
+.feature-module-detail__schema-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.feature-module-detail__schema-overview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: var(--el-fill-color-extra-light);
+
+  &.is-wide {
+    grid-column: span 4;
+  }
+
+  span {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--el-text-color-primary);
+    font-size: 15px;
+    line-height: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 .feature-module-detail__schema-flags {
   display: flex;
   flex-wrap: wrap;
@@ -1750,8 +1913,13 @@ onMounted(loadModules);
   }
 
   .feature-module-detail__state-overview,
-  .feature-module-detail__state-summary {
+  .feature-module-detail__state-summary,
+  .feature-module-detail__schema-overview {
     grid-template-columns: 1fr;
+  }
+
+  .feature-module-detail__schema-overview-item.is-wide {
+    grid-column: span 1;
   }
 
   .feature-module-detail__state-toolbar .el-input {

@@ -2573,7 +2573,9 @@
         "runtimeStateScopeSummary": "{0} rows, latest {1}",
         "emptyRuntimeStates": "No runtime state rows",
         "settingsSchema": "Settings Schema",
-        "emptySettingsSchema": "No settings schema metadata"
+        "emptySettingsSchema": "No settings schema metadata",
+        "dependencies": "Dependencies",
+        "emptyDependencies": "No dependencies"
       },
       "state": {
         "category": "Type",
@@ -2761,7 +2763,24 @@
         "flags": "Flags",
         "enableFlag": "Enable Flag",
         "collection": "Collection",
-        "nullable": "Nullable"
+        "nullable": "Nullable",
+        "group": "Group",
+        "totalFields": "Fields",
+        "enableFlags": "Enable flags",
+        "advancedFields": "Advanced",
+        "sensitiveFields": "Sensitive",
+        "groupsLabel": "Groups",
+        "sensitive": "Sensitive",
+        "advanced": "Advanced",
+        "groups": {
+          "enablement": "Enablement",
+          "commandAndMessage": "Commands / Messages",
+          "rewardAndEconomy": "Rewards / Economy",
+          "timing": "Timing",
+          "access": "Access",
+          "collections": "Collections",
+          "general": "General"
+        }
       },
       "settingTypes": {
         "boolean": "Boolean",
@@ -2770,6 +2789,10 @@
         "array": "Array",
         "enum": "Enum",
         "object": "Object"
+      },
+      "dependencies": {
+        "required": "Required",
+        "optional": "Optional"
       }
     },
     "eventAutomation": {

@@ -2573,7 +2573,9 @@
         "runtimeStateScopeSummary": "{0} rows, latest {1}",
         "emptyRuntimeStates": "No runtime state rows",
         "settingsSchema": "Settings Schema",
-        "emptySettingsSchema": "No settings schema metadata"
+        "emptySettingsSchema": "No settings schema metadata",
+        "dependencies": "依賴模組",
+        "emptyDependencies": "無依賴模組"
       },
       "permissionLevel": "等級 {0}",
       "permissionFlags": {
@@ -2761,7 +2763,24 @@
         "flags": "Flags",
         "enableFlag": "Enable Flag",
         "collection": "Collection",
-        "nullable": "Nullable"
+        "nullable": "Nullable",
+        "group": "分組",
+        "totalFields": "欄位數",
+        "enableFlags": "啟用開關",
+        "advancedFields": "進階欄位",
+        "sensitiveFields": "敏感欄位",
+        "groupsLabel": "分組",
+        "sensitive": "敏感",
+        "advanced": "進階",
+        "groups": {
+          "enablement": "啟用控制",
+          "commandAndMessage": "命令 / 訊息",
+          "rewardAndEconomy": "獎勵 / 經濟",
+          "timing": "時間 / 排程",
+          "access": "存取 / 權限",
+          "collections": "集合配置",
+          "general": "通用"
+        }
       },
       "settingTypes": {
         "boolean": "Boolean",
@@ -2770,6 +2789,10 @@
         "array": "Array",
         "enum": "Enum",
         "object": "Object"
+      },
+      "dependencies": {
+        "required": "必需",
+        "optional": "可選"
       }
     },
     "eventAutomation": {
@@ -3147,4 +3170,3 @@
     }
   }
 }
-

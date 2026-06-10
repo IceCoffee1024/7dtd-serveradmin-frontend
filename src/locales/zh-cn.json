@@ -2573,7 +2573,9 @@
         "runtimeStateScopeSummary": "{0} 条，最近 {1}",
         "emptyRuntimeStates": "暂无运行状态记录",
         "settingsSchema": "配置 Schema 摘要",
-        "emptySettingsSchema": "暂无配置 Schema 元数据"
+        "emptySettingsSchema": "暂无配置 Schema 元数据",
+        "dependencies": "依赖模块",
+        "emptyDependencies": "无依赖模块"
       },
       "state": {
         "category": "类型",
@@ -2761,7 +2763,24 @@
         "flags": "标记",
         "enableFlag": "启用开关",
         "collection": "集合",
-        "nullable": "可为空"
+        "nullable": "可为空",
+        "group": "分组",
+        "totalFields": "字段数",
+        "enableFlags": "启用开关",
+        "advancedFields": "高级字段",
+        "sensitiveFields": "敏感字段",
+        "groupsLabel": "分组",
+        "sensitive": "敏感",
+        "advanced": "高级",
+        "groups": {
+          "enablement": "启用控制",
+          "commandAndMessage": "命令 / 消息",
+          "rewardAndEconomy": "奖励 / 经济",
+          "timing": "时间 / 计划",
+          "access": "访问 / 权限",
+          "collections": "集合配置",
+          "general": "通用"
+        }
       },
       "settingTypes": {
         "boolean": "布尔",
@@ -2770,6 +2789,10 @@
         "array": "数组",
         "enum": "枚举",
         "object": "对象"
+      },
+      "dependencies": {
+        "required": "必需",
+        "optional": "可选"
       }
     },
     "eventAutomation": {
