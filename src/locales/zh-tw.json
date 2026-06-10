@@ -2559,6 +2559,10 @@
         "capabilities": "能力",
         "emptyCapabilities": "无能力信息",
         "configurationIssues": "配置问题",
+        "healthIssues": "健康問題",
+        "emptyHealthIssues": "無健康問題",
+        "securityPolicy": "安全策略",
+        "emptySecurityPolicy": "無安全策略宣告",
         "hooks": "Hook 類型",
         "emptyHooks": "無 Hook 類型",
         "actions": "動作類型",
@@ -2687,6 +2691,31 @@
         "info": "信息",
         "warning": "警告",
         "error": "错误"
+      },
+      "healthIssueSources": {
+        "Availability": "可用性",
+        "Configuration": "配置",
+        "Dependency": "依賴",
+        "RuntimeState": "運行態",
+        "Security": "安全"
+      },
+      "healthIssues": {
+        "unavailable": "模組未註冊或目前運行時不可用。",
+        "disabled": "模組目前已停用。",
+        "requiredDependencyDisabled": "必要依賴「{0}」未啟用。",
+        "requiredDependencyUnavailable": "必要依賴「{0}」不可用。"
+      },
+      "security": {
+        "sensitiveActions": "敏感動作",
+        "auditedActions": "審計動作",
+        "consolePolicy": "控制台命令策略",
+        "none": "無",
+        "consoleUnsupported": "不執行控制台命令",
+        "allowListRequired": "需要命令白名單",
+        "allowListNotRequired": "未要求命令白名單",
+        "unsafeOptInRequired": "危險命令需要明確確認",
+        "unsafeOptInNotRequired": "未要求危險命令確認",
+        "defaultAllowedCommands": "預設允許命令"
       },
       "capabilities": {
         "status": "状态",

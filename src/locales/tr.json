@@ -2559,6 +2559,10 @@
         "capabilities": "Capabilities",
         "emptyCapabilities": "No capabilities",
         "configurationIssues": "Configuration Issues",
+        "healthIssues": "Health Issues",
+        "emptyHealthIssues": "No health issues",
+        "securityPolicy": "Security Policy",
+        "emptySecurityPolicy": "No security policy declaration",
         "hooks": "Hook Types",
         "emptyHooks": "No hook types",
         "actions": "Action Types",
@@ -2687,6 +2691,31 @@
         "info": "Info",
         "warning": "Warning",
         "error": "Error"
+      },
+      "healthIssueSources": {
+        "Availability": "Availability",
+        "Configuration": "Configuration",
+        "Dependency": "Dependency",
+        "RuntimeState": "Runtime State",
+        "Security": "Security"
+      },
+      "healthIssues": {
+        "unavailable": "Module is not registered or is unavailable at runtime.",
+        "disabled": "Module is currently disabled.",
+        "requiredDependencyDisabled": "Required dependency \"{0}\" is disabled.",
+        "requiredDependencyUnavailable": "Required dependency \"{0}\" is unavailable."
+      },
+      "security": {
+        "sensitiveActions": "Sensitive Actions",
+        "auditedActions": "Audited Actions",
+        "consolePolicy": "Console Command Policy",
+        "none": "None",
+        "consoleUnsupported": "Does not execute console commands",
+        "allowListRequired": "Command allow-list required",
+        "allowListNotRequired": "Command allow-list not required",
+        "unsafeOptInRequired": "Unsafe commands require explicit opt-in",
+        "unsafeOptInNotRequired": "Unsafe command opt-in not required",
+        "defaultAllowedCommands": "Default Allowed Commands"
       },
       "capabilities": {
         "status": "Status",

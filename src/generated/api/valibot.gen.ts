@@ -1362,6 +1362,36 @@ export const vFeatureModuleDependencyDto = v.strictObject({
 });
 
 /**
+ * Describes one sensitive or audited module action.
+ */
+export const vFeatureModuleSecurityActionDto = v.strictObject({
+    key: v.string(),
+    labelKey: v.string(),
+    highRisk: v.boolean(),
+    audited: v.boolean(),
+    auditActionType: v.nullish(v.string())
+});
+
+/**
+ * Describes console command execution policy exposed by a module.
+ */
+export const vFeatureModuleConsoleCommandPolicyDto = v.strictObject({
+    supportsConsoleCommands: v.boolean(),
+    requiresAllowList: v.boolean(),
+    requiresUnsafeOptIn: v.boolean(),
+    defaultAllowedCommands: v.array(v.string())
+});
+
+/**
+ * Read-only security and command policy summary for a module.
+ */
+export const vFeatureModuleSecurityPolicyDto = v.strictObject({
+    sensitiveActions: v.array(vFeatureModuleSecurityActionDto),
+    auditedActions: v.array(vFeatureModuleSecurityActionDto),
+    consoleCommandPolicy: vFeatureModuleConsoleCommandPolicyDto
+});
+
+/**
  * Static metadata that describes how a feature module is presented in the management UI.
  */
 export const vFeatureModuleDefinitionDto = v.strictObject({
@@ -1376,7 +1406,8 @@ export const vFeatureModuleDefinitionDto = v.strictObject({
     actionTypes: v.array(vFeatureModuleCapabilityDto),
     templates: v.array(vFeatureModuleCapabilityDto),
     stateScopes: v.array(vFeatureModuleCapabilityDto),
-    dependencies: v.array(vFeatureModuleDependencyDto)
+    dependencies: v.array(vFeatureModuleDependencyDto),
+    securityPolicy: vFeatureModuleSecurityPolicyDto
 });
 
 /**
@@ -1473,6 +1504,30 @@ export const vFeatureModuleSettingsSchemaDto = v.strictObject({
 });
 
 /**
+ * Source category for a unified module health issue.
+ */
+export const vFeatureModuleHealthIssueSource = v.picklist([
+    'Availability',
+    'Configuration',
+    'Dependency',
+    'RuntimeState',
+    'Security'
+]);
+
+/**
+ * Describes one normalized health issue for the module center.
+ */
+export const vFeatureModuleHealthIssueDto = v.strictObject({
+    code: v.string(),
+    severity: vFeatureModuleConfigurationIssueSeverity,
+    source: vFeatureModuleHealthIssueSource,
+    messageCode: v.string(),
+    args: v.array(v.string()),
+    relatedModuleKey: v.nullish(v.string()),
+    relatedStateScope: v.nullish(v.string())
+});
+
+/**
  * Represents the runtime status of a server-admin feature module.
  */
 export const vFeatureModuleStatusDto = v.strictObject({
@@ -1490,7 +1545,8 @@ export const vFeatureModuleStatusDto = v.strictObject({
     canDisable: v.boolean(),
     canValidate: v.boolean(),
     settingsFields: v.array(vFeatureModuleSettingsFieldDto),
-    settingsSchema: vFeatureModuleSettingsSchemaDto
+    settingsSchema: vFeatureModuleSettingsSchemaDto,
+    healthIssues: v.array(vFeatureModuleHealthIssueDto)
 });
 
 /**

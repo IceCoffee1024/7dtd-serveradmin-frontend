@@ -2378,6 +2378,10 @@ export type FeatureModuleStatusDto = {
      * Read-only settings schema summary for configuration preview.
      */
     settingsSchema: FeatureModuleSettingsSchemaDto;
+    /**
+     * Unified health issues for module center troubleshooting.
+     */
+    healthIssues: Array<FeatureModuleHealthIssueDto>;
 };
 
 /**
@@ -2437,6 +2441,10 @@ export type FeatureModuleDefinitionDto = {
      * Other modules or integrations this module depends on.
      */
     dependencies: Array<FeatureModuleDependencyDto>;
+    /**
+     * Read-only security and command policy metadata.
+     */
+    securityPolicy: FeatureModuleSecurityPolicyDto;
 };
 
 /**
@@ -2505,6 +2513,72 @@ export type FeatureModuleDependencyDto = {
      * True when this dependency should be enabled for the module capability to work.
      */
     required: boolean;
+};
+
+/**
+ * Read-only security and command policy summary for a module.
+ */
+export type FeatureModuleSecurityPolicyDto = {
+    /**
+     * Sensitive actions declared by this module.
+     */
+    sensitiveActions: Array<FeatureModuleSecurityActionDto>;
+    /**
+     * Actions expected to produce audit entries.
+     */
+    auditedActions: Array<FeatureModuleSecurityActionDto>;
+    /**
+     * Console command policy declared by this module.
+     */
+    consoleCommandPolicy: FeatureModuleConsoleCommandPolicyDto;
+};
+
+/**
+ * Describes one sensitive or audited module action.
+ */
+export type FeatureModuleSecurityActionDto = {
+    /**
+     * Stable action key.
+     */
+    key: string;
+    /**
+     * Frontend i18n key used for action label.
+     */
+    labelKey: string;
+    /**
+     * True when this action should be treated as high risk in generic UIs.
+     */
+    highRisk: boolean;
+    /**
+     * True when this action should produce an audit entry.
+     */
+    audited: boolean;
+    /**
+     * Optional audit action type name.
+     */
+    auditActionType?: string | null;
+};
+
+/**
+ * Describes console command execution policy exposed by a module.
+ */
+export type FeatureModuleConsoleCommandPolicyDto = {
+    /**
+     * True when this module can execute console commands.
+     */
+    supportsConsoleCommands: boolean;
+    /**
+     * True when commands must match an allow-list.
+     */
+    requiresAllowList: boolean;
+    /**
+     * True when unsafe commands require an explicit opt-in flag.
+     */
+    requiresUnsafeOptIn: boolean;
+    /**
+     * Known safe command names or prefixes for the default policy.
+     */
+    defaultAllowedCommands: Array<string>;
 };
 
 /**
@@ -2708,6 +2782,45 @@ export type FeatureModuleSettingsSchemaDto = {
      */
     groupKeys: Array<string>;
 };
+
+/**
+ * Describes one normalized health issue for the module center.
+ */
+export type FeatureModuleHealthIssueDto = {
+    /**
+     * Stable machine-readable issue code.
+     */
+    code: string;
+    /**
+     * Issue severity.
+     */
+    severity: FeatureModuleConfigurationIssueSeverity;
+    /**
+     * Issue source category.
+     */
+    source: FeatureModuleHealthIssueSource;
+    /**
+     * Stable frontend i18n message code under views.featureModules.healthIssues.
+     */
+    messageCode: string;
+    /**
+     * Positional message arguments for the frontend i18n formatter.
+     */
+    args: Array<string>;
+    /**
+     * Optional related module key for dependency issues.
+     */
+    relatedModuleKey?: string | null;
+    /**
+     * Optional related state scope for runtime-state issues.
+     */
+    relatedStateScope?: string | null;
+};
+
+/**
+ * Source category for a unified module health issue.
+ */
+export type FeatureModuleHealthIssueSource = 'Availability' | 'Configuration' | 'Dependency' | 'RuntimeState' | 'Security';
 
 /**
  * Unified read-only settings summary for a feature module.

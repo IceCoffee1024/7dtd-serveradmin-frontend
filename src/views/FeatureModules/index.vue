@@ -2,13 +2,17 @@
 import type {
   FeatureModuleCapabilityDto,
   FeatureModuleCommandDto,
-  FeatureModuleConfigurationIssueDto,
   FeatureModuleConfigurationIssueSeverity,
   FeatureModuleConfigurationStatus,
+  FeatureModuleConsoleCommandPolicyDto,
   FeatureModuleDependencyDto,
   FeatureModuleHealth,
+  FeatureModuleHealthIssueDto,
+  FeatureModuleHealthIssueSource,
   FeatureModulePermissionDto,
   FeatureModuleRouteDto,
+  FeatureModuleSecurityActionDto,
+  FeatureModuleSecurityPolicyDto,
   FeatureModuleSettingsFieldDto,
   FeatureModuleSettingsSchemaDto,
   FeatureModuleStatusDto,
@@ -34,6 +38,7 @@ defineOptions({ name: 'FeatureModulesPage' });
 type FeatureModuleHealthPayload = FeatureModuleHealth | string | number | null | undefined;
 type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus | string | number | null | undefined;
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
+type FeatureModuleHealthIssueSourcePayload = FeatureModuleHealthIssueSource | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
 type ModuleStateCategory = 'all' | 'cooldown' | 'daily' | 'firstJoin' | 'other';
 
@@ -342,6 +347,11 @@ function getConfigurationIssueCount(item: unknown): number {
 }
 
 function getModuleIssueCount(item: unknown): number {
+  const healthIssues = getModuleHealthIssues(item);
+  if (healthIssues.length > 0) {
+    return healthIssues.filter(issue => normalizeIssueSeverity(issue.severity) !== 'Info').length;
+  }
+
   return getConfigurationIssueCount(item) + getRequiredDependencyIssueCount(item);
 }
 
@@ -352,16 +362,72 @@ function getConfigurationCheckedAt(item: unknown): string {
     : dayjs(module.configuration.checkedAt).format('YYYY-MM-DD HH:mm:ss');
 }
 
-function getConfigurationIssues(item: unknown): FeatureModuleConfigurationIssueDto[] {
+function getModuleHealthIssues(item: unknown): FeatureModuleHealthIssueDto[] {
   const module = toModuleStatus(item);
-  return module.configuration?.issues ?? [];
+  return module.healthIssues ?? [];
 }
 
-function getIssueText(issue: FeatureModuleConfigurationIssueDto): string {
-  const messageCode = issue.messageCode;
-  if (messageCode == null || messageCode.length === 0)
+function getHealthIssuesBySeverity(item: unknown, severity: FeatureModuleConfigurationIssueSeverity): FeatureModuleHealthIssueDto[] {
+  return getModuleHealthIssues(item)
+    .filter(issue => normalizeIssueSeverity(issue.severity) === severity);
+}
+
+function normalizeHealthIssueSource(source: FeatureModuleHealthIssueSourcePayload): FeatureModuleHealthIssueSource {
+  if (typeof source === 'number') {
+    if (source === 1)
+      return 'Configuration';
+    if (source === 2)
+      return 'Dependency';
+    if (source === 3)
+      return 'RuntimeState';
+    if (source === 4)
+      return 'Security';
+    return 'Availability';
+  }
+
+  const text = String(source ?? '').toLowerCase();
+  if (text === 'configuration')
+    return 'Configuration';
+  if (text === 'dependency')
+    return 'Dependency';
+  if (text === 'runtimestate')
+    return 'RuntimeState';
+  if (text === 'security')
+    return 'Security';
+  return 'Availability';
+}
+
+function getHealthIssueSourceLabel(source: FeatureModuleHealthIssueSourcePayload): string {
+  return t(`views.featureModules.healthIssueSources.${normalizeHealthIssueSource(source)}`);
+}
+
+function getHealthIssueText(issue: FeatureModuleHealthIssueDto): string {
+  const source = normalizeHealthIssueSource(issue.source);
+  if (issue.messageCode == null || issue.messageCode.length === 0)
     return issue.code ?? '-';
-  return t(`views.featureModules.configuration.${messageCode}`, issue.args ?? []);
+
+  if (source === 'Configuration') {
+    return t(`views.featureModules.configuration.${issue.messageCode}`, issue.args ?? []);
+  }
+
+  if (source === 'Dependency' && (issue.args?.length ?? 0) >= 2) {
+    const label = t(issue.args![0]);
+    return t(`views.featureModules.healthIssues.${issue.messageCode}`, [
+      label === issue.args![0] ? issue.args![1] : label,
+    ]);
+  }
+
+  return t(`views.featureModules.healthIssues.${issue.messageCode}`, issue.args ?? []);
+}
+
+function getHealthIssueKey(issue: FeatureModuleHealthIssueDto): string {
+  return [
+    normalizeHealthIssueSource(issue.source),
+    issue.code,
+    issue.messageCode,
+    issue.relatedModuleKey,
+    issue.relatedStateScope,
+  ].filter(Boolean).join(':');
 }
 
 function getIssueTagType(severity: FeatureModuleConfigurationIssueSeverityPayload) {
@@ -413,11 +479,6 @@ function getIssueSeverityLabel(severity: FeatureModuleConfigurationIssueSeverity
   if (text === 'error')
     return t('views.featureModules.issueSeverity.error');
   return t('views.featureModules.issueSeverity.info');
-}
-
-function getIssuesBySeverity(item: unknown, severity: FeatureModuleConfigurationIssueSeverity): FeatureModuleConfigurationIssueDto[] {
-  return getConfigurationIssues(item)
-    .filter(issue => normalizeIssueSeverity(issue.severity) === severity);
 }
 
 function getModuleCapabilities(item: unknown): FeatureModuleCapabilityDto[] {
@@ -686,6 +747,66 @@ function getSettingsSchemaGroupLabels(item: unknown): string {
   });
 
   return groups.length === 0 ? '-' : groups.join(' / ');
+}
+
+function getSecurityPolicy(item: unknown): FeatureModuleSecurityPolicyDto {
+  return getModuleDefinition(item)?.securityPolicy ?? {
+    sensitiveActions: [],
+    auditedActions: [],
+    consoleCommandPolicy: {
+      supportsConsoleCommands: false,
+      requiresAllowList: false,
+      requiresUnsafeOptIn: false,
+      defaultAllowedCommands: [],
+    },
+  };
+}
+
+function getSensitiveActions(item: unknown): FeatureModuleSecurityActionDto[] {
+  return getSecurityPolicy(item).sensitiveActions ?? [];
+}
+
+function getAuditedActions(item: unknown): FeatureModuleSecurityActionDto[] {
+  return getSecurityPolicy(item).auditedActions ?? [];
+}
+
+function getConsoleCommandPolicy(item: unknown): FeatureModuleConsoleCommandPolicyDto {
+  return getSecurityPolicy(item).consoleCommandPolicy ?? {
+    supportsConsoleCommands: false,
+    requiresAllowList: false,
+    requiresUnsafeOptIn: false,
+    defaultAllowedCommands: [],
+  };
+}
+
+function hasSecurityPolicy(item: unknown): boolean {
+  const policy = getSecurityPolicy(item);
+  return (policy.sensitiveActions?.length ?? 0) > 0
+    || (policy.auditedActions?.length ?? 0) > 0
+    || policy.consoleCommandPolicy?.supportsConsoleCommands === true;
+}
+
+function getSecurityActionLabel(action: FeatureModuleSecurityActionDto): string {
+  if (action.labelKey == null || action.labelKey.length === 0)
+    return action.key;
+
+  const label = t(action.labelKey);
+  return label === action.labelKey ? action.key : label;
+}
+
+function getConsoleCommandPolicyTags(item: unknown): string[] {
+  const policy = getConsoleCommandPolicy(item);
+  if (!policy.supportsConsoleCommands)
+    return [t('views.featureModules.security.consoleUnsupported')];
+
+  return [
+    policy.requiresAllowList
+      ? t('views.featureModules.security.allowListRequired')
+      : t('views.featureModules.security.allowListNotRequired'),
+    policy.requiresUnsafeOptIn
+      ? t('views.featureModules.security.unsafeOptInRequired')
+      : t('views.featureModules.security.unsafeOptInNotRequired'),
+  ];
 }
 
 function getConfigurationTagType(status: FeatureModuleConfigurationStatus) {
@@ -1354,27 +1475,84 @@ onMounted(loadModules);
         </section>
 
         <section class="feature-module-detail__section">
-          <h3>{{ t('views.featureModules.detail.configurationIssues') }}</h3>
-          <div v-if="getConfigurationIssues(selectedModule).length > 0" class="feature-module-detail__issues">
+          <h3>{{ t('views.featureModules.detail.healthIssues') }}</h3>
+          <div v-if="getModuleHealthIssues(selectedModule).length > 0" class="feature-module-detail__issues">
             <template v-for="severity in issueSeverities" :key="severity">
-              <div v-if="getIssuesBySeverity(selectedModule, severity).length > 0" class="feature-module-detail__issue-group">
+              <div v-if="getHealthIssuesBySeverity(selectedModule, severity).length > 0" class="feature-module-detail__issue-group">
                 <div class="feature-module-detail__issue-group-title">
                   {{ getIssueSeverityLabel(severity) }}
                 </div>
                 <div
-                  v-for="issue in getIssuesBySeverity(selectedModule, severity)"
-                  :key="issue.code ?? issue.messageCode ?? getIssueText(issue)"
+                  v-for="issue in getHealthIssuesBySeverity(selectedModule, severity)"
+                  :key="getHealthIssueKey(issue)"
                   class="feature-module-detail__issue"
                 >
                   <el-tag :type="getIssueTagType(issue.severity)" effect="plain" size="small">
                     {{ getIssueSeverityLabel(issue.severity) }}
                   </el-tag>
-                  <span>{{ getIssueText(issue) }}</span>
+                  <el-tag effect="plain" size="small">
+                    {{ getHealthIssueSourceLabel(issue.source) }}
+                  </el-tag>
+                  <span>{{ getHealthIssueText(issue) }}</span>
                 </div>
               </div>
             </template>
           </div>
-          <el-empty v-else :description="t('views.featureModules.detail.emptyConfigurationIssues')" :image-size="72" />
+          <el-empty v-else :description="t('views.featureModules.detail.emptyHealthIssues')" :image-size="72" />
+        </section>
+
+        <section class="feature-module-detail__section">
+          <h3>{{ t('views.featureModules.detail.securityPolicy') }}</h3>
+          <div v-if="hasSecurityPolicy(selectedModule)" class="feature-module-detail__security">
+            <div class="feature-module-detail__security-block">
+              <strong>{{ t('views.featureModules.security.sensitiveActions') }}</strong>
+              <div v-if="getSensitiveActions(selectedModule).length > 0" class="feature-module-detail__tags">
+                <el-tag
+                  v-for="action in getSensitiveActions(selectedModule)"
+                  :key="action.key"
+                  :type="action.highRisk ? 'danger' : 'warning'"
+                  effect="plain"
+                  size="small"
+                >
+                  {{ getSecurityActionLabel(action) }}
+                </el-tag>
+              </div>
+              <span v-else>{{ t('views.featureModules.security.none') }}</span>
+            </div>
+            <div class="feature-module-detail__security-block">
+              <strong>{{ t('views.featureModules.security.auditedActions') }}</strong>
+              <div v-if="getAuditedActions(selectedModule).length > 0" class="feature-module-detail__tags">
+                <el-tag
+                  v-for="action in getAuditedActions(selectedModule)"
+                  :key="action.key"
+                  :type="action.highRisk ? 'danger' : 'info'"
+                  effect="plain"
+                  size="small"
+                >
+                  {{ getSecurityActionLabel(action) }}
+                </el-tag>
+              </div>
+              <span v-else>{{ t('views.featureModules.security.none') }}</span>
+            </div>
+            <div class="feature-module-detail__security-block">
+              <strong>{{ t('views.featureModules.security.consolePolicy') }}</strong>
+              <div class="feature-module-detail__tags">
+                <el-tag
+                  v-for="tag in getConsoleCommandPolicyTags(selectedModule)"
+                  :key="tag"
+                  effect="plain"
+                  size="small"
+                >
+                  {{ tag }}
+                </el-tag>
+              </div>
+              <div v-if="getConsoleCommandPolicy(selectedModule).defaultAllowedCommands?.length" class="feature-module-detail__console-commands">
+                <span>{{ t('views.featureModules.security.defaultAllowedCommands') }}</span>
+                <code>{{ getConsoleCommandPolicy(selectedModule).defaultAllowedCommands?.join(', ') }}</code>
+              </div>
+            </div>
+          </div>
+          <el-empty v-else :description="t('views.featureModules.detail.emptySecurityPolicy')" :image-size="72" />
         </section>
 
         <section class="feature-module-detail__section">
@@ -1815,6 +1993,52 @@ onMounted(loadModules);
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.feature-module-detail__security {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature-module-detail__security-block {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--el-fill-color-extra-light);
+
+  strong {
+    color: var(--el-text-color-primary);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  span {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.feature-module-detail__console-commands {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+
+  code {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--el-text-color-regular);
+    font-size: 12px;
+    line-height: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .feature-module-detail__issues {
