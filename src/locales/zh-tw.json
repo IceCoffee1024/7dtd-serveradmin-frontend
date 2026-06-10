@@ -2792,7 +2792,10 @@
       },
       "dependencies": {
         "required": "必需",
-        "optional": "可選"
+        "optional": "可選",
+        "statusHealthy": "已啟用",
+        "statusDisabled": "未啟用",
+        "statusUnavailable": "不可用"
       }
     },
     "eventAutomation": {

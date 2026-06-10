@@ -2792,7 +2792,10 @@
       },
       "dependencies": {
         "required": "Required",
-        "optional": "Optional"
+        "optional": "Optional",
+        "statusHealthy": "Enabled",
+        "statusDisabled": "Disabled",
+        "statusUnavailable": "Unavailable"
       }
     },
     "eventAutomation": {
