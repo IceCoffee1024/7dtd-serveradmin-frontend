@@ -542,6 +542,7 @@
         "timeline": "Player Timeline",
         "punishmentHistory": "Punishment History",
         "auditLogs": "Recent Admin Actions",
+        "adminActionTimeline": "Admin Action Timeline",
         "trends": "Long-term Trends"
       },
       "fields": {
@@ -579,7 +580,12 @@
         "lastPunishmentAt": "Last Punishment",
         "date": "Date",
         "activityTrend": "Activity Trend",
-        "expiresAt": "Expires At"
+        "expiresAt": "Expires At",
+        "activeDays": "Active Days",
+        "recent7DayActivity": "Last 7 Days",
+        "peakDay": "Peak Day / Count",
+        "punishmentDays": "Punishment Days",
+        "noAdminActions": "No admin actions yet"
       },
       "punishmentTypes": {
         "ban": "Ban",
@@ -2738,7 +2744,9 @@
         "unavailable": "Module is not registered or is unavailable at runtime.",
         "disabled": "Module is currently disabled.",
         "requiredDependencyDisabled": "Required dependency \"{0}\" is disabled.",
-        "requiredDependencyUnavailable": "Required dependency \"{0}\" is unavailable."
+        "requiredDependencyUnavailable": "Required dependency \"{0}\" is unavailable.",
+        "eventAutomationRecentFailures": "Event automation failed {0} time(s) today. Latest failed rule: {1}.",
+        "consoleCommandPolicyEnforced": "Console command execution is protected by policy: allow-list={0}, unsafe opt-in={1}."
       },
       "security": {
         "sensitiveActions": "Sensitive Actions",
@@ -2825,6 +2833,21 @@
         "statusHealthy": "Enabled",
         "statusDisabled": "Disabled",
         "statusUnavailable": "Unavailable"
+      },
+      "healthIssueSuggestions": {
+        "moduleUnavailable": "Confirm the backend feature is registered and loaded by the server.",
+        "enableModule": "Enable the module or check its dedicated settings page.",
+        "reviewSettings": "Open settings to check required fields, switches, and dependencies.",
+        "enableDependency": "Enable the dependency first, then validate this module again.",
+        "installDependency": "The dependency module is unavailable. Confirm the feature is deployed or registered.",
+        "inspectRunHistory": "Open run history and fix the latest failed rule first.",
+        "reviewSecurityPolicy": "Confirm sensitive actions, audited actions, and console command allow-list policy."
+      },
+      "healthIssueFixes": {
+        "open": "Open",
+        "openSettings": "Open Settings",
+        "openDependency": "Open Dependency",
+        "openRunHistory": "View History"
       }
     },
     "eventAutomation": {

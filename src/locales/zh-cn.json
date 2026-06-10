@@ -542,6 +542,7 @@
         "timeline": "玩家时间线",
         "punishmentHistory": "处罚历史",
         "auditLogs": "最近管理员操作",
+        "adminActionTimeline": "管理员操作时间线",
         "trends": "长期趋势"
       },
       "fields": {
@@ -579,7 +580,12 @@
         "lastPunishmentAt": "最近处罚",
         "date": "日期",
         "activityTrend": "活动趋势",
-        "expiresAt": "过期时间"
+        "expiresAt": "过期时间",
+        "activeDays": "活跃天数",
+        "recent7DayActivity": "近 7 天活动",
+        "peakDay": "峰值日期 / 次数",
+        "punishmentDays": "处罚发生天数",
+        "noAdminActions": "暂无管理员操作时间线"
       },
       "punishmentTypes": {
         "ban": "封禁",
@@ -2738,7 +2744,9 @@
         "unavailable": "模块未注册或当前运行时不可用。",
         "disabled": "模块当前已禁用。",
         "requiredDependencyDisabled": "必需依赖“{0}”未启用。",
-        "requiredDependencyUnavailable": "必需依赖“{0}”不可用。"
+        "requiredDependencyUnavailable": "必需依赖“{0}”不可用。",
+        "eventAutomationRecentFailures": "事件自动化今日失败 {0} 次，最近失败规则：{1}。",
+        "consoleCommandPolicyEnforced": "控制台命令执行已启用安全策略：白名单={0}，危险命令显式确认={1}。"
       },
       "security": {
         "sensitiveActions": "敏感动作",
@@ -2825,6 +2833,21 @@
         "statusHealthy": "已启用",
         "statusDisabled": "未启用",
         "statusUnavailable": "不可用"
+      },
+      "healthIssueSuggestions": {
+        "moduleUnavailable": "确认后端功能是否已注册、对应模块是否已随服务端加载。",
+        "enableModule": "启用模块或检查专属设置页中的启用项。",
+        "reviewSettings": "打开设置页检查必填项、开关和依赖配置。",
+        "enableDependency": "先启用依赖模块，再回到当前模块重新验证。",
+        "installDependency": "依赖模块当前不可用，确认功能是否已部署或注册。",
+        "inspectRunHistory": "查看执行历史中的失败详情，优先处理最近失败规则。",
+        "reviewSecurityPolicy": "确认敏感动作、审计动作和控制台命令白名单策略符合预期。"
+      },
+      "healthIssueFixes": {
+        "open": "打开",
+        "openSettings": "打开设置",
+        "openDependency": "打开依赖",
+        "openRunHistory": "查看历史"
       }
     },
     "eventAutomation": {
