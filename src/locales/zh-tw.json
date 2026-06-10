@@ -2791,7 +2791,14 @@
           "cooldown": "Last triggered at {0}, {1}",
           "firstJoin": "Completed at {0}, player {1}",
           "daily": "Latest daily state at {0}, {1}"
-        }
+        },
+        "cleanupScopePlaceholder": "清理範圍",
+        "cleanupAction": "清理狀態",
+        "cleanupNoCriteria": "請選擇清理範圍，或輸入至少 3 個搜尋字元。",
+        "cleanupNoMatches": "沒有符合的執行狀態記錄。",
+        "cleanupConfirmTitle": "清理執行狀態",
+        "cleanupConfirm": "確定清理 {0} 的 {2} 筆執行狀態嗎？條件：{1}",
+        "cleanupSuccess": "已刪除 {0} 筆執行狀態。"
       },
       "settingsSchema": {
         "name": "Name",

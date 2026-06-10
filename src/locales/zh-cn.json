@@ -2620,7 +2620,14 @@
           "cooldown": "最近触发 {0}，{1}",
           "firstJoin": "已完成 {0}，玩家 {1}",
           "daily": "最近每日状态 {0}，{1}"
-        }
+        },
+        "cleanupScopePlaceholder": "清理范围",
+        "cleanupAction": "清理状态",
+        "cleanupNoCriteria": "请选择清理范围，或输入至少 3 个搜索字符。",
+        "cleanupNoMatches": "没有匹配的运行状态记录。",
+        "cleanupConfirmTitle": "清理运行状态",
+        "cleanupConfirm": "确定清理 {0} 的 {2} 条运行状态吗？条件：{1}",
+        "cleanupSuccess": "已删除 {0} 条运行状态。"
       },
       "permissionLevel": "等级 {0}",
       "permissionFlags": {

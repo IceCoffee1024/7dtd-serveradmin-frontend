@@ -2791,7 +2791,14 @@
           "cooldown": "Last triggered at {0}, {1}",
           "firstJoin": "Completed at {0}, player {1}",
           "daily": "Latest daily state at {0}, {1}"
-        }
+        },
+        "cleanupScopePlaceholder": "Cleanup scope",
+        "cleanupAction": "Clean State",
+        "cleanupNoCriteria": "Select a cleanup scope or enter at least 3 search characters.",
+        "cleanupNoMatches": "No matching runtime state rows.",
+        "cleanupConfirmTitle": "Clean Runtime State",
+        "cleanupConfirm": "Clean {2} runtime state row(s) for {0}? Criteria: {1}",
+        "cleanupSuccess": "Deleted {0} runtime state row(s)."
       },
       "settingsSchema": {
         "name": "Name",

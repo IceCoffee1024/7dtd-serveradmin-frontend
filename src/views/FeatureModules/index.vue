@@ -17,6 +17,7 @@ import type {
   FeatureModuleSettingsSchemaDto,
   FeatureModuleStatusDto,
   FeatureSubModuleStatusDto,
+  ModuleStateCleanupRequestDto,
   ModuleStateDto,
 } from '~/generated/api/types.gen';
 import { useWindowSize } from '@vueuse/core';
@@ -25,6 +26,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables/usePopup';
 import {
+  featureModulesCleanupStates,
   featureModulesDisableModule,
   featureModulesEnableModule,
   featureModulesGetFeatureModules,
@@ -63,12 +65,21 @@ const detailVisible = ref(false);
 const moduleStates = ref<ModuleStateDto[]>([]);
 const moduleStateTotal = ref(0);
 const moduleStateLoading = ref(false);
+const moduleStateCleanupLoading = ref(false);
 const moduleStateCategory = ref<ModuleStateCategory>('all');
 const moduleStateKeyword = ref('');
+const moduleStateCleanupScope = ref('');
 const filter = ref<ModuleFilter>('all');
 const keyword = ref('');
 const issueFirst = ref(true);
-const detailDrawerSize = computed(() => windowWidth.value <= 768 ? '100%' : '640px');
+const detailDrawerSize = computed(() => {
+  if (windowWidth.value <= 768)
+    return '100%';
+  if (windowWidth.value <= 1280)
+    return '760px';
+  return '960px';
+});
+const isCompactViewport = computed(() => windowWidth.value <= 1280);
 
 const moduleStateCategoryOptions = computed(() => [
   { label: t('views.featureModules.state.categories.all'), value: 'all' },
@@ -77,6 +88,11 @@ const moduleStateCategoryOptions = computed(() => [
   { label: t('views.featureModules.state.categories.daily'), value: 'daily' },
   { label: t('views.featureModules.state.categories.other'), value: 'other' },
 ]);
+
+const moduleStateCleanupScopeOptions = computed(() => getModuleStateScopeSummaries().map(item => ({
+  label: `${item.scope} (${item.total})`,
+  value: item.scope,
+})));
 
 const filteredModuleStates = computed(() => {
   const normalizedKeyword = moduleStateKeyword.value.trim().toLowerCase();
@@ -877,6 +893,7 @@ async function loadModuleStates(moduleKey: string) {
   moduleStateLoading.value = true;
   moduleStates.value = [];
   moduleStateTotal.value = 0;
+  moduleStateCleanupScope.value = '';
   try {
     const data = await fetchModuleStates(moduleKey, -1) ?? await fetchModuleStates(moduleKey, 100);
     moduleStates.value = data?.items ?? [];
@@ -890,6 +907,99 @@ async function loadModuleStates(moduleKey: string) {
   }
   finally {
     moduleStateLoading.value = false;
+  }
+}
+
+function buildModuleStateCleanupRequest(): ModuleStateCleanupRequestDto | null {
+  const scope = moduleStateCleanupScope.value.trim();
+  const keyword = moduleStateKeyword.value.trim();
+  const request: ModuleStateCleanupRequestDto = {
+    previewOnly: true,
+  };
+
+  if (scope.length > 0) {
+    request.scope = scope;
+  }
+
+  if (keyword.length >= 3) {
+    request.keyword = keyword;
+  }
+
+  return request.scope == null && request.keyword == null ? null : request;
+}
+
+async function cleanupModuleStates(moduleKey: string, request: ModuleStateCleanupRequestDto) {
+  const { data } = await featureModulesCleanupStates({
+    path: {
+      key: moduleKey,
+    },
+    body: request,
+    throwOnError: true,
+  });
+
+  return data;
+}
+
+async function onCleanupModuleStates() {
+  if (selectedModule.value == null) {
+    return;
+  }
+
+  const request = buildModuleStateCleanupRequest();
+  if (request == null) {
+    toast({
+      type: 'warning',
+      text: t('views.featureModules.state.cleanupNoCriteria'),
+    });
+    return;
+  }
+
+  moduleStateCleanupLoading.value = true;
+  try {
+    const preview = await cleanupModuleStates(selectedModule.value.key, {
+      ...request,
+      previewOnly: true,
+    });
+    const matchedCount = preview.matchedCount ?? 0;
+    if (matchedCount <= 0) {
+      toast({
+        type: 'info',
+        text: t('views.featureModules.state.cleanupNoMatches'),
+      });
+      return;
+    }
+
+    const ok = await confirm({
+      type: 'warning',
+      title: t('views.featureModules.state.cleanupConfirmTitle'),
+      text: t('views.featureModules.state.cleanupConfirm', [
+        getModuleName(selectedModule.value),
+        preview.criteria ?? '-',
+        matchedCount,
+      ]),
+    });
+    if (!ok) {
+      return;
+    }
+
+    const result = await cleanupModuleStates(selectedModule.value.key, {
+      ...request,
+      previewOnly: false,
+    });
+    toast({
+      type: 'success',
+      text: t('views.featureModules.state.cleanupSuccess', [result.deletedCount ?? 0]),
+    });
+    await loadModuleStates(selectedModule.value.key);
+  }
+  catch (error) {
+    toast({
+      type: 'error',
+      text: error instanceof Error ? error.message : String(error),
+    });
+  }
+  finally {
+    moduleStateCleanupLoading.value = false;
   }
 }
 
@@ -1386,6 +1496,28 @@ onMounted(loadModules);
               :prefix-icon="iconDetails"
               :placeholder="t('views.featureModules.state.searchPlaceholder')"
             />
+            <el-select
+              v-model="moduleStateCleanupScope"
+              clearable
+              filterable
+              :placeholder="t('views.featureModules.state.cleanupScopePlaceholder')"
+            >
+              <el-option
+                v-for="option in moduleStateCleanupScopeOptions"
+                :key="option.value"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+            <el-button
+              type="danger"
+              plain
+              :loading="moduleStateCleanupLoading"
+              :disabled="moduleStateLoading || moduleStateTotal <= 0"
+              @click="onCleanupModuleStates"
+            >
+              {{ t('views.featureModules.state.cleanupAction') }}
+            </el-button>
           </div>
           <div v-if="getModuleStateScopeSummaries().length > 0" class="feature-module-detail__state-summary">
             <div
@@ -1398,6 +1530,7 @@ onMounted(loadModules);
             </div>
           </div>
           <el-table
+            v-if="!isCompactViewport"
             v-loading="moduleStateLoading"
             :data="filteredModuleStates"
             size="small"
@@ -1428,6 +1561,45 @@ onMounted(loadModules);
               </template>
             </el-table-column>
           </el-table>
+          <div
+            v-else
+            v-loading="moduleStateLoading"
+            class="feature-module-detail__state-cards"
+          >
+            <div
+              v-for="row in filteredModuleStates"
+              :key="`${row.scope}:${row.scopeKey}:${row.stateKey}`"
+              class="feature-module-detail__state-card"
+            >
+              <div class="feature-module-detail__state-card-header">
+                <el-tag size="small" :type="getModuleStateCategoryTagType(toModuleStateRow(row))" effect="plain">
+                  {{ getModuleStateCategoryLabel(toModuleStateRow(row)) }}
+                </el-tag>
+                <span>{{ formatModuleStateTime(row.updatedAt) }}</span>
+              </div>
+              <dl>
+                <div>
+                  <dt>{{ t('views.featureModules.state.scope') }}</dt>
+                  <dd>{{ row.scope }}</dd>
+                </div>
+                <div>
+                  <dt>{{ t('views.featureModules.state.scopeKey') }}</dt>
+                  <dd>{{ row.scopeKey }}</dd>
+                </div>
+                <div>
+                  <dt>{{ t('views.featureModules.state.stateKey') }}</dt>
+                  <dd>{{ row.stateKey }}</dd>
+                </div>
+                <div class="is-wide">
+                  <dt>{{ t('views.featureModules.state.value') }}</dt>
+                  <dd>
+                    <span>{{ getModuleStateReadableValue(toModuleStateRow(row)) }}</span>
+                    <code>{{ formatModuleStateValue(row.valueJson) }}</code>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
           <el-empty v-if="!moduleStateLoading && filteredModuleStates.length === 0" :description="t('views.featureModules.detail.emptyRuntimeStates')" :image-size="72" />
         </section>
 
@@ -1908,6 +2080,86 @@ onMounted(loadModules);
   }
 }
 
+.feature-module-detail__state-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature-module-detail__state-card {
+  min-width: 0;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: var(--el-bg-color);
+}
+
+.feature-module-detail__state-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+
+  span {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.feature-module-detail__state-card {
+  dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 10px;
+    margin: 10px 0 0;
+  }
+
+  dl > div {
+    min-width: 0;
+
+    &.is-wide {
+      grid-column: span 2;
+    }
+  }
+
+  dt {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  dd {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    margin: 2px 0 0;
+    color: var(--el-text-color-primary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  dd span,
+  dd code {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  dd code {
+    color: var(--el-text-color-secondary);
+    font-size: 11px;
+    line-height: 16px;
+  }
+}
+
 .feature-module-detail__state-overview {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1949,6 +2201,10 @@ onMounted(loadModules);
 
   .el-input {
     width: 260px;
+  }
+
+  .el-select {
+    width: 180px;
   }
 }
 
@@ -2239,7 +2495,8 @@ onMounted(loadModules);
     grid-column: span 1;
   }
 
-  .feature-module-detail__state-toolbar .el-input {
+  .feature-module-detail__state-toolbar .el-input,
+  .feature-module-detail__state-toolbar .el-select {
     width: 100%;
   }
 
