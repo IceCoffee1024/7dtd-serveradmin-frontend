@@ -126,7 +126,7 @@ function resolveTimelineTagType(type: PlayerProfileTimelineItemType | undefined)
           :total="timelineTotal"
           background
           layout="prev, pager, next"
-          small
+          size="small"
           class="player-profile-timeline__pagination"
           @current-change="emit('update:timelinePage', $event)"
         />

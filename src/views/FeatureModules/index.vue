@@ -1776,6 +1776,34 @@ onMounted(loadModules);
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  :deep(.el-descriptions__label) {
+    width: 104px;
+    min-width: 104px;
+    white-space: nowrap;
+  }
+
+  :deep(.el-descriptions__content) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  :deep(.el-descriptions__content .el-tag) {
+    max-width: 100%;
+    height: auto;
+    min-height: 24px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    white-space: normal;
+  }
+
+  :deep(.el-descriptions__content .el-tag__content) {
+    min-width: 0;
+    line-height: 18px;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
 }
 
 .feature-module-detail__section {
@@ -2144,6 +2172,13 @@ onMounted(loadModules);
 
   .feature-module-detail__state-toolbar .el-input {
     width: 100%;
+  }
+
+  .feature-module-detail {
+    :deep(.el-descriptions__label) {
+      width: 88px;
+      min-width: 88px;
+    }
   }
 }
 </style>
