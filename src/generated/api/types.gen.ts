@@ -2942,6 +2942,74 @@ export type ModuleStateDto = {
 export type ModuleStateQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Scope' | 'ScopeKey' | 'StateKey';
 
 /**
+ * Result of a module state cleanup request.
+ */
+export type ModuleStateCleanupResultDto = {
+    /**
+     * Number of rows matching the cleanup criteria.
+     */
+    matchedCount?: number;
+    /**
+     * Number of rows deleted. This is zero for preview requests.
+     */
+    deletedCount?: number;
+    /**
+     * True when the request only previewed matching rows.
+     */
+    previewOnly?: boolean;
+    /**
+     * Effective UTC cutoff when a retention criterion was used.
+     */
+    olderThanUtc?: string | null;
+    /**
+     * Human-readable criteria summary for audit and UI display.
+     */
+    criteria: string;
+    /**
+     * Earliest matching state update time.
+     */
+    oldestUpdatedAt?: string | null;
+    /**
+     * Latest matching state update time.
+     */
+    newestUpdatedAt?: string | null;
+};
+
+/**
+ * Controlled cleanup request for module-owned runtime state rows.
+ */
+export type ModuleStateCleanupRequestDto = {
+    /**
+     * Optional exact state scope filter, for example Cooldown or FirstJoin.
+     */
+    scope?: string | null;
+    /**
+     * Optional exact scope-local identity filter.
+     */
+    scopeKey?: string | null;
+    /**
+     * Optional exact state key filter.
+     */
+    stateKey?: string | null;
+    /**
+     * Optional keyword matched against scope, scope key, state key and value. Must be at least 3 chars.
+     */
+    keyword?: string | null;
+    /**
+     * Optional retention window in days. Rows updated before this window can be removed.
+     */
+    olderThanDays?: number | null;
+    /**
+     * Optional UTC cutoff. Rows updated before this timestamp can be removed.
+     */
+    olderThanUtc?: string | null;
+    /**
+     * When true, returns the match count without deleting anything.
+     */
+    previewOnly?: boolean;
+};
+
+/**
  * Represents a paged query result with total count and current page items.
  */
 export type PagedDtoOfGameEventLogDto = {
@@ -7855,6 +7923,37 @@ export type FeatureModulesGetStatesResponses = {
 };
 
 export type FeatureModulesGetStatesResponse = FeatureModulesGetStatesResponses[keyof FeatureModulesGetStatesResponses];
+
+export type FeatureModulesCleanupStatesData = {
+    /**
+     * Cleanup criteria. At least one criterion is required.
+     */
+    body: ModuleStateCleanupRequestDto;
+    path: {
+        /**
+         * Stable feature module key.
+         */
+        key: string;
+    };
+    query?: never;
+    url: '/api/FeatureModules/{key}/States/Cleanup';
+};
+
+export type FeatureModulesCleanupStatesErrors = {
+    400: ProblemDetailsDto;
+    404: unknown;
+};
+
+export type FeatureModulesCleanupStatesError = FeatureModulesCleanupStatesErrors[keyof FeatureModulesCleanupStatesErrors];
+
+export type FeatureModulesCleanupStatesResponses = {
+    /**
+     * Cleanup preview or execution result.
+     */
+    200: ModuleStateCleanupResultDto;
+};
+
+export type FeatureModulesCleanupStatesResponse = FeatureModulesCleanupStatesResponses[keyof FeatureModulesCleanupStatesResponses];
 
 export type FeatureModulesValidateSettingsData = {
     body?: never;

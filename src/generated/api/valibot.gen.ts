@@ -1607,6 +1607,32 @@ export const vModuleStateQueryOrder = v.picklist([
 ]);
 
 /**
+ * Result of a module state cleanup request.
+ */
+export const vModuleStateCleanupResultDto = v.strictObject({
+    matchedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    deletedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    previewOnly: v.optional(v.boolean()),
+    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    criteria: v.string(),
+    oldestUpdatedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    newestUpdatedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Controlled cleanup request for module-owned runtime state rows.
+ */
+export const vModuleStateCleanupRequestDto = v.strictObject({
+    scope: v.nullish(v.string()),
+    scopeKey: v.nullish(v.string()),
+    stateKey: v.nullish(v.string()),
+    keyword: v.nullish(v.string()),
+    olderThanDays: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    previewOnly: v.optional(v.boolean())
+});
+
+/**
  * Read-only projection of a persisted game event record returned by the management API.
  */
 export const vGameEventLogDto = v.strictObject({
@@ -3137,6 +3163,15 @@ export const vFeatureModulesGetStatesQuery = v.object({
     keyword: v.nullish(v.string()),
     order: v.nullish(vModuleStateQueryOrder),
     desc: v.optional(v.boolean())
+});
+
+/**
+ * Cleanup criteria. At least one criterion is required.
+ */
+export const vFeatureModulesCleanupStatesBody = vModuleStateCleanupRequestDto;
+
+export const vFeatureModulesCleanupStatesPath = v.object({
+    key: v.string()
 });
 
 export const vFeatureModulesValidateSettingsPath = v.object({
