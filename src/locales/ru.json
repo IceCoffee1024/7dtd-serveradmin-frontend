@@ -2697,7 +2697,9 @@
         "discordEventAutomationDisabled": "Event automation is not allowed to send Discord messages.",
         "discordWebhookMissing": "Discord webhook URL is not configured.",
         "discordWebhookConfigured": "Discord webhook URL is configured.",
-        "eventAutomationDiscordDependencyDisabled": "Rule \"{0}\" sends Discord messages, but Discord integration is not enabled."
+        "eventAutomationDiscordDependencyDisabled": "Rule \"{0}\" sends Discord messages, but Discord integration is not enabled.",
+        "discordWebhookTargetInvalid": "Discord webhook target configuration is invalid: {0}.",
+        "discordFailureAlertsEnabled": "Event automation failure alerts are enabled for Discord target: {0}."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2744,7 +2746,9 @@
         "runHistory": "Run History",
         "runHistoryCleanup": "Run History Cleanup",
         "webhookTest": "Webhook test",
-        "outboundNotifications": "Outbound notifications"
+        "outboundNotifications": "Outbound notifications",
+        "webhookTargets": "Webhook targets",
+        "eventAutomationFailureAlerts": "Automation failure alerts"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3012,6 +3016,16 @@
             "name": "Scheduled Discord notice",
             "description": "Send a Discord webhook message on a Cron schedule.",
             "message": "Scheduled server notice from 7DTD."
+          },
+          "discordPlayerLeft": {
+            "name": "Discord player left notification",
+            "description": "Send a Discord webhook message when a player leaves the server.",
+            "message": "{playerName} left the server."
+          },
+          "discordAdminKeyword": {
+            "name": "Discord admin keyword alert",
+            "description": "Forward chat messages starting with !admin to the admin Discord target.",
+            "message": "[Admin] {playerName}: {message}"
           }
         },
         "status": {
@@ -3104,7 +3118,8 @@
             "firstJoinOnly": "Only trigger on first join",
             "cooldownSeconds": "Cooldown seconds",
             "cooldownScope": "Cooldown scope",
-            "username": "Username"
+            "username": "Username",
+            "webhookTargetKey": "Webhook target key"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3267,15 +3282,23 @@
           "defaultAvatarUrl": "Default avatar URL",
           "timeoutSeconds": "Timeout seconds",
           "allowEventAutomationMessages": "Allow event automation messages",
-          "testMessage": "Test message"
+          "testMessage": "Test message",
+          "webhookTargetKey": "Target key",
+          "webhookTargetName": "Display name",
+          "webhookTargetUrl": "Webhook URL",
+          "eventAutomationFailureAlertTargetKey": "Failure alert target",
+          "eventAutomationFailureAlertMessage": "Failure alert message template",
+          "testWebhookTargetKey": "Test target"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "Optional avatar image URL",
-          "testMessage": "Leave empty to use the default test message."
+          "testMessage": "Leave empty to use the default test message.",
+          "testWebhookTargetKey": "Default target"
         },
         "actions": {
-          "testWebhook": "Test webhook"
+          "testWebhook": "Test webhook",
+          "addWebhookTarget": "Add target"
         },
         "messages": {
           "saveSuccess": "Discord settings saved.",
@@ -3285,6 +3308,12 @@
           "testWithUnsavedConfirm": "The webhook test uses saved settings. Save current changes before testing?",
           "testSuccess": "Discord accepted the test message. Status: {statusCode}.",
           "testFailed": "Discord webhook test failed."
+        },
+        "sections": {
+          "webhookTargets": "Webhook targets",
+          "webhookTargetsDescription": "Route notifications to named Discord webhook targets such as public, admin, or audit.",
+          "failureAlerts": "Automation failure alerts",
+          "failureAlertsDescription": "Send a Discord alert when an event automation rule fails. This does not change rule execution results."
         }
       }
     }

@@ -2739,7 +2739,9 @@
         "discordEventAutomationDisabled": "事件自动化未被允许发送 Discord 消息。",
         "discordWebhookMissing": "尚未配置 Discord Webhook URL。",
         "discordWebhookConfigured": "已配置 Discord Webhook URL。",
-        "eventAutomationDiscordDependencyDisabled": "规则“{0}”发送 Discord 消息，但 Discord 集成未启用。"
+        "eventAutomationDiscordDependencyDisabled": "规则“{0}”发送 Discord 消息，但 Discord 集成未启用。",
+        "discordWebhookTargetInvalid": "Discord Webhook 目标配置无效：{0}。",
+        "discordFailureAlertsEnabled": "事件自动化失败告警已启用，目标：{0}。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2786,7 +2788,9 @@
         "runHistory": "执行历史",
         "runHistoryCleanup": "执行历史清理",
         "webhookTest": "Webhook 测试",
-        "outboundNotifications": "出站通知"
+        "outboundNotifications": "出站通知",
+        "webhookTargets": "Webhook 频道分流",
+        "eventAutomationFailureAlerts": "自动化失败告警"
       },
       "stateScopes": {
         "cooldown": "冷却状态",
@@ -2973,7 +2977,8 @@
             "firstJoinOnly": "仅首次加入时触发",
             "cooldownSeconds": "冷却秒数",
             "cooldownScope": "冷却范围",
-            "username": "用户名"
+            "username": "用户名",
+            "webhookTargetKey": "Webhook 目标键"
           },
           "targets": {
             "TriggerPlayer": "触发玩家",
@@ -3101,6 +3106,16 @@
             "name": "定时 Discord 通知",
             "description": "按 Cron 计划发送 Discord Webhook 消息。",
             "message": "来自 7DTD 服务器的定时通知。"
+          },
+          "discordPlayerLeft": {
+            "name": "Discord 离服通知",
+            "description": "玩家离开服务器时发送 Discord Webhook 消息。",
+            "message": "{playerName} 离开了服务器。"
+          },
+          "discordAdminKeyword": {
+            "name": "Discord 管理关键词告警",
+            "description": "全局聊天以 !admin 开头时转发到管理频道。",
+            "message": "[管理] {playerName}: {message}"
           }
         },
         "status": {
@@ -3267,15 +3282,23 @@
           "defaultAvatarUrl": "默认头像 URL",
           "timeoutSeconds": "超时秒数",
           "allowEventAutomationMessages": "允许事件自动化发送消息",
-          "testMessage": "测试消息"
+          "testMessage": "测试消息",
+          "webhookTargetKey": "目标键",
+          "webhookTargetName": "显示名称",
+          "webhookTargetUrl": "Webhook URL",
+          "eventAutomationFailureAlertTargetKey": "失败告警目标",
+          "eventAutomationFailureAlertMessage": "失败告警消息模板",
+          "testWebhookTargetKey": "测试目标"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "可选头像图片 URL",
-          "testMessage": "留空则使用默认测试消息。"
+          "testMessage": "留空则使用默认测试消息。",
+          "testWebhookTargetKey": "默认目标"
         },
         "actions": {
-          "testWebhook": "测试 Webhook"
+          "testWebhook": "测试 Webhook",
+          "addWebhookTarget": "添加目标"
         },
         "messages": {
           "saveSuccess": "Discord 设置已保存。",
@@ -3285,6 +3308,12 @@
           "testWithUnsavedConfirm": "Webhook 测试使用已保存的设置。是否先保存当前修改再测试？",
           "testSuccess": "Discord 已接受测试消息。状态码：{statusCode}。",
           "testFailed": "Discord Webhook 测试失败。"
+        },
+        "sections": {
+          "webhookTargets": "Webhook 目标",
+          "webhookTargetsDescription": "将通知分流到 public、admin、audit 等命名 Discord Webhook 目标。",
+          "failureAlerts": "自动化失败告警",
+          "failureAlertsDescription": "事件自动化规则执行失败时发送 Discord 告警，不改变规则执行结果。"
         }
       }
     }

@@ -143,6 +143,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     actions: [
       {
         type: 'SendDiscordMessage',
+        webhookTargetKey: 'public',
         message: t('views.eventAutomation.rules.templates.discordPlayerJoined.message'),
       },
     ],
@@ -213,6 +214,26 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     ],
   },
   {
+    key: 'discordAdminKeyword',
+    name: t('views.eventAutomation.rules.templates.discordAdminKeyword.name'),
+    description: t('views.eventAutomation.rules.templates.discordAdminKeyword.description'),
+    triggerType: 'ChatMessage',
+    conditions: {
+      chatType: 'Global',
+      messageStartsWith: '!admin',
+      ignoreCase: true,
+      cooldownSeconds: 60,
+      cooldownScope: 'RulePlayer',
+    },
+    actions: [
+      {
+        type: 'SendDiscordMessage',
+        webhookTargetKey: 'admin',
+        message: t('views.eventAutomation.rules.templates.discordAdminKeyword.message'),
+      },
+    ],
+  },
+  {
     key: 'chatCommandBroadcast',
     name: t('views.eventAutomation.rules.templates.chatCommandBroadcast.name'),
     description: t('views.eventAutomation.rules.templates.chatCommandBroadcast.description'),
@@ -241,6 +262,23 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendAnnouncement',
         message: t('views.eventAutomation.rules.templates.playerLeftAnnouncement.message'),
+      },
+    ],
+  },
+  {
+    key: 'discordPlayerLeft',
+    name: t('views.eventAutomation.rules.templates.discordPlayerLeft.name'),
+    description: t('views.eventAutomation.rules.templates.discordPlayerLeft.description'),
+    triggerType: 'PlayerLeft',
+    conditions: {
+      cooldownSeconds: 30,
+      cooldownScope: 'RulePlayer',
+    },
+    actions: [
+      {
+        type: 'SendDiscordMessage',
+        webhookTargetKey: 'public',
+        message: t('views.eventAutomation.rules.templates.discordPlayerLeft.message'),
       },
     ],
   },
@@ -274,6 +312,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     actions: [
       {
         type: 'SendDiscordMessage',
+        webhookTargetKey: 'public',
         message: t('views.eventAutomation.rules.templates.discordScheduledAnnouncement.message'),
       },
     ],

@@ -36,6 +36,7 @@ type ActionKey
     | 'reason'
     | 'target'
     | 'type'
+    | 'webhookTargetKey'
     | 'username';
 
 const props = defineProps<{
@@ -168,6 +169,7 @@ function buildDefaultAction(type: ActionType, previous?: ActionModel): ActionMod
       return {
         type,
         message: getPreviousString(previous, 'message', '{playerName} joined the server.'),
+        webhookTargetKey: getPreviousString(previous, 'webhookTargetKey', 'public'),
         username: getPreviousString(previous, 'username', ''),
       };
     case 'GiveItem':
@@ -368,6 +370,16 @@ function resolveHighRiskDescription(type: string) {
                   :rows="2"
                   clearable
                   @update:model-value="setActionValue(index, 'message', $event)"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col v-if="getStringValue(action, 'type') === 'SendDiscordMessage'" :xs="24" :md="12">
+              <el-form-item :label="t('views.eventAutomation.rules.builder.fields.webhookTargetKey')">
+                <el-input
+                  :model-value="getStringValue(action, 'webhookTargetKey')"
+                  clearable
+                  maxlength="64"
+                  @update:model-value="setActionValue(index, 'webhookTargetKey', $event)"
                 />
               </el-form-item>
             </el-col>

@@ -3,6 +3,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type {
   DiscordIntegrationFeatureSettingsDto,
   DiscordWebhookSendResultDto,
+  DiscordWebhookTestRequestDto,
 } from '~/generated/api/types.gen';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
@@ -24,9 +25,34 @@ interface FormModel {
   webhookUrl: string;
   defaultUsername: string;
   defaultAvatarUrl: string;
+  webhookTargets: WebhookTargetFormModel[];
   timeoutSeconds: number;
   allowEventAutomationMessages: boolean;
+  enableEventAutomationFailureAlerts: boolean;
+  eventAutomationFailureAlertTargetKey: string;
+  eventAutomationFailureAlertMessage: string;
 }
+
+interface WebhookTargetFormModel {
+  key: string;
+  displayName: string;
+  isEnabled: boolean;
+  webhookUrl: string;
+}
+
+interface WebhookTargetPayload {
+  key: string;
+  displayName: string;
+  isEnabled: boolean;
+  webhookUrl: string | null;
+}
+
+type DiscordIntegrationSettingsPayload = DiscordIntegrationFeatureSettingsDto & {
+  webhookTargets?: WebhookTargetPayload[] | null;
+  enableEventAutomationFailureAlerts?: boolean;
+  eventAutomationFailureAlertTargetKey?: string | null;
+  eventAutomationFailureAlertMessage?: string | null;
+};
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
@@ -36,9 +62,18 @@ const isLoading = ref(false);
 const isSubmitting = ref(false);
 const isTesting = ref(false);
 const testMessage = ref('');
+const testWebhookTargetKey = ref('');
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const isDirty = computed(() => !isEqual(form, initialValues.value));
+const webhookTargetOptions = computed(() =>
+  form.webhookTargets
+    .filter(target => target.key.trim().length > 0)
+    .map(target => ({
+      label: `${target.displayName.trim() || target.key.trim()} (${target.key.trim()})`,
+      value: target.key.trim(),
+    })),
+);
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -47,6 +82,9 @@ const schema = v.object({
   defaultAvatarUrl: v.string(),
   timeoutSeconds: v.pipe(v.number(), v.minValue(1), v.maxValue(30)),
   allowEventAutomationMessages: v.boolean(),
+  enableEventAutomationFailureAlerts: v.boolean(),
+  eventAutomationFailureAlertTargetKey: v.string(),
+  eventAutomationFailureAlertMessage: v.string(),
 });
 
 const rules: FormRules = generateElementRules(schema);
@@ -57,19 +95,33 @@ function buildDefaults(): FormModel {
     webhookUrl: '',
     defaultUsername: '7DTD Server',
     defaultAvatarUrl: '',
+    webhookTargets: [
+      { key: 'public', displayName: 'Public channel', isEnabled: false, webhookUrl: '' },
+      { key: 'admin', displayName: 'Admin channel', isEnabled: false, webhookUrl: '' },
+      { key: 'audit', displayName: 'Audit channel', isEnabled: false, webhookUrl: '' },
+    ],
     timeoutSeconds: 10,
     allowEventAutomationMessages: true,
+    enableEventAutomationFailureAlerts: false,
+    eventAutomationFailureAlertTargetKey: 'admin',
+    eventAutomationFailureAlertMessage: '[7DTD] Automation rule failed: {ruleName} ({triggerType}) - {errorMessage}',
   };
 }
 
 function toFormModel(data?: DiscordIntegrationFeatureSettingsDto | null): FormModel {
+  const extended = data as DiscordIntegrationSettingsPayload | undefined | null;
   return {
     isEnabled: data?.isEnabled ?? false,
     webhookUrl: data?.webhookUrl ?? '',
     defaultUsername: data?.defaultUsername ?? '7DTD Server',
     defaultAvatarUrl: data?.defaultAvatarUrl ?? '',
+    webhookTargets: normalizeWebhookTargets(extended?.webhookTargets),
     timeoutSeconds: data?.timeoutSeconds ?? 10,
     allowEventAutomationMessages: data?.allowEventAutomationMessages ?? true,
+    enableEventAutomationFailureAlerts: extended?.enableEventAutomationFailureAlerts ?? false,
+    eventAutomationFailureAlertTargetKey: extended?.eventAutomationFailureAlertTargetKey ?? 'admin',
+    eventAutomationFailureAlertMessage: extended?.eventAutomationFailureAlertMessage
+      ?? '[7DTD] Automation rule failed: {ruleName} ({triggerType}) - {errorMessage}',
   };
 }
 
@@ -78,18 +130,43 @@ function applyFormValues(values: FormModel) {
   form.webhookUrl = values.webhookUrl;
   form.defaultUsername = values.defaultUsername;
   form.defaultAvatarUrl = values.defaultAvatarUrl;
+  form.webhookTargets = values.webhookTargets.map(target => ({ ...target }));
   form.timeoutSeconds = values.timeoutSeconds;
   form.allowEventAutomationMessages = values.allowEventAutomationMessages;
+  form.enableEventAutomationFailureAlerts = values.enableEventAutomationFailureAlerts;
+  form.eventAutomationFailureAlertTargetKey = values.eventAutomationFailureAlertTargetKey;
+  form.eventAutomationFailureAlertMessage = values.eventAutomationFailureAlertMessage;
 }
 
-function toPayload(values: FormModel): DiscordIntegrationFeatureSettingsDto {
+function normalizeWebhookTargets(targets?: Array<WebhookTargetFormModel | WebhookTargetPayload> | null): WebhookTargetFormModel[] {
+  const source = targets?.length ? targets : buildDefaults().webhookTargets;
+  return source.map(target => ({
+    key: target.key ?? '',
+    displayName: target.displayName ?? '',
+    isEnabled: target.isEnabled ?? true,
+    webhookUrl: target.webhookUrl ?? '',
+  }));
+}
+
+function toPayload(values: FormModel): DiscordIntegrationSettingsPayload {
   return {
     isEnabled: values.isEnabled,
     webhookUrl: values.webhookUrl.trim() || null,
     defaultUsername: values.defaultUsername.trim() || null,
     defaultAvatarUrl: values.defaultAvatarUrl.trim() || null,
+    webhookTargets: values.webhookTargets
+      .map(target => ({
+        key: target.key.trim(),
+        displayName: target.displayName.trim() || target.key.trim(),
+        isEnabled: target.isEnabled,
+        webhookUrl: target.webhookUrl.trim() || null,
+      }))
+      .filter(target => target.key || target.webhookUrl),
     timeoutSeconds: Number(values.timeoutSeconds ?? 10),
     allowEventAutomationMessages: values.allowEventAutomationMessages,
+    enableEventAutomationFailureAlerts: values.enableEventAutomationFailureAlerts,
+    eventAutomationFailureAlertTargetKey: values.eventAutomationFailureAlertTargetKey.trim() || null,
+    eventAutomationFailureAlertMessage: values.eventAutomationFailureAlertMessage.trim() || null,
   };
 }
 
@@ -154,6 +231,19 @@ async function onReset() {
   }
 }
 
+function addWebhookTarget() {
+  form.webhookTargets.push({
+    key: '',
+    displayName: '',
+    isEnabled: true,
+    webhookUrl: '',
+  });
+}
+
+function removeWebhookTarget(index: number) {
+  form.webhookTargets.splice(index, 1);
+}
+
 function showTestResult(result: DiscordWebhookSendResultDto | undefined) {
   if (result?.succeeded) {
     toast({
@@ -195,7 +285,8 @@ async function onTestWebhook() {
       body: {
         message: testMessage.value.trim() || null,
         username: form.defaultUsername.trim() || null,
-      },
+        webhookTargetKey: testWebhookTargetKey.value.trim() || null,
+      } as DiscordWebhookTestRequestDto,
       throwOnError: true,
     });
     showTestResult(data);
@@ -286,6 +377,63 @@ onBeforeRouteLeave(async () => {
             </el-form-item>
           </el-col>
 
+          <el-col :xs="24">
+            <section class="discord-settings__section">
+              <div class="discord-settings__section-header">
+                <div>
+                  <h3>{{ t('views.discordIntegration.settings.sections.webhookTargets') }}</h3>
+                  <p>{{ t('views.discordIntegration.settings.sections.webhookTargetsDescription') }}</p>
+                </div>
+                <el-button type="primary" plain @click="addWebhookTarget">
+                  {{ t('views.discordIntegration.settings.actions.addWebhookTarget') }}
+                </el-button>
+              </div>
+
+              <div class="discord-settings__targets">
+                <div
+                  v-for="(target, index) in form.webhookTargets"
+                  :key="index"
+                  class="discord-settings__target"
+                >
+                  <div class="discord-settings__target-header">
+                    <el-switch
+                      v-model="target.isEnabled"
+                      inline-prompt
+                      :active-text="t('common.yes')"
+                      :inactive-text="t('common.no')"
+                    />
+                    <el-button type="danger" plain size="small" @click="removeWebhookTarget(index)">
+                      {{ t('common.delete') }}
+                    </el-button>
+                  </div>
+                  <el-row :gutter="12">
+                    <el-col :xs="24" :md="8">
+                      <el-form-item :label="t('views.discordIntegration.settings.fields.webhookTargetKey')">
+                        <el-input v-model="target.key" clearable placeholder="admin" />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :xs="24" :md="8">
+                      <el-form-item :label="t('views.discordIntegration.settings.fields.webhookTargetName')">
+                        <el-input v-model="target.displayName" clearable />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :xs="24" :md="8">
+                      <el-form-item :label="t('views.discordIntegration.settings.fields.webhookTargetUrl')">
+                        <el-input
+                          v-model="target.webhookUrl"
+                          type="password"
+                          show-password
+                          clearable
+                          autocomplete="off"
+                        />
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+            </section>
+          </el-col>
+
           <el-col :xs="24" :md="12">
             <el-form-item prop="defaultUsername" :label="t('views.discordIntegration.settings.fields.defaultUsername')">
               <el-input
@@ -320,6 +468,54 @@ onBeforeRouteLeave(async () => {
           </el-col>
 
           <el-col :xs="24">
+            <section class="discord-settings__section">
+              <div class="discord-settings__section-header">
+                <div>
+                  <h3>{{ t('views.discordIntegration.settings.sections.failureAlerts') }}</h3>
+                  <p>{{ t('views.discordIntegration.settings.sections.failureAlertsDescription') }}</p>
+                </div>
+                <el-switch
+                  v-model="form.enableEventAutomationFailureAlerts"
+                  inline-prompt
+                  :active-text="t('common.yes')"
+                  :inactive-text="t('common.no')"
+                />
+              </div>
+              <el-row :gutter="12">
+                <el-col :xs="24" :md="8">
+                  <el-form-item prop="eventAutomationFailureAlertTargetKey" :label="t('views.discordIntegration.settings.fields.eventAutomationFailureAlertTargetKey')">
+                    <el-select
+                      v-model="form.eventAutomationFailureAlertTargetKey"
+                      class="w-full"
+                      filterable
+                      allow-create
+                      clearable
+                    >
+                      <el-option
+                        v-for="option in webhookTargetOptions"
+                        :key="option.value"
+                        :label="option.label"
+                        :value="option.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="16">
+                  <el-form-item prop="eventAutomationFailureAlertMessage" :label="t('views.discordIntegration.settings.fields.eventAutomationFailureAlertMessage')">
+                    <el-input
+                      v-model="form.eventAutomationFailureAlertMessage"
+                      type="textarea"
+                      :rows="3"
+                      maxlength="1900"
+                      show-word-limit
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </section>
+          </el-col>
+
+          <el-col :xs="24">
             <el-form-item :label="t('views.discordIntegration.settings.fields.testMessage')">
               <el-input
                 v-model="testMessage"
@@ -330,6 +526,25 @@ onBeforeRouteLeave(async () => {
                 clearable
                 :placeholder="t('views.discordIntegration.settings.placeholders.testMessage')"
               />
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :md="12">
+            <el-form-item :label="t('views.discordIntegration.settings.fields.testWebhookTargetKey')">
+              <el-select
+                v-model="testWebhookTargetKey"
+                class="w-full"
+                filterable
+                clearable
+                :placeholder="t('views.discordIntegration.settings.placeholders.testWebhookTargetKey')"
+              >
+                <el-option
+                  v-for="option in webhookTargetOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -363,11 +578,68 @@ onBeforeRouteLeave(async () => {
   max-width: 960px;
 }
 
+.discord-settings__section {
+  display: grid;
+  gap: 12px;
+  margin: 4px 0 16px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 14px;
+  background: var(--el-fill-color-extra-light);
+}
+
+.discord-settings__section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  h3 {
+    margin: 0;
+    color: var(--el-text-color-primary);
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.discord-settings__targets {
+  display: grid;
+  gap: 12px;
+}
+
+.discord-settings__target {
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--el-bg-color);
+}
+
+.discord-settings__target-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
 .discord-settings__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
   margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .discord-settings__section-header {
+    flex-direction: column;
+  }
 }
 </style>

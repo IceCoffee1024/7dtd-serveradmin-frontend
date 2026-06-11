@@ -2697,7 +2697,9 @@
         "discordEventAutomationDisabled": "事件自動化未被允許傳送 Discord 訊息。",
         "discordWebhookMissing": "尚未設定 Discord Webhook URL。",
         "discordWebhookConfigured": "已設定 Discord Webhook URL。",
-        "eventAutomationDiscordDependencyDisabled": "規則「{0}」傳送 Discord 訊息，但 Discord 整合未啟用。"
+        "eventAutomationDiscordDependencyDisabled": "規則「{0}」傳送 Discord 訊息，但 Discord 整合未啟用。",
+        "discordWebhookTargetInvalid": "Discord Webhook 目標設定無效：{0}。",
+        "discordFailureAlertsEnabled": "事件自動化失敗告警已啟用，目標：{0}。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2744,7 +2746,9 @@
         "runHistory": "Run History",
         "runHistoryCleanup": "Run History Cleanup",
         "webhookTest": "Webhook 測試",
-        "outboundNotifications": "出站通知"
+        "outboundNotifications": "出站通知",
+        "webhookTargets": "Webhook 頻道分流",
+        "eventAutomationFailureAlerts": "自動化失敗告警"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
@@ -3012,6 +3016,16 @@
             "name": "定時 Discord 通知",
             "description": "依 Cron 排程傳送 Discord Webhook 訊息。",
             "message": "來自 7DTD 伺服器的定時通知。"
+          },
+          "discordPlayerLeft": {
+            "name": "Discord 離服通知",
+            "description": "玩家離開伺服器時傳送 Discord Webhook 訊息。",
+            "message": "{playerName} 離開了伺服器。"
+          },
+          "discordAdminKeyword": {
+            "name": "Discord 管理關鍵字告警",
+            "description": "全域聊天以 !admin 開頭時轉發到管理頻道。",
+            "message": "[管理] {playerName}: {message}"
           }
         },
         "status": {
@@ -3104,7 +3118,8 @@
             "firstJoinOnly": "僅首次加入時觸發",
             "cooldownSeconds": "冷卻秒數",
             "cooldownScope": "冷卻範圍",
-            "username": "使用者名稱"
+            "username": "使用者名稱",
+            "webhookTargetKey": "Webhook 目標鍵"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3267,15 +3282,23 @@
           "defaultAvatarUrl": "預設頭像 URL",
           "timeoutSeconds": "逾時秒數",
           "allowEventAutomationMessages": "允許事件自動化傳送訊息",
-          "testMessage": "測試訊息"
+          "testMessage": "測試訊息",
+          "webhookTargetKey": "目標鍵",
+          "webhookTargetName": "顯示名稱",
+          "webhookTargetUrl": "Webhook URL",
+          "eventAutomationFailureAlertTargetKey": "失敗告警目標",
+          "eventAutomationFailureAlertMessage": "失敗告警訊息範本",
+          "testWebhookTargetKey": "測試目標"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "選填頭像圖片 URL",
-          "testMessage": "留空則使用預設測試訊息。"
+          "testMessage": "留空則使用預設測試訊息。",
+          "testWebhookTargetKey": "預設目標"
         },
         "actions": {
-          "testWebhook": "測試 Webhook"
+          "testWebhook": "測試 Webhook",
+          "addWebhookTarget": "新增目標"
         },
         "messages": {
           "saveSuccess": "Discord 設定已儲存。",
@@ -3285,6 +3308,12 @@
           "testWithUnsavedConfirm": "Webhook 測試使用已儲存的設定。是否先儲存目前修改再測試？",
           "testSuccess": "Discord 已接受測試訊息。狀態碼：{statusCode}。",
           "testFailed": "Discord Webhook 測試失敗。"
+        },
+        "sections": {
+          "webhookTargets": "Webhook 目標",
+          "webhookTargetsDescription": "將通知分流到 public、admin、audit 等命名 Discord Webhook 目標。",
+          "failureAlerts": "自動化失敗告警",
+          "failureAlertsDescription": "事件自動化規則執行失敗時傳送 Discord 告警，不改變規則執行結果。"
         }
       }
     }
