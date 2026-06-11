@@ -2865,6 +2865,11 @@
         "openSettings": "打开设置",
         "openDependency": "打开依赖",
         "openRunHistory": "查看历史"
+      },
+      "healthIssueMeta": {
+        "code": "問題代碼",
+        "relatedModule": "關聯模組",
+        "relatedStateScope": "關聯狀態"
       }
     },
     "eventAutomation": {

@@ -388,6 +388,19 @@ function getHealthIssuesBySeverity(item: unknown, severity: FeatureModuleConfigu
     .filter(issue => normalizeIssueSeverity(issue.severity) === severity);
 }
 
+function getPrimaryHealthIssue(item: unknown): FeatureModuleHealthIssueDto | null {
+  const issues = getModuleHealthIssues(item);
+  const nonConfigurationIssues = issues.filter(issue => normalizeHealthIssueSource(issue.source) !== 'Configuration');
+  const candidates = nonConfigurationIssues.length > 0 ? nonConfigurationIssues : issues;
+  for (const severity of issueSeverities) {
+    const issue = candidates.find(item => normalizeIssueSeverity(item.severity) === severity);
+    if (issue != null)
+      return issue;
+  }
+
+  return null;
+}
+
 function normalizeHealthIssueSource(source: FeatureModuleHealthIssueSourcePayload): FeatureModuleHealthIssueSource {
   if (typeof source === 'number') {
     if (source === 1)
@@ -1242,8 +1255,17 @@ onMounted(loadModules);
                 <el-tag :type="getConfigurationTagType(getConfigurationStatus(row))" effect="plain">
                   {{ getConfigurationText(row) }}
                 </el-tag>
-                <span v-if="getModuleIssueCount(row) > 0" class="feature-modules-page__issue-count">
-                  {{ t('views.featureModules.issueCount', [getModuleIssueCount(row)]) }}
+                <el-tooltip
+                  v-if="getModuleIssueCount(row) > 0"
+                  placement="top"
+                  :content="getPrimaryHealthIssue(row) == null ? t('views.featureModules.issueCount', [getModuleIssueCount(row)]) : getHealthIssueText(getPrimaryHealthIssue(row)!)"
+                >
+                  <span class="feature-modules-page__issue-count">
+                    {{ t('views.featureModules.issueCount', [getModuleIssueCount(row)]) }}
+                  </span>
+                </el-tooltip>
+                <span v-if="getPrimaryHealthIssue(row)" class="feature-modules-page__issue-preview">
+                  {{ getHealthIssueText(getPrimaryHealthIssue(row)!) }}
                 </span>
               </div>
             </template>
@@ -1700,6 +1722,17 @@ onMounted(loadModules);
                   </el-tag>
                   <div class="feature-module-detail__issue-body">
                     <span>{{ getHealthIssueText(issue) }}</span>
+                    <div class="feature-module-detail__issue-meta">
+                      <el-tag v-if="issue.code" effect="plain" size="small">
+                        {{ t('views.featureModules.healthIssueMeta.code') }}: {{ issue.code }}
+                      </el-tag>
+                      <el-tag v-if="issue.relatedModuleKey" effect="plain" size="small">
+                        {{ t('views.featureModules.healthIssueMeta.relatedModule') }}: {{ issue.relatedModuleKey }}
+                      </el-tag>
+                      <el-tag v-if="issue.relatedStateScope" effect="plain" size="small">
+                        {{ t('views.featureModules.healthIssueMeta.relatedStateScope') }}: {{ issue.relatedStateScope }}
+                      </el-tag>
+                    </div>
                     <p v-if="getHealthIssueSuggestionText(issue)">
                       {{ getHealthIssueSuggestionText(issue) }}
                     </p>
@@ -1980,6 +2013,18 @@ onMounted(loadModules);
 .feature-modules-page__issue-count {
   color: var(--el-text-color-secondary);
   font-size: 12px;
+}
+
+.feature-modules-page__issue-preview {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .feature-modules-page__status-detail {
@@ -2435,6 +2480,13 @@ onMounted(loadModules);
     font-size: 12px;
     line-height: 18px;
   }
+}
+
+.feature-module-detail__issue-meta {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .feature-module-detail__command-main,

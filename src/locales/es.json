@@ -2865,6 +2865,11 @@
         "openSettings": "Open Settings",
         "openDependency": "Open Dependency",
         "openRunHistory": "View History"
+      },
+      "healthIssueMeta": {
+        "code": "Code",
+        "relatedModule": "Related module",
+        "relatedStateScope": "Related state"
       }
     },
     "eventAutomation": {
