@@ -1122,6 +1122,68 @@ export type SystemMetricsSnapshotDto = {
 };
 
 /**
+ * Global settings for outbound Discord webhook notifications.
+ */
+export type DiscordIntegrationFeatureSettingsDto = {
+    /**
+     * Whether Discord outbound notifications are enabled.
+     */
+    isEnabled?: boolean;
+    /**
+     * Discord webhook URL used for outbound notifications.
+     */
+    webhookUrl?: string | null;
+    /**
+     * Optional username override for webhook messages.
+     */
+    defaultUsername?: string | null;
+    /**
+     * Optional avatar URL override for webhook messages.
+     */
+    defaultAvatarUrl?: string | null;
+    /**
+     * Request timeout in seconds.
+     */
+    timeoutSeconds?: number;
+    /**
+     * Whether event automation rules are allowed to send Discord messages.
+     */
+    allowEventAutomationMessages?: boolean;
+};
+
+/**
+ * Result of a Discord webhook send attempt.
+ */
+export type DiscordWebhookSendResultDto = {
+    /**
+     * Whether Discord accepted the webhook request.
+     */
+    succeeded?: boolean;
+    /**
+     * HTTP status code returned by Discord when available.
+     */
+    statusCode?: number | null;
+    /**
+     * Human-readable send result.
+     */
+    message: string;
+};
+
+/**
+ * Request payload for testing the configured Discord webhook.
+ */
+export type DiscordWebhookTestRequestDto = {
+    /**
+     * Optional test message. A default message is used when empty.
+     */
+    message?: string | null;
+    /**
+     * Optional username override for this test message.
+     */
+    username?: string | null;
+};
+
+/**
  * Transfers economy feature settings persisted in the shared feature configuration table.
  */
 export type EconomyFeatureSettingsDto = {
@@ -6794,6 +6856,68 @@ export type DevicesGetSystemMetricsSnapshotResponses = {
 };
 
 export type DevicesGetSystemMetricsSnapshotResponse = DevicesGetSystemMetricsSnapshotResponses[keyof DevicesGetSystemMetricsSnapshotResponses];
+
+export type DiscordIntegrationResetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/Settings';
+};
+
+export type DiscordIntegrationResetSettingsResponses = {
+    200: DiscordIntegrationFeatureSettingsDto;
+};
+
+export type DiscordIntegrationResetSettingsResponse = DiscordIntegrationResetSettingsResponses[keyof DiscordIntegrationResetSettingsResponses];
+
+export type DiscordIntegrationGetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/Settings';
+};
+
+export type DiscordIntegrationGetSettingsResponses = {
+    200: DiscordIntegrationFeatureSettingsDto;
+};
+
+export type DiscordIntegrationGetSettingsResponse = DiscordIntegrationGetSettingsResponses[keyof DiscordIntegrationGetSettingsResponses];
+
+export type DiscordIntegrationUpdateSettingsData = {
+    body: DiscordIntegrationFeatureSettingsDto;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/Settings';
+};
+
+export type DiscordIntegrationUpdateSettingsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationUpdateSettingsError = DiscordIntegrationUpdateSettingsErrors[keyof DiscordIntegrationUpdateSettingsErrors];
+
+export type DiscordIntegrationUpdateSettingsResponses = {
+    200: unknown;
+};
+
+export type DiscordIntegrationTestWebhookData = {
+    body?: DiscordWebhookTestRequestDto | null;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/TestWebhook';
+};
+
+export type DiscordIntegrationTestWebhookErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationTestWebhookError = DiscordIntegrationTestWebhookErrors[keyof DiscordIntegrationTestWebhookErrors];
+
+export type DiscordIntegrationTestWebhookResponses = {
+    200: DiscordWebhookSendResultDto;
+};
+
+export type DiscordIntegrationTestWebhookResponse = DiscordIntegrationTestWebhookResponses[keyof DiscordIntegrationTestWebhookResponses];
 
 export type EconomyResetSettingsData = {
     body?: never;

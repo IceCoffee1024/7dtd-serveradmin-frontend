@@ -446,6 +446,27 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'DiscordIntegration',
+        path: 'discord-integration',
+        component: () => import('../views/DiscordIntegration/index.vue'),
+        redirect: { name: 'DiscordIntegrationSettings' },
+        meta: {
+          title: () => t('menus.discordIntegration'),
+          icon: markIcon(() => import('~icons/mdi/discord')),
+        },
+        children: [
+          {
+            name: 'DiscordIntegrationSettings',
+            path: 'settings',
+            component: () => import('../views/DiscordIntegration/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.discordIntegrationSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),

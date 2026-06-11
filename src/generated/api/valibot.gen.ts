@@ -678,6 +678,35 @@ export const vSystemMetricsSnapshotDto = v.strictObject({
 });
 
 /**
+ * Global settings for outbound Discord webhook notifications.
+ */
+export const vDiscordIntegrationFeatureSettingsDto = v.strictObject({
+    isEnabled: v.optional(v.boolean()),
+    webhookUrl: v.nullish(v.string()),
+    defaultUsername: v.nullish(v.string()),
+    defaultAvatarUrl: v.nullish(v.string()),
+    timeoutSeconds: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    allowEventAutomationMessages: v.optional(v.boolean())
+});
+
+/**
+ * Result of a Discord webhook send attempt.
+ */
+export const vDiscordWebhookSendResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    statusCode: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    message: v.string()
+});
+
+/**
+ * Request payload for testing the configured Discord webhook.
+ */
+export const vDiscordWebhookTestRequestDto = v.strictObject({
+    message: v.nullish(v.string()),
+    username: v.nullish(v.string())
+});
+
+/**
  * Transfers economy feature settings persisted in the shared feature configuration table.
  */
 export const vEconomyFeatureSettingsDto = v.strictObject({
@@ -2949,6 +2978,10 @@ export const vColoredChatCreateProfileBody = vColoredChatProfileUpsertDto;
  * Updated profile values.
  */
 export const vColoredChatUpdateProfileBody = vColoredChatProfileUpsertDto;
+
+export const vDiscordIntegrationUpdateSettingsBody = vDiscordIntegrationFeatureSettingsDto;
+
+export const vDiscordIntegrationTestWebhookBody = v.nullable(vDiscordWebhookTestRequestDto);
 
 export const vEconomyResetSettingsQuery = v.object({
     language: v.nullish(vLanguage)

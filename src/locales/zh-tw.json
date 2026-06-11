@@ -100,7 +100,9 @@
     "eventAutomation": "事件自動化",
     "eventAutomationRules": "規則",
     "eventAutomationSettings": "設定",
-    "eventAutomationRuns": "執行歷史"
+    "eventAutomationRuns": "執行歷史",
+    "discordIntegration": "Discord 整合",
+    "discordIntegrationSettings": "設定"
   },
   "components": {
     "myTable": {
@@ -2690,7 +2692,12 @@
         "voteKickInvalidTargetImmunity": "投票踢出目標保護秒數不能為負數：{0}。",
         "voteKickMissingKickReason": "投票踢出原因為空，被踢玩家可能看到備用原因。",
         "commandConflict": "命令「{0}」在這些模組中衝突：{1}。",
-        "eventAutomationEconomyDependencyDisabled": "Rules \"{0}\" use economy actions, but the economy module is disabled."
+        "eventAutomationEconomyDependencyDisabled": "Rules \"{0}\" use economy actions, but the economy module is disabled.",
+        "discordWebhookInvalid": "Discord Webhook 設定無效：{0}。",
+        "discordEventAutomationDisabled": "事件自動化未被允許傳送 Discord 訊息。",
+        "discordWebhookMissing": "尚未設定 Discord Webhook URL。",
+        "discordWebhookConfigured": "已設定 Discord Webhook URL。",
+        "eventAutomationDiscordDependencyDisabled": "規則「{0}」傳送 Discord 訊息，但 Discord 整合未啟用。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2711,7 +2718,8 @@
         "requiredDependencyDisabled": "必要依賴「{0}」未啟用。",
         "requiredDependencyUnavailable": "必要依賴「{0}」不可用。",
         "eventAutomationRecentFailures": "事件自动化今日失败 {0} 次，最近失败规则：{1}。",
-        "consoleCommandPolicyEnforced": "控制台命令执行已启用安全策略：白名单={0}，危险命令显式确认={1}。"
+        "consoleCommandPolicyEnforced": "控制台命令执行已启用安全策略：白名单={0}，危险命令显式确认={1}。",
+        "eventAutomationDiscordDependencyDisabled": "存在已啟用規則會傳送 Discord 訊息，但 Discord 整合目前未啟用。"
       },
       "security": {
         "sensitiveActions": "敏感動作",
@@ -2734,7 +2742,9 @@
         "visualRuleBuilder": "Visual Rule Builder",
         "dryRun": "Dry-run Preview",
         "runHistory": "Run History",
-        "runHistoryCleanup": "Run History Cleanup"
+        "runHistoryCleanup": "Run History Cleanup",
+        "webhookTest": "Webhook 測試",
+        "outboundNotifications": "出站通知"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
@@ -2987,6 +2997,16 @@
           "scheduledSaveWorld": {
             "name": "Scheduled saveworld",
             "description": "Run the restricted saveworld console command on a Cron schedule."
+          },
+          "discordPlayerJoined": {
+            "name": "Discord 進服通知",
+            "description": "玩家進入世界時傳送 Discord Webhook 訊息。",
+            "message": "{playerName} 加入了伺服器。"
+          },
+          "discordScheduledAnnouncement": {
+            "name": "定時 Discord 通知",
+            "description": "依 Cron 排程傳送 Discord Webhook 訊息。",
+            "message": "來自 7DTD 伺服器的定時通知。"
           }
         },
         "status": {
@@ -3078,7 +3098,8 @@
             "timeZoneId": "Time zone",
             "firstJoinOnly": "僅首次加入時觸發",
             "cooldownSeconds": "冷卻秒數",
-            "cooldownScope": "冷卻範圍"
+            "cooldownScope": "冷卻範圍",
+            "username": "使用者名稱"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3097,7 +3118,8 @@
             "AdjustEconomy": "Adjust economy",
             "KickPlayer": "Kick player",
             "MutePlayer": "Mute player",
-            "ExecuteConsoleCommand": "Execute console command"
+            "ExecuteConsoleCommand": "Execute console command",
+            "SendDiscordMessage": "傳送 Discord 訊息"
           },
           "highRiskTitle": "High-risk action",
           "highRiskDescriptions": {
@@ -3227,6 +3249,37 @@
           "confirmDelete": "Matched {0} test run logs. Delete them now?",
           "confirmDeleteExpired": "Matched {0} run logs older than {1} days. Delete them now?",
           "deleted": "Deleted {0} run logs."
+        }
+      }
+    },
+    "discordIntegration": {
+      "settings": {
+        "description": "透過設定的 Discord Webhook 傳送出站通知。此模組不會啟用 Discord 入站指令。",
+        "fields": {
+          "isEnabled": "啟用 Discord 通知",
+          "webhookUrl": "Webhook URL",
+          "defaultUsername": "預設使用者名稱",
+          "defaultAvatarUrl": "預設頭像 URL",
+          "timeoutSeconds": "逾時秒數",
+          "allowEventAutomationMessages": "允許事件自動化傳送訊息",
+          "testMessage": "測試訊息"
+        },
+        "placeholders": {
+          "webhookUrl": "https://discord.com/api/webhooks/...",
+          "defaultAvatarUrl": "選填頭像圖片 URL",
+          "testMessage": "留空則使用預設測試訊息。"
+        },
+        "actions": {
+          "testWebhook": "測試 Webhook"
+        },
+        "messages": {
+          "saveSuccess": "Discord 設定已儲存。",
+          "resetConfirm": "確定將 Discord 整合設定重設為預設值？",
+          "resetSuccess": "Discord 設定已重設。",
+          "unsavedChanges": "Discord 設定尚未儲存，確定離開目前頁面？",
+          "testWithUnsavedConfirm": "Webhook 測試使用已儲存的設定。是否先儲存目前修改再測試？",
+          "testSuccess": "Discord 已接受測試訊息。狀態碼：{statusCode}。",
+          "testFailed": "Discord Webhook 測試失敗。"
         }
       }
     }

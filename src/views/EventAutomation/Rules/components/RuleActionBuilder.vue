@@ -8,6 +8,7 @@ type ActionType
     | 'KickPlayer'
     | 'MutePlayer'
     | 'SendAnnouncement'
+    | 'SendDiscordMessage'
     | 'SendGlobalMessage'
     | 'SendPrivateMessage';
 
@@ -34,7 +35,8 @@ type ActionKey
     | 'quality'
     | 'reason'
     | 'target'
-    | 'type';
+    | 'type'
+    | 'username';
 
 const props = defineProps<{
   modelValue: string;
@@ -50,6 +52,7 @@ const ACTION_TYPES: ActionType[] = [
   'SendGlobalMessage',
   'SendPrivateMessage',
   'SendAnnouncement',
+  'SendDiscordMessage',
   'GiveItem',
   'AdjustEconomy',
   'KickPlayer',
@@ -161,6 +164,12 @@ function buildDefaultAction(type: ActionType, previous?: ActionModel): ActionMod
       };
     case 'SendAnnouncement':
       return { type, message: getPreviousString(previous, 'message', 'Server notice') };
+    case 'SendDiscordMessage':
+      return {
+        type,
+        message: getPreviousString(previous, 'message', '{playerName} joined the server.'),
+        username: getPreviousString(previous, 'username', ''),
+      };
     case 'GiveItem':
       return {
         type,
@@ -350,7 +359,7 @@ function resolveHighRiskDescription(type: string) {
             </el-form-item>
           </el-col>
 
-          <template v-if="['SendGlobalMessage', 'SendPrivateMessage', 'SendAnnouncement'].includes(getStringValue(action, 'type'))">
+          <template v-if="['SendGlobalMessage', 'SendPrivateMessage', 'SendAnnouncement', 'SendDiscordMessage'].includes(getStringValue(action, 'type'))">
             <el-col :xs="24">
               <el-form-item :label="t('views.eventAutomation.rules.builder.fields.message')">
                 <el-input
@@ -359,6 +368,17 @@ function resolveHighRiskDescription(type: string) {
                   :rows="2"
                   clearable
                   @update:model-value="setActionValue(index, 'message', $event)"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col v-if="getStringValue(action, 'type') === 'SendDiscordMessage'" :xs="24" :md="12">
+              <el-form-item :label="t('views.eventAutomation.rules.builder.fields.username')">
+                <el-input
+                  :model-value="getStringValue(action, 'username')"
+                  clearable
+                  maxlength="80"
+                  show-word-limit
+                  @update:model-value="setActionValue(index, 'username', $event)"
                 />
               </el-form-item>
             </el-col>

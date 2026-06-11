@@ -132,6 +132,22 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     ],
   },
   {
+    key: 'discordPlayerJoined',
+    name: t('views.eventAutomation.rules.templates.discordPlayerJoined.name'),
+    description: t('views.eventAutomation.rules.templates.discordPlayerJoined.description'),
+    triggerType: 'PlayerJoined',
+    conditions: {
+      cooldownSeconds: 30,
+      cooldownScope: 'RulePlayer',
+    },
+    actions: [
+      {
+        type: 'SendDiscordMessage',
+        message: t('views.eventAutomation.rules.templates.discordPlayerJoined.message'),
+      },
+    ],
+  },
+  {
     key: 'newPlayerGift',
     name: t('views.eventAutomation.rules.templates.newPlayerGift.name'),
     description: t('views.eventAutomation.rules.templates.newPlayerGift.description'),
@@ -242,6 +258,23 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendAnnouncement',
         message: t('views.eventAutomation.rules.templates.scheduledAnnouncement.message'),
+      },
+    ],
+  },
+  {
+    key: 'discordScheduledAnnouncement',
+    name: t('views.eventAutomation.rules.templates.discordScheduledAnnouncement.name'),
+    description: t('views.eventAutomation.rules.templates.discordScheduledAnnouncement.description'),
+    triggerType: 'Cron',
+    conditions: {
+      cronExpression: '0 0/30 * * * ?',
+      timeZoneId: 'Asia/Shanghai',
+      allowConcurrentExecution: false,
+    },
+    actions: [
+      {
+        type: 'SendDiscordMessage',
+        message: t('views.eventAutomation.rules.templates.discordScheduledAnnouncement.message'),
       },
     ],
   },

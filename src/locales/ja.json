@@ -100,7 +100,9 @@
     "eventAutomation": "イベント自動化",
     "eventAutomationRules": "Rules",
     "eventAutomationSettings": "Settings",
-    "eventAutomationRuns": "Run History"
+    "eventAutomationRuns": "Run History",
+    "discordIntegration": "Discord Integration",
+    "discordIntegrationSettings": "Settings"
   },
   "components": {
     "myTable": {
@@ -2732,7 +2734,12 @@
         "voteInvalidPassThreshold": "Vote pass threshold must be greater than 0 and no more than 100: {0}.",
         "voteKickInvalidTargetImmunity": "Vote kick target immunity seconds cannot be negative: {0}.",
         "voteKickMissingKickReason": "Vote kick reason is empty; kicked players may see a fallback reason.",
-        "commandConflict": "Command \"{0}\" conflicts across modules: {1}."
+        "commandConflict": "Command \"{0}\" conflicts across modules: {1}.",
+        "discordWebhookInvalid": "Discord webhook configuration is invalid: {0}.",
+        "discordEventAutomationDisabled": "Event automation is not allowed to send Discord messages.",
+        "discordWebhookMissing": "Discord webhook URL is not configured.",
+        "discordWebhookConfigured": "Discord webhook URL is configured.",
+        "eventAutomationDiscordDependencyDisabled": "Rule \"{0}\" sends Discord messages, but Discord integration is not enabled."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2753,7 +2760,8 @@
         "requiredDependencyDisabled": "Required dependency \"{0}\" is disabled.",
         "requiredDependencyUnavailable": "Required dependency \"{0}\" is unavailable.",
         "eventAutomationRecentFailures": "Event automation failed {0} time(s) today. Latest failed rule: {1}.",
-        "consoleCommandPolicyEnforced": "Console command execution is protected by policy: allow-list={0}, unsafe opt-in={1}."
+        "consoleCommandPolicyEnforced": "Console command execution is protected by policy: allow-list={0}, unsafe opt-in={1}.",
+        "eventAutomationDiscordDependencyDisabled": "One or more enabled rules send Discord messages while Discord integration is disabled."
       },
       "security": {
         "sensitiveActions": "Sensitive Actions",
@@ -2776,7 +2784,9 @@
         "visualRuleBuilder": "Visual Rule Builder",
         "dryRun": "Dry-run Preview",
         "runHistory": "Run History",
-        "runHistoryCleanup": "Run History Cleanup"
+        "runHistoryCleanup": "Run History Cleanup",
+        "webhookTest": "Webhook test",
+        "outboundNotifications": "Outbound notifications"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -2957,7 +2967,8 @@
             "timeZoneId": "Time zone",
             "firstJoinOnly": "Only trigger on first join",
             "cooldownSeconds": "Cooldown seconds",
-            "cooldownScope": "Cooldown scope"
+            "cooldownScope": "Cooldown scope",
+            "username": "Username"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -2976,7 +2987,8 @@
             "AdjustEconomy": "Adjust economy",
             "KickPlayer": "Kick player",
             "MutePlayer": "Mute player",
-            "ExecuteConsoleCommand": "Execute console command"
+            "ExecuteConsoleCommand": "Execute console command",
+            "SendDiscordMessage": "Send Discord message"
           },
           "highRiskTitle": "High-risk action",
           "highRiskDescriptions": {
@@ -3074,6 +3086,16 @@
           "scheduledSaveWorld": {
             "name": "Scheduled saveworld",
             "description": "Run the restricted saveworld console command on a Cron schedule."
+          },
+          "discordPlayerJoined": {
+            "name": "Discord join notification",
+            "description": "Send a Discord webhook message when a player joins.",
+            "message": "{playerName} joined the server."
+          },
+          "discordScheduledAnnouncement": {
+            "name": "Scheduled Discord notice",
+            "description": "Send a Discord webhook message on a Cron schedule.",
+            "message": "Scheduled server notice from 7DTD."
           }
         },
         "status": {
@@ -3227,6 +3249,37 @@
           "confirmDelete": "Matched {0} test run logs. Delete them now?",
           "confirmDeleteExpired": "Matched {0} run logs older than {1} days. Delete them now?",
           "deleted": "Deleted {0} run logs."
+        }
+      }
+    },
+    "discordIntegration": {
+      "settings": {
+        "description": "Send outbound Discord notifications through a configured webhook. Inbound Discord commands are not enabled by this module.",
+        "fields": {
+          "isEnabled": "Enable Discord notifications",
+          "webhookUrl": "Webhook URL",
+          "defaultUsername": "Default username",
+          "defaultAvatarUrl": "Default avatar URL",
+          "timeoutSeconds": "Timeout seconds",
+          "allowEventAutomationMessages": "Allow event automation messages",
+          "testMessage": "Test message"
+        },
+        "placeholders": {
+          "webhookUrl": "https://discord.com/api/webhooks/...",
+          "defaultAvatarUrl": "Optional avatar image URL",
+          "testMessage": "Leave empty to use the default test message."
+        },
+        "actions": {
+          "testWebhook": "Test webhook"
+        },
+        "messages": {
+          "saveSuccess": "Discord settings saved.",
+          "resetConfirm": "Reset Discord integration settings to defaults?",
+          "resetSuccess": "Discord settings reset.",
+          "unsavedChanges": "You have unsaved Discord settings. Leave this page?",
+          "testWithUnsavedConfirm": "The webhook test uses saved settings. Save current changes before testing?",
+          "testSuccess": "Discord accepted the test message. Status: {statusCode}.",
+          "testFailed": "Discord webhook test failed."
         }
       }
     }
