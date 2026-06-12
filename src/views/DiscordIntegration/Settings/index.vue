@@ -3,6 +3,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type {
   DiscordIntegrationFeatureSettingsDto,
   DiscordWebhookSendResultDto,
+  DiscordWebhookTargetDto,
   DiscordWebhookTestRequestDto,
 } from '~/generated/api/types.gen';
 import { isEqual } from 'es-toolkit';
@@ -39,20 +40,6 @@ interface WebhookTargetFormModel {
   isEnabled: boolean;
   webhookUrl: string;
 }
-
-interface WebhookTargetPayload {
-  key: string;
-  displayName: string;
-  isEnabled: boolean;
-  webhookUrl: string | null;
-}
-
-type DiscordIntegrationSettingsPayload = DiscordIntegrationFeatureSettingsDto & {
-  webhookTargets?: WebhookTargetPayload[] | null;
-  enableEventAutomationFailureAlerts?: boolean;
-  eventAutomationFailureAlertTargetKey?: string | null;
-  eventAutomationFailureAlertMessage?: string | null;
-};
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
@@ -109,18 +96,17 @@ function buildDefaults(): FormModel {
 }
 
 function toFormModel(data?: DiscordIntegrationFeatureSettingsDto | null): FormModel {
-  const extended = data as DiscordIntegrationSettingsPayload | undefined | null;
   return {
     isEnabled: data?.isEnabled ?? false,
     webhookUrl: data?.webhookUrl ?? '',
     defaultUsername: data?.defaultUsername ?? '7DTD Server',
     defaultAvatarUrl: data?.defaultAvatarUrl ?? '',
-    webhookTargets: normalizeWebhookTargets(extended?.webhookTargets),
+    webhookTargets: normalizeWebhookTargets(data?.webhookTargets),
     timeoutSeconds: data?.timeoutSeconds ?? 10,
     allowEventAutomationMessages: data?.allowEventAutomationMessages ?? true,
-    enableEventAutomationFailureAlerts: extended?.enableEventAutomationFailureAlerts ?? false,
-    eventAutomationFailureAlertTargetKey: extended?.eventAutomationFailureAlertTargetKey ?? 'admin',
-    eventAutomationFailureAlertMessage: extended?.eventAutomationFailureAlertMessage
+    enableEventAutomationFailureAlerts: data?.enableEventAutomationFailureAlerts ?? false,
+    eventAutomationFailureAlertTargetKey: data?.eventAutomationFailureAlertTargetKey ?? 'admin',
+    eventAutomationFailureAlertMessage: data?.eventAutomationFailureAlertMessage
       ?? '[7DTD] Automation rule failed: {ruleName} ({triggerType}) - {errorMessage}',
   };
 }
@@ -138,7 +124,7 @@ function applyFormValues(values: FormModel) {
   form.eventAutomationFailureAlertMessage = values.eventAutomationFailureAlertMessage;
 }
 
-function normalizeWebhookTargets(targets?: Array<WebhookTargetFormModel | WebhookTargetPayload> | null): WebhookTargetFormModel[] {
+function normalizeWebhookTargets(targets?: Array<DiscordWebhookTargetDto | WebhookTargetFormModel> | null): WebhookTargetFormModel[] {
   const source = targets?.length ? targets : buildDefaults().webhookTargets;
   return source.map(target => ({
     key: target.key ?? '',
@@ -148,7 +134,7 @@ function normalizeWebhookTargets(targets?: Array<WebhookTargetFormModel | Webhoo
   }));
 }
 
-function toPayload(values: FormModel): DiscordIntegrationSettingsPayload {
+function toPayload(values: FormModel): DiscordIntegrationFeatureSettingsDto {
   return {
     isEnabled: values.isEnabled,
     webhookUrl: values.webhookUrl.trim() || null,
@@ -281,12 +267,13 @@ async function onTestWebhook() {
 
   try {
     isTesting.value = true;
+    const payload: DiscordWebhookTestRequestDto = {
+      message: testMessage.value.trim() || null,
+      username: form.defaultUsername.trim() || null,
+      webhookTargetKey: testWebhookTargetKey.value.trim() || null,
+    };
     const { data } = await discordIntegrationTestWebhook({
-      body: {
-        message: testMessage.value.trim() || null,
-        username: form.defaultUsername.trim() || null,
-        webhookTargetKey: testWebhookTargetKey.value.trim() || null,
-      } as DiscordWebhookTestRequestDto,
+      body: payload,
       throwOnError: true,
     });
     showTestResult(data);

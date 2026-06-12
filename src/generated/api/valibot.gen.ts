@@ -678,6 +678,16 @@ export const vSystemMetricsSnapshotDto = v.strictObject({
 });
 
 /**
+ * One named Discord webhook target used for channel routing.
+ */
+export const vDiscordWebhookTargetDto = v.strictObject({
+    key: v.optional(v.string()),
+    displayName: v.optional(v.string()),
+    isEnabled: v.optional(v.boolean()),
+    webhookUrl: v.nullish(v.string())
+});
+
+/**
  * Global settings for outbound Discord webhook notifications.
  */
 export const vDiscordIntegrationFeatureSettingsDto = v.strictObject({
@@ -685,8 +695,12 @@ export const vDiscordIntegrationFeatureSettingsDto = v.strictObject({
     webhookUrl: v.nullish(v.string()),
     defaultUsername: v.nullish(v.string()),
     defaultAvatarUrl: v.nullish(v.string()),
+    webhookTargets: v.nullish(v.array(vDiscordWebhookTargetDto)),
     timeoutSeconds: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    allowEventAutomationMessages: v.optional(v.boolean())
+    allowEventAutomationMessages: v.optional(v.boolean()),
+    enableEventAutomationFailureAlerts: v.optional(v.boolean()),
+    eventAutomationFailureAlertTargetKey: v.nullish(v.string()),
+    eventAutomationFailureAlertMessage: v.nullish(v.string())
 });
 
 /**
@@ -703,7 +717,8 @@ export const vDiscordWebhookSendResultDto = v.strictObject({
  */
 export const vDiscordWebhookTestRequestDto = v.strictObject({
     message: v.nullish(v.string()),
-    username: v.nullish(v.string())
+    username: v.nullish(v.string()),
+    webhookTargetKey: v.nullish(v.string())
 });
 
 /**

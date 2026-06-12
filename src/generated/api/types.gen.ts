@@ -1142,6 +1142,10 @@ export type DiscordIntegrationFeatureSettingsDto = {
      */
     defaultAvatarUrl?: string | null;
     /**
+     * Named webhook targets for routing messages to different Discord channels.
+     */
+    webhookTargets?: Array<DiscordWebhookTargetDto> | null;
+    /**
      * Request timeout in seconds.
      */
     timeoutSeconds?: number;
@@ -1149,6 +1153,40 @@ export type DiscordIntegrationFeatureSettingsDto = {
      * Whether event automation rules are allowed to send Discord messages.
      */
     allowEventAutomationMessages?: boolean;
+    /**
+     * Whether failed event automation runs should be sent to Discord.
+     */
+    enableEventAutomationFailureAlerts?: boolean;
+    /**
+     * Optional webhook target key used for event automation failure alerts.
+     */
+    eventAutomationFailureAlertTargetKey?: string | null;
+    /**
+     * Template used for event automation failure alerts.
+     */
+    eventAutomationFailureAlertMessage?: string | null;
+};
+
+/**
+ * One named Discord webhook target used for channel routing.
+ */
+export type DiscordWebhookTargetDto = {
+    /**
+     * Stable key used by automation actions and templates.
+     */
+    key?: string;
+    /**
+     * Human-readable target name shown in management UI.
+     */
+    displayName?: string;
+    /**
+     * Whether this webhook target can be used.
+     */
+    isEnabled?: boolean;
+    /**
+     * Discord webhook URL for this target.
+     */
+    webhookUrl?: string | null;
 };
 
 /**
@@ -1181,6 +1219,10 @@ export type DiscordWebhookTestRequestDto = {
      * Optional username override for this test message.
      */
     username?: string | null;
+    /**
+     * Optional webhook target key to test.
+     */
+    webhookTargetKey?: string | null;
 };
 
 /**
