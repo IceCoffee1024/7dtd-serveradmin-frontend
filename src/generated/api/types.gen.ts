@@ -1154,6 +1154,42 @@ export type DiscordIntegrationFeatureSettingsDto = {
      */
     allowEventAutomationMessages?: boolean;
     /**
+     * Whether game chat messages should be bridged to Discord automatically.
+     */
+    enableGameChatBridgeToDiscord?: boolean;
+    /**
+     * Optional webhook target key used by the automatic game chat bridge.
+     */
+    gameChatBridgeTargetKey?: string | null;
+    /**
+     * Message template used by the automatic game chat bridge.
+     */
+    gameChatBridgeMessageTemplate?: string | null;
+    /**
+     * Whether whisper chat messages should be forwarded by the chat bridge.
+     */
+    bridgeWhisperChatToDiscord?: boolean;
+    /**
+     * Whether inbound Discord messages should be bridged back into game chat.
+     */
+    enableDiscordToGameBridge?: boolean;
+    /**
+     * Whether Discord-originated management commands are allowed.
+     */
+    enableDiscordCommandExecution?: boolean;
+    /**
+     * Prefix required for Discord command execution requests.
+     */
+    discordCommandPrefix?: string | null;
+    /**
+     * Allow-list for commands that can be executed from Discord.
+     */
+    discordCommandAllowList?: Array<string> | null;
+    /**
+     * Whether Discord account binding flows are enabled.
+     */
+    enableAccountBinding?: boolean;
+    /**
      * Whether failed event automation runs should be sent to Discord.
      */
     enableEventAutomationFailureAlerts?: boolean;
@@ -1223,6 +1259,189 @@ export type DiscordWebhookTestRequestDto = {
      * Optional webhook target key to test.
      */
     webhookTargetKey?: string | null;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfDiscordAccountBindingDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<DiscordAccountBindingDto>;
+};
+
+/**
+ * Represents one player-to-Discord account binding row.
+ */
+export type DiscordAccountBindingDto = {
+    /**
+     * Database identity of the binding row.
+     */
+    id?: number;
+    /**
+     * UTC timestamp recorded when the row was created.
+     */
+    createdAt?: string;
+    /**
+     * UTC timestamp recorded when the row was last updated.
+     */
+    updatedAt?: string;
+    /**
+     * Bound in-game player id.
+     */
+    playerId: string;
+    /**
+     * Snapshot of the in-game player name.
+     */
+    playerName: string;
+    /**
+     * Bound Discord user id.
+     */
+    discordUserId: string;
+    /**
+     * Snapshot of the Discord user display name or tag.
+     */
+    discordUsername: string;
+    /**
+     * Whether this binding is active.
+     */
+    isActive?: boolean;
+};
+
+/**
+ * Sortable columns supported by the Discord binding list endpoint.
+ */
+export type DiscordAccountBindingQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'PlayerId' | 'DiscordUserId';
+
+/**
+ * Request payload for creating or updating a Discord account binding.
+ */
+export type DiscordAccountBindingUpsertDto = {
+    /**
+     * Optional database identity for update operations.
+     */
+    id?: number | null;
+    /**
+     * Bound in-game player id.
+     */
+    playerId: string;
+    /**
+     * Snapshot of the in-game player name.
+     */
+    playerName: string;
+    /**
+     * Bound Discord user id.
+     */
+    discordUserId: string;
+    /**
+     * Snapshot of the Discord user display name or tag.
+     */
+    discordUsername: string;
+    /**
+     * Whether this binding is active.
+     */
+    isActive?: boolean;
+};
+
+/**
+ * Result payload for Discord command relay execution.
+ */
+export type DiscordCommandExecuteResultDto = {
+    /**
+     * Whether command execution succeeded.
+     */
+    succeeded?: boolean;
+    /**
+     * Human-readable execution result.
+     */
+    message: string;
+    /**
+     * Executed console command without prefix when available.
+     */
+    executedCommand?: string | null;
+    /**
+     * Bound in-game player id when account binding is enforced.
+     */
+    boundPlayerId?: string | null;
+    /**
+     * Bound in-game player name when account binding is enforced.
+     */
+    boundPlayerName?: string | null;
+    /**
+     * Console output lines from execution.
+     */
+    output?: Array<string>;
+};
+
+/**
+ * Request payload for relaying one Discord-originated command into game console execution.
+ */
+export type DiscordCommandExecuteRequestDto = {
+    /**
+     * Full command text including configured prefix.
+     */
+    commandText: string;
+    /**
+     * Discord user id of the command issuer.
+     */
+    discordUserId?: string | null;
+    /**
+     * Display name or tag of the command issuer.
+     */
+    discordUsername?: string | null;
+    /**
+     * Whether to execute this command on game main thread.
+     */
+    inMainThread?: boolean;
+};
+
+/**
+ * Result payload for relaying Discord chat message to the game server.
+ */
+export type DiscordChatRelayResultDto = {
+    /**
+     * Whether relay succeeded.
+     */
+    succeeded?: boolean;
+    /**
+     * Human-readable relay result.
+     */
+    message: string;
+    /**
+     * Final in-game message text that was sent.
+     */
+    deliveredMessage?: string | null;
+    /**
+     * Bound in-game player id when account binding is enforced.
+     */
+    boundPlayerId?: string | null;
+    /**
+     * Bound in-game player name when account binding is enforced.
+     */
+    boundPlayerName?: string | null;
+};
+
+/**
+ * Request payload for relaying one Discord chat message into in-game global chat.
+ */
+export type DiscordChatRelayRequestDto = {
+    /**
+     * Raw message text from Discord.
+     */
+    message: string;
+    /**
+     * Discord user id of the sender.
+     */
+    discordUserId?: string | null;
+    /**
+     * Discord display name or tag of the sender.
+     */
+    discordUsername?: string | null;
 };
 
 /**
@@ -6960,6 +7179,116 @@ export type DiscordIntegrationTestWebhookResponses = {
 };
 
 export type DiscordIntegrationTestWebhookResponse = DiscordIntegrationTestWebhookResponses[keyof DiscordIntegrationTestWebhookResponses];
+
+export type DiscordIntegrationGetBindingsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Optional active-state filter.
+         */
+        isActive?: boolean | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Column to sort by; null retains the default order.
+         */
+        order?: DiscordAccountBindingQueryOrder | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/DiscordIntegration/Bindings';
+};
+
+export type DiscordIntegrationGetBindingsResponses = {
+    200: PagedDtoOfDiscordAccountBindingDto;
+};
+
+export type DiscordIntegrationGetBindingsResponse = DiscordIntegrationGetBindingsResponses[keyof DiscordIntegrationGetBindingsResponses];
+
+export type DiscordIntegrationUpsertBindingData = {
+    body: DiscordAccountBindingUpsertDto;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/Bindings';
+};
+
+export type DiscordIntegrationUpsertBindingErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationUpsertBindingError = DiscordIntegrationUpsertBindingErrors[keyof DiscordIntegrationUpsertBindingErrors];
+
+export type DiscordIntegrationUpsertBindingResponses = {
+    200: DiscordAccountBindingDto;
+};
+
+export type DiscordIntegrationUpsertBindingResponse = DiscordIntegrationUpsertBindingResponses[keyof DiscordIntegrationUpsertBindingResponses];
+
+export type DiscordIntegrationExecuteDiscordCommandData = {
+    body: DiscordCommandExecuteRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/ExecuteDiscordCommand';
+};
+
+export type DiscordIntegrationExecuteDiscordCommandErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationExecuteDiscordCommandError = DiscordIntegrationExecuteDiscordCommandErrors[keyof DiscordIntegrationExecuteDiscordCommandErrors];
+
+export type DiscordIntegrationExecuteDiscordCommandResponses = {
+    200: DiscordCommandExecuteResultDto;
+};
+
+export type DiscordIntegrationExecuteDiscordCommandResponse = DiscordIntegrationExecuteDiscordCommandResponses[keyof DiscordIntegrationExecuteDiscordCommandResponses];
+
+export type DiscordIntegrationRelayDiscordChatData = {
+    body: DiscordChatRelayRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/RelayDiscordChat';
+};
+
+export type DiscordIntegrationRelayDiscordChatErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationRelayDiscordChatError = DiscordIntegrationRelayDiscordChatErrors[keyof DiscordIntegrationRelayDiscordChatErrors];
+
+export type DiscordIntegrationRelayDiscordChatResponses = {
+    200: DiscordChatRelayResultDto;
+};
+
+export type DiscordIntegrationRelayDiscordChatResponse = DiscordIntegrationRelayDiscordChatResponses[keyof DiscordIntegrationRelayDiscordChatResponses];
+
+export type DiscordIntegrationDeleteBindingData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/DiscordIntegration/Bindings/{id}';
+};
+
+export type DiscordIntegrationDeleteBindingResponses = {
+    200: boolean;
+};
+
+export type DiscordIntegrationDeleteBindingResponse = DiscordIntegrationDeleteBindingResponses[keyof DiscordIntegrationDeleteBindingResponses];
 
 export type EconomyResetSettingsData = {
     body?: never;

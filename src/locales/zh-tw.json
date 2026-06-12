@@ -3288,17 +3288,37 @@
           "webhookTargetUrl": "Webhook URL",
           "eventAutomationFailureAlertTargetKey": "失敗告警目標",
           "eventAutomationFailureAlertMessage": "失敗告警訊息範本",
-          "testWebhookTargetKey": "測試目標"
+          "testWebhookTargetKey": "測試目標",
+          "enableGameChatBridgeToDiscord": "Bridge game chat to Discord",
+          "gameChatBridgeTargetKey": "Game chat target",
+          "gameChatBridgeMessageTemplate": "Game chat message template",
+          "bridgeWhisperChatToDiscord": "Bridge whisper chat",
+          "enableDiscordToGameBridge": "Bridge Discord to game chat",
+          "enableDiscordCommandExecution": "Enable Discord command relay",
+          "discordCommandPrefix": "Command prefix",
+          "discordCommandAllowList": "Allowed commands",
+          "enableAccountBinding": "Require account binding",
+          "bindingPlayerId": "Player ID",
+          "bindingPlayerName": "Player name",
+          "bindingDiscordUserId": "Discord user ID",
+          "bindingDiscordUsername": "Discord username",
+          "bindingIsActive": "Binding enabled",
+          "discordUserId": "Discord user ID",
+          "discordUsername": "Discord username",
+          "inMainThread": "Run on main thread"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "選填頭像圖片 URL",
           "testMessage": "留空則使用預設測試訊息。",
-          "testWebhookTargetKey": "預設目標"
+          "testWebhookTargetKey": "預設目標",
+          "bindingKeyword": "Search player or Discord identifier"
         },
         "actions": {
           "testWebhook": "測試 Webhook",
-          "addWebhookTarget": "新增目標"
+          "addWebhookTarget": "新增目標",
+          "testCommandRelay": "Test command relay",
+          "testChatRelay": "Test chat relay"
         },
         "messages": {
           "saveSuccess": "Discord 設定已儲存。",
@@ -3307,13 +3327,29 @@
           "unsavedChanges": "Discord 設定尚未儲存，確定離開目前頁面？",
           "testWithUnsavedConfirm": "Webhook 測試使用已儲存的設定。是否先儲存目前修改再測試？",
           "testSuccess": "Discord 已接受測試訊息。狀態碼：{statusCode}。",
-          "testFailed": "Discord Webhook 測試失敗。"
+          "testFailed": "Discord Webhook 測試失敗。",
+          "bindingSaved": "Account binding saved.",
+          "bindingDeleted": "Account binding deleted.",
+          "deleteBindingConfirm": "Delete binding between {playerName} and {discordUsername}?",
+          "commandTestConfirm": "This will execute a real console command through current backend safety checks. Continue?",
+          "commandTestFailed": "Discord command relay test failed.",
+          "chatRelayTestFailed": "Discord chat relay test failed."
         },
         "sections": {
           "webhookTargets": "Webhook 目標",
           "webhookTargetsDescription": "將通知分流到 public、admin、audit 等命名 Discord Webhook 目標。",
           "failureAlerts": "自動化失敗告警",
-          "failureAlertsDescription": "事件自動化規則執行失敗時傳送 Discord 告警，不改變規則執行結果。"
+          "failureAlertsDescription": "事件自動化規則執行失敗時傳送 Discord 告警，不改變規則執行結果。",
+          "chatBridge": "Chat bridge",
+          "chatBridgeDescription": "Configure game chat forwarding and optional Discord-to-game relay. Both directions are disabled by default.",
+          "commandRelay": "Command relay",
+          "commandRelayDescription": "Allow selected Discord-prefixed commands to run in the game console with strict allow-list checks and audit logging.",
+          "accountBindings": "Account bindings",
+          "accountBindingsDescription": "Manage Discord user to in-game player bindings for identity, permissions, and command checks.",
+          "relayTests": "Relay tests",
+          "relayTestsDescription": "Test Discord-to-game chat and command relay using the currently saved backend settings.",
+          "commandRelayTest": "Command relay test",
+          "chatRelayTest": "Chat relay test"
         }
       }
     }

@@ -3274,7 +3274,7 @@
     },
     "discordIntegration": {
       "settings": {
-        "description": "通过配置的 Discord Webhook 发送出站通知。此模块不会启用 Discord 入站指令。",
+        "description": "配置 Discord Webhook、聊天桥接和受控指令中继。入站能力默认关闭，需显式开启。",
         "fields": {
           "isEnabled": "启用 Discord 通知",
           "webhookUrl": "Webhook URL",
@@ -3282,23 +3282,43 @@
           "defaultAvatarUrl": "默认头像 URL",
           "timeoutSeconds": "超时秒数",
           "allowEventAutomationMessages": "允许事件自动化发送消息",
+          "enableGameChatBridgeToDiscord": "转发游戏聊天到 Discord",
+          "gameChatBridgeTargetKey": "游戏聊天目标",
+          "gameChatBridgeMessageTemplate": "游戏聊天消息模板",
+          "bridgeWhisperChatToDiscord": "转发私聊频道",
+          "enableDiscordToGameBridge": "转发 Discord 到游戏聊天",
+          "enableDiscordCommandExecution": "启用 Discord 指令中继",
+          "discordCommandPrefix": "指令前缀",
+          "discordCommandAllowList": "允许执行的指令",
+          "enableAccountBinding": "要求账号绑定",
           "testMessage": "测试消息",
           "webhookTargetKey": "目标键",
           "webhookTargetName": "显示名称",
           "webhookTargetUrl": "Webhook URL",
           "eventAutomationFailureAlertTargetKey": "失败告警目标",
           "eventAutomationFailureAlertMessage": "失败告警消息模板",
-          "testWebhookTargetKey": "测试目标"
+          "testWebhookTargetKey": "测试目标",
+          "bindingPlayerId": "玩家 ID",
+          "bindingPlayerName": "玩家名",
+          "bindingDiscordUserId": "Discord 用户 ID",
+          "bindingDiscordUsername": "Discord 用户名",
+          "bindingIsActive": "启用绑定",
+          "discordUserId": "Discord 用户 ID",
+          "discordUsername": "Discord 用户名",
+          "inMainThread": "主线程执行"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "可选头像图片 URL",
           "testMessage": "留空则使用默认测试消息。",
-          "testWebhookTargetKey": "默认目标"
+          "testWebhookTargetKey": "默认目标",
+          "bindingKeyword": "搜索玩家或 Discord 标识"
         },
         "actions": {
           "testWebhook": "测试 Webhook",
-          "addWebhookTarget": "添加目标"
+          "addWebhookTarget": "添加目标",
+          "testCommandRelay": "测试指令中继",
+          "testChatRelay": "测试聊天中继"
         },
         "messages": {
           "saveSuccess": "Discord 设置已保存。",
@@ -3307,9 +3327,25 @@
           "unsavedChanges": "Discord 设置尚未保存，确定离开当前页面？",
           "testWithUnsavedConfirm": "Webhook 测试使用已保存的设置。是否先保存当前修改再测试？",
           "testSuccess": "Discord 已接受测试消息。状态码：{statusCode}。",
-          "testFailed": "Discord Webhook 测试失败。"
+          "testFailed": "Discord Webhook 测试失败。",
+          "bindingSaved": "账号绑定已保存。",
+          "bindingDeleted": "账号绑定已删除。",
+          "deleteBindingConfirm": "确认删除 {playerName} 与 {discordUsername} 的绑定？",
+          "commandTestConfirm": "该操作会按当前后端安全策略真实执行控制台命令。确认继续？",
+          "commandTestFailed": "Discord 指令中继测试失败。",
+          "chatRelayTestFailed": "Discord 聊天中继测试失败。"
         },
         "sections": {
+          "chatBridge": "聊天桥接",
+          "chatBridgeDescription": "配置游戏聊天转发与可选的 Discord 回传。两个方向默认都关闭。",
+          "commandRelay": "指令中继",
+          "commandRelayDescription": "允许带前缀的 Discord 指令按白名单执行到游戏控制台，并记录审计日志。",
+          "accountBindings": "账号绑定",
+          "accountBindingsDescription": "维护 Discord 用户与游戏玩家的绑定关系，用于后续权限、身份和指令校验。",
+          "relayTests": "中继测试",
+          "relayTestsDescription": "用当前保存的后端配置测试 Discord 到游戏侧的聊天与指令中继。",
+          "commandRelayTest": "指令中继测试",
+          "chatRelayTest": "聊天中继测试",
           "webhookTargets": "Webhook 目标",
           "webhookTargetsDescription": "将通知分流到 public、admin、audit 等命名 Discord Webhook 目标。",
           "failureAlerts": "自动化失败告警",

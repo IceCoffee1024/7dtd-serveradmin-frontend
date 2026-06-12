@@ -3274,7 +3274,7 @@
     },
     "discordIntegration": {
       "settings": {
-        "description": "Send outbound Discord notifications through a configured webhook. Inbound Discord commands are not enabled by this module.",
+        "description": "Configure Discord webhooks, chat bridge, and controlled command relay. Inbound capabilities remain disabled unless explicitly enabled.",
         "fields": {
           "isEnabled": "Enable Discord notifications",
           "webhookUrl": "Webhook URL",
@@ -3282,23 +3282,43 @@
           "defaultAvatarUrl": "Default avatar URL",
           "timeoutSeconds": "Timeout seconds",
           "allowEventAutomationMessages": "Allow event automation messages",
+          "enableGameChatBridgeToDiscord": "Bridge game chat to Discord",
+          "gameChatBridgeTargetKey": "Game chat target",
+          "gameChatBridgeMessageTemplate": "Game chat message template",
+          "bridgeWhisperChatToDiscord": "Bridge whisper chat",
+          "enableDiscordToGameBridge": "Bridge Discord to game chat",
+          "enableDiscordCommandExecution": "Enable Discord command relay",
+          "discordCommandPrefix": "Command prefix",
+          "discordCommandAllowList": "Allowed commands",
+          "enableAccountBinding": "Require account binding",
           "testMessage": "Test message",
           "webhookTargetKey": "Target key",
           "webhookTargetName": "Display name",
           "webhookTargetUrl": "Webhook URL",
           "eventAutomationFailureAlertTargetKey": "Failure alert target",
           "eventAutomationFailureAlertMessage": "Failure alert message template",
-          "testWebhookTargetKey": "Test target"
+          "testWebhookTargetKey": "Test target",
+          "bindingPlayerId": "Player ID",
+          "bindingPlayerName": "Player name",
+          "bindingDiscordUserId": "Discord user ID",
+          "bindingDiscordUsername": "Discord username",
+          "bindingIsActive": "Binding enabled",
+          "discordUserId": "Discord user ID",
+          "discordUsername": "Discord username",
+          "inMainThread": "Run on main thread"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "Optional avatar image URL",
           "testMessage": "Leave empty to use the default test message.",
-          "testWebhookTargetKey": "Default target"
+          "testWebhookTargetKey": "Default target",
+          "bindingKeyword": "Search player or Discord identifier"
         },
         "actions": {
           "testWebhook": "Test webhook",
-          "addWebhookTarget": "Add target"
+          "addWebhookTarget": "Add target",
+          "testCommandRelay": "Test command relay",
+          "testChatRelay": "Test chat relay"
         },
         "messages": {
           "saveSuccess": "Discord settings saved.",
@@ -3307,9 +3327,25 @@
           "unsavedChanges": "You have unsaved Discord settings. Leave this page?",
           "testWithUnsavedConfirm": "The webhook test uses saved settings. Save current changes before testing?",
           "testSuccess": "Discord accepted the test message. Status: {statusCode}.",
-          "testFailed": "Discord webhook test failed."
+          "testFailed": "Discord webhook test failed.",
+          "bindingSaved": "Account binding saved.",
+          "bindingDeleted": "Account binding deleted.",
+          "deleteBindingConfirm": "Delete binding between {playerName} and {discordUsername}?",
+          "commandTestConfirm": "This will execute a real console command through current backend safety checks. Continue?",
+          "commandTestFailed": "Discord command relay test failed.",
+          "chatRelayTestFailed": "Discord chat relay test failed."
         },
         "sections": {
+          "chatBridge": "Chat bridge",
+          "chatBridgeDescription": "Configure game chat forwarding and optional Discord-to-game relay. Both directions are disabled by default.",
+          "commandRelay": "Command relay",
+          "commandRelayDescription": "Allow selected Discord-prefixed commands to run in the game console with strict allow-list checks and audit logging.",
+          "accountBindings": "Account bindings",
+          "accountBindingsDescription": "Manage Discord user to in-game player bindings for identity, permissions, and command checks.",
+          "relayTests": "Relay tests",
+          "relayTestsDescription": "Test Discord-to-game chat and command relay using the currently saved backend settings.",
+          "commandRelayTest": "Command relay test",
+          "chatRelayTest": "Chat relay test",
           "webhookTargets": "Webhook targets",
           "webhookTargetsDescription": "Route notifications to named Discord webhook targets such as public, admin, or audit.",
           "failureAlerts": "Automation failure alerts",

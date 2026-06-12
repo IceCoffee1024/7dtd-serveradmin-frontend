@@ -698,6 +698,15 @@ export const vDiscordIntegrationFeatureSettingsDto = v.strictObject({
     webhookTargets: v.nullish(v.array(vDiscordWebhookTargetDto)),
     timeoutSeconds: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     allowEventAutomationMessages: v.optional(v.boolean()),
+    enableGameChatBridgeToDiscord: v.optional(v.boolean()),
+    gameChatBridgeTargetKey: v.nullish(v.string()),
+    gameChatBridgeMessageTemplate: v.nullish(v.string()),
+    bridgeWhisperChatToDiscord: v.optional(v.boolean()),
+    enableDiscordToGameBridge: v.optional(v.boolean()),
+    enableDiscordCommandExecution: v.optional(v.boolean()),
+    discordCommandPrefix: v.nullish(v.string()),
+    discordCommandAllowList: v.nullish(v.array(v.string())),
+    enableAccountBinding: v.optional(v.boolean()),
     enableEventAutomationFailureAlerts: v.optional(v.boolean()),
     eventAutomationFailureAlertTargetKey: v.nullish(v.string()),
     eventAutomationFailureAlertMessage: v.nullish(v.string())
@@ -719,6 +728,96 @@ export const vDiscordWebhookTestRequestDto = v.strictObject({
     message: v.nullish(v.string()),
     username: v.nullish(v.string()),
     webhookTargetKey: v.nullish(v.string())
+});
+
+/**
+ * Represents one player-to-Discord account binding row.
+ */
+export const vDiscordAccountBindingDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    updatedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    playerId: v.string(),
+    playerName: v.string(),
+    discordUserId: v.string(),
+    discordUsername: v.string(),
+    isActive: v.optional(v.boolean())
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfDiscordAccountBindingDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vDiscordAccountBindingDto)
+});
+
+/**
+ * Sortable columns supported by the Discord binding list endpoint.
+ */
+export const vDiscordAccountBindingQueryOrder = v.picklist([
+    'CreatedAt',
+    'UpdatedAt',
+    'PlayerId',
+    'DiscordUserId'
+]);
+
+/**
+ * Request payload for creating or updating a Discord account binding.
+ */
+export const vDiscordAccountBindingUpsertDto = v.strictObject({
+    id: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    playerId: v.string(),
+    playerName: v.string(),
+    discordUserId: v.string(),
+    discordUsername: v.string(),
+    isActive: v.optional(v.boolean())
+});
+
+/**
+ * Result payload for Discord command relay execution.
+ */
+export const vDiscordCommandExecuteResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    message: v.string(),
+    executedCommand: v.nullish(v.string()),
+    boundPlayerId: v.nullish(v.string()),
+    boundPlayerName: v.nullish(v.string()),
+    output: v.optional(v.array(v.string()))
+});
+
+/**
+ * Request payload for relaying one Discord-originated command into game console execution.
+ */
+export const vDiscordCommandExecuteRequestDto = v.strictObject({
+    commandText: v.string(),
+    discordUserId: v.nullish(v.string()),
+    discordUsername: v.nullish(v.string()),
+    inMainThread: v.optional(v.boolean())
+});
+
+/**
+ * Result payload for relaying Discord chat message to the game server.
+ */
+export const vDiscordChatRelayResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    message: v.string(),
+    deliveredMessage: v.nullish(v.string()),
+    boundPlayerId: v.nullish(v.string()),
+    boundPlayerName: v.nullish(v.string())
+});
+
+/**
+ * Request payload for relaying one Discord chat message into in-game global chat.
+ */
+export const vDiscordChatRelayRequestDto = v.strictObject({
+    message: v.string(),
+    discordUserId: v.nullish(v.string()),
+    discordUsername: v.nullish(v.string())
 });
 
 /**
@@ -2997,6 +3096,25 @@ export const vColoredChatUpdateProfileBody = vColoredChatProfileUpsertDto;
 export const vDiscordIntegrationUpdateSettingsBody = vDiscordIntegrationFeatureSettingsDto;
 
 export const vDiscordIntegrationTestWebhookBody = v.nullable(vDiscordWebhookTestRequestDto);
+
+export const vDiscordIntegrationGetBindingsQuery = v.object({
+    isActive: v.nullish(v.boolean()),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(vDiscordAccountBindingQueryOrder),
+    desc: v.optional(v.boolean())
+});
+
+export const vDiscordIntegrationUpsertBindingBody = vDiscordAccountBindingUpsertDto;
+
+export const vDiscordIntegrationExecuteDiscordCommandBody = vDiscordCommandExecuteRequestDto;
+
+export const vDiscordIntegrationRelayDiscordChatBody = vDiscordChatRelayRequestDto;
+
+export const vDiscordIntegrationDeleteBindingPath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
 
 export const vEconomyResetSettingsQuery = v.object({
     language: v.nullish(vLanguage)
