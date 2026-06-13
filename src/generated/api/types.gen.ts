@@ -1194,6 +1194,30 @@ export type DiscordIntegrationFeatureSettingsDto = {
      */
     enableDiscordToGameBridge?: boolean;
     /**
+     * Whether Discord Bot REST/Gateway integration is configured.
+     */
+    enableBotIntegration?: boolean;
+    /**
+     * Discord Bot token. This is secret and must not be written to logs.
+     */
+    botToken?: string | null;
+    /**
+     * Optional Discord guild/server id used to scope commands and bridge channels.
+     */
+    botGuildId?: string | null;
+    /**
+     * Optional Discord channel id used for public game chat bridge.
+     */
+    botPublicChannelId?: string | null;
+    /**
+     * Optional Discord channel id used for admin-only command and alert flows.
+     */
+    botAdminChannelId?: string | null;
+    /**
+     * Whether Discord application commands should be managed by the integration.
+     */
+    enableBotSlashCommands?: boolean;
+    /**
      * Whether Discord-originated management commands are allowed.
      */
     enableDiscordCommandExecution?: boolean;
@@ -1282,6 +1306,32 @@ export type DiscordWebhookTestRequestDto = {
 };
 
 /**
+ * Result of a Discord Bot token validation attempt.
+ */
+export type DiscordBotTestResultDto = {
+    /**
+     * Whether Discord accepted the Bot token.
+     */
+    succeeded?: boolean;
+    /**
+     * Human-readable validation result.
+     */
+    message: string;
+    /**
+     * HTTP status code returned by Discord when available.
+     */
+    statusCode?: number | null;
+    /**
+     * Bot user id returned by Discord.
+     */
+    botUserId?: string | null;
+    /**
+     * Bot username returned by Discord.
+     */
+    botUsername?: string | null;
+};
+
+/**
  * Represents a paged query result with total count and current page items.
  */
 export type PagedDtoOfDiscordAccountBindingDto = {
@@ -1337,6 +1387,128 @@ export type DiscordAccountBindingDto = {
  * Sortable columns supported by the Discord binding list endpoint.
  */
 export type DiscordAccountBindingQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'PlayerId' | 'DiscordUserId';
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfDiscordAccountBindingCodeDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<DiscordAccountBindingCodeDto>;
+};
+
+/**
+ * Represents one short-lived Discord account binding code.
+ */
+export type DiscordAccountBindingCodeDto = {
+    /**
+     * Database identity of the binding code row.
+     */
+    id?: number;
+    /**
+     * UTC timestamp recorded when the code was created.
+     */
+    createdAt?: string;
+    /**
+     * UTC timestamp when the code expires.
+     */
+    expiresAt?: string;
+    /**
+     * UTC timestamp when the code was redeemed.
+     */
+    redeemedAt?: string | null;
+    /**
+     * Short non-secret prefix used for diagnostics. The raw code is not persisted.
+     */
+    codePrefix: string;
+    /**
+     * In-game player id that generated the code.
+     */
+    playerId: string;
+    /**
+     * Snapshot of the in-game player name.
+     */
+    playerName: string;
+    /**
+     * Discord user id that redeemed the code.
+     */
+    redeemedDiscordUserId?: string | null;
+    /**
+     * Discord username that redeemed the code.
+     */
+    redeemedDiscordUsername?: string | null;
+};
+
+/**
+ * Sortable columns supported by the Discord binding code list endpoint.
+ */
+export type DiscordAccountBindingCodeQueryOrder = 'CreatedAt' | 'ExpiresAt' | 'RedeemedAt' | 'PlayerId';
+
+export type DiscordAccountBindingCodeCreateResultDto = DiscordAccountBindingCodeDto & {
+    /**
+     * One-time raw binding code. It is returned only at creation time.
+     */
+    code: string;
+};
+
+/**
+ * Request payload for creating a Discord account binding code.
+ */
+export type DiscordAccountBindingCodeCreateRequestDto = {
+    /**
+     * In-game player id that owns the code.
+     */
+    playerId: string;
+    /**
+     * Snapshot of the in-game player name.
+     */
+    playerName: string;
+    /**
+     * Optional lifetime override in minutes.
+     */
+    expiresInMinutes?: number | null;
+};
+
+/**
+ * Result returned when a Discord account binding code is redeemed.
+ */
+export type DiscordAccountBindingCodeRedeemResultDto = {
+    /**
+     * Whether redemption succeeded.
+     */
+    succeeded?: boolean;
+    /**
+     * Human-readable result.
+     */
+    message: string;
+    /**
+     * Created or updated binding row when redemption succeeds.
+     */
+    binding?: DiscordAccountBindingDto | null;
+};
+
+/**
+ * Request payload for redeeming a Discord account binding code.
+ */
+export type DiscordAccountBindingCodeRedeemRequestDto = {
+    /**
+     * Raw code shown to the player in-game.
+     */
+    code: string;
+    /**
+     * Discord user id redeeming the code.
+     */
+    discordUserId: string;
+    /**
+     * Discord display name or tag redeeming the code.
+     */
+    discordUsername: string;
+};
 
 /**
  * Request payload for creating or updating a Discord account binding.
@@ -7200,6 +7372,25 @@ export type DiscordIntegrationTestWebhookResponses = {
 
 export type DiscordIntegrationTestWebhookResponse = DiscordIntegrationTestWebhookResponses[keyof DiscordIntegrationTestWebhookResponses];
 
+export type DiscordIntegrationTestBotData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/TestBot';
+};
+
+export type DiscordIntegrationTestBotErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationTestBotError = DiscordIntegrationTestBotErrors[keyof DiscordIntegrationTestBotErrors];
+
+export type DiscordIntegrationTestBotResponses = {
+    200: DiscordBotTestResultDto;
+};
+
+export type DiscordIntegrationTestBotResponse = DiscordIntegrationTestBotResponses[keyof DiscordIntegrationTestBotResponses];
+
 export type DiscordIntegrationGetBindingsData = {
     body?: never;
     path?: never;
@@ -7256,6 +7447,114 @@ export type DiscordIntegrationUpsertBindingResponses = {
 };
 
 export type DiscordIntegrationUpsertBindingResponse = DiscordIntegrationUpsertBindingResponses[keyof DiscordIntegrationUpsertBindingResponses];
+
+export type DiscordIntegrationGetBindingCodesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Optional redeemed-state filter.
+         */
+        isRedeemed?: boolean | null;
+        /**
+         * Optional expired-state filter.
+         */
+        isExpired?: boolean | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Column to sort by; null retains the default order.
+         */
+        order?: DiscordAccountBindingCodeQueryOrder | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/DiscordIntegration/BindingCodes';
+};
+
+export type DiscordIntegrationGetBindingCodesResponses = {
+    200: PagedDtoOfDiscordAccountBindingCodeDto;
+};
+
+export type DiscordIntegrationGetBindingCodesResponse = DiscordIntegrationGetBindingCodesResponses[keyof DiscordIntegrationGetBindingCodesResponses];
+
+export type DiscordIntegrationCreateBindingCodeData = {
+    body: DiscordAccountBindingCodeCreateRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/BindingCodes';
+};
+
+export type DiscordIntegrationCreateBindingCodeErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationCreateBindingCodeError = DiscordIntegrationCreateBindingCodeErrors[keyof DiscordIntegrationCreateBindingCodeErrors];
+
+export type DiscordIntegrationCreateBindingCodeResponses = {
+    200: DiscordAccountBindingCodeCreateResultDto;
+};
+
+export type DiscordIntegrationCreateBindingCodeResponse = DiscordIntegrationCreateBindingCodeResponses[keyof DiscordIntegrationCreateBindingCodeResponses];
+
+export type DiscordIntegrationRedeemBindingCodeData = {
+    body: DiscordAccountBindingCodeRedeemRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/BindingCodes/Redeem';
+};
+
+export type DiscordIntegrationRedeemBindingCodeErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationRedeemBindingCodeError = DiscordIntegrationRedeemBindingCodeErrors[keyof DiscordIntegrationRedeemBindingCodeErrors];
+
+export type DiscordIntegrationRedeemBindingCodeResponses = {
+    200: DiscordAccountBindingCodeRedeemResultDto;
+};
+
+export type DiscordIntegrationRedeemBindingCodeResponse = DiscordIntegrationRedeemBindingCodeResponses[keyof DiscordIntegrationRedeemBindingCodeResponses];
+
+export type DiscordIntegrationDeleteBindingCodeData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/DiscordIntegration/BindingCodes/{id}';
+};
+
+export type DiscordIntegrationDeleteBindingCodeResponses = {
+    200: boolean;
+};
+
+export type DiscordIntegrationDeleteBindingCodeResponse = DiscordIntegrationDeleteBindingCodeResponses[keyof DiscordIntegrationDeleteBindingCodeResponses];
+
+export type DiscordIntegrationCleanupExpiredBindingCodesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/BindingCodes/Expired';
+};
+
+export type DiscordIntegrationCleanupExpiredBindingCodesResponses = {
+    200: number;
+};
+
+export type DiscordIntegrationCleanupExpiredBindingCodesResponse = DiscordIntegrationCleanupExpiredBindingCodesResponses[keyof DiscordIntegrationCleanupExpiredBindingCodesResponses];
 
 export type DiscordIntegrationExecuteDiscordCommandData = {
     body: DiscordCommandExecuteRequestDto;

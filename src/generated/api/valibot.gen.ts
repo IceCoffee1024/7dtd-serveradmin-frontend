@@ -708,6 +708,12 @@ export const vDiscordIntegrationFeatureSettingsDto = v.strictObject({
     gameChatBridgeMessageTemplate: v.nullish(v.string()),
     bridgeWhisperChatToDiscord: v.optional(v.boolean()),
     enableDiscordToGameBridge: v.optional(v.boolean()),
+    enableBotIntegration: v.optional(v.boolean()),
+    botToken: v.nullish(v.string()),
+    botGuildId: v.nullish(v.string()),
+    botPublicChannelId: v.nullish(v.string()),
+    botAdminChannelId: v.nullish(v.string()),
+    enableBotSlashCommands: v.optional(v.boolean()),
     enableDiscordCommandExecution: v.optional(v.boolean()),
     discordCommandPrefix: v.nullish(v.string()),
     discordCommandAllowList: v.nullish(v.array(v.string())),
@@ -733,6 +739,17 @@ export const vDiscordWebhookTestRequestDto = v.strictObject({
     message: v.nullish(v.string()),
     username: v.nullish(v.string()),
     webhookTargetKey: v.nullish(v.string())
+});
+
+/**
+ * Result of a Discord Bot token validation attempt.
+ */
+export const vDiscordBotTestResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    message: v.string(),
+    statusCode: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    botUserId: v.nullish(v.string()),
+    botUsername: v.nullish(v.string())
 });
 
 /**
@@ -770,6 +787,74 @@ export const vDiscordAccountBindingQueryOrder = v.picklist([
     'PlayerId',
     'DiscordUserId'
 ]);
+
+/**
+ * Represents one short-lived Discord account binding code.
+ */
+export const vDiscordAccountBindingCodeDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    expiresAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    redeemedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    codePrefix: v.string(),
+    playerId: v.string(),
+    playerName: v.string(),
+    redeemedDiscordUserId: v.nullish(v.string()),
+    redeemedDiscordUsername: v.nullish(v.string())
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfDiscordAccountBindingCodeDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vDiscordAccountBindingCodeDto)
+});
+
+/**
+ * Sortable columns supported by the Discord binding code list endpoint.
+ */
+export const vDiscordAccountBindingCodeQueryOrder = v.picklist([
+    'CreatedAt',
+    'ExpiresAt',
+    'RedeemedAt',
+    'PlayerId'
+]);
+
+export const vDiscordAccountBindingCodeCreateResultDto = v.intersect([vDiscordAccountBindingCodeDto, v.strictObject({
+        code: v.string()
+    })]);
+
+/**
+ * Request payload for creating a Discord account binding code.
+ */
+export const vDiscordAccountBindingCodeCreateRequestDto = v.strictObject({
+    playerId: v.string(),
+    playerName: v.string(),
+    expiresInMinutes: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Result returned when a Discord account binding code is redeemed.
+ */
+export const vDiscordAccountBindingCodeRedeemResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    message: v.string(),
+    binding: v.nullish(vDiscordAccountBindingDto)
+});
+
+/**
+ * Request payload for redeeming a Discord account binding code.
+ */
+export const vDiscordAccountBindingCodeRedeemRequestDto = v.strictObject({
+    code: v.string(),
+    discordUserId: v.string(),
+    discordUsername: v.string()
+});
 
 /**
  * Request payload for creating or updating a Discord account binding.
@@ -3112,6 +3197,24 @@ export const vDiscordIntegrationGetBindingsQuery = v.object({
 });
 
 export const vDiscordIntegrationUpsertBindingBody = vDiscordAccountBindingUpsertDto;
+
+export const vDiscordIntegrationGetBindingCodesQuery = v.object({
+    isRedeemed: v.nullish(v.boolean()),
+    isExpired: v.nullish(v.boolean()),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(vDiscordAccountBindingCodeQueryOrder),
+    desc: v.optional(v.boolean())
+});
+
+export const vDiscordIntegrationCreateBindingCodeBody = vDiscordAccountBindingCodeCreateRequestDto;
+
+export const vDiscordIntegrationRedeemBindingCodeBody = vDiscordAccountBindingCodeRedeemRequestDto;
+
+export const vDiscordIntegrationDeleteBindingCodePath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
 
 export const vDiscordIntegrationExecuteDiscordCommandBody = vDiscordCommandExecuteRequestDto;
 

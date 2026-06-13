@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 import type {
+  DiscordAccountBindingCodeCreateResultDto,
+  DiscordAccountBindingCodeDto,
+  DiscordAccountBindingCodeRedeemResultDto,
   DiscordAccountBindingDto,
   DiscordAccountBindingUpsertDto,
+  DiscordBotTestResultDto,
   DiscordChatRelayResultDto,
   DiscordCommandExecuteResultDto,
   DiscordIntegrationFeatureSettingsDto,
@@ -10,17 +14,24 @@ import type {
   DiscordWebhookTargetDto,
   DiscordWebhookTestRequestDto,
 } from '~/generated/api/types.gen';
+import dayjs from 'dayjs';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
 import { usePopup } from '~/composables';
 import {
+  discordIntegrationCleanupExpiredBindingCodes,
+  discordIntegrationCreateBindingCode,
+  discordIntegrationDeleteBindingCode,
   discordIntegrationDeleteBinding,
   discordIntegrationExecuteDiscordCommand,
+  discordIntegrationGetBindingCodes,
   discordIntegrationGetBindings,
+  discordIntegrationRedeemBindingCode,
   discordIntegrationGetSettings,
   discordIntegrationRelayDiscordChat,
   discordIntegrationResetSettings,
+  discordIntegrationTestBot,
   discordIntegrationTestWebhook,
   discordIntegrationUpdateSettings,
   discordIntegrationUpsertBinding,
@@ -48,6 +59,12 @@ interface FormModel {
   gameChatBridgeMessageTemplate: string;
   bridgeWhisperChatToDiscord: boolean;
   enableDiscordToGameBridge: boolean;
+  enableBotIntegration: boolean;
+  botToken: string;
+  botGuildId: string;
+  botPublicChannelId: string;
+  botAdminChannelId: string;
+  enableBotSlashCommands: boolean;
   enableDiscordCommandExecution: boolean;
   discordCommandPrefix: string;
   discordCommandAllowList: string[];
@@ -73,23 +90,48 @@ interface BindingFormModel {
   isActive: boolean;
 }
 
+interface BindingCodeCreateFormModel {
+  playerId: string;
+  playerName: string;
+  expiresInMinutes: number;
+}
+
+interface BindingCodeRedeemFormModel {
+  code: string;
+  discordUserId: string;
+  discordUsername: string;
+}
+
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
 
 const formRef = useTemplateRef<FormInstance>('formRef');
 const bindingFormRef = useTemplateRef<FormInstance>('bindingFormRef');
+const bindingCodeCreateFormRef = useTemplateRef<FormInstance>('bindingCodeCreateFormRef');
+const bindingCodeRedeemFormRef = useTemplateRef<FormInstance>('bindingCodeRedeemFormRef');
 const isLoading = ref(false);
 const isSubmitting = ref(false);
 const isTesting = ref(false);
 const isBindingsLoading = ref(false);
 const isBindingSubmitting = ref(false);
+const isBindingCodesLoading = ref(false);
+const isBindingCodeCreating = ref(false);
+const isBindingCodeRedeeming = ref(false);
+const isBindingCodeCleaning = ref(false);
 const isCommandTesting = ref(false);
 const isChatRelayTesting = ref(false);
+const isBotTesting = ref(false);
 const testMessage = ref('');
 const testWebhookTargetKey = ref('');
 const bindings = ref<DiscordAccountBindingDto[]>([]);
+const bindingCodes = ref<DiscordAccountBindingCodeDto[]>([]);
 const bindingKeyword = ref('');
+const bindingCodeKeyword = ref('');
 const bindingForm = reactive<BindingFormModel>(buildBindingDefaults());
+const bindingCodeCreateForm = reactive<BindingCodeCreateFormModel>(buildBindingCodeCreateDefaults());
+const bindingCodeRedeemForm = reactive<BindingCodeRedeemFormModel>(buildBindingCodeRedeemDefaults());
+const latestCreatedBindingCode = ref<DiscordAccountBindingCodeCreateResultDto | null>(null);
+const latestRedeemResult = ref<DiscordAccountBindingCodeRedeemResultDto | null>(null);
 const commandTestForm = reactive({
   commandText: '!listplayers',
   discordUserId: '',
@@ -103,6 +145,7 @@ const chatRelayTestForm = reactive({
 });
 const commandTestResult = ref<DiscordCommandExecuteResultDto | null>(null);
 const chatRelayTestResult = ref<DiscordChatRelayResultDto | null>(null);
+const botTestResult = ref<DiscordBotTestResultDto | null>(null);
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const isDirty = computed(() => !isEqual(form, initialValues.value));
@@ -132,6 +175,12 @@ const schema = v.object({
   gameChatBridgeMessageTemplate: v.pipe(v.string(), v.maxLength(1900)),
   bridgeWhisperChatToDiscord: v.boolean(),
   enableDiscordToGameBridge: v.boolean(),
+  enableBotIntegration: v.boolean(),
+  botToken: v.pipe(v.string(), v.maxLength(256)),
+  botGuildId: v.pipe(v.string(), v.maxLength(64)),
+  botPublicChannelId: v.pipe(v.string(), v.maxLength(64)),
+  botAdminChannelId: v.pipe(v.string(), v.maxLength(64)),
+  enableBotSlashCommands: v.boolean(),
   enableDiscordCommandExecution: v.boolean(),
   discordCommandPrefix: v.pipe(v.string(), v.minLength(1), v.maxLength(20)),
   discordCommandAllowList: v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(64))),
@@ -149,6 +198,16 @@ const bindingRules: FormRules = generateElementRules(v.object({
   discordUserId: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
   discordUsername: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
   isActive: v.boolean(),
+}));
+const bindingCodeCreateRules: FormRules = generateElementRules(v.object({
+  playerId: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+  playerName: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+  expiresInMinutes: v.pipe(v.number(), v.minValue(1), v.maxValue(60)),
+}));
+const bindingCodeRedeemRules: FormRules = generateElementRules(v.object({
+  code: v.pipe(v.string(), v.minLength(6), v.maxLength(32)),
+  discordUserId: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
+  discordUsername: v.pipe(v.string(), v.minLength(1), v.maxLength(128)),
 }));
 
 function buildDefaults(): FormModel {
@@ -174,6 +233,12 @@ function buildDefaults(): FormModel {
     gameChatBridgeMessageTemplate: '[{chatType}] {playerName}: {message}',
     bridgeWhisperChatToDiscord: false,
     enableDiscordToGameBridge: false,
+    enableBotIntegration: false,
+    botToken: '',
+    botGuildId: '',
+    botPublicChannelId: '',
+    botAdminChannelId: '',
+    enableBotSlashCommands: false,
     enableDiscordCommandExecution: false,
     discordCommandPrefix: '!',
     discordCommandAllowList: ['listplayers', 'saveworld'],
@@ -203,6 +268,12 @@ function toFormModel(data?: DiscordIntegrationFeatureSettingsDto | null): FormMo
     gameChatBridgeMessageTemplate: data?.gameChatBridgeMessageTemplate ?? '[{chatType}] {playerName}: {message}',
     bridgeWhisperChatToDiscord: data?.bridgeWhisperChatToDiscord ?? false,
     enableDiscordToGameBridge: data?.enableDiscordToGameBridge ?? false,
+    enableBotIntegration: data?.enableBotIntegration ?? false,
+    botToken: data?.botToken ?? '',
+    botGuildId: data?.botGuildId ?? '',
+    botPublicChannelId: data?.botPublicChannelId ?? '',
+    botAdminChannelId: data?.botAdminChannelId ?? '',
+    enableBotSlashCommands: data?.enableBotSlashCommands ?? false,
     enableDiscordCommandExecution: data?.enableDiscordCommandExecution ?? false,
     discordCommandPrefix: data?.discordCommandPrefix ?? '!',
     discordCommandAllowList: (data?.discordCommandAllowList ?? ['listplayers', 'saveworld'])
@@ -234,6 +305,12 @@ function applyFormValues(values: FormModel) {
   form.gameChatBridgeMessageTemplate = values.gameChatBridgeMessageTemplate;
   form.bridgeWhisperChatToDiscord = values.bridgeWhisperChatToDiscord;
   form.enableDiscordToGameBridge = values.enableDiscordToGameBridge;
+  form.enableBotIntegration = values.enableBotIntegration;
+  form.botToken = values.botToken;
+  form.botGuildId = values.botGuildId;
+  form.botPublicChannelId = values.botPublicChannelId;
+  form.botAdminChannelId = values.botAdminChannelId;
+  form.enableBotSlashCommands = values.enableBotSlashCommands;
   form.enableDiscordCommandExecution = values.enableDiscordCommandExecution;
   form.discordCommandPrefix = values.discordCommandPrefix;
   form.discordCommandAllowList = [...values.discordCommandAllowList];
@@ -279,6 +356,12 @@ function toPayload(values: FormModel): DiscordIntegrationFeatureSettingsDto {
     gameChatBridgeMessageTemplate: values.gameChatBridgeMessageTemplate.trim() || null,
     bridgeWhisperChatToDiscord: values.bridgeWhisperChatToDiscord,
     enableDiscordToGameBridge: values.enableDiscordToGameBridge,
+    enableBotIntegration: values.enableBotIntegration,
+    botToken: values.botToken.trim() || null,
+    botGuildId: values.botGuildId.trim() || null,
+    botPublicChannelId: values.botPublicChannelId.trim() || null,
+    botAdminChannelId: values.botAdminChannelId.trim() || null,
+    enableBotSlashCommands: values.enableBotSlashCommands,
     enableDiscordCommandExecution: values.enableDiscordCommandExecution,
     discordCommandPrefix: values.discordCommandPrefix.trim() || '!',
     discordCommandAllowList: values.discordCommandAllowList
@@ -305,6 +388,34 @@ function buildBindingDefaults(): BindingFormModel {
 function resetBindingForm() {
   Object.assign(bindingForm, buildBindingDefaults());
   nextTick(() => bindingFormRef.value?.clearValidate());
+}
+
+function buildBindingCodeCreateDefaults(): BindingCodeCreateFormModel {
+  return {
+    playerId: '',
+    playerName: '',
+    expiresInMinutes: 10,
+  };
+}
+
+function buildBindingCodeRedeemDefaults(): BindingCodeRedeemFormModel {
+  return {
+    code: '',
+    discordUserId: '',
+    discordUsername: '',
+  };
+}
+
+function resetBindingCodeCreateForm() {
+  Object.assign(bindingCodeCreateForm, buildBindingCodeCreateDefaults());
+  latestCreatedBindingCode.value = null;
+  nextTick(() => bindingCodeCreateFormRef.value?.clearValidate());
+}
+
+function resetBindingCodeRedeemForm() {
+  Object.assign(bindingCodeRedeemForm, buildBindingCodeRedeemDefaults());
+  latestRedeemResult.value = null;
+  nextTick(() => bindingCodeRedeemFormRef.value?.clearValidate());
 }
 
 function editBinding(row: DiscordAccountBindingDto) {
@@ -343,6 +454,28 @@ async function loadBindings() {
   }
   finally {
     isBindingsLoading.value = false;
+  }
+}
+
+async function loadBindingCodes() {
+  try {
+    isBindingCodesLoading.value = true;
+    const { data } = await discordIntegrationGetBindingCodes({
+      query: {
+        pageNumber: 1,
+        pageSize: 20,
+        keyword: bindingCodeKeyword.value.trim() || undefined,
+        desc: true,
+      },
+      throwOnError: true,
+    });
+    bindingCodes.value = data.items ?? [];
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isBindingCodesLoading.value = false;
   }
 }
 
@@ -403,6 +536,134 @@ async function onDeleteBinding(row: DiscordAccountBindingDto) {
   }
 }
 
+async function onCreateBindingCode() {
+  const valid = await bindingCodeCreateFormRef.value?.validate().catch(() => false);
+  if (!valid)
+    return;
+
+  try {
+    isBindingCodeCreating.value = true;
+    const { data } = await discordIntegrationCreateBindingCode({
+      body: {
+        playerId: bindingCodeCreateForm.playerId.trim(),
+        playerName: bindingCodeCreateForm.playerName.trim(),
+        expiresInMinutes: bindingCodeCreateForm.expiresInMinutes,
+      },
+      throwOnError: true,
+    });
+    latestCreatedBindingCode.value = data;
+    toast({ type: 'success', text: t('views.discordIntegration.settings.messages.bindingCodeCreated') });
+    await loadBindingCodes();
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isBindingCodeCreating.value = false;
+  }
+}
+
+async function onRedeemBindingCode() {
+  const valid = await bindingCodeRedeemFormRef.value?.validate().catch(() => false);
+  if (!valid)
+    return;
+
+  try {
+    isBindingCodeRedeeming.value = true;
+    const { data } = await discordIntegrationRedeemBindingCode({
+      body: {
+        code: bindingCodeRedeemForm.code.trim(),
+        discordUserId: bindingCodeRedeemForm.discordUserId.trim(),
+        discordUsername: bindingCodeRedeemForm.discordUsername.trim(),
+      },
+      throwOnError: true,
+    });
+    latestRedeemResult.value = data;
+    toast({ type: 'success', text: data.message || t('views.discordIntegration.settings.messages.bindingCodeRedeemed') });
+    await Promise.all([loadBindingCodes(), loadBindings()]);
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isBindingCodeRedeeming.value = false;
+  }
+}
+
+async function onDeleteBindingCode(row: DiscordAccountBindingCodeDto) {
+  if (!row.id)
+    return;
+
+  const confirmed = await confirm({
+    type: 'warning',
+    text: t('views.discordIntegration.settings.messages.deleteBindingCodeConfirm', {
+      playerName: row.playerName,
+      codePrefix: row.codePrefix,
+    }),
+  });
+  if (!confirmed)
+    return;
+
+  try {
+    await discordIntegrationDeleteBindingCode({
+      path: { id: row.id },
+      throwOnError: true,
+    });
+    toast({ type: 'success', text: t('views.discordIntegration.settings.messages.bindingCodeDeleted') });
+    await loadBindingCodes();
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+function getBindingCodeStatusForRow(row: unknown) {
+  return getBindingCodeStatus(row as DiscordAccountBindingCodeDto);
+}
+
+function deleteBindingCodeRow(row: unknown) {
+  return onDeleteBindingCode(row as DiscordAccountBindingCodeDto);
+}
+
+async function onCleanupExpiredBindingCodes() {
+  const confirmed = await confirm({
+    type: 'warning',
+    text: t('views.discordIntegration.settings.messages.cleanupBindingCodesConfirm'),
+  });
+  if (!confirmed)
+    return;
+
+  try {
+    isBindingCodeCleaning.value = true;
+    const { data } = await discordIntegrationCleanupExpiredBindingCodes({ throwOnError: true });
+    toast({
+      type: 'success',
+      text: t('views.discordIntegration.settings.messages.bindingCodesCleaned', { count: data ?? 0 }),
+    });
+    await loadBindingCodes();
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isBindingCodeCleaning.value = false;
+  }
+}
+
+function formatTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+}
+
+function getBindingCodeStatus(row: DiscordAccountBindingCodeDto) {
+  if (row.redeemedAt)
+    return { type: 'success' as const, text: t('views.discordIntegration.settings.status.redeemed') };
+
+  if (row.expiresAt && dayjs(row.expiresAt).isBefore(dayjs()))
+    return { type: 'info' as const, text: t('views.discordIntegration.settings.status.expired') };
+
+  return { type: 'warning' as const, text: t('views.discordIntegration.settings.status.pending') };
+}
+
 function showCommandTestResult(result: DiscordCommandExecuteResultDto | undefined) {
   commandTestResult.value = result ?? null;
   toast({
@@ -416,6 +677,14 @@ function showChatRelayTestResult(result: DiscordChatRelayResultDto | undefined) 
   toast({
     type: result?.succeeded ? 'success' : 'error',
     text: result?.message || t('views.discordIntegration.settings.messages.chatRelayTestFailed'),
+  });
+}
+
+function showBotTestResult(result: DiscordBotTestResultDto | undefined) {
+  botTestResult.value = result ?? null;
+  toast({
+    type: result?.succeeded ? 'success' : 'error',
+    text: result?.message || t('views.discordIntegration.settings.messages.botTestFailed'),
   });
 }
 
@@ -549,6 +818,37 @@ async function onTestWebhook() {
   }
 }
 
+async function onTestBot() {
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid)
+    return;
+
+  if (isDirty.value) {
+    const confirmed = await confirm({
+      type: 'warning',
+      text: t('views.discordIntegration.settings.messages.botTestWithUnsavedConfirm'),
+    });
+    if (!confirmed)
+      return;
+
+    await onSubmit();
+    if (isDirty.value)
+      return;
+  }
+
+  try {
+    isBotTesting.value = true;
+    const { data } = await discordIntegrationTestBot({ throwOnError: true });
+    showBotTestResult(data);
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isBotTesting.value = false;
+  }
+}
+
 async function onTestDiscordCommand() {
   if (!commandTestForm.commandText.trim())
     return;
@@ -607,6 +907,7 @@ async function onTestDiscordChatRelay() {
 
 onMounted(loadSettings);
 onMounted(loadBindings);
+onMounted(loadBindingCodes);
 
 onBeforeRouteLeave(async () => {
   if (!isDirty.value)
@@ -735,6 +1036,110 @@ onBeforeRouteLeave(async () => {
                   </el-form-item>
                 </el-col>
               </el-row>
+            </section>
+          </el-col>
+
+          <el-col :xs="24">
+            <section class="discord-settings__section">
+              <div class="discord-settings__section-header">
+                <div>
+                  <h3>{{ t('views.discordIntegration.settings.sections.botIntegration') }}</h3>
+                  <p>{{ t('views.discordIntegration.settings.sections.botIntegrationDescription') }}</p>
+                </div>
+                <el-switch
+                  v-model="form.enableBotIntegration"
+                  inline-prompt
+                  :active-text="t('common.yes')"
+                  :inactive-text="t('common.no')"
+                />
+              </div>
+
+              <el-alert
+                type="warning"
+                show-icon
+                :closable="false"
+                :title="t('views.discordIntegration.settings.messages.botSecretWarning')"
+              />
+
+              <el-row :gutter="12">
+                <el-col :xs="24">
+                  <el-form-item prop="botToken" :label="t('views.discordIntegration.settings.fields.botToken')">
+                    <el-input
+                      v-model="form.botToken"
+                      type="password"
+                      show-password
+                      clearable
+                      maxlength="256"
+                      autocomplete="new-password"
+                      :disabled="!form.enableBotIntegration"
+                      :placeholder="t('views.discordIntegration.settings.placeholders.botToken')"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="8">
+                  <el-form-item prop="botGuildId" :label="t('views.discordIntegration.settings.fields.botGuildId')">
+                    <el-input
+                      v-model="form.botGuildId"
+                      clearable
+                      maxlength="64"
+                      :disabled="!form.enableBotIntegration"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="8">
+                  <el-form-item prop="botPublicChannelId" :label="t('views.discordIntegration.settings.fields.botPublicChannelId')">
+                    <el-input
+                      v-model="form.botPublicChannelId"
+                      clearable
+                      maxlength="64"
+                      :disabled="!form.enableBotIntegration"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="8">
+                  <el-form-item prop="botAdminChannelId" :label="t('views.discordIntegration.settings.fields.botAdminChannelId')">
+                    <el-input
+                      v-model="form.botAdminChannelId"
+                      clearable
+                      maxlength="64"
+                      :disabled="!form.enableBotIntegration"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="12">
+                  <el-form-item prop="enableBotSlashCommands" :label="t('views.discordIntegration.settings.fields.enableBotSlashCommands')">
+                    <el-switch
+                      v-model="form.enableBotSlashCommands"
+                      :disabled="!form.enableBotIntegration"
+                      inline-prompt
+                      :active-text="t('common.yes')"
+                      :inactive-text="t('common.no')"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="12">
+                  <div class="discord-settings__bot-test">
+                    <el-button :loading="isBotTesting" :disabled="isSubmitting || !form.enableBotIntegration" @click="onTestBot">
+                      {{ t('views.discordIntegration.settings.actions.testBot') }}
+                    </el-button>
+                  </div>
+                </el-col>
+              </el-row>
+
+              <el-alert
+                v-if="botTestResult"
+                :type="botTestResult.succeeded ? 'success' : 'error'"
+                show-icon
+                :closable="false"
+                :title="botTestResult.message"
+              >
+                <template v-if="botTestResult.succeeded" #default>
+                  {{ t('views.discordIntegration.settings.messages.botTestSuccessDetail', {
+                    botUsername: botTestResult.botUsername || '-',
+                    botUserId: botTestResult.botUserId || '-',
+                  }) }}
+                </template>
+              </el-alert>
             </section>
           </el-col>
 
@@ -1029,6 +1434,161 @@ onBeforeRouteLeave(async () => {
                   </template>
                 </el-table-column>
               </el-table>
+
+              <div class="discord-settings__subsection">
+                <div class="discord-settings__section-header">
+                  <div>
+                    <h3>{{ t('views.discordIntegration.settings.sections.bindingCodes') }}</h3>
+                    <p>{{ t('views.discordIntegration.settings.sections.bindingCodesDescription') }}</p>
+                  </div>
+                  <div class="discord-settings__section-actions">
+                    <el-button :loading="isBindingCodeCleaning" plain @click="onCleanupExpiredBindingCodes">
+                      {{ t('views.discordIntegration.settings.actions.cleanupExpiredBindingCodes') }}
+                    </el-button>
+                    <el-button :loading="isBindingCodesLoading" plain @click="loadBindingCodes">
+                      {{ t('components.myTable.refresh') }}
+                    </el-button>
+                  </div>
+                </div>
+
+                <div class="discord-settings__binding-code-grid">
+                  <el-form
+                    ref="bindingCodeCreateFormRef"
+                    :model="bindingCodeCreateForm"
+                    :rules="bindingCodeCreateRules"
+                    label-position="top"
+                    class="discord-settings__binding-form"
+                    @submit.prevent="onCreateBindingCode"
+                  >
+                    <h4>{{ t('views.discordIntegration.settings.sections.createBindingCode') }}</h4>
+                    <el-form-item prop="playerId" :label="t('views.discordIntegration.settings.fields.bindingPlayerId')">
+                      <el-input v-model="bindingCodeCreateForm.playerId" clearable />
+                    </el-form-item>
+                    <el-form-item prop="playerName" :label="t('views.discordIntegration.settings.fields.bindingPlayerName')">
+                      <el-input v-model="bindingCodeCreateForm.playerName" clearable />
+                    </el-form-item>
+                    <el-form-item prop="expiresInMinutes" :label="t('views.discordIntegration.settings.fields.bindingCodeExpiresInMinutes')">
+                      <el-input-number
+                        v-model="bindingCodeCreateForm.expiresInMinutes"
+                        class="w-full"
+                        :min="1"
+                        :max="60"
+                        :precision="0"
+                      />
+                    </el-form-item>
+                    <div class="discord-settings__inline-actions">
+                      <el-button :disabled="isBindingCodeCreating" @click="resetBindingCodeCreateForm">
+                        {{ t('common.reset') }}
+                      </el-button>
+                      <el-button type="primary" :loading="isBindingCodeCreating" @click="onCreateBindingCode">
+                        {{ t('views.discordIntegration.settings.actions.createBindingCode') }}
+                      </el-button>
+                    </div>
+                    <el-alert
+                      v-if="latestCreatedBindingCode"
+                      type="success"
+                      show-icon
+                      :closable="false"
+                    >
+                      <template #title>
+                        <span class="discord-settings__code">{{ latestCreatedBindingCode.code }}</span>
+                      </template>
+                      <template #default>
+                        {{ t('views.discordIntegration.settings.messages.bindingCodeCreatedDetail', {
+                          expiresAt: formatTimestamp(latestCreatedBindingCode.expiresAt),
+                        }) }}
+                      </template>
+                    </el-alert>
+                  </el-form>
+
+                  <el-form
+                    ref="bindingCodeRedeemFormRef"
+                    :model="bindingCodeRedeemForm"
+                    :rules="bindingCodeRedeemRules"
+                    label-position="top"
+                    class="discord-settings__binding-form"
+                    @submit.prevent="onRedeemBindingCode"
+                  >
+                    <h4>{{ t('views.discordIntegration.settings.sections.redeemBindingCode') }}</h4>
+                    <el-form-item prop="code" :label="t('views.discordIntegration.settings.fields.bindingCode')">
+                      <el-input v-model="bindingCodeRedeemForm.code" clearable />
+                    </el-form-item>
+                    <el-form-item prop="discordUserId" :label="t('views.discordIntegration.settings.fields.bindingDiscordUserId')">
+                      <el-input v-model="bindingCodeRedeemForm.discordUserId" clearable />
+                    </el-form-item>
+                    <el-form-item prop="discordUsername" :label="t('views.discordIntegration.settings.fields.bindingDiscordUsername')">
+                      <el-input v-model="bindingCodeRedeemForm.discordUsername" clearable />
+                    </el-form-item>
+                    <div class="discord-settings__inline-actions">
+                      <el-button :disabled="isBindingCodeRedeeming" @click="resetBindingCodeRedeemForm">
+                        {{ t('common.reset') }}
+                      </el-button>
+                      <el-button type="primary" :loading="isBindingCodeRedeeming" @click="onRedeemBindingCode">
+                        {{ t('views.discordIntegration.settings.actions.redeemBindingCode') }}
+                      </el-button>
+                    </div>
+                    <el-alert
+                      v-if="latestRedeemResult"
+                      :type="latestRedeemResult.succeeded ? 'success' : 'error'"
+                      show-icon
+                      :closable="false"
+                      :title="latestRedeemResult.message"
+                    />
+                  </el-form>
+                </div>
+
+                <div class="discord-settings__binding-toolbar">
+                  <el-input
+                    v-model="bindingCodeKeyword"
+                    clearable
+                    :placeholder="t('views.discordIntegration.settings.placeholders.bindingCodeKeyword')"
+                    @keyup.enter="loadBindingCodes"
+                  />
+                  <el-button :loading="isBindingCodesLoading" @click="loadBindingCodes">
+                    {{ t('components.myTable.search') }}
+                  </el-button>
+                </div>
+
+                <el-table
+                  v-loading="isBindingCodesLoading"
+                  :data="bindingCodes"
+                  row-key="id"
+                  class="discord-settings__binding-table"
+                >
+                  <el-table-column prop="codePrefix" :label="t('views.discordIntegration.settings.fields.bindingCodePrefix')" width="110">
+                    <template #default="{ row }">
+                      <span class="discord-settings__mono">{{ row.codePrefix }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="playerName" :label="t('views.discordIntegration.settings.fields.bindingPlayerName')" min-width="140" />
+                  <el-table-column prop="playerId" :label="t('views.discordIntegration.settings.fields.bindingPlayerId')" min-width="220" show-overflow-tooltip />
+                  <el-table-column :label="t('views.discordIntegration.settings.fields.bindingCodeStatus')" width="110">
+                    <template #default="{ row }">
+                      <el-tag :type="getBindingCodeStatusForRow(row).type" effect="plain">
+                        {{ getBindingCodeStatusForRow(row).text }}
+                      </el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :label="t('views.discordIntegration.settings.fields.bindingCodeExpiresAt')" min-width="170">
+                    <template #default="{ row }">
+                      <span class="discord-settings__mono">{{ formatTimestamp(row.expiresAt) }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column :label="t('views.discordIntegration.settings.fields.bindingCodeRedeemedAt')" min-width="170">
+                    <template #default="{ row }">
+                      <span class="discord-settings__mono">{{ formatTimestamp(row.redeemedAt) }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="redeemedDiscordUsername" :label="t('views.discordIntegration.settings.fields.bindingDiscordUsername')" min-width="160" />
+                  <el-table-column :label="t('components.myTable.operation')" width="100" fixed="right">
+                    <template #default="{ row }">
+                      <el-button link type="danger" @click="deleteBindingCodeRow(row)">
+                        {{ t('common.delete') }}
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
             </section>
           </el-col>
 
@@ -1248,6 +1808,20 @@ onBeforeRouteLeave(async () => {
   }
 }
 
+.discord-settings__section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.discord-settings__subsection {
+  display: grid;
+  gap: 12px;
+  border-top: 1px dashed var(--el-border-color);
+  padding-top: 14px;
+}
+
 .discord-settings__targets {
   display: grid;
   gap: 12px;
@@ -1287,8 +1861,46 @@ onBeforeRouteLeave(async () => {
   height: 100%;
 }
 
+.discord-settings__bot-test {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  height: 100%;
+  min-height: 54px;
+}
+
+.discord-settings__binding-code-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  h4 {
+    margin: 0;
+    color: var(--el-text-color-primary);
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+.discord-settings__inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .discord-settings__binding-table {
   width: 100%;
+}
+
+.discord-settings__code,
+.discord-settings__mono {
+  font-family: var(--el-font-family-monospace, ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace);
+}
+
+.discord-settings__code {
+  font-size: 16px;
+  letter-spacing: 0;
 }
 
 .discord-settings__test-grid {
@@ -1338,13 +1950,24 @@ onBeforeRouteLeave(async () => {
     flex-direction: column;
   }
 
+  .discord-settings__section-actions,
+  .discord-settings__inline-actions {
+    justify-content: flex-start;
+  }
+
   .discord-settings__binding-toolbar,
+  .discord-settings__binding-code-grid,
   .discord-settings__test-grid {
     grid-template-columns: 1fr;
   }
 
   .discord-settings__binding-actions :deep(.el-form-item__content) {
     justify-content: flex-start;
+  }
+
+  .discord-settings__bot-test {
+    justify-content: flex-start;
+    min-height: auto;
   }
 }
 </style>

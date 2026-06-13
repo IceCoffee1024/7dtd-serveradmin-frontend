@@ -2744,7 +2744,11 @@
         "discordFailureAlertsEnabled": "事件自动化失败告警已启用，目标：{0}。",
         "discordProxyInvalid": "Discord 代理配置无效：{0}。",
         "discordProxyWarning": "Discord 代理警告：{0}。",
-        "discordProxyEnabled": "Discord 出站请求使用代理：{0}。"
+        "discordProxyEnabled": "Discord 出站请求使用代理：{0}。",
+        "discordChatBridgeEnabled": "游戏聊天转 Discord 已启用，目标：{0}。",
+        "discordCommandExecutionMissingAllowList": "Discord 指令执行已启用，但未配置命令白名单。",
+        "discordCommandExecutionEnabled": "Discord 指令执行已启用，允许命令：{0}。",
+        "discordAccountBindingEnabled": "Discord 账号绑定已启用。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2769,7 +2773,11 @@
         "eventAutomationDiscordDependencyDisabled": "存在已启用规则会发送 Discord 消息，但 Discord 集成当前未启用。",
         "discordProxyInvalid": "Discord 代理配置无效：{0}。",
         "discordProxyWarning": "Discord 代理警告：{0}。",
-        "discordProxyEnabled": "Discord 出站请求使用代理：{0}。"
+        "discordProxyEnabled": "Discord 出站请求使用代理：{0}。",
+        "discordChatBridgeEnabled": "游戏聊天转 Discord 已启用，目标：{0}。",
+        "discordCommandExecutionMissingAllowList": "Discord 指令执行已启用，但未配置命令白名单。",
+        "discordCommandExecutionEnabled": "Discord 指令执行已启用，允许命令：{0}。",
+        "discordAccountBindingEnabled": "Discord 账号绑定已启用。"
       },
       "security": {
         "sensitiveActions": "敏感动作",
@@ -2797,7 +2805,12 @@
         "outboundNotifications": "出站通知",
         "webhookTargets": "Webhook 频道分流",
         "eventAutomationFailureAlerts": "自动化失败告警",
-        "outboundProxy": "出站代理"
+        "outboundProxy": "出站代理",
+        "discordChatBridge": "游戏聊天转 Discord",
+        "discordToGameBridge": "Discord 转游戏聊天",
+        "discordCommandRelay": "Discord 指令中继",
+        "discordAccountBinding": "Discord 账号绑定",
+        "discordBindingCodes": "Discord 绑定码"
       },
       "stateScopes": {
         "cooldown": "冷却状态",
@@ -2881,6 +2894,9 @@
         "code": "问题代码",
         "relatedModule": "关联模块",
         "relatedStateScope": "关联状态"
+      },
+      "commands": {
+        "discordbind": "生成一次性 Discord 账号绑定码。"
       }
     },
     "eventAutomation": {
@@ -3317,7 +3333,19 @@
           "proxyUrl": "代理 URL",
           "proxyUsername": "代理用户名",
           "proxyPassword": "代理密码",
-          "bypassProxyOnLocal": "本地地址绕过代理"
+          "bypassProxyOnLocal": "本地地址绕过代理",
+          "bindingCode": "绑定码",
+          "bindingCodePrefix": "码前缀",
+          "bindingCodeStatus": "状态",
+          "bindingCodeExpiresInMinutes": "有效分钟数",
+          "bindingCodeExpiresAt": "过期时间",
+          "bindingCodeRedeemedAt": "兑换时间",
+          "enableBotIntegration": "启用 Bot 集成",
+          "botToken": "Bot Token",
+          "botGuildId": "服务器 ID",
+          "botPublicChannelId": "公开频道 ID",
+          "botAdminChannelId": "管理频道 ID",
+          "enableBotSlashCommands": "启用斜杠命令管理"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3327,13 +3355,19 @@
           "bindingKeyword": "搜索玩家或 Discord 标识",
           "proxyUrl": "http://127.0.0.1:7890",
           "proxyUsername": "可选代理用户名",
-          "proxyPassword": "可选代理密码"
+          "proxyPassword": "可选代理密码",
+          "bindingCodeKeyword": "搜索码前缀、玩家或 Discord 标识",
+          "botToken": "Discord Developer Portal 中的 Bot Token"
         },
         "actions": {
           "testWebhook": "测试 Webhook",
           "addWebhookTarget": "添加目标",
           "testCommandRelay": "测试指令中继",
-          "testChatRelay": "测试聊天中继"
+          "testChatRelay": "测试聊天中继",
+          "createBindingCode": "创建绑定码",
+          "redeemBindingCode": "兑换绑定码",
+          "cleanupExpiredBindingCodes": "清理过期码",
+          "testBot": "测试 Bot"
         },
         "messages": {
           "saveSuccess": "Discord 设置已保存。",
@@ -3348,7 +3382,18 @@
           "deleteBindingConfirm": "确认删除 {playerName} 与 {discordUsername} 的绑定？",
           "commandTestConfirm": "该操作会按当前后端安全策略真实执行控制台命令。确认继续？",
           "commandTestFailed": "Discord 指令中继测试失败。",
-          "chatRelayTestFailed": "Discord 聊天中继测试失败。"
+          "chatRelayTestFailed": "Discord 聊天中继测试失败。",
+          "bindingCodeCreated": "绑定码已创建。",
+          "bindingCodeCreatedDetail": "仅显示一次。过期时间：{expiresAt}。",
+          "bindingCodeRedeemed": "绑定码已兑换。",
+          "bindingCodeDeleted": "绑定码已删除。",
+          "deleteBindingCodeConfirm": "确认删除 {playerName} 的绑定码 {codePrefix}？",
+          "cleanupBindingCodesConfirm": "确认删除过期的 Discord 绑定码？",
+          "bindingCodesCleaned": "已清理过期绑定码：{count}。",
+          "botSecretWarning": "Bot Token 属于敏感凭据，只用于服务端连接 Discord，不会写入审计明细。",
+          "botTestWithUnsavedConfirm": "Bot 测试使用已保存的设置。是否先保存当前修改再测试？",
+          "botTestFailed": "Discord Bot 测试失败。",
+          "botTestSuccessDetail": "已连接 Bot：{botUsername} ({botUserId})。"
         },
         "sections": {
           "chatBridge": "聊天桥接",
@@ -3366,7 +3411,18 @@
           "failureAlerts": "自动化失败告警",
           "failureAlertsDescription": "事件自动化规则执行失败时发送 Discord 告警，不改变规则执行结果。",
           "networkProxy": "高级网络代理",
-          "networkProxyDescription": "可选将 Discord 出站 Webhook 请求通过独立 HTTP 或 HTTPS 代理发送。该设置只影响 Discord 集成。"
+          "networkProxyDescription": "可选将 Discord 出站 Webhook 请求通过独立 HTTP 或 HTTPS 代理发送。该设置只影响 Discord 集成。",
+          "bindingCodes": "绑定码",
+          "bindingCodesDescription": "生成短期一次性绑定码，并将其兑换为 Discord 账号绑定。原始绑定码只显示一次。",
+          "createBindingCode": "创建绑定码",
+          "redeemBindingCode": "兑换绑定码",
+          "botIntegration": "Bot 集成",
+          "botIntegrationDescription": "用于 Discord 入站桥接和管理频道指令。需要在 Discord Developer Portal 开启 Message Content Intent，并配置频道 ID。"
+        },
+        "status": {
+          "pending": "待兑换",
+          "redeemed": "已兑换",
+          "expired": "已过期"
         }
       }
     }

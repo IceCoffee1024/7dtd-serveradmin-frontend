@@ -2702,7 +2702,11 @@
         "discordFailureAlertsEnabled": "事件自動化失敗告警已啟用，目標：{0}。",
         "discordProxyInvalid": "Discord 代理配置無效：{0}。",
         "discordProxyWarning": "Discord 代理警告：{0}。",
-        "discordProxyEnabled": "Discord 出站請求使用代理：{0}。"
+        "discordProxyEnabled": "Discord 出站請求使用代理：{0}。",
+        "discordChatBridgeEnabled": "遊戲聊天轉 Discord 已啟用，目標：{0}。",
+        "discordCommandExecutionMissingAllowList": "Discord 指令執行已啟用，但未配置命令白名單。",
+        "discordCommandExecutionEnabled": "Discord 指令執行已啟用，允許命令：{0}。",
+        "discordAccountBindingEnabled": "Discord 帳號綁定已啟用。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2727,7 +2731,11 @@
         "eventAutomationDiscordDependencyDisabled": "存在已啟用規則會傳送 Discord 訊息，但 Discord 整合目前未啟用。",
         "discordProxyInvalid": "Discord 代理配置無效：{0}。",
         "discordProxyWarning": "Discord 代理警告：{0}。",
-        "discordProxyEnabled": "Discord 出站請求使用代理：{0}。"
+        "discordProxyEnabled": "Discord 出站請求使用代理：{0}。",
+        "discordChatBridgeEnabled": "遊戲聊天轉 Discord 已啟用，目標：{0}。",
+        "discordCommandExecutionMissingAllowList": "Discord 指令執行已啟用，但未配置命令白名單。",
+        "discordCommandExecutionEnabled": "Discord 指令執行已啟用，允許命令：{0}。",
+        "discordAccountBindingEnabled": "Discord 帳號綁定已啟用。"
       },
       "security": {
         "sensitiveActions": "敏感動作",
@@ -2755,7 +2763,12 @@
         "outboundNotifications": "出站通知",
         "webhookTargets": "Webhook 頻道分流",
         "eventAutomationFailureAlerts": "自動化失敗告警",
-        "outboundProxy": "出站代理"
+        "outboundProxy": "出站代理",
+        "discordChatBridge": "遊戲聊天轉 Discord",
+        "discordToGameBridge": "Discord 轉遊戲聊天",
+        "discordCommandRelay": "Discord 指令中繼",
+        "discordAccountBinding": "Discord 帳號綁定",
+        "discordBindingCodes": "Discord 綁定碼"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
@@ -2881,6 +2894,9 @@
         "code": "問題代碼",
         "relatedModule": "關聯模組",
         "relatedStateScope": "關聯狀態"
+      },
+      "commands": {
+        "discordbind": "產生一次性 Discord 帳號綁定碼。"
       }
     },
     "eventAutomation": {
@@ -3317,7 +3333,19 @@
           "proxyUrl": "代理 URL",
           "proxyUsername": "代理使用者名稱",
           "proxyPassword": "代理密碼",
-          "bypassProxyOnLocal": "本機位址略過代理"
+          "bypassProxyOnLocal": "本機位址略過代理",
+          "bindingCode": "綁定碼",
+          "bindingCodePrefix": "碼前綴",
+          "bindingCodeStatus": "狀態",
+          "bindingCodeExpiresInMinutes": "有效分鐘數",
+          "bindingCodeExpiresAt": "過期時間",
+          "bindingCodeRedeemedAt": "兌換時間",
+          "enableBotIntegration": "Enable Bot integration",
+          "botToken": "Bot token",
+          "botGuildId": "Guild ID",
+          "botPublicChannelId": "Public channel ID",
+          "botAdminChannelId": "Admin channel ID",
+          "enableBotSlashCommands": "Manage slash commands"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3327,13 +3355,19 @@
           "bindingKeyword": "Search player or Discord identifier",
           "proxyUrl": "http://127.0.0.1:7890",
           "proxyUsername": "可選代理使用者名稱",
-          "proxyPassword": "可選代理密碼"
+          "proxyPassword": "可選代理密碼",
+          "bindingCodeKeyword": "搜尋碼前綴、玩家或 Discord 識別",
+          "botToken": "Bot token from Discord Developer Portal"
         },
         "actions": {
           "testWebhook": "測試 Webhook",
           "addWebhookTarget": "新增目標",
           "testCommandRelay": "Test command relay",
-          "testChatRelay": "Test chat relay"
+          "testChatRelay": "Test chat relay",
+          "createBindingCode": "建立綁定碼",
+          "redeemBindingCode": "兌換綁定碼",
+          "cleanupExpiredBindingCodes": "清理過期碼",
+          "testBot": "Test Bot"
         },
         "messages": {
           "saveSuccess": "Discord 設定已儲存。",
@@ -3348,7 +3382,18 @@
           "deleteBindingConfirm": "Delete binding between {playerName} and {discordUsername}?",
           "commandTestConfirm": "This will execute a real console command through current backend safety checks. Continue?",
           "commandTestFailed": "Discord command relay test failed.",
-          "chatRelayTestFailed": "Discord chat relay test failed."
+          "chatRelayTestFailed": "Discord chat relay test failed.",
+          "bindingCodeCreated": "綁定碼已建立。",
+          "bindingCodeCreatedDetail": "僅顯示一次。過期時間：{expiresAt}。",
+          "bindingCodeRedeemed": "綁定碼已兌換。",
+          "bindingCodeDeleted": "綁定碼已刪除。",
+          "deleteBindingCodeConfirm": "確認刪除 {playerName} 的綁定碼 {codePrefix}？",
+          "cleanupBindingCodesConfirm": "確認刪除過期的 Discord 綁定碼？",
+          "bindingCodesCleaned": "已清理過期綁定碼：{count}。",
+          "botSecretWarning": "The Bot token is a sensitive credential. It is used server-side and is not written to audit details.",
+          "botTestWithUnsavedConfirm": "Bot test uses saved settings. Save current changes before testing?",
+          "botTestFailed": "Discord Bot test failed.",
+          "botTestSuccessDetail": "Connected Bot: {botUsername} ({botUserId})."
         },
         "sections": {
           "webhookTargets": "Webhook 目標",
@@ -3366,7 +3411,18 @@
           "commandRelayTest": "Command relay test",
           "chatRelayTest": "Chat relay test",
           "networkProxy": "進階網路代理",
-          "networkProxyDescription": "可選將 Discord 出站 Webhook 請求透過獨立 HTTP 或 HTTPS 代理傳送。此設定只影響 Discord 整合。"
+          "networkProxyDescription": "可選將 Discord 出站 Webhook 請求透過獨立 HTTP 或 HTTPS 代理傳送。此設定只影響 Discord 整合。",
+          "bindingCodes": "綁定碼",
+          "bindingCodesDescription": "產生短期一次性綁定碼，並將其兌換為 Discord 帳號綁定。原始綁定碼只顯示一次。",
+          "createBindingCode": "建立綁定碼",
+          "redeemBindingCode": "兌換綁定碼",
+          "botIntegration": "Bot integration",
+          "botIntegrationDescription": "Used for Discord inbound chat bridge and admin-channel commands. Enable Message Content Intent in Discord Developer Portal and configure channel IDs."
+        },
+        "status": {
+          "pending": "待兌換",
+          "redeemed": "已兌換",
+          "expired": "已過期"
         }
       }
     }

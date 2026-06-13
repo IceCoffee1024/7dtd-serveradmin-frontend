@@ -2702,7 +2702,11 @@
         "discordFailureAlertsEnabled": "Event automation failure alerts are enabled for Discord target: {0}.",
         "discordProxyInvalid": "Discord proxy configuration is invalid: {0}.",
         "discordProxyWarning": "Discord proxy warning: {0}.",
-        "discordProxyEnabled": "Discord outbound requests use proxy: {0}."
+        "discordProxyEnabled": "Discord outbound requests use proxy: {0}.",
+        "discordChatBridgeEnabled": "Game chat bridge to Discord is enabled. Target: {0}.",
+        "discordCommandExecutionMissingAllowList": "Discord command execution is enabled but no command allow-list is configured.",
+        "discordCommandExecutionEnabled": "Discord command execution is enabled. Allowed commands: {0}.",
+        "discordAccountBindingEnabled": "Discord account binding is enabled."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2727,7 +2731,11 @@
         "eventAutomationDiscordDependencyDisabled": "One or more enabled rules send Discord messages while Discord integration is disabled.",
         "discordProxyInvalid": "Discord proxy configuration is invalid: {0}.",
         "discordProxyWarning": "Discord proxy warning: {0}.",
-        "discordProxyEnabled": "Discord outbound requests use proxy: {0}."
+        "discordProxyEnabled": "Discord outbound requests use proxy: {0}.",
+        "discordChatBridgeEnabled": "Game chat bridge to Discord is enabled. Target: {0}.",
+        "discordCommandExecutionMissingAllowList": "Discord command execution is enabled but no command allow-list is configured.",
+        "discordCommandExecutionEnabled": "Discord command execution is enabled. Allowed commands: {0}.",
+        "discordAccountBindingEnabled": "Discord account binding is enabled."
       },
       "security": {
         "sensitiveActions": "Sensitive Actions",
@@ -2755,7 +2763,12 @@
         "outboundNotifications": "Outbound notifications",
         "webhookTargets": "Webhook targets",
         "eventAutomationFailureAlerts": "Automation failure alerts",
-        "outboundProxy": "Outbound proxy"
+        "outboundProxy": "Outbound proxy",
+        "discordChatBridge": "Game chat to Discord",
+        "discordToGameBridge": "Discord to game chat",
+        "discordCommandRelay": "Discord command relay",
+        "discordAccountBinding": "Discord account binding",
+        "discordBindingCodes": "Discord binding codes"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -2881,6 +2894,9 @@
         "code": "Code",
         "relatedModule": "Related module",
         "relatedStateScope": "Related state"
+      },
+      "commands": {
+        "discordbind": "Generate a one-time Discord account binding code."
       }
     },
     "eventAutomation": {
@@ -3317,7 +3333,19 @@
           "proxyUrl": "Proxy URL",
           "proxyUsername": "Proxy username",
           "proxyPassword": "Proxy password",
-          "bypassProxyOnLocal": "Bypass proxy for local addresses"
+          "bypassProxyOnLocal": "Bypass proxy for local addresses",
+          "bindingCode": "Binding code",
+          "bindingCodePrefix": "Code prefix",
+          "bindingCodeStatus": "Status",
+          "bindingCodeExpiresInMinutes": "Expires in minutes",
+          "bindingCodeExpiresAt": "Expires at",
+          "bindingCodeRedeemedAt": "Redeemed at",
+          "enableBotIntegration": "Enable Bot integration",
+          "botToken": "Bot token",
+          "botGuildId": "Guild ID",
+          "botPublicChannelId": "Public channel ID",
+          "botAdminChannelId": "Admin channel ID",
+          "enableBotSlashCommands": "Manage slash commands"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3327,13 +3355,19 @@
           "bindingKeyword": "Search player or Discord identifier",
           "proxyUrl": "http://127.0.0.1:7890",
           "proxyUsername": "Optional proxy username",
-          "proxyPassword": "Optional proxy password"
+          "proxyPassword": "Optional proxy password",
+          "bindingCodeKeyword": "Search code prefix, player, or Discord identifier",
+          "botToken": "Bot token from Discord Developer Portal"
         },
         "actions": {
           "testWebhook": "Test webhook",
           "addWebhookTarget": "Add target",
           "testCommandRelay": "Test command relay",
-          "testChatRelay": "Test chat relay"
+          "testChatRelay": "Test chat relay",
+          "createBindingCode": "Create code",
+          "redeemBindingCode": "Redeem code",
+          "cleanupExpiredBindingCodes": "Clean expired codes",
+          "testBot": "Test Bot"
         },
         "messages": {
           "saveSuccess": "Discord settings saved.",
@@ -3348,7 +3382,18 @@
           "deleteBindingConfirm": "Delete binding between {playerName} and {discordUsername}?",
           "commandTestConfirm": "This will execute a real console command through current backend safety checks. Continue?",
           "commandTestFailed": "Discord command relay test failed.",
-          "chatRelayTestFailed": "Discord chat relay test failed."
+          "chatRelayTestFailed": "Discord chat relay test failed.",
+          "bindingCodeCreated": "Binding code created.",
+          "bindingCodeCreatedDetail": "Only shown once. Expires at {expiresAt}.",
+          "bindingCodeRedeemed": "Binding code redeemed.",
+          "bindingCodeDeleted": "Binding code deleted.",
+          "deleteBindingCodeConfirm": "Delete binding code {codePrefix} for {playerName}?",
+          "cleanupBindingCodesConfirm": "Delete expired Discord binding codes?",
+          "bindingCodesCleaned": "Expired binding codes cleaned: {count}.",
+          "botSecretWarning": "The Bot token is a sensitive credential. It is used server-side and is not written to audit details.",
+          "botTestWithUnsavedConfirm": "Bot test uses saved settings. Save current changes before testing?",
+          "botTestFailed": "Discord Bot test failed.",
+          "botTestSuccessDetail": "Connected Bot: {botUsername} ({botUserId})."
         },
         "sections": {
           "webhookTargets": "Webhook targets",
@@ -3366,7 +3411,18 @@
           "commandRelayTest": "Command relay test",
           "chatRelayTest": "Chat relay test",
           "networkProxy": "Advanced network proxy",
-          "networkProxyDescription": "Optionally route Discord outbound webhook requests through a dedicated HTTP or HTTPS proxy. This only affects Discord integration."
+          "networkProxyDescription": "Optionally route Discord outbound webhook requests through a dedicated HTTP or HTTPS proxy. This only affects Discord integration.",
+          "bindingCodes": "Binding codes",
+          "bindingCodesDescription": "Generate short-lived one-time codes and redeem them for Discord account binding. Raw codes are shown only once.",
+          "createBindingCode": "Create binding code",
+          "redeemBindingCode": "Redeem binding code",
+          "botIntegration": "Bot integration",
+          "botIntegrationDescription": "Used for Discord inbound chat bridge and admin-channel commands. Enable Message Content Intent in Discord Developer Portal and configure channel IDs."
+        },
+        "status": {
+          "pending": "Pending",
+          "redeemed": "Redeemed",
+          "expired": "Expired"
         }
       }
     }
