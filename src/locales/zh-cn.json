@@ -3403,7 +3403,8 @@
           "commandRelayWarning": "指令中继会真实执行允许列表中的控制台命令。建议只放行只读命令，并启用账号绑定。",
           "botStatusUnknown": "尚未读取 Bot 运行状态。",
           "slashSyncWithUnsavedConfirm": "斜杠命令同步使用已保存的 Bot 设置。是否先保存当前修改再同步？",
-          "slashSyncFailed": "Discord 斜杠命令同步失败。"
+          "slashSyncFailed": "Discord 斜杠命令同步失败。",
+          "slashCommandRuntimeHint": "同步会向 Discord 注册 /listplayers、/serverstatus、/help。实际执行需要 Gateway Bot 在线，结果会回写到 Discord 交互响应。"
         },
         "sections": {
           "chatBridge": "聊天桥接",

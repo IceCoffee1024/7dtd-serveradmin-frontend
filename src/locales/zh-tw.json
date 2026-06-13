@@ -3403,7 +3403,8 @@
           "commandRelayWarning": "Command relay executes allow-listed console commands for real. Keep the allow-list read-only where possible and enable account binding.",
           "botStatusUnknown": "Bot runtime status has not been loaded.",
           "slashSyncWithUnsavedConfirm": "Slash command sync uses saved Bot settings. Save current changes before syncing?",
-          "slashSyncFailed": "Discord slash command sync failed."
+          "slashSyncFailed": "Discord 斜線命令同步失敗。",
+          "slashCommandRuntimeHint": "同步會向 Discord 註冊 /listplayers、/serverstatus、/help。實際執行需要 Gateway Bot 在線，結果會回寫到 Discord 互動回應。"
         },
         "sections": {
           "webhookTargets": "Webhook 目標",

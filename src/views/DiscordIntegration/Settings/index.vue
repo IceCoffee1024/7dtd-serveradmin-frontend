@@ -1200,6 +1200,12 @@ onBeforeRouteLeave(async () => {
                 :closable="false"
                 :title="t('views.discordIntegration.settings.messages.botSecretWarning')"
               />
+              <el-alert
+                type="info"
+                show-icon
+                :closable="false"
+                :title="t('views.discordIntegration.settings.messages.slashCommandRuntimeHint')"
+              />
 
               <div v-loading="isBotStatusLoading" class="discord-settings__bot-runtime">
                 <div class="discord-settings__runtime-main">
