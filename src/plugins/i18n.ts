@@ -9,6 +9,8 @@ import type { LocaleType } from '~/locales/constant';
 import { createI18n } from 'vue-i18n';
 import { LOCALE_TYPE, STORAGE_LOCALE_KEY, SUPPORT_LOCALES } from '~/locales/constant';
 import en from '../locales/en.json';
+import zhCN from '../locales/zh-cn.json';
+import zhTW from '../locales/zh-tw.json';
 
 function isSupportedLocale(locale: unknown): locale is LocaleType {
   return typeof locale === 'string' && (SUPPORT_LOCALES as readonly string[]).includes(locale);
@@ -103,6 +105,8 @@ const i18n = createI18n({
   legacy: false,
   messages: {
     en,
+    [LOCALE_TYPE.ZH_CN]: zhCN,
+    [LOCALE_TYPE.ZH_TW]: zhTW,
   } as Record<string, any>,
   globalInjection: true, // In <template> can use $t
 });

@@ -27,7 +27,9 @@
     "close": "Close",
     "edit": "Edit",
     "player": "Player",
-    "serverLocalTime": "Server Local Time"
+    "serverLocalTime": "Server Local Time",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "menus": {
     "login": "Login",

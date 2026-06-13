@@ -27,7 +27,9 @@
     "close": "Cerrar",
     "edit": "Editar",
     "player": "Jugador",
-    "serverLocalTime": "Hora local del servidor"
+    "serverLocalTime": "Hora local del servidor",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "menus": {
     "login": "Iniciar sesión",

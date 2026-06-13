@@ -27,7 +27,9 @@
     "close": "Закрыть",
     "edit": "Редактировать",
     "player": "Игрок",
-    "serverLocalTime": "Местное время сервера"
+    "serverLocalTime": "Местное время сервера",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "menus": {
     "login": "Войти",

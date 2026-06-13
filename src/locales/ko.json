@@ -27,7 +27,9 @@
     "close": "닫기",
     "edit": "편집",
     "player": "플레이어",
-    "serverLocalTime": "서버 현지 시간"
+    "serverLocalTime": "서버 현지 시간",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "menus": {
     "login": "로그인",

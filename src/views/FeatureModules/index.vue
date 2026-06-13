@@ -1723,13 +1723,23 @@ onMounted(loadModules);
                   <div class="feature-module-detail__issue-body">
                     <span>{{ getHealthIssueText(issue) }}</span>
                     <div class="feature-module-detail__issue-meta">
-                      <el-tag v-if="issue.code" effect="plain" size="small">
+                      <el-tag v-if="issue.code" class="feature-module-detail__issue-meta-tag" effect="plain" size="small">
                         {{ t('views.featureModules.healthIssueMeta.code') }}: {{ issue.code }}
                       </el-tag>
-                      <el-tag v-if="issue.relatedModuleKey" effect="plain" size="small">
+                      <el-tag
+                        v-if="issue.relatedModuleKey"
+                        class="feature-module-detail__issue-meta-tag"
+                        effect="plain"
+                        size="small"
+                      >
                         {{ t('views.featureModules.healthIssueMeta.relatedModule') }}: {{ issue.relatedModuleKey }}
                       </el-tag>
-                      <el-tag v-if="issue.relatedStateScope" effect="plain" size="small">
+                      <el-tag
+                        v-if="issue.relatedStateScope"
+                        class="feature-module-detail__issue-meta-tag"
+                        effect="plain"
+                        size="small"
+                      >
                         {{ t('views.featureModules.healthIssueMeta.relatedStateScope') }}: {{ issue.relatedStateScope }}
                       </el-tag>
                     </div>
@@ -2487,6 +2497,16 @@ onMounted(loadModules);
   min-width: 0;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.feature-module-detail__issue-meta-tag {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 18px;
+  padding-block: 3px;
 }
 
 .feature-module-detail__command-main,

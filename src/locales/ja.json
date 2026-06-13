@@ -27,7 +27,9 @@
     "close": "閉じる",
     "edit": "編集",
     "player": "プレイヤー",
-    "serverLocalTime": "サーバーの現地時間"
+    "serverLocalTime": "サーバーの現地時間",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "menus": {
     "login": "ログイン",

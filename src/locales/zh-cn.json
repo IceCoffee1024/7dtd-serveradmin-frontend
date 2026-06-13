@@ -27,7 +27,9 @@
     "close": "关闭",
     "edit": "编辑",
     "player": "玩家",
-    "serverLocalTime": "服务器本地时间"
+    "serverLocalTime": "服务器本地时间",
+    "enabled": "已启用",
+    "disabled": "已禁用"
   },
   "menus": {
     "login": "登录",
