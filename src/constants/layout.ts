@@ -4,7 +4,7 @@ import { LOCALE_TYPE } from '~/locales/constant';
 export const LAYOUT_LIMITS = {
   minHeaderHeight: 48,
   minSidebarWidth: 220,
-  minNonChineseSidebarWidth: 280,
+  minNonChineseSidebarWidth: 320,
   minLongTextSidebarWidth: 320,
   minSidebarCollapsedWidth: 64,
   minTabHeight: 32,
