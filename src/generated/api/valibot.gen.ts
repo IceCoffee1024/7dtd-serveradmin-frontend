@@ -362,6 +362,7 @@ export const vBackupFileDto = v.strictObject({
  * Transfers shared chat-domain settings used by command parsing and server-authored chat messages.
  */
 export const vChatFeatureSettingsDto = v.strictObject({
+    isEnabled: v.optional(v.boolean()),
     globalServerName: v.nullish(v.string()),
     whisperServerName: v.nullish(v.string()),
     chatCommandPrefixes: v.nullish(v.array(v.string())),

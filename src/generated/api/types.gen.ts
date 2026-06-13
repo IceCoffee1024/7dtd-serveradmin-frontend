@@ -627,6 +627,10 @@ export type BackupFileDto = {
  */
 export type ChatFeatureSettingsDto = {
     /**
+     * Indicates whether the shared chat feature is enabled.
+     */
+    isEnabled?: boolean;
+    /**
      * Display name used when the server sends a global message.
      */
     globalServerName?: string | null;

@@ -49,7 +49,7 @@ const formRef = useTemplateRef<FormExpose>('formRef');
 
 function buildDefaults(): FormModel {
   return {
-    isEnabled: true,
+    isEnabled: false,
     globalServerName: '',
     whisperServerName: '',
     chatCommandPrefixes: '/',
@@ -104,7 +104,6 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       size: 'large',
     },
     tooltip: t('views.chatSettings.tooltips.isEnabled'),
-    disabled: () => true,
     span: { xs: 24, md: 24 },
   },
   {
@@ -239,6 +238,7 @@ const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || re
 
 function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel {
   const source: Partial<ChatFeatureSettingsDto> = data ?? {
+    isEnabled: false,
     globalServerName: null,
     whisperServerName: null,
     chatCommandPrefixes: ['/'],
@@ -253,7 +253,7 @@ function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel
     muteRemovedBroadcastMessage: null,
   };
   return {
-    isEnabled: true,
+    isEnabled: source.isEnabled ?? false,
     globalServerName: source.globalServerName ?? '',
     whisperServerName: source.whisperServerName ?? '',
     chatCommandPrefixes: (source.chatCommandPrefixes ?? ['/']).join(','),
@@ -270,7 +270,7 @@ function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel
 }
 
 function applyFormValues(values: FormModel): void {
-  form.isEnabled = true;
+  form.isEnabled = values.isEnabled;
   form.globalServerName = values.globalServerName;
   form.whisperServerName = values.whisperServerName;
   form.chatCommandPrefixes = values.chatCommandPrefixes;
@@ -352,6 +352,7 @@ async function onReset() {
 
 function toPayload(values: FormModel): ChatFeatureSettingsDto {
   return {
+    isEnabled: values.isEnabled,
     globalServerName: values.globalServerName || null,
     whisperServerName: values.whisperServerName || null,
     chatCommandPrefixes: splitCommaSeparated(values.chatCommandPrefixes),
