@@ -3345,7 +3345,11 @@
           "botGuildId": "Guild ID",
           "botPublicChannelId": "Public channel ID",
           "botAdminChannelId": "Admin channel ID",
-          "enableBotSlashCommands": "Manage slash commands"
+          "enableBotSlashCommands": "Manage slash commands",
+          "botUser": "Bot user",
+          "lastConnectedAt": "Last connected",
+          "lastDisconnectedAt": "Last disconnected",
+          "reconnectDelaySeconds": "Reconnect delay seconds"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3367,7 +3371,9 @@
           "createBindingCode": "Create code",
           "redeemBindingCode": "Redeem code",
           "cleanupExpiredBindingCodes": "Clean expired codes",
-          "testBot": "Test Bot"
+          "testBot": "Test Bot",
+          "refreshBotStatus": "Refresh status",
+          "syncSlashCommands": "Sync slash commands"
         },
         "messages": {
           "saveSuccess": "Discord settings saved.",
@@ -3393,7 +3399,11 @@
           "botSecretWarning": "The Bot token is a sensitive credential. It is used server-side and is not written to audit details.",
           "botTestWithUnsavedConfirm": "Bot test uses saved settings. Save current changes before testing?",
           "botTestFailed": "Discord Bot test failed.",
-          "botTestSuccessDetail": "Connected Bot: {botUsername} ({botUserId})."
+          "botTestSuccessDetail": "Connected Bot: {botUsername} ({botUserId}).",
+          "commandRelayWarning": "Command relay executes allow-listed console commands for real. Keep the allow-list read-only where possible and enable account binding.",
+          "botStatusUnknown": "Bot runtime status has not been loaded.",
+          "slashSyncWithUnsavedConfirm": "Slash command sync uses saved Bot settings. Save current changes before syncing?",
+          "slashSyncFailed": "Discord slash command sync failed."
         },
         "sections": {
           "chatBridge": "Chat bridge",
@@ -3417,12 +3427,35 @@
           "createBindingCode": "Create binding code",
           "redeemBindingCode": "Redeem binding code",
           "botIntegration": "Bot integration",
-          "botIntegrationDescription": "Used for Discord inbound chat bridge and admin-channel commands. Enable Message Content Intent in Discord Developer Portal and configure channel IDs."
+          "botIntegrationDescription": "Used for Discord inbound chat bridge and admin-channel commands. Enable Message Content Intent in Discord Developer Portal and configure channel IDs.",
+          "basic": "Basic status",
+          "basicDescription": "Control the Discord integration switch, default identity, and request timeout.",
+          "webhook": "Default webhook",
+          "webhookDescription": "Fallback notification channel when no target is selected. It can also be used for saved-config testing.",
+          "botRuntime": "Bot runtime status"
         },
         "status": {
           "pending": "Pending",
           "redeemed": "Redeemed",
-          "expired": "Expired"
+          "expired": "Expired",
+          "configured": "Configured",
+          "missing": "Missing",
+          "notConfigured": "Not configured"
+        },
+        "statusCards": {
+          "integration": "Integration",
+          "webhook": "Webhook",
+          "bot": "Bot",
+          "commandRelay": "Command relay",
+          "accountBinding": "Account binding"
+        },
+        "botSteps": {
+          "token": "Configure token",
+          "tokenHint": "From Discord Developer Portal",
+          "channels": "Set channels",
+          "channelsHint": "Public channel for chat, admin channel for commands",
+          "test": "Connection test",
+          "testHint": "Save and validate Bot credentials"
         }
       }
     }

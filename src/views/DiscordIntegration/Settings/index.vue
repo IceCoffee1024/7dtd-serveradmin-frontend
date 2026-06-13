@@ -6,6 +6,7 @@ import type {
   DiscordAccountBindingCodeRedeemResultDto,
   DiscordAccountBindingDto,
   DiscordAccountBindingUpsertDto,
+  DiscordBotRuntimeStatusDto,
   DiscordBotTestResultDto,
   DiscordChatRelayResultDto,
   DiscordCommandExecuteResultDto,
@@ -27,10 +28,12 @@ import {
   discordIntegrationExecuteDiscordCommand,
   discordIntegrationGetBindingCodes,
   discordIntegrationGetBindings,
+  discordIntegrationGetBotStatus,
   discordIntegrationRedeemBindingCode,
   discordIntegrationGetSettings,
   discordIntegrationRelayDiscordChat,
   discordIntegrationResetSettings,
+  discordIntegrationSyncSlashCommands,
   discordIntegrationTestBot,
   discordIntegrationTestWebhook,
   discordIntegrationUpdateSettings,
@@ -121,6 +124,8 @@ const isBindingCodeCleaning = ref(false);
 const isCommandTesting = ref(false);
 const isChatRelayTesting = ref(false);
 const isBotTesting = ref(false);
+const isBotStatusLoading = ref(false);
+const isSlashSyncing = ref(false);
 const testMessage = ref('');
 const testWebhookTargetKey = ref('');
 const bindings = ref<DiscordAccountBindingDto[]>([]);
@@ -146,6 +151,7 @@ const chatRelayTestForm = reactive({
 const commandTestResult = ref<DiscordCommandExecuteResultDto | null>(null);
 const chatRelayTestResult = ref<DiscordChatRelayResultDto | null>(null);
 const botTestResult = ref<DiscordBotTestResultDto | null>(null);
+const botStatus = ref<DiscordBotRuntimeStatusDto | null>(null);
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const isDirty = computed(() => !isEqual(form, initialValues.value));
@@ -688,6 +694,39 @@ function showBotTestResult(result: DiscordBotTestResultDto | undefined) {
   });
 }
 
+function getBotStatusTagType(state?: string | null) {
+  switch ((state ?? '').toLowerCase()) {
+    case 'connected':
+      return 'success' as const;
+    case 'connecting':
+    case 'reconnecting':
+      return 'warning' as const;
+    case 'error':
+    case 'unavailable':
+      return 'danger' as const;
+    default:
+      return 'info' as const;
+  }
+}
+
+function formatBotTimestamp(value: string | null | undefined): string {
+  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+}
+
+async function loadBotStatus() {
+  try {
+    isBotStatusLoading.value = true;
+    const { data } = await discordIntegrationGetBotStatus({ throwOnError: true });
+    botStatus.value = data;
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isBotStatusLoading.value = false;
+  }
+}
+
 async function loadSettings() {
   try {
     isLoading.value = true;
@@ -840,12 +879,43 @@ async function onTestBot() {
     isBotTesting.value = true;
     const { data } = await discordIntegrationTestBot({ throwOnError: true });
     showBotTestResult(data);
+    await loadBotStatus();
   }
   catch (error) {
     console.error(error);
   }
   finally {
     isBotTesting.value = false;
+  }
+}
+
+async function onSyncSlashCommands() {
+  if (isDirty.value) {
+    const confirmed = await confirm({
+      type: 'warning',
+      text: t('views.discordIntegration.settings.messages.slashSyncWithUnsavedConfirm'),
+    });
+    if (!confirmed)
+      return;
+
+    await onSubmit();
+    if (isDirty.value)
+      return;
+  }
+
+  try {
+    isSlashSyncing.value = true;
+    const { data } = await discordIntegrationSyncSlashCommands({ throwOnError: true });
+    toast({
+      type: data.succeeded ? 'success' : 'error',
+      text: data.message || t('views.discordIntegration.settings.messages.slashSyncFailed'),
+    });
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isSlashSyncing.value = false;
   }
 }
 
@@ -908,6 +978,7 @@ async function onTestDiscordChatRelay() {
 onMounted(loadSettings);
 onMounted(loadBindings);
 onMounted(loadBindingCodes);
+onMounted(loadBotStatus);
 
 onBeforeRouteLeave(async () => {
   if (!isDirty.value)
@@ -931,13 +1002,58 @@ onBeforeRouteLeave(async () => {
     </div>
 
     <template v-else>
-      <el-alert
-        class="discord-settings__alert"
-        type="info"
-        show-icon
-        :closable="false"
-        :title="t('views.discordIntegration.settings.description')"
-      />
+      <div class="discord-settings__hero">
+        <div class="discord-settings__hero-main">
+          <div>
+            <h2>{{ t('menus.discordIntegration') }}</h2>
+            <p>{{ t('views.discordIntegration.settings.description') }}</p>
+          </div>
+          <div class="discord-settings__hero-actions">
+            <el-button :disabled="isSubmitting || isTesting" @click="onReset">
+              {{ t('common.reset') }}
+            </el-button>
+            <el-button :loading="isTesting" :disabled="isSubmitting" @click="onTestWebhook">
+              {{ t('views.discordIntegration.settings.actions.testWebhook') }}
+            </el-button>
+            <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty || isTesting" @click="onSubmit">
+              {{ t('common.save') }}
+            </el-button>
+          </div>
+        </div>
+
+        <div class="discord-settings__status-grid">
+          <div class="discord-settings__status-item" :class="{ 'is-active': form.isEnabled }">
+            <span>{{ t('views.discordIntegration.settings.statusCards.integration') }}</span>
+            <el-tag :type="form.isEnabled ? 'success' : 'info'" effect="plain">
+              {{ form.isEnabled ? t('common.enabled') : t('common.disabled') }}
+            </el-tag>
+          </div>
+          <div class="discord-settings__status-item" :class="{ 'is-active': form.webhookUrl.trim() || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim()) }">
+            <span>{{ t('views.discordIntegration.settings.statusCards.webhook') }}</span>
+            <el-tag :type="(form.webhookUrl.trim() || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim())) ? 'success' : 'warning'" effect="plain">
+              {{ (form.webhookUrl.trim() || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim())) ? t('views.discordIntegration.settings.status.configured') : t('views.discordIntegration.settings.status.missing') }}
+            </el-tag>
+          </div>
+          <div class="discord-settings__status-item" :class="{ 'is-active': form.enableBotIntegration && form.botToken.trim() }">
+            <span>{{ t('views.discordIntegration.settings.statusCards.bot') }}</span>
+            <el-tag :type="(form.enableBotIntegration && form.botToken.trim()) ? 'success' : 'info'" effect="plain">
+              {{ (form.enableBotIntegration && form.botToken.trim()) ? t('views.discordIntegration.settings.status.configured') : t('views.discordIntegration.settings.status.notConfigured') }}
+            </el-tag>
+          </div>
+          <div class="discord-settings__status-item" :class="{ 'is-active': form.enableDiscordCommandExecution }">
+            <span>{{ t('views.discordIntegration.settings.statusCards.commandRelay') }}</span>
+            <el-tag :type="form.enableDiscordCommandExecution ? 'warning' : 'info'" effect="plain">
+              {{ form.enableDiscordCommandExecution ? t('common.enabled') : t('common.disabled') }}
+            </el-tag>
+          </div>
+          <div class="discord-settings__status-item" :class="{ 'is-active': form.enableAccountBinding }">
+            <span>{{ t('views.discordIntegration.settings.statusCards.accountBinding') }}</span>
+            <el-tag :type="form.enableAccountBinding ? 'success' : 'info'" effect="plain">
+              {{ form.enableAccountBinding ? t('common.enabled') : t('common.disabled') }}
+            </el-tag>
+          </div>
+        </div>
+      </div>
 
       <el-form
         ref="formRef"
@@ -1040,7 +1156,7 @@ onBeforeRouteLeave(async () => {
           </el-col>
 
           <el-col :xs="24">
-            <section class="discord-settings__section">
+            <section class="discord-settings__section discord-settings__section--bot">
               <div class="discord-settings__section-header">
                 <div>
                   <h3>{{ t('views.discordIntegration.settings.sections.botIntegration') }}</h3>
@@ -1054,12 +1170,61 @@ onBeforeRouteLeave(async () => {
                 />
               </div>
 
+              <div class="discord-settings__steps">
+                <div class="discord-settings__step" :class="{ 'is-done': form.botToken.trim() }">
+                  <span>1</span>
+                  <div>
+                    <strong>{{ t('views.discordIntegration.settings.botSteps.token') }}</strong>
+                    <small>{{ t('views.discordIntegration.settings.botSteps.tokenHint') }}</small>
+                  </div>
+                </div>
+                <div class="discord-settings__step" :class="{ 'is-done': form.botPublicChannelId.trim() || form.botAdminChannelId.trim() }">
+                  <span>2</span>
+                  <div>
+                    <strong>{{ t('views.discordIntegration.settings.botSteps.channels') }}</strong>
+                    <small>{{ t('views.discordIntegration.settings.botSteps.channelsHint') }}</small>
+                  </div>
+                </div>
+                <div class="discord-settings__step" :class="{ 'is-done': botTestResult?.succeeded }">
+                  <span>3</span>
+                  <div>
+                    <strong>{{ t('views.discordIntegration.settings.botSteps.test') }}</strong>
+                    <small>{{ t('views.discordIntegration.settings.botSteps.testHint') }}</small>
+                  </div>
+                </div>
+              </div>
+
               <el-alert
                 type="warning"
                 show-icon
                 :closable="false"
                 :title="t('views.discordIntegration.settings.messages.botSecretWarning')"
               />
+
+              <div v-loading="isBotStatusLoading" class="discord-settings__bot-runtime">
+                <div class="discord-settings__runtime-main">
+                  <div>
+                    <span class="discord-settings__runtime-label">{{ t('views.discordIntegration.settings.sections.botRuntime') }}</span>
+                    <strong>{{ botStatus?.message || t('views.discordIntegration.settings.messages.botStatusUnknown') }}</strong>
+                  </div>
+                  <el-tag :type="getBotStatusTagType(botStatus?.state)" effect="plain">
+                    {{ botStatus?.state || '-' }}
+                  </el-tag>
+                </div>
+                <div class="discord-settings__runtime-grid">
+                  <span>{{ t('views.discordIntegration.settings.fields.botUser') }}: {{ botStatus?.botUsername || '-' }}</span>
+                  <span>{{ t('views.discordIntegration.settings.fields.lastConnectedAt') }}: {{ formatBotTimestamp(botStatus?.lastConnectedAt) }}</span>
+                  <span>{{ t('views.discordIntegration.settings.fields.lastDisconnectedAt') }}: {{ formatBotTimestamp(botStatus?.lastDisconnectedAt) }}</span>
+                  <span>{{ t('views.discordIntegration.settings.fields.reconnectDelaySeconds') }}: {{ botStatus?.reconnectDelaySeconds ?? '-' }}</span>
+                </div>
+                <el-alert
+                  v-if="botStatus?.lastError"
+                  type="error"
+                  show-icon
+                  :closable="false"
+                  :title="botStatus.lastError"
+                />
+              </div>
 
               <el-row :gutter="12">
                 <el-col :xs="24">
@@ -1119,6 +1284,12 @@ onBeforeRouteLeave(async () => {
                 </el-col>
                 <el-col :xs="24" :md="12">
                   <div class="discord-settings__bot-test">
+                    <el-button :loading="isBotStatusLoading" :disabled="isSubmitting" @click="loadBotStatus">
+                      {{ t('views.discordIntegration.settings.actions.refreshBotStatus') }}
+                    </el-button>
+                    <el-button :loading="isSlashSyncing" :disabled="isSubmitting || !form.enableBotIntegration || !form.enableBotSlashCommands" @click="onSyncSlashCommands">
+                      {{ t('views.discordIntegration.settings.actions.syncSlashCommands') }}
+                    </el-button>
                     <el-button :loading="isBotTesting" :disabled="isSubmitting || !form.enableBotIntegration" @click="onTestBot">
                       {{ t('views.discordIntegration.settings.actions.testBot') }}
                     </el-button>
@@ -1157,69 +1328,76 @@ onBeforeRouteLeave(async () => {
           </el-col>
 
           <el-col :xs="24">
-            <section class="discord-settings__section discord-settings__section--advanced">
-              <div class="discord-settings__section-header">
-                <div>
-                  <h3>{{ t('views.discordIntegration.settings.sections.networkProxy') }}</h3>
-                  <p>{{ t('views.discordIntegration.settings.sections.networkProxyDescription') }}</p>
-                </div>
-                <el-switch
-                  v-model="form.useProxy"
-                  inline-prompt
-                  :active-text="t('common.yes')"
-                  :inactive-text="t('common.no')"
-                />
-              </div>
-
-              <el-row :gutter="12">
-                <el-col :xs="24" :md="12">
-                  <el-form-item prop="proxyUrl" :label="t('views.discordIntegration.settings.fields.proxyUrl')">
-                    <el-input
-                      v-model="form.proxyUrl"
-                      clearable
-                      :disabled="!form.useProxy"
-                      :placeholder="t('views.discordIntegration.settings.placeholders.proxyUrl')"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :xs="24" :md="12">
-                  <el-form-item prop="bypassProxyOnLocal" :label="t('views.discordIntegration.settings.fields.bypassProxyOnLocal')">
+            <el-collapse class="discord-settings__advanced-collapse">
+              <el-collapse-item name="network">
+                <template #title>
+                  <span class="discord-settings__collapse-title">{{ t('views.discordIntegration.settings.sections.networkProxy') }}</span>
+                </template>
+                <section class="discord-settings__section discord-settings__section--advanced">
+                  <div class="discord-settings__section-header">
+                    <div>
+                      <h3>{{ t('views.discordIntegration.settings.sections.networkProxy') }}</h3>
+                      <p>{{ t('views.discordIntegration.settings.sections.networkProxyDescription') }}</p>
+                    </div>
                     <el-switch
-                      v-model="form.bypassProxyOnLocal"
-                      :disabled="!form.useProxy"
+                      v-model="form.useProxy"
                       inline-prompt
                       :active-text="t('common.yes')"
                       :inactive-text="t('common.no')"
                     />
-                  </el-form-item>
-                </el-col>
-                <el-col :xs="24" :md="12">
-                  <el-form-item prop="proxyUsername" :label="t('views.discordIntegration.settings.fields.proxyUsername')">
-                    <el-input
-                      v-model="form.proxyUsername"
-                      clearable
-                      maxlength="128"
-                      :disabled="!form.useProxy"
-                      :placeholder="t('views.discordIntegration.settings.placeholders.proxyUsername')"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :xs="24" :md="12">
-                  <el-form-item prop="proxyPassword" :label="t('views.discordIntegration.settings.fields.proxyPassword')">
-                    <el-input
-                      v-model="form.proxyPassword"
-                      type="password"
-                      show-password
-                      clearable
-                      maxlength="256"
-                      autocomplete="new-password"
-                      :disabled="!form.useProxy"
-                      :placeholder="t('views.discordIntegration.settings.placeholders.proxyPassword')"
-                    />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </section>
+                  </div>
+
+                  <el-row :gutter="12">
+                    <el-col :xs="24" :md="12">
+                      <el-form-item prop="proxyUrl" :label="t('views.discordIntegration.settings.fields.proxyUrl')">
+                        <el-input
+                          v-model="form.proxyUrl"
+                          clearable
+                          :disabled="!form.useProxy"
+                          :placeholder="t('views.discordIntegration.settings.placeholders.proxyUrl')"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :xs="24" :md="12">
+                      <el-form-item prop="bypassProxyOnLocal" :label="t('views.discordIntegration.settings.fields.bypassProxyOnLocal')">
+                        <el-switch
+                          v-model="form.bypassProxyOnLocal"
+                          :disabled="!form.useProxy"
+                          inline-prompt
+                          :active-text="t('common.yes')"
+                          :inactive-text="t('common.no')"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :xs="24" :md="12">
+                      <el-form-item prop="proxyUsername" :label="t('views.discordIntegration.settings.fields.proxyUsername')">
+                        <el-input
+                          v-model="form.proxyUsername"
+                          clearable
+                          maxlength="128"
+                          :disabled="!form.useProxy"
+                          :placeholder="t('views.discordIntegration.settings.placeholders.proxyUsername')"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :xs="24" :md="12">
+                      <el-form-item prop="proxyPassword" :label="t('views.discordIntegration.settings.fields.proxyPassword')">
+                        <el-input
+                          v-model="form.proxyPassword"
+                          type="password"
+                          show-password
+                          clearable
+                          maxlength="256"
+                          autocomplete="new-password"
+                          :disabled="!form.useProxy"
+                          :placeholder="t('views.discordIntegration.settings.placeholders.proxyPassword')"
+                        />
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </section>
+              </el-collapse-item>
+            </el-collapse>
           </el-col>
 
           <el-col :xs="24">
@@ -1280,7 +1458,7 @@ onBeforeRouteLeave(async () => {
           </el-col>
 
           <el-col :xs="24">
-            <section class="discord-settings__section">
+            <section class="discord-settings__section discord-settings__section--danger">
               <div class="discord-settings__section-header">
                 <div>
                   <h3>{{ t('views.discordIntegration.settings.sections.commandRelay') }}</h3>
@@ -1293,6 +1471,12 @@ onBeforeRouteLeave(async () => {
                   :inactive-text="t('common.no')"
                 />
               </div>
+              <el-alert
+                type="warning"
+                show-icon
+                :closable="false"
+                :title="t('views.discordIntegration.settings.messages.commandRelayWarning')"
+              />
               <el-row :gutter="12">
                 <el-col :xs="24" :md="8">
                   <el-form-item prop="discordCommandPrefix" :label="t('views.discordIntegration.settings.fields.discordCommandPrefix')">
@@ -1745,17 +1929,6 @@ onBeforeRouteLeave(async () => {
         </el-row>
       </el-form>
 
-      <div class="discord-settings__actions">
-        <el-button :disabled="isSubmitting || isTesting" @click="onReset">
-          {{ t('common.reset') }}
-        </el-button>
-        <el-button :loading="isTesting" :disabled="isSubmitting" @click="onTestWebhook">
-          {{ t('views.discordIntegration.settings.actions.testWebhook') }}
-        </el-button>
-        <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty || isTesting" @click="onSubmit">
-          {{ t('common.save') }}
-        </el-button>
-      </div>
     </template>
   </div>
 </template>
@@ -1763,14 +1936,75 @@ onBeforeRouteLeave(async () => {
 <style scoped>
 .discord-settings {
   min-height: 0;
+  max-width: 1360px;
 }
 
-.discord-settings__alert {
+.discord-settings__hero {
+  display: grid;
+  gap: 14px;
   margin-bottom: 16px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--el-bg-color);
+}
+
+.discord-settings__hero-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  h2 {
+    margin: 0;
+    color: var(--el-text-color-primary);
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--el-text-color-secondary);
+    font-size: 13px;
+    line-height: 20px;
+  }
+}
+
+.discord-settings__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.discord-settings__status-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.discord-settings__status-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: var(--el-fill-color-extra-light);
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+}
+
+.discord-settings__status-item.is-active {
+  border-color: var(--el-color-primary-light-7);
+  background: var(--el-color-primary-light-9);
+  color: var(--el-text-color-primary);
 }
 
 .discord-settings__form {
-  max-width: 960px;
+  width: min(100%, 1100px);
 }
 
 .discord-settings__section {
@@ -1785,6 +2019,27 @@ onBeforeRouteLeave(async () => {
 
 .discord-settings__section--advanced {
   background: var(--el-fill-color-blank);
+}
+
+.discord-settings__section--bot {
+  border-color: var(--el-color-primary-light-7);
+  background: var(--el-color-primary-light-9);
+}
+
+.discord-settings__section--danger {
+  border-color: var(--el-color-warning-light-7);
+}
+
+.discord-settings__advanced-collapse {
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--el-bg-color);
+}
+
+.discord-settings__collapse-title {
+  color: var(--el-text-color-primary);
+  font-weight: 600;
 }
 
 .discord-settings__section-header {
@@ -1863,10 +2118,99 @@ onBeforeRouteLeave(async () => {
 
 .discord-settings__bot-test {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: end;
   justify-content: flex-end;
   height: 100%;
   min-height: 54px;
+}
+
+.discord-settings__bot-runtime {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--el-bg-color);
+}
+
+.discord-settings__runtime-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+
+  strong {
+    display: block;
+    margin-top: 2px;
+    color: var(--el-text-color-primary);
+    font-size: 13px;
+    line-height: 20px;
+  }
+}
+
+.discord-settings__runtime-label {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.discord-settings__runtime-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.discord-settings__steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.discord-settings__step {
+  display: flex;
+  gap: 10px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 10px;
+  background: var(--el-bg-color);
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--el-fill-color-light);
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  strong {
+    display: block;
+    color: var(--el-text-color-primary);
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  small {
+    display: block;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+.discord-settings__step.is-done span {
+  background: var(--el-color-success-light-8);
+  color: var(--el-color-success);
 }
 
 .discord-settings__binding-code-grid {
@@ -1937,24 +2281,31 @@ onBeforeRouteLeave(async () => {
   line-height: 18px;
 }
 
-.discord-settings__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 16px;
+@media (max-width: 1200px) {
+  .discord-settings__status-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
+  .discord-settings {
+    max-width: none;
+  }
+
+  .discord-settings__hero-main,
   .discord-settings__section-header {
     flex-direction: column;
   }
 
+  .discord-settings__hero-actions,
   .discord-settings__section-actions,
   .discord-settings__inline-actions {
     justify-content: flex-start;
   }
 
+  .discord-settings__status-grid,
+  .discord-settings__steps,
+  .discord-settings__runtime-grid,
   .discord-settings__binding-toolbar,
   .discord-settings__binding-code-grid,
   .discord-settings__test-grid {

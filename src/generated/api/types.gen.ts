@@ -1332,6 +1332,78 @@ export type DiscordBotTestResultDto = {
 };
 
 /**
+ * Runtime status of the Discord Gateway Bot connection.
+ */
+export type DiscordBotRuntimeStatusDto = {
+    /**
+     * Whether the Gateway worker is currently running.
+     */
+    isRunning?: boolean;
+    /**
+     * Whether the Gateway session has completed READY.
+     */
+    isReady?: boolean;
+    /**
+     * Current runtime state: Disabled, Connecting, Connected, Reconnecting, Stopped, or Error.
+     */
+    state: string;
+    /**
+     * Last known status message.
+     */
+    message?: string | null;
+    /**
+     * UTC timestamp when the current state was entered.
+     */
+    stateChangedAt?: string | null;
+    /**
+     * UTC timestamp of the last successful READY event.
+     */
+    lastConnectedAt?: string | null;
+    /**
+     * UTC timestamp of the last Gateway disconnect or failure.
+     */
+    lastDisconnectedAt?: string | null;
+    /**
+     * Last Gateway error message when available.
+     */
+    lastError?: string | null;
+    /**
+     * Current reconnect delay in seconds.
+     */
+    reconnectDelaySeconds?: number | null;
+    /**
+     * Bot user id returned by Discord READY.
+     */
+    botUserId?: string | null;
+    /**
+     * Bot username returned by Discord READY.
+     */
+    botUsername?: string | null;
+};
+
+/**
+ * Result of Discord slash command registration or synchronization.
+ */
+export type DiscordSlashCommandSyncResultDto = {
+    /**
+     * Whether Discord accepted the command sync request.
+     */
+    succeeded?: boolean;
+    /**
+     * Human-readable sync result.
+     */
+    message: string;
+    /**
+     * HTTP status code returned by Discord when available.
+     */
+    statusCode?: number | null;
+    /**
+     * Number of commands submitted to Discord.
+     */
+    commandCount?: number;
+};
+
+/**
  * Represents a paged query result with total count and current page items.
  */
 export type PagedDtoOfDiscordAccountBindingDto = {
@@ -7390,6 +7462,38 @@ export type DiscordIntegrationTestBotResponses = {
 };
 
 export type DiscordIntegrationTestBotResponse = DiscordIntegrationTestBotResponses[keyof DiscordIntegrationTestBotResponses];
+
+export type DiscordIntegrationGetBotStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/BotStatus';
+};
+
+export type DiscordIntegrationGetBotStatusResponses = {
+    200: DiscordBotRuntimeStatusDto;
+};
+
+export type DiscordIntegrationGetBotStatusResponse = DiscordIntegrationGetBotStatusResponses[keyof DiscordIntegrationGetBotStatusResponses];
+
+export type DiscordIntegrationSyncSlashCommandsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/SyncSlashCommands';
+};
+
+export type DiscordIntegrationSyncSlashCommandsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type DiscordIntegrationSyncSlashCommandsError = DiscordIntegrationSyncSlashCommandsErrors[keyof DiscordIntegrationSyncSlashCommandsErrors];
+
+export type DiscordIntegrationSyncSlashCommandsResponses = {
+    200: DiscordSlashCommandSyncResultDto;
+};
+
+export type DiscordIntegrationSyncSlashCommandsResponse = DiscordIntegrationSyncSlashCommandsResponses[keyof DiscordIntegrationSyncSlashCommandsResponses];
 
 export type DiscordIntegrationGetBindingsData = {
     body?: never;

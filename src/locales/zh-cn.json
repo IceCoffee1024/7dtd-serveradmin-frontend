@@ -3345,7 +3345,11 @@
           "botGuildId": "服务器 ID",
           "botPublicChannelId": "公开频道 ID",
           "botAdminChannelId": "管理频道 ID",
-          "enableBotSlashCommands": "启用斜杠命令管理"
+          "enableBotSlashCommands": "启用斜杠命令管理",
+          "botUser": "Bot 用户",
+          "lastConnectedAt": "最近连接",
+          "lastDisconnectedAt": "最近断开",
+          "reconnectDelaySeconds": "重连等待秒数"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3367,7 +3371,9 @@
           "createBindingCode": "创建绑定码",
           "redeemBindingCode": "兑换绑定码",
           "cleanupExpiredBindingCodes": "清理过期码",
-          "testBot": "测试 Bot"
+          "testBot": "测试 Bot",
+          "refreshBotStatus": "刷新状态",
+          "syncSlashCommands": "同步斜杠命令"
         },
         "messages": {
           "saveSuccess": "Discord 设置已保存。",
@@ -3393,7 +3399,11 @@
           "botSecretWarning": "Bot Token 属于敏感凭据，只用于服务端连接 Discord，不会写入审计明细。",
           "botTestWithUnsavedConfirm": "Bot 测试使用已保存的设置。是否先保存当前修改再测试？",
           "botTestFailed": "Discord Bot 测试失败。",
-          "botTestSuccessDetail": "已连接 Bot：{botUsername} ({botUserId})。"
+          "botTestSuccessDetail": "已连接 Bot：{botUsername} ({botUserId})。",
+          "commandRelayWarning": "指令中继会真实执行允许列表中的控制台命令。建议只放行只读命令，并启用账号绑定。",
+          "botStatusUnknown": "尚未读取 Bot 运行状态。",
+          "slashSyncWithUnsavedConfirm": "斜杠命令同步使用已保存的 Bot 设置。是否先保存当前修改再同步？",
+          "slashSyncFailed": "Discord 斜杠命令同步失败。"
         },
         "sections": {
           "chatBridge": "聊天桥接",
@@ -3417,12 +3427,35 @@
           "createBindingCode": "创建绑定码",
           "redeemBindingCode": "兑换绑定码",
           "botIntegration": "Bot 集成",
-          "botIntegrationDescription": "用于 Discord 入站桥接和管理频道指令。需要在 Discord Developer Portal 开启 Message Content Intent，并配置频道 ID。"
+          "botIntegrationDescription": "用于 Discord 入站桥接和管理频道指令。需要在 Discord Developer Portal 开启 Message Content Intent，并配置频道 ID。",
+          "basic": "基础状态",
+          "basicDescription": "控制 Discord 集成总开关、默认身份和请求超时。",
+          "webhook": "默认 Webhook",
+          "webhookDescription": "用于未指定目标时的默认通知通道，也可直接测试当前保存配置。",
+          "botRuntime": "Bot 运行状态"
         },
         "status": {
           "pending": "待兑换",
           "redeemed": "已兑换",
-          "expired": "已过期"
+          "expired": "已过期",
+          "configured": "已配置",
+          "missing": "缺失",
+          "notConfigured": "未配置"
+        },
+        "statusCards": {
+          "integration": "集成状态",
+          "webhook": "Webhook",
+          "bot": "Bot",
+          "commandRelay": "指令中继",
+          "accountBinding": "账号绑定"
+        },
+        "botSteps": {
+          "token": "配置 Token",
+          "tokenHint": "来自 Discord Developer Portal",
+          "channels": "填写频道",
+          "channelsHint": "公开频道负责聊天，管理频道负责命令",
+          "test": "连接测试",
+          "testHint": "保存后验证 Bot 凭据"
         }
       }
     }

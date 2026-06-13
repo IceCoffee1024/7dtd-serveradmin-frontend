@@ -753,6 +753,33 @@ export const vDiscordBotTestResultDto = v.strictObject({
 });
 
 /**
+ * Runtime status of the Discord Gateway Bot connection.
+ */
+export const vDiscordBotRuntimeStatusDto = v.strictObject({
+    isRunning: v.optional(v.boolean()),
+    isReady: v.optional(v.boolean()),
+    state: v.string(),
+    message: v.nullish(v.string()),
+    stateChangedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastConnectedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastDisconnectedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastError: v.nullish(v.string()),
+    reconnectDelaySeconds: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    botUserId: v.nullish(v.string()),
+    botUsername: v.nullish(v.string())
+});
+
+/**
+ * Result of Discord slash command registration or synchronization.
+ */
+export const vDiscordSlashCommandSyncResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    message: v.string(),
+    statusCode: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    commandCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
  * Represents one player-to-Discord account binding row.
  */
 export const vDiscordAccountBindingDto = v.strictObject({
