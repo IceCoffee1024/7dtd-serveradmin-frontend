@@ -1150,6 +1150,26 @@ export type DiscordIntegrationFeatureSettingsDto = {
      */
     timeoutSeconds?: number;
     /**
+     * Whether Discord webhook requests should use an HTTP proxy.
+     */
+    useProxy?: boolean;
+    /**
+     * Proxy URL used for Discord webhook requests, for example http://127.0.0.1:7890.
+     */
+    proxyUrl?: string | null;
+    /**
+     * Optional proxy username.
+     */
+    proxyUsername?: string | null;
+    /**
+     * Optional proxy password.
+     */
+    proxyPassword?: string | null;
+    /**
+     * Whether local addresses should bypass the configured proxy.
+     */
+    bypassProxyOnLocal?: boolean;
+    /**
      * Whether event automation rules are allowed to send Discord messages.
      */
     allowEventAutomationMessages?: boolean;

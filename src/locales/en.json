@@ -2741,7 +2741,10 @@
         "discordWebhookConfigured": "Discord webhook URL is configured.",
         "eventAutomationDiscordDependencyDisabled": "Rule \"{0}\" sends Discord messages, but Discord integration is not enabled.",
         "discordWebhookTargetInvalid": "Discord webhook target configuration is invalid: {0}.",
-        "discordFailureAlertsEnabled": "Event automation failure alerts are enabled for Discord target: {0}."
+        "discordFailureAlertsEnabled": "Event automation failure alerts are enabled for Discord target: {0}.",
+        "discordProxyInvalid": "Discord proxy configuration is invalid: {0}.",
+        "discordProxyWarning": "Discord proxy warning: {0}.",
+        "discordProxyEnabled": "Discord outbound requests use proxy: {0}."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2763,7 +2766,10 @@
         "requiredDependencyUnavailable": "Required dependency \"{0}\" is unavailable.",
         "eventAutomationRecentFailures": "Event automation failed {0} time(s) today. Latest failed rule: {1}.",
         "consoleCommandPolicyEnforced": "Console command execution is protected by policy: allow-list={0}, unsafe opt-in={1}.",
-        "eventAutomationDiscordDependencyDisabled": "One or more enabled rules send Discord messages while Discord integration is disabled."
+        "eventAutomationDiscordDependencyDisabled": "One or more enabled rules send Discord messages while Discord integration is disabled.",
+        "discordProxyInvalid": "Discord proxy configuration is invalid: {0}.",
+        "discordProxyWarning": "Discord proxy warning: {0}.",
+        "discordProxyEnabled": "Discord outbound requests use proxy: {0}."
       },
       "security": {
         "sensitiveActions": "Sensitive Actions",
@@ -2790,7 +2796,8 @@
         "webhookTest": "Webhook test",
         "outboundNotifications": "Outbound notifications",
         "webhookTargets": "Webhook targets",
-        "eventAutomationFailureAlerts": "Automation failure alerts"
+        "eventAutomationFailureAlerts": "Automation failure alerts",
+        "outboundProxy": "Outbound proxy"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3305,14 +3312,22 @@
           "bindingIsActive": "Binding enabled",
           "discordUserId": "Discord user ID",
           "discordUsername": "Discord username",
-          "inMainThread": "Run on main thread"
+          "inMainThread": "Run on main thread",
+          "useProxy": "Use HTTP proxy",
+          "proxyUrl": "Proxy URL",
+          "proxyUsername": "Proxy username",
+          "proxyPassword": "Proxy password",
+          "bypassProxyOnLocal": "Bypass proxy for local addresses"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "Optional avatar image URL",
           "testMessage": "Leave empty to use the default test message.",
           "testWebhookTargetKey": "Default target",
-          "bindingKeyword": "Search player or Discord identifier"
+          "bindingKeyword": "Search player or Discord identifier",
+          "proxyUrl": "http://127.0.0.1:7890",
+          "proxyUsername": "Optional proxy username",
+          "proxyPassword": "Optional proxy password"
         },
         "actions": {
           "testWebhook": "Test webhook",
@@ -3349,7 +3364,9 @@
           "webhookTargets": "Webhook targets",
           "webhookTargetsDescription": "Route notifications to named Discord webhook targets such as public, admin, or audit.",
           "failureAlerts": "Automation failure alerts",
-          "failureAlertsDescription": "Send a Discord alert when an event automation rule fails. This does not change rule execution results."
+          "failureAlertsDescription": "Send a Discord alert when an event automation rule fails. This does not change rule execution results.",
+          "networkProxy": "Advanced network proxy",
+          "networkProxyDescription": "Optionally route Discord outbound webhook requests through a dedicated HTTP or HTTPS proxy. This only affects Discord integration."
         }
       }
     }

@@ -33,6 +33,11 @@ defineOptions({ name: 'DiscordIntegrationSettingsPage' });
 interface FormModel {
   isEnabled: boolean;
   webhookUrl: string;
+  useProxy: boolean;
+  proxyUrl: string;
+  proxyUsername: string;
+  proxyPassword: string;
+  bypassProxyOnLocal: boolean;
   defaultUsername: string;
   defaultAvatarUrl: string;
   webhookTargets: WebhookTargetFormModel[];
@@ -113,6 +118,11 @@ const webhookTargetOptions = computed(() =>
 const schema = v.object({
   isEnabled: v.boolean(),
   webhookUrl: v.string(),
+  useProxy: v.boolean(),
+  proxyUrl: v.string(),
+  proxyUsername: v.pipe(v.string(), v.maxLength(128)),
+  proxyPassword: v.pipe(v.string(), v.maxLength(256)),
+  bypassProxyOnLocal: v.boolean(),
   defaultUsername: v.pipe(v.string(), v.maxLength(80)),
   defaultAvatarUrl: v.string(),
   timeoutSeconds: v.pipe(v.number(), v.minValue(1), v.maxValue(30)),
@@ -145,6 +155,11 @@ function buildDefaults(): FormModel {
   return {
     isEnabled: false,
     webhookUrl: '',
+    useProxy: false,
+    proxyUrl: '',
+    proxyUsername: '',
+    proxyPassword: '',
+    bypassProxyOnLocal: true,
     defaultUsername: '7DTD Server',
     defaultAvatarUrl: '',
     webhookTargets: [
@@ -173,6 +188,11 @@ function toFormModel(data?: DiscordIntegrationFeatureSettingsDto | null): FormMo
   return {
     isEnabled: data?.isEnabled ?? false,
     webhookUrl: data?.webhookUrl ?? '',
+    useProxy: data?.useProxy ?? false,
+    proxyUrl: data?.proxyUrl ?? '',
+    proxyUsername: data?.proxyUsername ?? '',
+    proxyPassword: data?.proxyPassword ?? '',
+    bypassProxyOnLocal: data?.bypassProxyOnLocal ?? true,
     defaultUsername: data?.defaultUsername ?? '7DTD Server',
     defaultAvatarUrl: data?.defaultAvatarUrl ?? '',
     webhookTargets: normalizeWebhookTargets(data?.webhookTargets),
@@ -199,6 +219,11 @@ function toFormModel(data?: DiscordIntegrationFeatureSettingsDto | null): FormMo
 function applyFormValues(values: FormModel) {
   form.isEnabled = values.isEnabled;
   form.webhookUrl = values.webhookUrl;
+  form.useProxy = values.useProxy;
+  form.proxyUrl = values.proxyUrl;
+  form.proxyUsername = values.proxyUsername;
+  form.proxyPassword = values.proxyPassword;
+  form.bypassProxyOnLocal = values.bypassProxyOnLocal;
   form.defaultUsername = values.defaultUsername;
   form.defaultAvatarUrl = values.defaultAvatarUrl;
   form.webhookTargets = values.webhookTargets.map(target => ({ ...target }));
@@ -232,6 +257,11 @@ function toPayload(values: FormModel): DiscordIntegrationFeatureSettingsDto {
   return {
     isEnabled: values.isEnabled,
     webhookUrl: values.webhookUrl.trim() || null,
+    useProxy: values.useProxy,
+    proxyUrl: values.proxyUrl.trim() || null,
+    proxyUsername: values.proxyUsername.trim() || null,
+    proxyPassword: values.proxyPassword.trim() || null,
+    bypassProxyOnLocal: values.bypassProxyOnLocal,
     defaultUsername: values.defaultUsername.trim() || null,
     defaultAvatarUrl: values.defaultAvatarUrl.trim() || null,
     webhookTargets: values.webhookTargets
@@ -722,6 +752,72 @@ onBeforeRouteLeave(async () => {
           </el-col>
 
           <el-col :xs="24">
+            <section class="discord-settings__section discord-settings__section--advanced">
+              <div class="discord-settings__section-header">
+                <div>
+                  <h3>{{ t('views.discordIntegration.settings.sections.networkProxy') }}</h3>
+                  <p>{{ t('views.discordIntegration.settings.sections.networkProxyDescription') }}</p>
+                </div>
+                <el-switch
+                  v-model="form.useProxy"
+                  inline-prompt
+                  :active-text="t('common.yes')"
+                  :inactive-text="t('common.no')"
+                />
+              </div>
+
+              <el-row :gutter="12">
+                <el-col :xs="24" :md="12">
+                  <el-form-item prop="proxyUrl" :label="t('views.discordIntegration.settings.fields.proxyUrl')">
+                    <el-input
+                      v-model="form.proxyUrl"
+                      clearable
+                      :disabled="!form.useProxy"
+                      :placeholder="t('views.discordIntegration.settings.placeholders.proxyUrl')"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="12">
+                  <el-form-item prop="bypassProxyOnLocal" :label="t('views.discordIntegration.settings.fields.bypassProxyOnLocal')">
+                    <el-switch
+                      v-model="form.bypassProxyOnLocal"
+                      :disabled="!form.useProxy"
+                      inline-prompt
+                      :active-text="t('common.yes')"
+                      :inactive-text="t('common.no')"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="12">
+                  <el-form-item prop="proxyUsername" :label="t('views.discordIntegration.settings.fields.proxyUsername')">
+                    <el-input
+                      v-model="form.proxyUsername"
+                      clearable
+                      maxlength="128"
+                      :disabled="!form.useProxy"
+                      :placeholder="t('views.discordIntegration.settings.placeholders.proxyUsername')"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :xs="24" :md="12">
+                  <el-form-item prop="proxyPassword" :label="t('views.discordIntegration.settings.fields.proxyPassword')">
+                    <el-input
+                      v-model="form.proxyPassword"
+                      type="password"
+                      show-password
+                      clearable
+                      maxlength="256"
+                      autocomplete="new-password"
+                      :disabled="!form.useProxy"
+                      :placeholder="t('views.discordIntegration.settings.placeholders.proxyPassword')"
+                    />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </section>
+          </el-col>
+
+          <el-col :xs="24">
             <section class="discord-settings__section">
               <div class="discord-settings__section-header">
                 <div>
@@ -1125,6 +1221,10 @@ onBeforeRouteLeave(async () => {
   border-radius: 8px;
   padding: 14px;
   background: var(--el-fill-color-extra-light);
+}
+
+.discord-settings__section--advanced {
+  background: var(--el-fill-color-blank);
 }
 
 .discord-settings__section-header {

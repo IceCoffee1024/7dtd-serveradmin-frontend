@@ -2741,7 +2741,10 @@
         "discordWebhookConfigured": "已配置 Discord Webhook URL。",
         "eventAutomationDiscordDependencyDisabled": "规则“{0}”发送 Discord 消息，但 Discord 集成未启用。",
         "discordWebhookTargetInvalid": "Discord Webhook 目标配置无效：{0}。",
-        "discordFailureAlertsEnabled": "事件自动化失败告警已启用，目标：{0}。"
+        "discordFailureAlertsEnabled": "事件自动化失败告警已启用，目标：{0}。",
+        "discordProxyInvalid": "Discord 代理配置无效：{0}。",
+        "discordProxyWarning": "Discord 代理警告：{0}。",
+        "discordProxyEnabled": "Discord 出站请求使用代理：{0}。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2763,7 +2766,10 @@
         "requiredDependencyUnavailable": "必需依赖“{0}”不可用。",
         "eventAutomationRecentFailures": "事件自动化今日失败 {0} 次，最近失败规则：{1}。",
         "consoleCommandPolicyEnforced": "控制台命令执行已启用安全策略：白名单={0}，危险命令显式确认={1}。",
-        "eventAutomationDiscordDependencyDisabled": "存在已启用规则会发送 Discord 消息，但 Discord 集成当前未启用。"
+        "eventAutomationDiscordDependencyDisabled": "存在已启用规则会发送 Discord 消息，但 Discord 集成当前未启用。",
+        "discordProxyInvalid": "Discord 代理配置无效：{0}。",
+        "discordProxyWarning": "Discord 代理警告：{0}。",
+        "discordProxyEnabled": "Discord 出站请求使用代理：{0}。"
       },
       "security": {
         "sensitiveActions": "敏感动作",
@@ -2790,7 +2796,8 @@
         "webhookTest": "Webhook 测试",
         "outboundNotifications": "出站通知",
         "webhookTargets": "Webhook 频道分流",
-        "eventAutomationFailureAlerts": "自动化失败告警"
+        "eventAutomationFailureAlerts": "自动化失败告警",
+        "outboundProxy": "出站代理"
       },
       "stateScopes": {
         "cooldown": "冷却状态",
@@ -3305,14 +3312,22 @@
           "bindingIsActive": "启用绑定",
           "discordUserId": "Discord 用户 ID",
           "discordUsername": "Discord 用户名",
-          "inMainThread": "主线程执行"
+          "inMainThread": "主线程执行",
+          "useProxy": "使用 HTTP 代理",
+          "proxyUrl": "代理 URL",
+          "proxyUsername": "代理用户名",
+          "proxyPassword": "代理密码",
+          "bypassProxyOnLocal": "本地地址绕过代理"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "可选头像图片 URL",
           "testMessage": "留空则使用默认测试消息。",
           "testWebhookTargetKey": "默认目标",
-          "bindingKeyword": "搜索玩家或 Discord 标识"
+          "bindingKeyword": "搜索玩家或 Discord 标识",
+          "proxyUrl": "http://127.0.0.1:7890",
+          "proxyUsername": "可选代理用户名",
+          "proxyPassword": "可选代理密码"
         },
         "actions": {
           "testWebhook": "测试 Webhook",
@@ -3349,7 +3364,9 @@
           "webhookTargets": "Webhook 目标",
           "webhookTargetsDescription": "将通知分流到 public、admin、audit 等命名 Discord Webhook 目标。",
           "failureAlerts": "自动化失败告警",
-          "failureAlertsDescription": "事件自动化规则执行失败时发送 Discord 告警，不改变规则执行结果。"
+          "failureAlertsDescription": "事件自动化规则执行失败时发送 Discord 告警，不改变规则执行结果。",
+          "networkProxy": "高级网络代理",
+          "networkProxyDescription": "可选将 Discord 出站 Webhook 请求通过独立 HTTP 或 HTTPS 代理发送。该设置只影响 Discord 集成。"
         }
       }
     }

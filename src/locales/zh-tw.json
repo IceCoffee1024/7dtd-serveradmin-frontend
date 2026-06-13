@@ -2699,7 +2699,10 @@
         "discordWebhookConfigured": "已設定 Discord Webhook URL。",
         "eventAutomationDiscordDependencyDisabled": "規則「{0}」傳送 Discord 訊息，但 Discord 整合未啟用。",
         "discordWebhookTargetInvalid": "Discord Webhook 目標設定無效：{0}。",
-        "discordFailureAlertsEnabled": "事件自動化失敗告警已啟用，目標：{0}。"
+        "discordFailureAlertsEnabled": "事件自動化失敗告警已啟用，目標：{0}。",
+        "discordProxyInvalid": "Discord 代理配置無效：{0}。",
+        "discordProxyWarning": "Discord 代理警告：{0}。",
+        "discordProxyEnabled": "Discord 出站請求使用代理：{0}。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2721,7 +2724,10 @@
         "requiredDependencyUnavailable": "必要依賴「{0}」不可用。",
         "eventAutomationRecentFailures": "事件自动化今日失败 {0} 次，最近失败规则：{1}。",
         "consoleCommandPolicyEnforced": "控制台命令执行已启用安全策略：白名单={0}，危险命令显式确认={1}。",
-        "eventAutomationDiscordDependencyDisabled": "存在已啟用規則會傳送 Discord 訊息，但 Discord 整合目前未啟用。"
+        "eventAutomationDiscordDependencyDisabled": "存在已啟用規則會傳送 Discord 訊息，但 Discord 整合目前未啟用。",
+        "discordProxyInvalid": "Discord 代理配置無效：{0}。",
+        "discordProxyWarning": "Discord 代理警告：{0}。",
+        "discordProxyEnabled": "Discord 出站請求使用代理：{0}。"
       },
       "security": {
         "sensitiveActions": "敏感動作",
@@ -2748,7 +2754,8 @@
         "webhookTest": "Webhook 測試",
         "outboundNotifications": "出站通知",
         "webhookTargets": "Webhook 頻道分流",
-        "eventAutomationFailureAlerts": "自動化失敗告警"
+        "eventAutomationFailureAlerts": "自動化失敗告警",
+        "outboundProxy": "出站代理"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
@@ -3305,14 +3312,22 @@
           "bindingIsActive": "Binding enabled",
           "discordUserId": "Discord user ID",
           "discordUsername": "Discord username",
-          "inMainThread": "Run on main thread"
+          "inMainThread": "Run on main thread",
+          "useProxy": "使用 HTTP 代理",
+          "proxyUrl": "代理 URL",
+          "proxyUsername": "代理使用者名稱",
+          "proxyPassword": "代理密碼",
+          "bypassProxyOnLocal": "本機位址略過代理"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
           "defaultAvatarUrl": "選填頭像圖片 URL",
           "testMessage": "留空則使用預設測試訊息。",
           "testWebhookTargetKey": "預設目標",
-          "bindingKeyword": "Search player or Discord identifier"
+          "bindingKeyword": "Search player or Discord identifier",
+          "proxyUrl": "http://127.0.0.1:7890",
+          "proxyUsername": "可選代理使用者名稱",
+          "proxyPassword": "可選代理密碼"
         },
         "actions": {
           "testWebhook": "測試 Webhook",
@@ -3349,7 +3364,9 @@
           "relayTests": "Relay tests",
           "relayTestsDescription": "Test Discord-to-game chat and command relay using the currently saved backend settings.",
           "commandRelayTest": "Command relay test",
-          "chatRelayTest": "Chat relay test"
+          "chatRelayTest": "Chat relay test",
+          "networkProxy": "進階網路代理",
+          "networkProxyDescription": "可選將 Discord 出站 Webhook 請求透過獨立 HTTP 或 HTTPS 代理傳送。此設定只影響 Discord 整合。"
         }
       }
     }
