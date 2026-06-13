@@ -1386,6 +1386,82 @@ export type DiscordBotRuntimeStatusDto = {
 };
 
 /**
+ * Discord network diagnostics for proxy, REST API, and Gateway WebSocket connectivity.
+ */
+export type DiscordNetworkDiagnosticsDto = {
+    /**
+     * Whether Discord integration proxy settings are enabled.
+     */
+    useProxy?: boolean;
+    /**
+     * Display-safe proxy URL without credentials.
+     */
+    proxyUrl?: string | null;
+    /**
+     * Whether local addresses bypass the configured proxy.
+     */
+    bypassProxyOnLocal?: boolean;
+    /**
+     * Gateway WebSocket target URL.
+     */
+    gatewayUrl: string;
+    /**
+     * Discord REST gateway endpoint tested before WebSocket.
+     */
+    restGatewayUrl: string;
+    /**
+     * UTC timestamp when diagnostics started.
+     */
+    checkedAt?: string;
+    /**
+     * Ordered diagnostic step results.
+     */
+    steps: Array<DiscordNetworkDiagnosticStepDto>;
+};
+
+/**
+ * One Discord network diagnostic step result.
+ */
+export type DiscordNetworkDiagnosticStepDto = {
+    /**
+     * Stable step key for client-side display.
+     */
+    key: string;
+    /**
+     * Human-readable diagnostic step name.
+     */
+    name: string;
+    /**
+     * Whether this diagnostic step completed successfully.
+     */
+    succeeded?: boolean;
+    /**
+     * Diagnostic stage: ProxyTcp, DiscordRestGateway, or DiscordGatewayWebSocket.
+     */
+    stage: string;
+    /**
+     * Target endpoint tested by this step.
+     */
+    target: string;
+    /**
+     * HTTP status code returned by Discord when available.
+     */
+    statusCode?: number | null;
+    /**
+     * Elapsed time in milliseconds.
+     */
+    elapsedMilliseconds?: number;
+    /**
+     * Human-readable result message.
+     */
+    message: string;
+    /**
+     * Failure detail when available.
+     */
+    error?: string | null;
+};
+
+/**
  * Result of Discord slash command registration or synchronization.
  */
 export type DiscordSlashCommandSyncResultDto = {
@@ -7479,6 +7555,19 @@ export type DiscordIntegrationGetBotStatusResponses = {
 };
 
 export type DiscordIntegrationGetBotStatusResponse = DiscordIntegrationGetBotStatusResponses[keyof DiscordIntegrationGetBotStatusResponses];
+
+export type DiscordIntegrationGetDiagnosticsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/DiscordIntegration/Diagnostics';
+};
+
+export type DiscordIntegrationGetDiagnosticsResponses = {
+    200: DiscordNetworkDiagnosticsDto;
+};
+
+export type DiscordIntegrationGetDiagnosticsResponse = DiscordIntegrationGetDiagnosticsResponses[keyof DiscordIntegrationGetDiagnosticsResponses];
 
 export type DiscordIntegrationSyncSlashCommandsData = {
     body?: never;

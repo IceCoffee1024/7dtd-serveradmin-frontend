@@ -11,6 +11,7 @@ import type {
   DiscordChatRelayResultDto,
   DiscordCommandExecuteResultDto,
   DiscordIntegrationFeatureSettingsDto,
+  DiscordNetworkDiagnosticsDto,
   DiscordWebhookSendResultDto,
   DiscordWebhookTargetDto,
   DiscordWebhookTestRequestDto,
@@ -29,6 +30,7 @@ import {
   discordIntegrationGetBindingCodes,
   discordIntegrationGetBindings,
   discordIntegrationGetBotStatus,
+  discordIntegrationGetDiagnostics,
   discordIntegrationRedeemBindingCode,
   discordIntegrationGetSettings,
   discordIntegrationRelayDiscordChat,
@@ -125,6 +127,7 @@ const isCommandTesting = ref(false);
 const isChatRelayTesting = ref(false);
 const isBotTesting = ref(false);
 const isBotStatusLoading = ref(false);
+const isDiagnosticsRunning = ref(false);
 const isSlashSyncing = ref(false);
 const testMessage = ref('');
 const testWebhookTargetKey = ref('');
@@ -152,6 +155,7 @@ const commandTestResult = ref<DiscordCommandExecuteResultDto | null>(null);
 const chatRelayTestResult = ref<DiscordChatRelayResultDto | null>(null);
 const botTestResult = ref<DiscordBotTestResultDto | null>(null);
 const botStatus = ref<DiscordBotRuntimeStatusDto | null>(null);
+const networkDiagnostics = ref<DiscordNetworkDiagnosticsDto | null>(null);
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const isDirty = computed(() => !isEqual(form, initialValues.value));
@@ -709,6 +713,10 @@ function getBotStatusTagType(state?: string | null) {
   }
 }
 
+function getDiagnosticTagType(succeeded?: boolean) {
+  return succeeded ? 'success' : 'danger';
+}
+
 function formatBotTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
@@ -724,6 +732,31 @@ async function loadBotStatus() {
   }
   finally {
     isBotStatusLoading.value = false;
+  }
+}
+
+async function runNetworkDiagnostics() {
+  if (isDirty.value) {
+    const confirmed = await confirm({
+      text: t('views.discordIntegration.settings.messages.diagnosticsWithUnsavedConfirm'),
+      type: 'warning',
+    });
+    if (!confirmed)
+      return;
+
+    await onSubmit();
+  }
+
+  try {
+    isDiagnosticsRunning.value = true;
+    const { data } = await discordIntegrationGetDiagnostics({ throwOnError: true });
+    networkDiagnostics.value = data;
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isDiagnosticsRunning.value = false;
   }
 }
 
@@ -1230,6 +1263,48 @@ onBeforeRouteLeave(async () => {
                   :closable="false"
                   :title="botStatus.lastError"
                 />
+              </div>
+
+              <div v-loading="isDiagnosticsRunning" class="discord-settings__diagnostics">
+                <div class="discord-settings__runtime-main">
+                  <div>
+                    <span class="discord-settings__runtime-label">{{ t('views.discordIntegration.settings.sections.networkDiagnostics') }}</span>
+                    <strong>{{ t('views.discordIntegration.settings.messages.networkDiagnosticsHint') }}</strong>
+                  </div>
+                  <el-button size="small" :loading="isDiagnosticsRunning" @click="runNetworkDiagnostics">
+                    {{ t('views.discordIntegration.settings.actions.runDiagnostics') }}
+                  </el-button>
+                </div>
+                <div v-if="networkDiagnostics" class="discord-settings__runtime-grid">
+                  <span>{{ t('views.discordIntegration.settings.fields.proxy') }}: {{ networkDiagnostics.useProxy ? (networkDiagnostics.proxyUrl || '-') : '-' }}</span>
+                  <span>{{ t('views.discordIntegration.settings.fields.gatewayTarget') }}: {{ networkDiagnostics.gatewayUrl }}</span>
+                  <span>{{ t('views.discordIntegration.settings.fields.checkedAt') }}: {{ formatBotTimestamp(networkDiagnostics.checkedAt) }}</span>
+                </div>
+                <div v-if="networkDiagnostics" class="discord-settings__diagnostic-steps">
+                  <div
+                    v-for="step in networkDiagnostics.steps"
+                    :key="step.key"
+                    class="discord-settings__diagnostic-step"
+                  >
+                    <div class="discord-settings__diagnostic-step-main">
+                      <el-tag :type="getDiagnosticTagType(step.succeeded)" effect="plain" size="small">
+                        {{ step.succeeded ? t('views.discordIntegration.settings.status.passed') : t('views.discordIntegration.settings.status.failed') }}
+                      </el-tag>
+                      <div>
+                        <strong>{{ step.name }}</strong>
+                        <small>{{ step.stage }} · {{ step.elapsedMilliseconds }}ms · {{ step.target }}</small>
+                      </div>
+                    </div>
+                    <p>{{ step.message }}</p>
+                    <el-alert
+                      v-if="step.error"
+                      type="error"
+                      show-icon
+                      :closable="false"
+                      :title="step.error"
+                    />
+                  </div>
+                </div>
               </div>
 
               <el-row :gutter="12">
@@ -2141,6 +2216,15 @@ onBeforeRouteLeave(async () => {
   background: var(--el-bg-color);
 }
 
+.discord-settings__diagnostics {
+  display: grid;
+  gap: 10px;
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--el-bg-color) 78%, var(--el-fill-color-light));
+}
+
 .discord-settings__runtime-main {
   display: flex;
   align-items: flex-start;
@@ -2169,6 +2253,54 @@ onBeforeRouteLeave(async () => {
   color: var(--el-text-color-secondary);
   font-size: 12px;
   line-height: 18px;
+}
+
+.discord-settings__diagnostic-steps {
+  display: grid;
+  gap: 8px;
+}
+
+.discord-settings__diagnostic-step {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 10px;
+  background: var(--el-bg-color);
+
+  p {
+    margin: 0;
+    color: var(--el-text-color-regular);
+    font-size: 12px;
+    line-height: 18px;
+    overflow-wrap: anywhere;
+  }
+}
+
+.discord-settings__diagnostic-step-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+
+  strong,
+  small {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+
+  strong {
+    color: var(--el-text-color-primary);
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  small {
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 18px;
+  }
 }
 
 .discord-settings__steps {

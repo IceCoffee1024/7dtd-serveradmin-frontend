@@ -3351,7 +3351,10 @@
           "botUser": "Bot user",
           "lastConnectedAt": "Last connected",
           "lastDisconnectedAt": "Last disconnected",
-          "reconnectDelaySeconds": "Reconnect delay seconds"
+          "reconnectDelaySeconds": "Reconnect delay seconds",
+          "proxy": "代理",
+          "gatewayTarget": "Gateway 目標",
+          "checkedAt": "檢查時間"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3375,7 +3378,8 @@
           "cleanupExpiredBindingCodes": "清理過期碼",
           "testBot": "Test Bot",
           "refreshBotStatus": "Refresh status",
-          "syncSlashCommands": "Sync slash commands"
+          "syncSlashCommands": "Sync slash commands",
+          "runDiagnostics": "執行診斷"
         },
         "messages": {
           "saveSuccess": "Discord 設定已儲存。",
@@ -3406,7 +3410,9 @@
           "botStatusUnknown": "Bot runtime status has not been loaded.",
           "slashSyncWithUnsavedConfirm": "Slash command sync uses saved Bot settings. Save current changes before syncing?",
           "slashSyncFailed": "Discord 斜線命令同步失敗。",
-          "slashCommandRuntimeHint": "同步會向 Discord 註冊 /listplayers、/serverstatus、/help。實際執行需要 Gateway Bot 在線，結果會回寫到 Discord 互動回應。"
+          "slashCommandRuntimeHint": "同步會向 Discord 註冊 /listplayers、/serverstatus、/help。實際執行需要 Gateway Bot 在線，結果會回寫到 Discord 互動回應。",
+          "diagnosticsWithUnsavedConfirm": "網路診斷使用已儲存的設定。是否先儲存目前修改再執行診斷？",
+          "networkDiagnosticsHint": "檢查代理 TCP、Discord REST gateway 和 Gateway WebSocket 連通性。"
         },
         "sections": {
           "webhookTargets": "Webhook 目標",
@@ -3435,7 +3441,8 @@
           "basicDescription": "Control the Discord integration switch, default identity, and request timeout.",
           "webhook": "Default webhook",
           "webhookDescription": "Fallback notification channel when no target is selected. It can also be used for saved-config testing.",
-          "botRuntime": "Bot runtime status"
+          "botRuntime": "Bot runtime status",
+          "networkDiagnostics": "網路診斷"
         },
         "status": {
           "pending": "待兌換",
@@ -3443,7 +3450,9 @@
           "expired": "已過期",
           "configured": "Configured",
           "missing": "Missing",
-          "notConfigured": "Not configured"
+          "notConfigured": "Not configured",
+          "passed": "通過",
+          "failed": "失敗"
         },
         "statusCards": {
           "integration": "Integration",

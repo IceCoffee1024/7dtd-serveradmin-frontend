@@ -771,6 +771,38 @@ export const vDiscordBotRuntimeStatusDto = v.strictObject({
 });
 
 /**
+ * One Discord network diagnostic step result.
+ */
+export const vDiscordNetworkDiagnosticStepDto = v.strictObject({
+    key: v.string(),
+    name: v.string(),
+    succeeded: v.optional(v.boolean()),
+    stage: v.string(),
+    target: v.string(),
+    statusCode: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    elapsedMilliseconds: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    message: v.string(),
+    error: v.nullish(v.string())
+});
+
+/**
+ * Discord network diagnostics for proxy, REST API, and Gateway WebSocket connectivity.
+ */
+export const vDiscordNetworkDiagnosticsDto = v.strictObject({
+    useProxy: v.optional(v.boolean()),
+    proxyUrl: v.nullish(v.string()),
+    bypassProxyOnLocal: v.optional(v.boolean()),
+    gatewayUrl: v.string(),
+    restGatewayUrl: v.string(),
+    checkedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    steps: v.array(vDiscordNetworkDiagnosticStepDto)
+});
+
+/**
  * Result of Discord slash command registration or synchronization.
  */
 export const vDiscordSlashCommandSyncResultDto = v.strictObject({

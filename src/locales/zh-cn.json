@@ -3351,7 +3351,10 @@
           "botUser": "Bot 用户",
           "lastConnectedAt": "最近连接",
           "lastDisconnectedAt": "最近断开",
-          "reconnectDelaySeconds": "重连等待秒数"
+          "reconnectDelaySeconds": "重连等待秒数",
+          "proxy": "代理",
+          "gatewayTarget": "Gateway 目标",
+          "checkedAt": "检查时间"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3375,7 +3378,8 @@
           "cleanupExpiredBindingCodes": "清理过期码",
           "testBot": "测试 Bot",
           "refreshBotStatus": "刷新状态",
-          "syncSlashCommands": "同步斜杠命令"
+          "syncSlashCommands": "同步斜杠命令",
+          "runDiagnostics": "运行诊断"
         },
         "messages": {
           "saveSuccess": "Discord 设置已保存。",
@@ -3406,7 +3410,9 @@
           "botStatusUnknown": "尚未读取 Bot 运行状态。",
           "slashSyncWithUnsavedConfirm": "斜杠命令同步使用已保存的 Bot 设置。是否先保存当前修改再同步？",
           "slashSyncFailed": "Discord 斜杠命令同步失败。",
-          "slashCommandRuntimeHint": "同步会向 Discord 注册 /listplayers、/serverstatus、/help。实际执行需要 Gateway Bot 在线，结果会回写到 Discord 交互响应。"
+          "slashCommandRuntimeHint": "同步会向 Discord 注册 /listplayers、/serverstatus、/help。实际执行需要 Gateway Bot 在线，结果会回写到 Discord 交互响应。",
+          "diagnosticsWithUnsavedConfirm": "网络诊断使用已保存的设置。是否先保存当前修改再运行诊断？",
+          "networkDiagnosticsHint": "检查代理 TCP、Discord REST gateway 和 Gateway WebSocket 连通性。"
         },
         "sections": {
           "chatBridge": "聊天桥接",
@@ -3435,7 +3441,8 @@
           "basicDescription": "控制 Discord 集成总开关、默认身份和请求超时。",
           "webhook": "默认 Webhook",
           "webhookDescription": "用于未指定目标时的默认通知通道，也可直接测试当前保存配置。",
-          "botRuntime": "Bot 运行状态"
+          "botRuntime": "Bot 运行状态",
+          "networkDiagnostics": "网络诊断"
         },
         "status": {
           "pending": "待兑换",
@@ -3443,7 +3450,9 @@
           "expired": "已过期",
           "configured": "已配置",
           "missing": "缺失",
-          "notConfigured": "未配置"
+          "notConfigured": "未配置",
+          "passed": "通过",
+          "failed": "失败"
         },
         "statusCards": {
           "integration": "集成状态",

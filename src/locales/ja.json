@@ -3351,7 +3351,10 @@
           "botUser": "Bot user",
           "lastConnectedAt": "Last connected",
           "lastDisconnectedAt": "Last disconnected",
-          "reconnectDelaySeconds": "Reconnect delay seconds"
+          "reconnectDelaySeconds": "Reconnect delay seconds",
+          "proxy": "Proxy",
+          "gatewayTarget": "Gateway target",
+          "checkedAt": "Checked at"
         },
         "placeholders": {
           "webhookUrl": "https://discord.com/api/webhooks/...",
@@ -3375,7 +3378,8 @@
           "cleanupExpiredBindingCodes": "Clean expired codes",
           "testBot": "Test Bot",
           "refreshBotStatus": "Refresh status",
-          "syncSlashCommands": "Sync slash commands"
+          "syncSlashCommands": "Sync slash commands",
+          "runDiagnostics": "Run diagnostics"
         },
         "messages": {
           "saveSuccess": "Discord settings saved.",
@@ -3406,7 +3410,9 @@
           "botStatusUnknown": "Bot runtime status has not been loaded.",
           "slashSyncWithUnsavedConfirm": "Slash command sync uses saved Bot settings. Save current changes before syncing?",
           "slashSyncFailed": "Discord slash command sync failed.",
-          "slashCommandRuntimeHint": "Sync registers /listplayers, /serverstatus, and /help with Discord. Execution requires the Gateway Bot to be online, and results are returned through Discord interaction responses."
+          "slashCommandRuntimeHint": "Sync registers /listplayers, /serverstatus, and /help with Discord. Execution requires the Gateway Bot to be online, and results are returned through Discord interaction responses.",
+          "diagnosticsWithUnsavedConfirm": "Network diagnostics use saved settings. Save current changes before running diagnostics?",
+          "networkDiagnosticsHint": "Check proxy TCP, Discord REST gateway, and Gateway WebSocket connectivity."
         },
         "sections": {
           "webhookTargets": "Webhook targets",
@@ -3435,7 +3441,8 @@
           "basicDescription": "Control the Discord integration switch, default identity, and request timeout.",
           "webhook": "Default webhook",
           "webhookDescription": "Fallback notification channel when no target is selected. It can also be used for saved-config testing.",
-          "botRuntime": "Bot runtime status"
+          "botRuntime": "Bot runtime status",
+          "networkDiagnostics": "Network diagnostics"
         },
         "status": {
           "pending": "Pending",
@@ -3443,7 +3450,9 @@
           "expired": "Expired",
           "configured": "Configured",
           "missing": "Missing",
-          "notConfigured": "Not configured"
+          "notConfigured": "Not configured",
+          "passed": "Passed",
+          "failed": "Failed"
         },
         "statusCards": {
           "integration": "Integration",
