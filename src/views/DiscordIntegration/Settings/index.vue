@@ -43,6 +43,7 @@ import {
 } from '~/generated/api/sdk.gen';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
+import SettingsHero from './components/SettingsHero.vue';
 
 defineOptions({ name: 'DiscordIntegrationSettingsPage' });
 
@@ -159,6 +160,45 @@ const networkDiagnostics = ref<DiscordNetworkDiagnosticsDto | null>(null);
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const isDirty = computed(() => !isEqual(form, initialValues.value));
+const isWebhookConfigured = computed(() => form.webhookUrl.trim().length > 0 || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim().length > 0));
+const isBotConfigured = computed(() => form.enableBotIntegration && form.botToken.trim().length > 0);
+const statusCards = computed(() => [
+  {
+    key: 'integration',
+    label: t('views.discordIntegration.settings.statusCards.integration'),
+    value: form.isEnabled ? t('common.enabled') : t('common.disabled'),
+    type: form.isEnabled ? 'success' as const : 'info' as const,
+    isActive: form.isEnabled,
+  },
+  {
+    key: 'webhook',
+    label: t('views.discordIntegration.settings.statusCards.webhook'),
+    value: isWebhookConfigured.value ? t('views.discordIntegration.settings.status.configured') : t('views.discordIntegration.settings.status.missing'),
+    type: isWebhookConfigured.value ? 'success' as const : 'warning' as const,
+    isActive: isWebhookConfigured.value,
+  },
+  {
+    key: 'bot',
+    label: t('views.discordIntegration.settings.statusCards.bot'),
+    value: isBotConfigured.value ? t('views.discordIntegration.settings.status.configured') : t('views.discordIntegration.settings.status.notConfigured'),
+    type: isBotConfigured.value ? 'success' as const : 'info' as const,
+    isActive: isBotConfigured.value,
+  },
+  {
+    key: 'commandRelay',
+    label: t('views.discordIntegration.settings.statusCards.commandRelay'),
+    value: form.enableDiscordCommandExecution ? t('common.enabled') : t('common.disabled'),
+    type: form.enableDiscordCommandExecution ? 'warning' as const : 'info' as const,
+    isActive: form.enableDiscordCommandExecution,
+  },
+  {
+    key: 'accountBinding',
+    label: t('views.discordIntegration.settings.statusCards.accountBinding'),
+    value: form.enableAccountBinding ? t('common.enabled') : t('common.disabled'),
+    type: form.enableAccountBinding ? 'success' as const : 'info' as const,
+    isActive: form.enableAccountBinding,
+  },
+]);
 const webhookTargetOptions = computed(() =>
   form.webhookTargets
     .filter(target => target.key.trim().length > 0)
@@ -1093,58 +1133,17 @@ onBeforeRouteLeave(async () => {
     </div>
 
     <template v-else>
-      <div class="discord-settings__hero">
-        <div class="discord-settings__hero-main">
-          <div>
-            <h2>{{ t('menus.discordIntegration') }}</h2>
-            <p>{{ t('views.discordIntegration.settings.description') }}</p>
-          </div>
-          <div class="discord-settings__hero-actions">
-            <el-button :disabled="isSubmitting || isTesting" @click="onReset">
-              {{ t('common.reset') }}
-            </el-button>
-            <el-button :loading="isTesting" :disabled="isSubmitting" @click="onTestWebhook">
-              {{ t('views.discordIntegration.settings.actions.testWebhook') }}
-            </el-button>
-            <el-button type="primary" :loading="isSubmitting" :disabled="!isDirty || isTesting" @click="onSubmit">
-              {{ t('common.save') }}
-            </el-button>
-          </div>
-        </div>
-
-        <div class="discord-settings__status-grid">
-          <div class="discord-settings__status-item" :class="{ 'is-active': form.isEnabled }">
-            <span>{{ t('views.discordIntegration.settings.statusCards.integration') }}</span>
-            <el-tag :type="form.isEnabled ? 'success' : 'info'" effect="plain">
-              {{ form.isEnabled ? t('common.enabled') : t('common.disabled') }}
-            </el-tag>
-          </div>
-          <div class="discord-settings__status-item" :class="{ 'is-active': form.webhookUrl.trim() || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim()) }">
-            <span>{{ t('views.discordIntegration.settings.statusCards.webhook') }}</span>
-            <el-tag :type="(form.webhookUrl.trim() || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim())) ? 'success' : 'warning'" effect="plain">
-              {{ (form.webhookUrl.trim() || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim())) ? t('views.discordIntegration.settings.status.configured') : t('views.discordIntegration.settings.status.missing') }}
-            </el-tag>
-          </div>
-          <div class="discord-settings__status-item" :class="{ 'is-active': form.enableBotIntegration && form.botToken.trim() }">
-            <span>{{ t('views.discordIntegration.settings.statusCards.bot') }}</span>
-            <el-tag :type="(form.enableBotIntegration && form.botToken.trim()) ? 'success' : 'info'" effect="plain">
-              {{ (form.enableBotIntegration && form.botToken.trim()) ? t('views.discordIntegration.settings.status.configured') : t('views.discordIntegration.settings.status.notConfigured') }}
-            </el-tag>
-          </div>
-          <div class="discord-settings__status-item" :class="{ 'is-active': form.enableDiscordCommandExecution }">
-            <span>{{ t('views.discordIntegration.settings.statusCards.commandRelay') }}</span>
-            <el-tag :type="form.enableDiscordCommandExecution ? 'warning' : 'info'" effect="plain">
-              {{ form.enableDiscordCommandExecution ? t('common.enabled') : t('common.disabled') }}
-            </el-tag>
-          </div>
-          <div class="discord-settings__status-item" :class="{ 'is-active': form.enableAccountBinding }">
-            <span>{{ t('views.discordIntegration.settings.statusCards.accountBinding') }}</span>
-            <el-tag :type="form.enableAccountBinding ? 'success' : 'info'" effect="plain">
-              {{ form.enableAccountBinding ? t('common.enabled') : t('common.disabled') }}
-            </el-tag>
-          </div>
-        </div>
-      </div>
+      <SettingsHero
+        :title="t('menus.discordIntegration')"
+        :description="t('views.discordIntegration.settings.description')"
+        :status-cards="statusCards"
+        :is-submitting="isSubmitting"
+        :is-testing="isTesting"
+        :is-dirty="isDirty"
+        @reset="onReset"
+        @test-webhook="onTestWebhook"
+        @submit="onSubmit"
+      />
 
       <el-form
         ref="formRef"
@@ -2119,70 +2118,6 @@ onBeforeRouteLeave(async () => {
   max-width: 1360px;
 }
 
-.discord-settings__hero {
-  display: grid;
-  gap: 14px;
-  margin-bottom: 16px;
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 8px;
-  padding: 16px;
-  background: var(--el-bg-color);
-}
-
-.discord-settings__hero-main {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-
-  h2 {
-    margin: 0;
-    color: var(--el-text-color-primary);
-    font-size: 18px;
-    line-height: 26px;
-  }
-
-  p {
-    margin: 4px 0 0;
-    color: var(--el-text-color-secondary);
-    font-size: 13px;
-    line-height: 20px;
-  }
-}
-
-.discord-settings__hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.discord-settings__status-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.discord-settings__status-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 44px;
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 6px;
-  padding: 8px 10px;
-  background: var(--el-fill-color-extra-light);
-  color: var(--el-text-color-secondary);
-  font-size: 12px;
-}
-
-.discord-settings__status-item.is-active {
-  border-color: var(--el-color-primary-light-7);
-  background: var(--el-color-primary-light-9);
-  color: var(--el-text-color-primary);
-}
-
 .discord-settings__form {
   width: min(100%, 1100px);
 }
@@ -2549,29 +2484,20 @@ onBeforeRouteLeave(async () => {
   line-height: 18px;
 }
 
-@media (max-width: 1200px) {
-  .discord-settings__status-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 768px) {
   .discord-settings {
     max-width: none;
   }
 
-  .discord-settings__hero-main,
   .discord-settings__section-header {
     flex-direction: column;
   }
 
-  .discord-settings__hero-actions,
   .discord-settings__section-actions,
   .discord-settings__inline-actions {
     justify-content: flex-start;
   }
 
-  .discord-settings__status-grid,
   .discord-settings__steps,
   .discord-settings__runtime-grid,
   .discord-settings__binding-toolbar,

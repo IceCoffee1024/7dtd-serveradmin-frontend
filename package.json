@@ -17,7 +17,8 @@
     "lint": "eslint \"src/**/*.{ts,vue}\"",
     "locale:check": "node scripts/check-locales.mjs",
     "preview": "vite preview",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "visual:discord": "playwright test tests/visual/discord-integration.spec.ts"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
@@ -54,6 +55,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/ri": "^1.2.10",
     "@intlify/unplugin-vue-i18n": "^11.2.3",
+    "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
     "@types/nprogress": "^0.2.3",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^3.6.8",

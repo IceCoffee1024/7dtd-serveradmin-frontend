@@ -12,5 +12,9 @@ package-lock.json
 
 *.log
 
+# test artifacts
+test-results/
+playwright-report/
+
 # local runbooks
 LOCAL_FRONTEND_BACKEND_SYNC.md
