@@ -3412,7 +3412,13 @@
           "slashSyncFailed": "Discord 斜線命令同步失敗。",
           "slashCommandRuntimeHint": "同步會向 Discord 註冊 /listplayers、/serverstatus、/help。實際執行需要 Gateway Bot 在線，結果會回寫到 Discord 互動回應。",
           "diagnosticsWithUnsavedConfirm": "網路診斷使用已儲存的設定。是否先儲存目前修改再執行診斷？",
-          "networkDiagnosticsHint": "檢查代理 TCP、Discord REST gateway 和 Gateway WebSocket 連通性。"
+          "networkDiagnosticsHint": "檢查代理 TCP、Discord REST gateway 和 Gateway WebSocket 連通性。",
+          "networkDiagnosticsUsable": "Discord 网络检查可用。",
+          "networkDiagnosticsNeedsAttention": "Discord 网络检查需要处理。",
+          "networkDiagnosticsFallbackUsable": "当前运行环境的默认实时连接检查失败，但备用代理通道已连接，Bot 功能可正常使用。",
+          "networkDiagnosticsAllGood": "Discord API 与 Bot 实时连接检查均正常。",
+          "networkDiagnosticsFailedRequired": "一个或多个必要的 Discord 检查失败。请查看可见失败项，或展开高级诊断。",
+          "rawDiagnosticError": "技术详情"
         },
         "sections": {
           "webhookTargets": "Webhook 目標",
@@ -3442,7 +3448,8 @@
           "webhook": "Default webhook",
           "webhookDescription": "Fallback notification channel when no target is selected. It can also be used for saved-config testing.",
           "botRuntime": "Bot runtime status",
-          "networkDiagnostics": "網路診斷"
+          "networkDiagnostics": "網路診斷",
+          "advancedDiagnostics": "高级诊断"
         },
         "status": {
           "pending": "待兌換",
@@ -3468,6 +3475,12 @@
           "channelsHint": "Public channel for chat, admin channel for commands",
           "test": "Connection test",
           "testHint": "Save and validate Bot credentials"
+        },
+        "diagnostics": {
+          "proxyTcp": "代理连接",
+          "restGateway": "Discord API",
+          "gatewayWebSocket": "Bot 实时连接",
+          "gatewayProxyTunnel": "Bot 代理连接"
         }
       }
     }

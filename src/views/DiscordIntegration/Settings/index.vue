@@ -24,15 +24,15 @@ import { usePopup } from '~/composables';
 import {
   discordIntegrationCleanupExpiredBindingCodes,
   discordIntegrationCreateBindingCode,
-  discordIntegrationDeleteBindingCode,
   discordIntegrationDeleteBinding,
+  discordIntegrationDeleteBindingCode,
   discordIntegrationExecuteDiscordCommand,
   discordIntegrationGetBindingCodes,
   discordIntegrationGetBindings,
   discordIntegrationGetBotStatus,
   discordIntegrationGetDiagnostics,
-  discordIntegrationRedeemBindingCode,
   discordIntegrationGetSettings,
+  discordIntegrationRedeemBindingCode,
   discordIntegrationRelayDiscordChat,
   discordIntegrationResetSettings,
   discordIntegrationSyncSlashCommands,
@@ -167,6 +167,39 @@ const webhookTargetOptions = computed(() =>
       value: target.key.trim(),
     })),
 );
+const networkDiagnosticSummary = computed(() => {
+  const diagnostics = networkDiagnostics.value;
+  if (!diagnostics)
+    return null;
+
+  const steps = diagnostics.steps ?? [];
+  const proxyTcp = findDiagnosticStep('proxyTcp');
+  const restGateway = findDiagnosticStep('restGateway');
+  const gatewayWebSocket = findDiagnosticStep('gatewayWebSocket');
+  const gatewayProxyTunnel = findDiagnosticStep('gatewayProxyTunnel');
+  const gatewayAvailable = gatewayWebSocket?.succeeded === true || gatewayProxyTunnel?.succeeded === true;
+  const apiAvailable = restGateway?.succeeded === true;
+  const proxyAvailable = diagnostics.useProxy === false || proxyTcp?.succeeded === true;
+  const requiredOk = gatewayAvailable && apiAvailable && proxyAvailable;
+  const failedRequiredCount = [apiAvailable, gatewayAvailable, proxyAvailable].filter(Boolean).length;
+  const passedCount = steps.filter(step => step.succeeded).length;
+
+  return {
+    type: requiredOk ? 'success' as const : 'error' as const,
+    title: requiredOk
+      ? t('views.discordIntegration.settings.messages.networkDiagnosticsUsable')
+      : t('views.discordIntegration.settings.messages.networkDiagnosticsNeedsAttention'),
+    description: requiredOk && gatewayWebSocket?.succeeded === false && gatewayProxyTunnel?.succeeded === true
+      ? t('views.discordIntegration.settings.messages.networkDiagnosticsFallbackUsable')
+      : requiredOk
+        ? t('views.discordIntegration.settings.messages.networkDiagnosticsAllGood')
+        : t('views.discordIntegration.settings.messages.networkDiagnosticsFailedRequired'),
+    passedCount,
+    totalCount: steps.length,
+    requiredHealthyCount: failedRequiredCount,
+    requiredTotalCount: 3,
+  };
+});
 
 const schema = v.object({
   isEnabled: v.boolean(),
@@ -715,6 +748,31 @@ function getBotStatusTagType(state?: string | null) {
 
 function getDiagnosticTagType(succeeded?: boolean) {
   return succeeded ? 'success' : 'danger';
+}
+
+function findDiagnosticStep(key: string) {
+  return networkDiagnostics.value?.steps?.find(step => step.key === key);
+}
+
+function getDiagnosticDisplayName(step: NonNullable<DiscordNetworkDiagnosticsDto['steps']>[number]) {
+  const key = `views.discordIntegration.settings.diagnostics.${step.key}`;
+  const translated = t(key);
+  return translated === key ? step.name : translated;
+}
+
+function isDiagnosticStepUserRelevant(step: NonNullable<DiscordNetworkDiagnosticsDto['steps']>[number]) {
+  if (step.key === 'gatewayWebSocket' && findDiagnosticStep('gatewayProxyTunnel')?.succeeded === true)
+    return false;
+
+  return true;
+}
+
+function getVisibleDiagnosticSteps() {
+  return networkDiagnostics.value?.steps?.filter(isDiagnosticStepUserRelevant) ?? [];
+}
+
+function getAdvancedDiagnosticSteps() {
+  return networkDiagnostics.value?.steps ?? [];
 }
 
 function formatBotTimestamp(value: string | null | undefined): string {
@@ -1280,9 +1338,20 @@ onBeforeRouteLeave(async () => {
                   <span>{{ t('views.discordIntegration.settings.fields.gatewayTarget') }}: {{ networkDiagnostics.gatewayUrl }}</span>
                   <span>{{ t('views.discordIntegration.settings.fields.checkedAt') }}: {{ formatBotTimestamp(networkDiagnostics.checkedAt) }}</span>
                 </div>
+                <el-alert
+                  v-if="networkDiagnosticSummary"
+                  :type="networkDiagnosticSummary.type"
+                  show-icon
+                  :closable="false"
+                  :title="networkDiagnosticSummary.title"
+                >
+                  <template #default>
+                    {{ networkDiagnosticSummary.description }}
+                  </template>
+                </el-alert>
                 <div v-if="networkDiagnostics" class="discord-settings__diagnostic-steps">
                   <div
-                    v-for="step in networkDiagnostics.steps"
+                    v-for="step in getVisibleDiagnosticSteps()"
                     :key="step.key"
                     class="discord-settings__diagnostic-step"
                   >
@@ -1291,20 +1360,51 @@ onBeforeRouteLeave(async () => {
                         {{ step.succeeded ? t('views.discordIntegration.settings.status.passed') : t('views.discordIntegration.settings.status.failed') }}
                       </el-tag>
                       <div>
-                        <strong>{{ step.name }}</strong>
-                        <small>{{ step.stage }} · {{ step.elapsedMilliseconds }}ms · {{ step.target }}</small>
+                        <strong>{{ getDiagnosticDisplayName(step) }}</strong>
+                        <small>{{ step.elapsedMilliseconds }}ms</small>
                       </div>
                     </div>
                     <p>{{ step.message }}</p>
-                    <el-alert
-                      v-if="step.error"
-                      type="error"
-                      show-icon
-                      :closable="false"
-                      :title="step.error"
-                    />
                   </div>
                 </div>
+                <el-collapse v-if="networkDiagnostics" class="discord-settings__diagnostic-advanced">
+                  <el-collapse-item name="diagnostics">
+                    <template #title>
+                      <span class="discord-settings__collapse-title">
+                        {{ t('views.discordIntegration.settings.sections.advancedDiagnostics') }}
+                      </span>
+                    </template>
+                    <div class="discord-settings__diagnostic-steps">
+                      <div
+                        v-for="step in getAdvancedDiagnosticSteps()"
+                        :key="`advanced-${step.key}`"
+                        class="discord-settings__diagnostic-step"
+                      >
+                        <div class="discord-settings__diagnostic-step-main">
+                          <el-tag :type="getDiagnosticTagType(step.succeeded)" effect="plain" size="small">
+                            {{ step.succeeded ? t('views.discordIntegration.settings.status.passed') : t('views.discordIntegration.settings.status.failed') }}
+                          </el-tag>
+                          <div>
+                            <strong>{{ getDiagnosticDisplayName(step) }}</strong>
+                            <small>{{ step.stage }} · {{ step.elapsedMilliseconds }}ms · {{ step.target }}</small>
+                          </div>
+                        </div>
+                        <p>{{ step.message }}</p>
+                        <el-alert
+                          v-if="step.error"
+                          type="error"
+                          show-icon
+                          :closable="false"
+                          :title="t('views.discordIntegration.settings.messages.rawDiagnosticError')"
+                        >
+                          <template #default>
+                            <pre class="discord-settings__diagnostic-error">{{ step.error }}</pre>
+                          </template>
+                        </el-alert>
+                      </div>
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
               </div>
 
               <el-row :gutter="12">
@@ -2009,7 +2109,6 @@ onBeforeRouteLeave(async () => {
           </el-col>
         </el-row>
       </el-form>
-
     </template>
   </div>
 </template>
@@ -2260,6 +2359,26 @@ onBeforeRouteLeave(async () => {
   gap: 8px;
 }
 
+.discord-settings__diagnostic-advanced {
+  border: 0;
+
+  :deep(.el-collapse-item__header) {
+    height: 32px;
+    border-bottom: 0;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+  }
+
+  :deep(.el-collapse-item__wrap) {
+    border-bottom: 0;
+    background: transparent;
+  }
+
+  :deep(.el-collapse-item__content) {
+    padding-bottom: 0;
+  }
+}
+
 .discord-settings__diagnostic-step {
   display: grid;
   gap: 6px;
@@ -2276,6 +2395,17 @@ onBeforeRouteLeave(async () => {
     line-height: 18px;
     overflow-wrap: anywhere;
   }
+}
+
+.discord-settings__diagnostic-error {
+  max-height: 220px;
+  margin: 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--el-color-danger);
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .discord-settings__diagnostic-step-main {
@@ -2377,7 +2507,7 @@ onBeforeRouteLeave(async () => {
 
 .discord-settings__code,
 .discord-settings__mono {
-  font-family: var(--el-font-family-monospace, ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace);
+  font-family: var(--el-font-family-monospace, ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace);
 }
 
 .discord-settings__code {

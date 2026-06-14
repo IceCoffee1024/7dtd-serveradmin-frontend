@@ -3412,7 +3412,13 @@
           "slashSyncFailed": "Discord slash command sync failed.",
           "slashCommandRuntimeHint": "Sync registers /listplayers, /serverstatus, and /help with Discord. Execution requires the Gateway Bot to be online, and results are returned through Discord interaction responses.",
           "diagnosticsWithUnsavedConfirm": "Network diagnostics use saved settings. Save current changes before running diagnostics?",
-          "networkDiagnosticsHint": "Check proxy TCP, Discord REST gateway, and Gateway WebSocket connectivity."
+          "networkDiagnosticsHint": "Check proxy TCP, Discord REST gateway, and Gateway WebSocket connectivity.",
+          "networkDiagnosticsUsable": "Discord network checks are usable.",
+          "networkDiagnosticsNeedsAttention": "Discord network checks need attention.",
+          "networkDiagnosticsFallbackUsable": "The default real-time connection check failed in this runtime, but the alternate proxy path is connected. Bot features are available.",
+          "networkDiagnosticsAllGood": "Discord API and Bot real-time connection checks are healthy.",
+          "networkDiagnosticsFailedRequired": "One or more required Discord checks failed. Review the visible failed item or expand advanced diagnostics.",
+          "rawDiagnosticError": "Technical details"
         },
         "sections": {
           "chatBridge": "Chat bridge",
@@ -3442,7 +3448,8 @@
           "webhook": "Default webhook",
           "webhookDescription": "Fallback notification channel when no target is selected. It can also be used for saved-config testing.",
           "botRuntime": "Bot runtime status",
-          "networkDiagnostics": "Network diagnostics"
+          "networkDiagnostics": "Network diagnostics",
+          "advancedDiagnostics": "Advanced diagnostics"
         },
         "status": {
           "pending": "Pending",
@@ -3468,6 +3475,12 @@
           "channelsHint": "Public channel for chat, admin channel for commands",
           "test": "Connection test",
           "testHint": "Save and validate Bot credentials"
+        },
+        "diagnostics": {
+          "proxyTcp": "Proxy connection",
+          "restGateway": "Discord API",
+          "gatewayWebSocket": "Bot real-time connection",
+          "gatewayProxyTunnel": "Bot proxy connection"
         }
       }
     }
