@@ -1742,6 +1742,46 @@ onMounted(() => {
 
   .event-automation-rule-dialog__body {
     max-height: calc(96vh - 116px);
+    overflow-x: hidden;
+    padding-right: 0;
+  }
+
+  .event-automation-rule-form,
+  .event-automation-rule-panel,
+  .event-automation-dry-run-samples,
+  .event-automation-dry-run-samples__collapse {
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .event-automation-rule-panel {
+    padding: 12px;
+  }
+
+  .event-automation-rule-panel :deep(.el-row) {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .event-automation-rule-panel :deep(.el-col.is-guttered) {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .event-automation-rule-panel :deep(.el-tabs__nav-wrap),
+  .event-automation-rule-panel :deep(.el-tabs__nav-scroll) {
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .event-automation-rule-panel :deep(.el-select__selected-item) {
+    min-width: 0;
+  }
+
+  .event-automation-rule-panel :deep(.el-select__placeholder) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .event-automation-reference__grid,
