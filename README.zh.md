@@ -118,6 +118,10 @@ VITE_DEV_API_PROXY_TARGET=http://7dtdserver.local:8088
 - 运维操作：控制台、服务器重启、任务调度、备份管理。
 - 系统：审计日志、游戏事件日志、应用设置、API 文档。
 
+## 功能文档
+
+- [Discord 集成配置与验证](docs/discord-integration.md)：Webhook、Bot、频道分流、代理、Slash 命令、命令安全边界与排障清单。
+
 ## 布局与样式
 
 项目使用统一控制台布局。表格密集页面会在合适位置固定页面主体高度，让表格 body 内部滚动，同时保持页面 Tabs、搜索区域与工具栏可见。Footer 采用正常文档流：内容不足时贴近底部，内容足够时自然排列在 main 内容之后。
