@@ -1421,7 +1421,7 @@
             "paySuccessTip": "Destekler: {amount}, {currency}, {playerName}, {tax}",
             "dailySuccessTip": "Destekler: {amount}, {currency}, {streak}, {bonusPercent}",
             "buyUsageTip": "Destekler: {currency}",
-            "buySuccessTip": "Destekler: {name}, {quantity}, {cost}, {currency}",
+            "buySuccessTip": "Destekler: {name}, {quantity}, {cost}, {balance}, {currency}",
             "redeemSuccessTip": "Destekler: {amount}, {currency}",
             "playerDiedPenaltyTip": "Destekler: {amount}, {currency}"
           }
@@ -1624,17 +1624,20 @@
             "commandRewards": "Komut Ödülleri"
           },
           "placeholders": {
-            "commandReward": "örneğin \nGiveself {EntityId} iron_sword 1 0 false"
+            "commandReward": "örneğin \nGiveself {EntityId} iron_sword 1 0 false",
+            "rewardItem": "Select item to insert"
           },
           "actions": {
             "addCommand": "Komut Ekle",
-            "removeCommand": "Kaldırmak"
+            "removeCommand": "Kaldırmak",
+            "insertItemCommand": "Insert Item Command"
           },
           "hints": {
             "commandRewards": "{EntityId}, {PlayerId}, {PlayerName} yer tutucularını destekler."
           },
           "messages": {
-            "noReward": "Bir para birimi tutarı, en az bir komut ödülü veya her ikisini de sağlayın."
+            "noReward": "Bir para birimi tutarı, en az bir komut ödülü veya her ikisini de sağlayın.",
+            "selectItemFirst": "Select an item before inserting a reward command."
           }
         },
         "redemptionsDialog": {
@@ -2718,7 +2721,8 @@
         "discordPublicAdminChannelSame": "Public and admin channel IDs are the same. Split them to reduce accidental command exposure.",
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
-        "discordAccountBindingEnabled": "Discord account binding is enabled."
+        "discordAccountBindingEnabled": "Discord account binding is enabled.",
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {

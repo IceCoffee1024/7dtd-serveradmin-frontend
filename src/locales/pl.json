@@ -1421,7 +1421,7 @@
             "paySuccessTip": "Obsługuje: {amount}, {currency}, {playerName}, {tax}",
             "dailySuccessTip": "Obsługuje: {amount}, {currency}, {streak}, {bonusPercent}",
             "buyUsageTip": "Obsługuje: {currency}",
-            "buySuccessTip": "Obsługuje: {name}, {quantity}, {cost}, {currency}",
+            "buySuccessTip": "Obsługuje: {name}, {quantity}, {cost}, {balance}, {currency}",
             "redeemSuccessTip": "Obsługuje: {amount}, {currency}",
             "playerDiedPenaltyTip": "Obsługuje: {amount}, {currency}"
           }
@@ -1624,17 +1624,20 @@
             "commandRewards": "Nagrody za polecenie"
           },
           "placeholders": {
-            "commandReward": "np. \ndaj sobie {EntityId} iron_sword 1 0 false"
+            "commandReward": "np. \ndaj sobie {EntityId} iron_sword 1 0 false",
+            "rewardItem": "Select item to insert"
           },
           "actions": {
             "addCommand": "Dodaj polecenie",
-            "removeCommand": "Usunąć"
+            "removeCommand": "Usunąć",
+            "insertItemCommand": "Insert Item Command"
           },
           "hints": {
             "commandRewards": "Obsługuje symbole zastępcze {EntityId}, {PlayerId}, {PlayerName}."
           },
           "messages": {
-            "noReward": "Podaj kwotę w walucie, co najmniej jedną nagrodę za polecenie lub obie."
+            "noReward": "Podaj kwotę w walucie, co najmniej jedną nagrodę za polecenie lub obie.",
+            "selectItemFirst": "Select an item before inserting a reward command."
           }
         },
         "redemptionsDialog": {
@@ -2718,7 +2721,8 @@
         "discordPublicAdminChannelSame": "Public and admin channel IDs are the same. Split them to reduce accidental command exposure.",
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
-        "discordAccountBindingEnabled": "Discord account binding is enabled."
+        "discordAccountBindingEnabled": "Discord account binding is enabled.",
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {

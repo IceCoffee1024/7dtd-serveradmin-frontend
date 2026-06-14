@@ -1421,7 +1421,7 @@
             "paySuccessTip": "Supports: {amount}, {currency}, {playerName}, {tax}",
             "dailySuccessTip": "Supports: {amount}, {currency}, {streak}, {bonusPercent}",
             "buyUsageTip": "Supports: {currency}",
-            "buySuccessTip": "Supports: {name}, {quantity}, {cost}, {currency}",
+            "buySuccessTip": "Supports: {name}, {quantity}, {cost}, {balance}, {currency}",
             "redeemSuccessTip": "Supports: {amount}, {currency}",
             "playerDiedPenaltyTip": "Supports: {amount}, {currency}"
           }
@@ -1624,17 +1624,20 @@
             "commandRewards": "Command Rewards"
           },
           "placeholders": {
-            "commandReward": "e.g. giveself {EntityId} iron_sword 1 0 false"
+            "commandReward": "e.g. giveself {EntityId} iron_sword 1 0 false",
+            "rewardItem": "Select item to insert"
           },
           "actions": {
             "addCommand": "Add Command",
+            "insertItemCommand": "Insert Item Command",
             "removeCommand": "Remove"
           },
           "hints": {
             "commandRewards": "Supports {EntityId}, {PlayerId}, {PlayerName} placeholders."
           },
           "messages": {
-            "noReward": "Provide a currency amount, at least one command reward, or both."
+            "noReward": "Provide a currency amount, at least one command reward, or both.",
+            "selectItemFirst": "Select an item before inserting a reward command."
           }
         },
         "redemptionsDialog": {
@@ -2705,6 +2708,7 @@
         "economyInvalidDailyRewardAmount": "Daily reward amount cannot be negative: {0}.",
         "economyInvalidDailyStreakBonus": "Daily streak bonus percent must be greater than 0 when streaks are enabled: {0}.",
         "economyInvalidZombieKillReward": "Zombie kill reward amount must be greater than 0 when kill rewards are enabled: {0}.",
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
         "teleportSubModules": "{0}/{1} teleport sub-modules enabled",
         "teleportNoEnabledSubModules": "No teleport sub-module is enabled.",
         "teleportInvalidMaxHomes": "Maximum home count must be greater than 0 when home teleport is enabled: {0}.",

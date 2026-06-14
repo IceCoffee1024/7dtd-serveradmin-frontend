@@ -934,7 +934,7 @@
             "paySuccessTip": "支持占位符：{amount}, {currency}, {playerName}, {tax}",
             "dailySuccessTip": "支持占位符：{amount}, {currency}, {streak}, {bonusPercent}",
             "buyUsageTip": "支持占位符：{currency}",
-            "buySuccessTip": "支持占位符：{name}, {quantity}, {cost}, {currency}",
+            "buySuccessTip": "支持占位符：{name}, {quantity}, {cost}, {balance}, {currency}",
             "redeemSuccessTip": "支持占位符：{amount}, {currency}",
             "playerDiedPenaltyTip": "支持占位符：{amount}, {currency}"
           }
@@ -1137,17 +1137,20 @@
             "commandRewards": "命令奖励"
           },
           "placeholders": {
-            "commandReward": "例如：giveself {EntityId} iron_sword 1 0 false"
+            "commandReward": "例如：giveself {EntityId} iron_sword 1 0 false",
+            "rewardItem": "选择要插入的物品"
           },
           "actions": {
             "addCommand": "添加命令",
+            "insertItemCommand": "插入物品命令",
             "removeCommand": "移除"
           },
           "hints": {
             "commandRewards": "支持 {EntityId}、{PlayerId}、{PlayerName} 占位符。"
           },
           "messages": {
-            "noReward": "请填写奖励金额，或至少添加一条命令奖励，或两者都填写。"
+            "noReward": "请填写奖励金额，或至少添加一条命令奖励，或两者都填写。",
+            "selectItemFirst": "请先选择要插入的奖励物品。"
           }
         },
         "redemptionsDialog": {
@@ -2705,6 +2708,7 @@
         "economyInvalidDailyRewardAmount": "每日奖励金额不能为负数：{0}。",
         "economyInvalidDailyStreakBonus": "启用连续签到时，连续奖励百分比必须大于 0：{0}。",
         "economyInvalidZombieKillReward": "启用击杀奖励时，击杀奖励金额必须大于 0：{0}。",
+        "economyInvalidShopItem": "商店商品 #{0}“{1}”使用了无效的游戏物品 ID：{2}。",
         "teleportSubModules": "启用传送子模块 {0}/{1} 个",
         "teleportNoEnabledSubModules": "没有启用任何传送子模块。",
         "teleportInvalidMaxHomes": "启用家传送时，最大家数量必须大于 0：{0}。",

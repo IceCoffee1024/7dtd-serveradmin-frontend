@@ -432,6 +432,39 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
+const tipPlaceholderGroups = computed(() => [
+  {
+    key: 'balance',
+    label: t('views.economy.settings.tips.fields.balanceTip'),
+    tokens: ['{balance}', '{currency}'],
+  },
+  {
+    key: 'pay',
+    label: t('views.economy.settings.tips.fields.paySuccessTip'),
+    tokens: ['{amount}', '{currency}', '{playerName}', '{tax}'],
+  },
+  {
+    key: 'daily',
+    label: t('views.economy.settings.tips.fields.dailySuccessTip'),
+    tokens: ['{amount}', '{currency}', '{streak}', '{bonusPercent}'],
+  },
+  {
+    key: 'buy',
+    label: t('views.economy.settings.tips.fields.buySuccessTip'),
+    tokens: ['{name}', '{quantity}', '{cost}', '{balance}', '{currency}'],
+  },
+  {
+    key: 'redeem',
+    label: t('views.economy.settings.tips.fields.redeemSuccessTip'),
+    tokens: ['{amount}', '{currency}'],
+  },
+  {
+    key: 'death',
+    label: t('views.economy.settings.tips.fields.playerDiedPenaltyTip'),
+    tokens: ['{amount}', '{currency}'],
+  },
+]);
+
 const commandFields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'balCommandName',
@@ -933,6 +966,18 @@ onBeforeRouteLeave(async () => {
           <p class="text-xs text-gray-500 mb-3 dark:text-gray-400">
             {{ t('views.economy.settings.tips.sectionDescription') }}
           </p>
+          <div class="economy-settings-page__placeholder-reference">
+            <div
+              v-for="group in tipPlaceholderGroups"
+              :key="group.key"
+              class="economy-settings-page__placeholder-row"
+            >
+              <span class="economy-settings-page__placeholder-label">{{ group.label }}</span>
+              <span class="economy-settings-page__placeholder-tokens">
+                <code v-for="token in group.tokens" :key="token">{{ token }}</code>
+              </span>
+            </div>
+          </div>
           <MyForm
             v-model="form"
             :fields="tipsFields"
@@ -969,3 +1014,41 @@ onBeforeRouteLeave(async () => {
     </template>
   </div>
 </template>
+
+<style scoped lang="scss">
+.economy-settings-page__placeholder-reference {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.economy-settings-page__placeholder-row {
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  background: var(--el-fill-color-extra-light);
+}
+
+.economy-settings-page__placeholder-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--el-text-color-regular);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.economy-settings-page__placeholder-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+
+  code {
+    border-radius: 4px;
+    padding: 0.12rem 0.35rem;
+    background: var(--el-fill-color-darker);
+    color: var(--el-text-color-primary);
+    font-size: 0.72rem;
+  }
+}
+</style>

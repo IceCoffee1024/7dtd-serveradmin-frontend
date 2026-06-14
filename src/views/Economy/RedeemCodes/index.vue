@@ -11,6 +11,7 @@ import type {
 import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import GameItemSelect from '~/components/GameItemSelect/index.vue';
 import MyDialog from '~/components/MyDialog/index.vue';
 import MyForm from '~/components/MyForm/index.vue';
 import { usePopup } from '~/composables';
@@ -65,6 +66,9 @@ const viewingCode = ref<EconomyRedeemCodeDto | null>(null);
 const redemptions = ref<EconomyCodeRedemptionDto[]>([]);
 const isLoadingRedemptions = ref(false);
 const commandRewards = ref<string[]>([]);
+const selectedRewardItem = ref('');
+const selectedRewardCount = ref(1);
+const selectedRewardQuality = ref(1);
 
 function buildDefaults(): FormModel {
   return {
@@ -228,6 +232,9 @@ function formatTimestamp(value: string | null | undefined): string {
 function openAdd() {
   Object.assign(form, buildDefaults());
   commandRewards.value = [];
+  selectedRewardItem.value = '';
+  selectedRewardCount.value = 1;
+  selectedRewardQuality.value = 1;
   createDialogRef.value?.open();
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -238,6 +245,18 @@ function addCommandReward() {
 
 function removeCommandReward(index: number) {
   commandRewards.value.splice(index, 1);
+}
+
+function insertItemRewardCommand() {
+  const itemName = selectedRewardItem.value.trim();
+  if (!itemName) {
+    toast({ type: 'warning', text: t('views.economy.redeemCodes.form.messages.selectItemFirst') });
+    return;
+  }
+
+  const count = Math.max(1, Math.trunc(Number(selectedRewardCount.value) || 1));
+  const quality = Math.max(1, Math.trunc(Number(selectedRewardQuality.value) || 1));
+  commandRewards.value.push(`giveself {EntityId} ${itemName} ${count} ${quality} false`);
 }
 
 async function onConfirm(): Promise<boolean | void> {
@@ -409,11 +428,41 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
               {{ t('views.economy.redeemCodes.form.hints.commandRewards') }}
             </div>
           </div>
-          <el-button size="small" class="redeem-codes-page__add-command" @click="addCommandReward">
-            <el-icon><icon-mdi-plus /></el-icon>
-            {{ t('views.economy.redeemCodes.form.actions.addCommand') }}
+          <div class="redeem-codes-page__command-actions">
+            <el-button size="small" class="redeem-codes-page__add-command" @click="addCommandReward">
+              <el-icon><icon-mdi-plus /></el-icon>
+              {{ t('views.economy.redeemCodes.form.actions.addCommand') }}
+            </el-button>
+          </div>
+        </div>
+
+        <div class="redeem-codes-page__item-helper">
+          <GameItemSelect
+            v-model="selectedRewardItem"
+            :placeholder="t('views.economy.redeemCodes.form.placeholders.rewardItem')"
+            class="redeem-codes-page__item-select"
+          />
+          <el-input-number
+            v-model="selectedRewardCount"
+            :min="1"
+            :precision="0"
+            controls-position="right"
+            class="redeem-codes-page__small-number"
+          />
+          <el-input-number
+            v-model="selectedRewardQuality"
+            :min="1"
+            :max="6"
+            :precision="0"
+            controls-position="right"
+            class="redeem-codes-page__small-number"
+          />
+          <el-button size="small" class="redeem-codes-page__add-command" @click="insertItemRewardCommand">
+            <el-icon><icon-mdi-package-variant-plus /></el-icon>
+            {{ t('views.economy.redeemCodes.form.actions.insertItemCommand') }}
           </el-button>
         </div>
+
         <div v-auto-animate class="flex flex-col gap-2">
           <div v-for="(_, index) in commandRewards" :key="index" class="flex gap-2 items-center">
             <span class="text-xs text-gray-400 text-right shrink-0 w-6 dark:text-gray-500">{{ index + 1 }}</span>
@@ -497,6 +546,25 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
   padding-inline: 0.95rem;
 }
 
+.redeem-codes-page__command-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.redeem-codes-page__item-helper {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 92px 92px auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.redeem-codes-page__small-number {
+  width: 92px;
+}
+
 .redeem-codes-page__empty {
   min-height: 200px;
 }
@@ -504,6 +572,21 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
 .redeem-codes-page__redemptions-table {
   :deep(.el-table__cell) {
     padding-block: 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .redeem-codes-page__item-helper {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .redeem-codes-page__item-select,
+  .redeem-codes-page__item-helper .redeem-codes-page__add-command {
+    grid-column: 1 / -1;
+  }
+
+  .redeem-codes-page__small-number {
+    width: 100%;
   }
 }
 </style>

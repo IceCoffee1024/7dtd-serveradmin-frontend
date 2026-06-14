@@ -1421,7 +1421,7 @@
             "paySuccessTip": "サポート: {amount}、{currency}、{playerName}、{tax}",
             "dailySuccessTip": "サポート: {amount}、{currency}、{streak}、{bonusPercent}",
             "buyUsageTip": "サポート: {currency}",
-            "buySuccessTip": "サポート: {name}、{quantity}、{cost}、{currency}",
+            "buySuccessTip": "サポート: {name}、{quantity}、{cost}、{balance}、{currency}",
             "redeemSuccessTip": "サポート: {amount}、{currency}",
             "playerDiedPenaltyTip": "サポート: {amount}、{currency}"
           }
@@ -1624,17 +1624,20 @@
             "commandRewards": "コマンド報酬"
           },
           "placeholders": {
-            "commandReward": "例えば\ngiveself {EntityId} Iron_sword 1 0 false"
+            "commandReward": "例えば\ngiveself {EntityId} Iron_sword 1 0 false",
+            "rewardItem": "Select item to insert"
           },
           "actions": {
             "addCommand": "コマンドの追加",
-            "removeCommand": "取り除く"
+            "removeCommand": "取り除く",
+            "insertItemCommand": "Insert Item Command"
           },
           "hints": {
             "commandRewards": "{EntityId}、{PlayerId}、{PlayerName} プレースホルダーをサポートします。"
           },
           "messages": {
-            "noReward": "通貨金額、少なくとも 1 つのコマンド報酬、またはその両方を指定します。"
+            "noReward": "通貨金額、少なくとも 1 つのコマンド報酬、またはその両方を指定します。",
+            "selectItemFirst": "Select an item before inserting a reward command."
           }
         },
         "redemptionsDialog": {
@@ -2760,7 +2763,8 @@
         "discordPublicAdminChannelSame": "Public and admin channel IDs are the same. Split them to reduce accidental command exposure.",
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
-        "discordAccountBindingEnabled": "Discord account binding is enabled."
+        "discordAccountBindingEnabled": "Discord account binding is enabled.",
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
