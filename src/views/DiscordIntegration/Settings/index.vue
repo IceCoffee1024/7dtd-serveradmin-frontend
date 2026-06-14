@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import type { FormInstance, FormRules } from 'element-plus';
+import type { FormInstance } from 'element-plus';
+import type { FormModel, WebhookTargetFormModel } from './formModel';
 import type {
   DiscordBotRuntimeStatusDto,
   DiscordBotTestResultDto,
-  DiscordIntegrationFeatureSettingsDto,
   DiscordNetworkDiagnosticsDto,
   DiscordWebhookSendResultDto,
-  DiscordWebhookTargetDto,
   DiscordWebhookTestRequestDto,
 } from '~/generated/api/types.gen';
 import { isEqual } from 'es-toolkit';
@@ -23,8 +22,6 @@ import {
   discordIntegrationTestWebhook,
   discordIntegrationUpdateSettings,
 } from '~/generated/api/sdk.gen';
-import v from '~/plugins/valibot';
-import { generateElementRules } from '~/utils';
 import AccountBindingSection from './components/AccountBindingSection.vue';
 import BotIntegrationSection from './components/BotIntegrationSection.vue';
 import ChatBridgeSection from './components/ChatBridgeSection.vue';
@@ -34,49 +31,10 @@ import NetworkProxySection from './components/NetworkProxySection.vue';
 import RelayTestsSection from './components/RelayTestsSection.vue';
 import SettingsHero from './components/SettingsHero.vue';
 import WebhookTargetsSection from './components/WebhookTargetsSection.vue';
+import { applyFormValues, buildDefaults, rules, toFormModel, toPayload } from './formModel';
 import './components/sharedSectionStyles.css';
 
 defineOptions({ name: 'DiscordIntegrationSettingsPage' });
-
-interface FormModel {
-  isEnabled: boolean;
-  webhookUrl: string;
-  useProxy: boolean;
-  proxyUrl: string;
-  proxyUsername: string;
-  proxyPassword: string;
-  bypassProxyOnLocal: boolean;
-  defaultUsername: string;
-  defaultAvatarUrl: string;
-  webhookTargets: WebhookTargetFormModel[];
-  timeoutSeconds: number;
-  allowEventAutomationMessages: boolean;
-  enableGameChatBridgeToDiscord: boolean;
-  gameChatBridgeTargetKey: string;
-  gameChatBridgeMessageTemplate: string;
-  bridgeWhisperChatToDiscord: boolean;
-  enableDiscordToGameBridge: boolean;
-  enableBotIntegration: boolean;
-  botToken: string;
-  botGuildId: string;
-  botPublicChannelId: string;
-  botAdminChannelId: string;
-  enableBotSlashCommands: boolean;
-  enableDiscordCommandExecution: boolean;
-  discordCommandPrefix: string;
-  discordCommandAllowList: string[];
-  enableAccountBinding: boolean;
-  enableEventAutomationFailureAlerts: boolean;
-  eventAutomationFailureAlertTargetKey: string;
-  eventAutomationFailureAlertMessage: string;
-}
-
-interface WebhookTargetFormModel {
-  key: string;
-  displayName: string;
-  isEnabled: boolean;
-  webhookUrl: string;
-}
 
 const { t } = useI18n();
 const { confirm, toast } = usePopup();
@@ -98,7 +56,7 @@ const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const botFormModel = computed({
   get: () => form,
-  set: (value: FormModel) => applyFormValues({ ...form, ...value }),
+  set: (value: FormModel) => applyFormValues(form, { ...form, ...value }),
 });
 const webhookTargetsModel = computed({
   get: () => form.webhookTargets,
@@ -106,19 +64,19 @@ const webhookTargetsModel = computed({
 });
 const commandRelayModel = computed({
   get: () => form,
-  set: (value: FormModel) => applyFormValues({ ...form, ...value }),
+  set: (value: FormModel) => applyFormValues(form, { ...form, ...value }),
 });
 const chatBridgeModel = computed({
   get: () => form,
-  set: (value: FormModel) => applyFormValues({ ...form, ...value }),
+  set: (value: FormModel) => applyFormValues(form, { ...form, ...value }),
 });
 const networkProxyModel = computed({
   get: () => form,
-  set: (value: FormModel) => applyFormValues({ ...form, ...value }),
+  set: (value: FormModel) => applyFormValues(form, { ...form, ...value }),
 });
 const failureAlertsModel = computed({
   get: () => form,
-  set: (value: FormModel) => applyFormValues({ ...form, ...value }),
+  set: (value: FormModel) => applyFormValues(form, { ...form, ...value }),
 });
 const isDirty = computed(() => !isEqual(form, initialValues.value));
 const isWebhookConfigured = computed(() => form.webhookUrl.trim().length > 0 || form.webhookTargets.some(target => target.isEnabled && target.webhookUrl.trim().length > 0));
@@ -202,204 +160,6 @@ const networkDiagnosticSummary = computed(() => {
   };
 });
 
-const schema = v.object({
-  isEnabled: v.boolean(),
-  webhookUrl: v.string(),
-  useProxy: v.boolean(),
-  proxyUrl: v.string(),
-  proxyUsername: v.pipe(v.string(), v.maxLength(128)),
-  proxyPassword: v.pipe(v.string(), v.maxLength(256)),
-  bypassProxyOnLocal: v.boolean(),
-  defaultUsername: v.pipe(v.string(), v.maxLength(80)),
-  defaultAvatarUrl: v.string(),
-  timeoutSeconds: v.pipe(v.number(), v.minValue(1), v.maxValue(30)),
-  allowEventAutomationMessages: v.boolean(),
-  enableGameChatBridgeToDiscord: v.boolean(),
-  gameChatBridgeTargetKey: v.string(),
-  gameChatBridgeMessageTemplate: v.pipe(v.string(), v.maxLength(1900)),
-  bridgeWhisperChatToDiscord: v.boolean(),
-  enableDiscordToGameBridge: v.boolean(),
-  enableBotIntegration: v.boolean(),
-  botToken: v.pipe(v.string(), v.maxLength(256)),
-  botGuildId: v.pipe(v.string(), v.maxLength(64)),
-  botPublicChannelId: v.pipe(v.string(), v.maxLength(64)),
-  botAdminChannelId: v.pipe(v.string(), v.maxLength(64)),
-  enableBotSlashCommands: v.boolean(),
-  enableDiscordCommandExecution: v.boolean(),
-  discordCommandPrefix: v.pipe(v.string(), v.minLength(1), v.maxLength(20)),
-  discordCommandAllowList: v.array(v.pipe(v.string(), v.minLength(1), v.maxLength(64))),
-  enableAccountBinding: v.boolean(),
-  enableEventAutomationFailureAlerts: v.boolean(),
-  eventAutomationFailureAlertTargetKey: v.string(),
-  eventAutomationFailureAlertMessage: v.string(),
-});
-
-const rules: FormRules = generateElementRules(schema);
-
-function buildDefaults(): FormModel {
-  return {
-    isEnabled: false,
-    webhookUrl: '',
-    useProxy: false,
-    proxyUrl: '',
-    proxyUsername: '',
-    proxyPassword: '',
-    bypassProxyOnLocal: true,
-    defaultUsername: '7DTD Server',
-    defaultAvatarUrl: '',
-    webhookTargets: [
-      { key: 'public', displayName: 'Public channel', isEnabled: false, webhookUrl: '' },
-      { key: 'admin', displayName: 'Admin channel', isEnabled: false, webhookUrl: '' },
-      { key: 'audit', displayName: 'Audit channel', isEnabled: false, webhookUrl: '' },
-    ],
-    timeoutSeconds: 10,
-    allowEventAutomationMessages: true,
-    enableGameChatBridgeToDiscord: false,
-    gameChatBridgeTargetKey: 'public',
-    gameChatBridgeMessageTemplate: '[{chatType}] {playerName}: {message}',
-    bridgeWhisperChatToDiscord: false,
-    enableDiscordToGameBridge: false,
-    enableBotIntegration: false,
-    botToken: '',
-    botGuildId: '',
-    botPublicChannelId: '',
-    botAdminChannelId: '',
-    enableBotSlashCommands: false,
-    enableDiscordCommandExecution: false,
-    discordCommandPrefix: '!',
-    discordCommandAllowList: ['listplayers', 'saveworld'],
-    enableAccountBinding: false,
-    enableEventAutomationFailureAlerts: false,
-    eventAutomationFailureAlertTargetKey: 'admin',
-    eventAutomationFailureAlertMessage: '[7DTD] Automation rule failed: {ruleName} ({triggerType}) - {errorMessage}',
-  };
-}
-
-function toFormModel(data?: DiscordIntegrationFeatureSettingsDto | null): FormModel {
-  return {
-    isEnabled: data?.isEnabled ?? false,
-    webhookUrl: data?.webhookUrl ?? '',
-    useProxy: data?.useProxy ?? false,
-    proxyUrl: data?.proxyUrl ?? '',
-    proxyUsername: data?.proxyUsername ?? '',
-    proxyPassword: data?.proxyPassword ?? '',
-    bypassProxyOnLocal: data?.bypassProxyOnLocal ?? true,
-    defaultUsername: data?.defaultUsername ?? '7DTD Server',
-    defaultAvatarUrl: data?.defaultAvatarUrl ?? '',
-    webhookTargets: normalizeWebhookTargets(data?.webhookTargets),
-    timeoutSeconds: data?.timeoutSeconds ?? 10,
-    allowEventAutomationMessages: data?.allowEventAutomationMessages ?? true,
-    enableGameChatBridgeToDiscord: data?.enableGameChatBridgeToDiscord ?? false,
-    gameChatBridgeTargetKey: data?.gameChatBridgeTargetKey ?? 'public',
-    gameChatBridgeMessageTemplate: data?.gameChatBridgeMessageTemplate ?? '[{chatType}] {playerName}: {message}',
-    bridgeWhisperChatToDiscord: data?.bridgeWhisperChatToDiscord ?? false,
-    enableDiscordToGameBridge: data?.enableDiscordToGameBridge ?? false,
-    enableBotIntegration: data?.enableBotIntegration ?? false,
-    botToken: data?.botToken ?? '',
-    botGuildId: data?.botGuildId ?? '',
-    botPublicChannelId: data?.botPublicChannelId ?? '',
-    botAdminChannelId: data?.botAdminChannelId ?? '',
-    enableBotSlashCommands: data?.enableBotSlashCommands ?? false,
-    enableDiscordCommandExecution: data?.enableDiscordCommandExecution ?? false,
-    discordCommandPrefix: data?.discordCommandPrefix ?? '!',
-    discordCommandAllowList: (data?.discordCommandAllowList ?? ['listplayers', 'saveworld'])
-      .map(item => item.trim())
-      .filter(item => item.length > 0),
-    enableAccountBinding: data?.enableAccountBinding ?? false,
-    enableEventAutomationFailureAlerts: data?.enableEventAutomationFailureAlerts ?? false,
-    eventAutomationFailureAlertTargetKey: data?.eventAutomationFailureAlertTargetKey ?? 'admin',
-    eventAutomationFailureAlertMessage: data?.eventAutomationFailureAlertMessage
-      ?? '[7DTD] Automation rule failed: {ruleName} ({triggerType}) - {errorMessage}',
-  };
-}
-
-function applyFormValues(values: FormModel) {
-  form.isEnabled = values.isEnabled;
-  form.webhookUrl = values.webhookUrl;
-  form.useProxy = values.useProxy;
-  form.proxyUrl = values.proxyUrl;
-  form.proxyUsername = values.proxyUsername;
-  form.proxyPassword = values.proxyPassword;
-  form.bypassProxyOnLocal = values.bypassProxyOnLocal;
-  form.defaultUsername = values.defaultUsername;
-  form.defaultAvatarUrl = values.defaultAvatarUrl;
-  form.webhookTargets = values.webhookTargets.map(target => ({ ...target }));
-  form.timeoutSeconds = values.timeoutSeconds;
-  form.allowEventAutomationMessages = values.allowEventAutomationMessages;
-  form.enableGameChatBridgeToDiscord = values.enableGameChatBridgeToDiscord;
-  form.gameChatBridgeTargetKey = values.gameChatBridgeTargetKey;
-  form.gameChatBridgeMessageTemplate = values.gameChatBridgeMessageTemplate;
-  form.bridgeWhisperChatToDiscord = values.bridgeWhisperChatToDiscord;
-  form.enableDiscordToGameBridge = values.enableDiscordToGameBridge;
-  form.enableBotIntegration = values.enableBotIntegration;
-  form.botToken = values.botToken;
-  form.botGuildId = values.botGuildId;
-  form.botPublicChannelId = values.botPublicChannelId;
-  form.botAdminChannelId = values.botAdminChannelId;
-  form.enableBotSlashCommands = values.enableBotSlashCommands;
-  form.enableDiscordCommandExecution = values.enableDiscordCommandExecution;
-  form.discordCommandPrefix = values.discordCommandPrefix;
-  form.discordCommandAllowList = [...values.discordCommandAllowList];
-  form.enableAccountBinding = values.enableAccountBinding;
-  form.enableEventAutomationFailureAlerts = values.enableEventAutomationFailureAlerts;
-  form.eventAutomationFailureAlertTargetKey = values.eventAutomationFailureAlertTargetKey;
-  form.eventAutomationFailureAlertMessage = values.eventAutomationFailureAlertMessage;
-}
-
-function normalizeWebhookTargets(targets?: Array<DiscordWebhookTargetDto | WebhookTargetFormModel> | null): WebhookTargetFormModel[] {
-  const source = targets?.length ? targets : buildDefaults().webhookTargets;
-  return source.map(target => ({
-    key: target.key ?? '',
-    displayName: target.displayName ?? '',
-    isEnabled: target.isEnabled ?? true,
-    webhookUrl: target.webhookUrl ?? '',
-  }));
-}
-
-function toPayload(values: FormModel): DiscordIntegrationFeatureSettingsDto {
-  return {
-    isEnabled: values.isEnabled,
-    webhookUrl: values.webhookUrl.trim() || null,
-    useProxy: values.useProxy,
-    proxyUrl: values.proxyUrl.trim() || null,
-    proxyUsername: values.proxyUsername.trim() || null,
-    proxyPassword: values.proxyPassword.trim() || null,
-    bypassProxyOnLocal: values.bypassProxyOnLocal,
-    defaultUsername: values.defaultUsername.trim() || null,
-    defaultAvatarUrl: values.defaultAvatarUrl.trim() || null,
-    webhookTargets: values.webhookTargets
-      .map(target => ({
-        key: target.key.trim(),
-        displayName: target.displayName.trim() || target.key.trim(),
-        isEnabled: target.isEnabled,
-        webhookUrl: target.webhookUrl.trim() || null,
-      }))
-      .filter(target => target.key || target.webhookUrl),
-    timeoutSeconds: Number(values.timeoutSeconds ?? 10),
-    allowEventAutomationMessages: values.allowEventAutomationMessages,
-    enableGameChatBridgeToDiscord: values.enableGameChatBridgeToDiscord,
-    gameChatBridgeTargetKey: values.gameChatBridgeTargetKey.trim() || null,
-    gameChatBridgeMessageTemplate: values.gameChatBridgeMessageTemplate.trim() || null,
-    bridgeWhisperChatToDiscord: values.bridgeWhisperChatToDiscord,
-    enableDiscordToGameBridge: values.enableDiscordToGameBridge,
-    enableBotIntegration: values.enableBotIntegration,
-    botToken: values.botToken.trim() || null,
-    botGuildId: values.botGuildId.trim() || null,
-    botPublicChannelId: values.botPublicChannelId.trim() || null,
-    botAdminChannelId: values.botAdminChannelId.trim() || null,
-    enableBotSlashCommands: values.enableBotSlashCommands,
-    enableDiscordCommandExecution: values.enableDiscordCommandExecution,
-    discordCommandPrefix: values.discordCommandPrefix.trim() || '!',
-    discordCommandAllowList: values.discordCommandAllowList
-      .map(item => item.trim())
-      .filter(item => item.length > 0),
-    enableAccountBinding: values.enableAccountBinding,
-    enableEventAutomationFailureAlerts: values.enableEventAutomationFailureAlerts,
-    eventAutomationFailureAlertTargetKey: values.eventAutomationFailureAlertTargetKey.trim() || null,
-    eventAutomationFailureAlertMessage: values.eventAutomationFailureAlertMessage.trim() || null,
-  };
-}
-
 function showBotTestResult(result: DiscordBotTestResultDto | undefined) {
   botTestResult.value = result ?? null;
   toast({
@@ -456,7 +216,7 @@ async function loadSettings() {
     isLoading.value = true;
     const { data } = await discordIntegrationGetSettings({ throwOnError: true });
     initialValues.value = toFormModel(data);
-    applyFormValues(initialValues.value);
+    applyFormValues(form, initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
   }
@@ -499,7 +259,7 @@ async function onReset() {
     isSubmitting.value = true;
     const { data } = await discordIntegrationResetSettings({ throwOnError: true });
     initialValues.value = toFormModel(data);
-    applyFormValues(initialValues.value);
+    applyFormValues(form, initialValues.value);
     await nextTick();
     formRef.value?.clearValidate();
     toast({ type: 'success', text: t('views.discordIntegration.settings.messages.resetSuccess') });
