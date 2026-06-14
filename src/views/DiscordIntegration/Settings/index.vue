@@ -1,27 +1,10 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 import type { FormModel, WebhookTargetFormModel } from './formModel';
-import type {
-  DiscordBotRuntimeStatusDto,
-  DiscordBotTestResultDto,
-  DiscordNetworkDiagnosticsDto,
-  DiscordWebhookSendResultDto,
-  DiscordWebhookTestRequestDto,
-} from '~/generated/api/types.gen';
 import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
 import { usePopup } from '~/composables';
-import {
-  discordIntegrationGetBotStatus,
-  discordIntegrationGetDiagnostics,
-  discordIntegrationGetSettings,
-  discordIntegrationResetSettings,
-  discordIntegrationSyncSlashCommands,
-  discordIntegrationTestBot,
-  discordIntegrationTestWebhook,
-  discordIntegrationUpdateSettings,
-} from '~/generated/api/sdk.gen';
 import AccountBindingSection from './components/AccountBindingSection.vue';
 import BotIntegrationSection from './components/BotIntegrationSection.vue';
 import ChatBridgeSection from './components/ChatBridgeSection.vue';
@@ -31,28 +14,18 @@ import NetworkProxySection from './components/NetworkProxySection.vue';
 import RelayTestsSection from './components/RelayTestsSection.vue';
 import SettingsHero from './components/SettingsHero.vue';
 import WebhookTargetsSection from './components/WebhookTargetsSection.vue';
-import { buildNetworkDiagnosticSummary } from './diagnosticsModel';
-import { applyFormValues, buildDefaults, rules, toFormModel, toPayload } from './formModel';
+import { applyFormValues, buildDefaults, rules } from './formModel';
+import { useDiscordSettingsRuntime } from './useDiscordSettingsRuntime';
 import './components/sharedSectionStyles.css';
 
 defineOptions({ name: 'DiscordIntegrationSettingsPage' });
 
 const { t } = useI18n();
-const { confirm, toast } = usePopup();
+const { confirm } = usePopup();
 
 const formRef = useTemplateRef<FormInstance>('formRef');
-const isLoading = ref(false);
-const isSubmitting = ref(false);
-const isTesting = ref(false);
-const isBotTesting = ref(false);
-const isBotStatusLoading = ref(false);
-const isDiagnosticsRunning = ref(false);
-const isSlashSyncing = ref(false);
 const testMessage = ref('');
 const testWebhookTargetKey = ref('');
-const botTestResult = ref<DiscordBotTestResultDto | null>(null);
-const botStatus = ref<DiscordBotRuntimeStatusDto | null>(null);
-const networkDiagnostics = ref<DiscordNetworkDiagnosticsDto | null>(null);
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const botFormModel = computed({
@@ -127,233 +100,34 @@ const webhookTargetOptions = computed(() =>
       value: target.key.trim(),
     })),
 );
-const networkDiagnosticSummary = computed(() => buildNetworkDiagnosticSummary(networkDiagnostics.value, t));
-
-function showBotTestResult(result: DiscordBotTestResultDto | undefined) {
-  botTestResult.value = result ?? null;
-  toast({
-    type: result?.succeeded ? 'success' : 'error',
-    text: result?.message || t('views.discordIntegration.settings.messages.botTestFailed'),
-  });
-}
-
-async function loadBotStatus() {
-  try {
-    isBotStatusLoading.value = true;
-    const { data } = await discordIntegrationGetBotStatus({ throwOnError: true });
-    botStatus.value = data;
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isBotStatusLoading.value = false;
-  }
-}
-
-async function runNetworkDiagnostics() {
-  if (isDirty.value) {
-    const confirmed = await confirm({
-      text: t('views.discordIntegration.settings.messages.diagnosticsWithUnsavedConfirm'),
-      type: 'warning',
-    });
-    if (!confirmed)
-      return;
-
-    await onSubmit();
-  }
-
-  try {
-    isDiagnosticsRunning.value = true;
-    const { data } = await discordIntegrationGetDiagnostics({ throwOnError: true });
-    networkDiagnostics.value = data;
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isDiagnosticsRunning.value = false;
-  }
-}
-
-async function loadSettings() {
-  try {
-    isLoading.value = true;
-    const { data } = await discordIntegrationGetSettings({ throwOnError: true });
-    initialValues.value = toFormModel(data);
-    applyFormValues(form, initialValues.value);
-    await nextTick();
-    formRef.value?.clearValidate();
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isLoading.value = false;
-  }
-}
-
-async function onSubmit() {
-  const valid = await formRef.value?.validate().catch(() => false);
-  if (!valid)
-    return;
-
-  try {
-    isSubmitting.value = true;
-    await discordIntegrationUpdateSettings({ body: toPayload(form), throwOnError: true });
-    toast({ type: 'success', text: t('views.discordIntegration.settings.messages.saveSuccess') });
-    await loadSettings();
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
-  }
-}
-
-async function onReset() {
-  const confirmed = await confirm({
-    type: 'warning',
-    text: t('views.discordIntegration.settings.messages.resetConfirm'),
-  });
-  if (!confirmed)
-    return;
-
-  try {
-    isSubmitting.value = true;
-    const { data } = await discordIntegrationResetSettings({ throwOnError: true });
-    initialValues.value = toFormModel(data);
-    applyFormValues(form, initialValues.value);
-    await nextTick();
-    formRef.value?.clearValidate();
-    toast({ type: 'success', text: t('views.discordIntegration.settings.messages.resetSuccess') });
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isSubmitting.value = false;
-  }
-}
-
-function showTestResult(result: DiscordWebhookSendResultDto | undefined) {
-  if (result?.succeeded) {
-    toast({
-      type: 'success',
-      text: t('views.discordIntegration.settings.messages.testSuccess', {
-        statusCode: result.statusCode ?? '-',
-      }),
-    });
-    return;
-  }
-
-  toast({
-    type: 'error',
-    text: result?.message || t('views.discordIntegration.settings.messages.testFailed'),
-  });
-}
-
-async function onTestWebhook() {
-  const valid = await formRef.value?.validate().catch(() => false);
-  if (!valid)
-    return;
-
-  if (isDirty.value) {
-    const confirmed = await confirm({
-      type: 'warning',
-      text: t('views.discordIntegration.settings.messages.testWithUnsavedConfirm'),
-    });
-    if (!confirmed)
-      return;
-
-    await onSubmit();
-    if (isDirty.value)
-      return;
-  }
-
-  try {
-    isTesting.value = true;
-    const payload: DiscordWebhookTestRequestDto = {
-      message: testMessage.value.trim() || null,
-      username: form.defaultUsername.trim() || null,
-      webhookTargetKey: testWebhookTargetKey.value.trim() || null,
-    };
-    const { data } = await discordIntegrationTestWebhook({
-      body: payload,
-      throwOnError: true,
-    });
-    showTestResult(data);
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isTesting.value = false;
-  }
-}
-
-async function onTestBot() {
-  const valid = await formRef.value?.validate().catch(() => false);
-  if (!valid)
-    return;
-
-  if (isDirty.value) {
-    const confirmed = await confirm({
-      type: 'warning',
-      text: t('views.discordIntegration.settings.messages.botTestWithUnsavedConfirm'),
-    });
-    if (!confirmed)
-      return;
-
-    await onSubmit();
-    if (isDirty.value)
-      return;
-  }
-
-  try {
-    isBotTesting.value = true;
-    const { data } = await discordIntegrationTestBot({ throwOnError: true });
-    showBotTestResult(data);
-    await loadBotStatus();
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isBotTesting.value = false;
-  }
-}
-
-async function onSyncSlashCommands() {
-  if (isDirty.value) {
-    const confirmed = await confirm({
-      type: 'warning',
-      text: t('views.discordIntegration.settings.messages.slashSyncWithUnsavedConfirm'),
-    });
-    if (!confirmed)
-      return;
-
-    await onSubmit();
-    if (isDirty.value)
-      return;
-  }
-
-  try {
-    isSlashSyncing.value = true;
-    const { data } = await discordIntegrationSyncSlashCommands({ throwOnError: true });
-    toast({
-      type: data.succeeded ? 'success' : 'error',
-      text: data.message || t('views.discordIntegration.settings.messages.slashSyncFailed'),
-    });
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isSlashSyncing.value = false;
-  }
-}
+const {
+  isLoading,
+  isSubmitting,
+  isTesting,
+  isBotTesting,
+  isBotStatusLoading,
+  isDiagnosticsRunning,
+  isSlashSyncing,
+  botTestResult,
+  botStatus,
+  networkDiagnostics,
+  networkDiagnosticSummary,
+  loadBotStatus,
+  runNetworkDiagnostics,
+  loadSettings,
+  onSubmit,
+  onReset,
+  onTestWebhook,
+  onTestBot,
+  onSyncSlashCommands,
+} = useDiscordSettingsRuntime({
+  formRef,
+  form,
+  initialValues,
+  isDirty,
+  testMessage,
+  testWebhookTargetKey,
+});
 
 onMounted(loadSettings);
 onMounted(loadBotStatus);
