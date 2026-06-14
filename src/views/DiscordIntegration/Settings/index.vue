@@ -34,6 +34,7 @@ import NetworkProxySection from './components/NetworkProxySection.vue';
 import RelayTestsSection from './components/RelayTestsSection.vue';
 import SettingsHero from './components/SettingsHero.vue';
 import WebhookTargetsSection from './components/WebhookTargetsSection.vue';
+import './components/sharedSectionStyles.css';
 
 defineOptions({ name: 'DiscordIntegrationSettingsPage' });
 

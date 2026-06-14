@@ -140,37 +140,6 @@ async function onTestDiscordChatRelay() {
 </template>
 
 <style scoped>
-.discord-settings__section {
-  display: grid;
-  gap: 12px;
-  margin: 4px 0 16px;
-  border: 1px solid var(--el-border-color-lighter);
-  border-radius: 8px;
-  padding: 14px;
-  background: var(--el-fill-color-extra-light);
-}
-
-.discord-settings__section-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-
-  h3 {
-    margin: 0;
-    color: var(--el-text-color-primary);
-    font-size: 15px;
-    line-height: 22px;
-  }
-
-  p {
-    margin: 4px 0 0;
-    color: var(--el-text-color-secondary);
-    font-size: 12px;
-    line-height: 18px;
-  }
-}
-
 .discord-settings__test-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -206,10 +175,6 @@ async function onTestDiscordChatRelay() {
 }
 
 @media (max-width: 768px) {
-  .discord-settings__section-header {
-    flex-direction: column;
-  }
-
   .discord-settings__test-grid {
     grid-template-columns: 1fr;
   }
