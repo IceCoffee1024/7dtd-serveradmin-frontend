@@ -150,6 +150,7 @@ declare module 'vue' {
     IconMdiMapMarkerRadiusOutline: typeof import('~icons/mdi/map-marker-radius-outline')['default']
     IconMdiMemory: typeof import('~icons/mdi/memory')['default']
     IconMdiMinus: typeof import('~icons/mdi/minus')['default']
+    IconMdiPackageVariantPlus: typeof import('~icons/mdi/package-variant-plus')['default']
     IconMdiPencil: typeof import('~icons/mdi/pencil')['default']
     IconMdiPencilOutline: typeof import('~icons/mdi/pencil-outline')['default']
     IconMdiPlay: typeof import('~icons/mdi/play')['default']

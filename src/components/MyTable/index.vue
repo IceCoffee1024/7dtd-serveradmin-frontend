@@ -461,7 +461,7 @@ defineExpose({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto',
+        overflow: 'hidden',
       }"
     >
       <!-- Search panel wrapper adds visual separation from the table below. -->
@@ -741,16 +741,19 @@ defineExpose({
 <style scoped lang="scss">
 .my-table-root {
   min-height: 0;
+  min-width: 0;
 }
 
 .table-main-card :deep(.el-card__body) {
   height: 100%;
   min-height: 0;
-  overflow: auto;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .table-main-card {
   min-height: 0;
+  min-width: 0;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 70%, white 30%);
   border-radius: 28px;
   overflow: hidden;
@@ -764,6 +767,7 @@ defineExpose({
 
 .table-search-panel {
   flex: 0 0 auto;
+  min-width: 0;
   margin-bottom: 0.9rem;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--el-border-color-light) 68%, white 32%);
@@ -818,6 +822,7 @@ defineExpose({
 .table-toolbar {
   flex: 0 0 auto;
   display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
@@ -830,6 +835,7 @@ defineExpose({
   align-items: center;
   gap: 0.45rem;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .table-toolbar__group--right {
@@ -846,6 +852,7 @@ defineExpose({
 .table-main-region {
   flex: 1 0 var(--my-table-main-min-height);
   min-height: var(--my-table-main-min-height);
+  min-width: 0;
   overflow: hidden;
 }
 
@@ -897,11 +904,13 @@ defineExpose({
 .table-footer {
   flex: 0 0 auto;
   display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   margin-top: 0.9rem;
   flex-wrap: wrap;
+  overflow: hidden;
 }
 
 .table-footer__left {
@@ -913,13 +922,39 @@ defineExpose({
 }
 
 .table-footer__pagination {
+  display: flex;
+  max-width: 100%;
+  min-width: 0;
   margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 0.35rem;
 }
 
 @media (max-width: 960px) {
   .table-toolbar__group--right,
   .table-footer__pagination {
     margin-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .table-footer {
+    align-items: flex-start;
+  }
+
+  .table-footer__pagination {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .table-footer__pagination :deep(.el-pagination__sizes),
+  .table-footer__pagination :deep(.el-pagination__jump) {
+    display: none;
+  }
+
+  .table-footer__pagination :deep(.el-pager li:not(.is-active):not(.more)) {
+    display: none;
   }
 }
 </style>

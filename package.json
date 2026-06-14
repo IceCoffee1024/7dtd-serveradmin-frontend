@@ -15,10 +15,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
+    "contract:check": "pnpm api:gen && pnpm typecheck && pnpm locale:check && pnpm build && pnpm visual:critical",
     "locale:check": "node scripts/check-locales.mjs",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
-    "visual:discord": "playwright test tests/visual/discord-integration.spec.ts"
+    "visual:discord": "playwright test tests/visual/discord-integration.spec.ts",
+    "visual:critical": "playwright test tests/visual/discord-integration.spec.ts tests/visual/economy-shop.spec.ts tests/visual/event-automation-rules.spec.ts"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
