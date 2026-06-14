@@ -2794,7 +2794,9 @@
         "discordToGameBridge": "Discord to game chat",
         "discordCommandRelay": "Discord command relay",
         "discordAccountBinding": "Discord account binding",
-        "discordBindingCodes": "Discord binding codes"
+        "discordBindingCodes": "Discord binding codes",
+        "discordBot": "Discord Bot gateway",
+        "discordSlashCommands": "Discord slash commands"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",

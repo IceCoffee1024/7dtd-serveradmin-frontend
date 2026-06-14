@@ -2836,7 +2836,9 @@
         "discordToGameBridge": "Discord 转游戏聊天",
         "discordCommandRelay": "Discord 指令中继",
         "discordAccountBinding": "Discord 账号绑定",
-        "discordBindingCodes": "Discord 绑定码"
+        "discordBindingCodes": "Discord 绑定码",
+        "discordBot": "Discord Bot 网关",
+        "discordSlashCommands": "Discord 斜杠命令"
       },
       "stateScopes": {
         "cooldown": "冷却状态",

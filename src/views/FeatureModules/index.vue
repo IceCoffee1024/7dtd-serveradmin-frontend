@@ -2362,6 +2362,12 @@ onMounted(loadModules);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  &.is-wide strong {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
 }
 
 .feature-module-detail__schema-flags {
@@ -2581,6 +2587,21 @@ onMounted(loadModules);
 
   .feature-module-detail__issue {
     flex-wrap: wrap;
+  }
+
+  .feature-module-detail__issue > .el-tag {
+    flex: 0 0 auto;
+  }
+
+  .feature-module-detail__issue-body {
+    min-width: 100%;
+    flex-basis: 100%;
+    order: 2;
+  }
+
+  .feature-module-detail__issue > .el-button {
+    flex: 1 1 100%;
+    order: 3;
   }
 }
 </style>

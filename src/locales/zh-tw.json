@@ -2794,7 +2794,9 @@
         "discordToGameBridge": "Discord 轉遊戲聊天",
         "discordCommandRelay": "Discord 指令中繼",
         "discordAccountBinding": "Discord 帳號綁定",
-        "discordBindingCodes": "Discord 綁定碼"
+        "discordBindingCodes": "Discord 綁定碼",
+        "discordBot": "Discord Bot 閘道",
+        "discordSlashCommands": "Discord 斜線命令"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",

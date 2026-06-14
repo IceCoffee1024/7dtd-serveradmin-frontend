@@ -1778,6 +1778,14 @@ onMounted(() => {
     min-width: 0;
   }
 
+  .event-automation-rule-panel :deep(.el-select__selected-item span),
+  .event-automation-rule-panel :deep(.el-select__placeholder) {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .event-automation-rule-panel :deep(.el-select__placeholder) {
     overflow: hidden;
     text-overflow: ellipsis;

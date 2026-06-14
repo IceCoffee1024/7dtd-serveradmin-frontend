@@ -630,4 +630,15 @@ function resolveHighRiskDescription(type: string) {
 .rule-action-builder__risk-alert {
   margin-bottom: 12px;
 }
+
+@media (max-width: 560px) {
+  .rule-action-builder__toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rule-action-builder__toolbar :deep(.el-button) {
+    width: 100%;
+  }
+}
 </style>
