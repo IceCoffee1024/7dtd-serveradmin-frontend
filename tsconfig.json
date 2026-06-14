@@ -8,18 +8,18 @@
       "dom.iterable" // Iterable DOM APIs used by generated OpenAPI helpers
     ],
     "useDefineForClassFields": true, // Standard class field semantics
-    "baseUrl": "./", // Module resolution base
     "ignoreDeprecations": "5.0", // Suppress deprecation warnings for TypeScript 5.x
     "module": "esnext", // ES modules for tree-shaking
     "moduleResolution": "bundler", // Vite-optimized resolution
     "paths": {
       "~/*": [
-        "src/*"
+        "./src/*"
       ] // Path alias for cleaner imports
     },
     "resolveJsonModule": true, // Allow importing JSON modules like `import data from './data.json'`
     "types": [
       "vite/client", // Vite env types (import.meta) (https://vite.dev/guide/features#client-types)
+      "node", // Node APIs used by tooling configs and Playwright tests
       "element-plus/global", // Element Plus global components (https://element-plus.org/en-US/guide/quickstart#volar-support)
       "unplugin-icons/types/vue"
       // "@intlify/unplugin-vue-i18n/messages" // i18n message types (https://github.com/intlify/bundle-tools/blob/main/packages/unplugin-vue-i18n/README.md#types)
@@ -41,6 +41,8 @@
     "src/**/*.ts", // TypeScript files
     "src/**/*.d.ts", // Type declarations
     // "src/**/*.tsx", // TypeScript JSX
-    "src/**/*.vue" // Vue SFCs
+    "src/**/*.vue", // Vue SFCs
+    "tests/**/*.ts", // Playwright visual tests
+    "playwright.config.ts" // Playwright test runner config
   ]
 }

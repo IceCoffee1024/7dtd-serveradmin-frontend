@@ -19,8 +19,9 @@ export interface LayoutCheckOptions {
   markerSelectors?: Record<string, string>;
 }
 
-const username = process.env.VITE_DEFAULT_USERNAME || 'admin';
-const password = process.env.VITE_DEFAULT_PASSWORD || 'password';
+const runtimeEnv = (globalThis as unknown as { "process"?: { env?: Record<string, string | undefined> } })["process"]?.env ?? {};
+const username = runtimeEnv.VITE_DEFAULT_USERNAME || 'admin';
+const password = runtimeEnv.VITE_DEFAULT_PASSWORD || 'password';
 
 /**
  * Signs in through the real login screen so visual tests exercise the same route guards as users.
@@ -47,7 +48,7 @@ export function attachConsoleDiagnostics(page: Page): void {
   page.on('pageerror', error => consoleMessages.push(`pageerror: ${error.message}`));
 
   test.info().attach('console-messages', {
-    body: Buffer.from(consoleMessages.join('\n')),
+    body: consoleMessages.join('\n'),
     contentType: 'text/plain',
   });
 }

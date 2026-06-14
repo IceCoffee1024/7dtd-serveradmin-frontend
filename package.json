@@ -15,10 +15,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
-    "contract:check": "pnpm api:gen && pnpm typecheck && pnpm locale:check && pnpm build && pnpm visual:critical",
+    "contract:check": "pnpm api:gen && pnpm typecheck && pnpm typecheck:playwright && pnpm locale:check && pnpm build && pnpm visual:critical",
     "locale:check": "node scripts/check-locales.mjs",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
+    "typecheck:playwright": "tsc --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck playwright.config.ts",
     "visual:discord": "playwright test tests/visual/discord-integration.spec.ts",
     "visual:critical": "playwright test tests/visual/discord-integration.spec.ts tests/visual/economy-shop.spec.ts tests/visual/event-automation-rules.spec.ts"
   },

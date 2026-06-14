@@ -1,0 +1,111 @@
+name: Frontend CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      run_visual:
+        description: Run critical Playwright visual regression against the configured backend
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      playwright_base_url:
+        description: Optional external frontend URL. Leave empty to let Playwright start Vite.
+        required: false
+        default: ''
+
+jobs:
+  quality:
+    name: Typecheck, lint, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Typecheck Playwright config
+        run: pnpm typecheck:playwright
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check locales
+        run: pnpm locale:check
+
+      - name: Build
+        run: pnpm build
+
+  visual-critical:
+    name: Critical visual regression
+    runs-on: ubuntu-latest
+    needs: quality
+    timeout-minutes: 20
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_visual == 'true' }}
+
+    env:
+      PLAYWRIGHT_BASE_URL: ${{ inputs.playwright_base_url }}
+      VITE_DEFAULT_USERNAME: ${{ secrets.VITE_DEFAULT_USERNAME }}
+      VITE_DEFAULT_PASSWORD: ${{ secrets.VITE_DEFAULT_PASSWORD }}
+      VITE_DEV_API_PROXY_TARGET: ${{ secrets.VITE_DEV_API_PROXY_TARGET }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Critical visual regression
+        run: pnpm visual:critical
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
