@@ -1,20 +1,12 @@
 <script setup lang="ts">
+import type { DiagnosticStep, DiagnosticSummary } from '../diagnosticsModel';
 import type {
   DiscordBotRuntimeStatusDto,
   DiscordNetworkDiagnosticsDto,
 } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
-
-interface DiagnosticSummary {
-  type: 'success' | 'error';
-  title: string;
-  description: string;
-  passedCount: number;
-  totalCount: number;
-  requiredHealthyCount: number;
-  requiredTotalCount: number;
-}
+import { findNetworkDiagnosticStep } from '../diagnosticsModel';
 
 interface Props {
   botStatus: DiscordBotRuntimeStatusDto | null;
@@ -31,8 +23,6 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const { t } = useI18n();
-
-type DiagnosticStep = NonNullable<DiscordNetworkDiagnosticsDto['steps']>[number];
 
 function getBotStatusTagType(state?: string | null) {
   switch ((state ?? '').toLowerCase()) {
@@ -53,10 +43,6 @@ function getDiagnosticTagType(succeeded?: boolean) {
   return succeeded ? 'success' : 'danger';
 }
 
-function findDiagnosticStep(key: string) {
-  return props.networkDiagnostics?.steps?.find(step => step.key === key);
-}
-
 function getDiagnosticDisplayName(step: DiagnosticStep) {
   const key = `views.discordIntegration.settings.diagnostics.${step.key}`;
   const translated = t(key);
@@ -64,7 +50,7 @@ function getDiagnosticDisplayName(step: DiagnosticStep) {
 }
 
 function isDiagnosticStepUserRelevant(step: DiagnosticStep) {
-  if (step.key === 'gatewayWebSocket' && findDiagnosticStep('gatewayProxyTunnel')?.succeeded === true)
+  if (step.key === 'gatewayWebSocket' && findNetworkDiagnosticStep(props.networkDiagnostics, 'gatewayProxyTunnel')?.succeeded === true)
     return false;
 
   return true;

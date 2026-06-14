@@ -31,6 +31,7 @@ import NetworkProxySection from './components/NetworkProxySection.vue';
 import RelayTestsSection from './components/RelayTestsSection.vue';
 import SettingsHero from './components/SettingsHero.vue';
 import WebhookTargetsSection from './components/WebhookTargetsSection.vue';
+import { buildNetworkDiagnosticSummary } from './diagnosticsModel';
 import { applyFormValues, buildDefaults, rules, toFormModel, toPayload } from './formModel';
 import './components/sharedSectionStyles.css';
 
@@ -126,39 +127,7 @@ const webhookTargetOptions = computed(() =>
       value: target.key.trim(),
     })),
 );
-const networkDiagnosticSummary = computed(() => {
-  const diagnostics = networkDiagnostics.value;
-  if (!diagnostics)
-    return null;
-
-  const steps = diagnostics.steps ?? [];
-  const proxyTcp = findDiagnosticStep('proxyTcp');
-  const restGateway = findDiagnosticStep('restGateway');
-  const gatewayWebSocket = findDiagnosticStep('gatewayWebSocket');
-  const gatewayProxyTunnel = findDiagnosticStep('gatewayProxyTunnel');
-  const gatewayAvailable = gatewayWebSocket?.succeeded === true || gatewayProxyTunnel?.succeeded === true;
-  const apiAvailable = restGateway?.succeeded === true;
-  const proxyAvailable = diagnostics.useProxy === false || proxyTcp?.succeeded === true;
-  const requiredOk = gatewayAvailable && apiAvailable && proxyAvailable;
-  const failedRequiredCount = [apiAvailable, gatewayAvailable, proxyAvailable].filter(Boolean).length;
-  const passedCount = steps.filter(step => step.succeeded).length;
-
-  return {
-    type: requiredOk ? 'success' as const : 'error' as const,
-    title: requiredOk
-      ? t('views.discordIntegration.settings.messages.networkDiagnosticsUsable')
-      : t('views.discordIntegration.settings.messages.networkDiagnosticsNeedsAttention'),
-    description: requiredOk && gatewayWebSocket?.succeeded === false && gatewayProxyTunnel?.succeeded === true
-      ? t('views.discordIntegration.settings.messages.networkDiagnosticsFallbackUsable')
-      : requiredOk
-        ? t('views.discordIntegration.settings.messages.networkDiagnosticsAllGood')
-        : t('views.discordIntegration.settings.messages.networkDiagnosticsFailedRequired'),
-    passedCount,
-    totalCount: steps.length,
-    requiredHealthyCount: failedRequiredCount,
-    requiredTotalCount: 3,
-  };
-});
+const networkDiagnosticSummary = computed(() => buildNetworkDiagnosticSummary(networkDiagnostics.value, t));
 
 function showBotTestResult(result: DiscordBotTestResultDto | undefined) {
   botTestResult.value = result ?? null;
@@ -166,10 +135,6 @@ function showBotTestResult(result: DiscordBotTestResultDto | undefined) {
     type: result?.succeeded ? 'success' : 'error',
     text: result?.message || t('views.discordIntegration.settings.messages.botTestFailed'),
   });
-}
-
-function findDiagnosticStep(key: string) {
-  return networkDiagnostics.value?.steps?.find(step => step.key === key);
 }
 
 async function loadBotStatus() {
