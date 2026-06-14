@@ -2549,7 +2549,7 @@ export type EventAutomationRuleDto = {
      */
     isEnabled?: boolean;
     /**
-     * Trigger type, for example PlayerJoined, ChatMessage, PlayerDied, or Cron.
+     * Trigger type, for example PlayerJoined, PlayerLeft, ChatMessage, or Cron.
      */
     triggerType: string;
     /**
@@ -2850,7 +2850,7 @@ export type EventAutomationRuleUpsertDto = {
      */
     isEnabled?: boolean;
     /**
-     * Trigger type, for example PlayerJoined, ChatMessage, PlayerDied, or Cron.
+     * Trigger type, for example PlayerJoined, PlayerLeft, ChatMessage, or Cron.
      */
     triggerType: string;
     /**
