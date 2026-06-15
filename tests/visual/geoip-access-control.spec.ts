@@ -48,8 +48,7 @@ test.describe('GeoIP Access Control visual layout', () => {
       await expect(page.locator('.geoip-settings')).toBeVisible();
       await expect(page.locator('.swal2-container')).toHaveCount(0);
 
-      await page.locator('.geoip-settings__form .el-select').first().click();
-      await page.getByRole('option', { name: 'ipinfo.io' }).click();
+      await page.locator('.geoip-settings__provider-card').filter({ hasText: 'ipinfo.io' }).click();
       await expect(page.getByLabel('ipinfo token')).toBeVisible();
       await page.locator('.geoip-settings__test .el-input__inner').fill('1.1.1.1');
 

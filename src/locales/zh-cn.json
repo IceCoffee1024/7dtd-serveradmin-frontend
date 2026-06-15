@@ -3576,10 +3576,15 @@
         },
         "actions": {
           "testLookup": "测试查询",
-          "clearCache": "清理缓存"
+          "clearCache": "清理缓存",
+          "importEntries": "导入条目",
+          "showAdvanced": "显示高级项",
+          "hideAdvanced": "隐藏高级项",
+          "addEntry": "添加"
         },
         "placeholders": {
-          "testIp": "要测试的 IP 地址"
+          "testIp": "要测试的 IP 地址",
+          "countrySelect": "搜索国家名称或 ISO 代码"
         },
         "messages": {
           "saveSuccess": "GeoIP 访问控制设置已保存。",
@@ -3607,6 +3612,47 @@
           "country": "国家",
           "reason": "原因",
           "decision": "决策"
+        },
+        "sectionDescriptions": {
+          "provider": "选择公网玩家 IP 的查询方式。除非查询慢或触发限流，否则建议保留高级时序默认值。",
+          "countryPolicy": "建议先禁用或使用黑名单模式，确认真实登录决策正确后再收紧规则。",
+          "ipExceptions": "显式 IP 和 CIDR 规则会先于国家查询执行。",
+          "status": "启用严格阻止前，先测试公网 IP 并检查最近决策。"
+        },
+        "overview": {
+          "mode": "策略模式",
+          "provider": "查询服务"
+        },
+        "providerBadges": {
+          "recommended": "推荐",
+          "http": "HTTP",
+          "token": "Token"
+        },
+        "providerDescriptions": {
+          "ipWhoIs": "HTTPS 查询，无需 Token，适合作为小型服务器默认选项。",
+          "ipApi": "无需 Token，但免费接口为 HTTP 且存在使用限制。",
+          "ipInfo": "HTTPS 查询，需要账号 Token，适合需要配额管理的场景。"
+        },
+        "summaries": {
+          "disabled": "GeoIP 访问控制未启用，不会影响玩家登录。",
+          "enabledNoPolicy": "GeoIP 访问控制已启用，但国家策略为禁用；只有显式 IP 例外会影响决策。",
+          "allowCountries": "仅允许 {countries}。未知国家：{unknown}。私网/本机 IP：{privateIp}。",
+          "blockCountries": "阻止 {countries}。未知国家：{unknown}。私网/本机 IP：{privateIp}。",
+          "none": "无",
+          "countryCount": "{count} 个国家/地区"
+        },
+        "presets": {
+          "cnRegion": "允许 CN/HK/MO/TW",
+          "blockCommon": "阻止常见风险集",
+          "observeOnly": "仅观察"
+        },
+        "testDecision": {
+          "allowedDisabled": "当前 GeoIP 策略未主动阻止，此 IP 会被放行。",
+          "lookupFailed": "查询失败。未知国家策略会执行：{policy}。",
+          "unknownCountry": "国家未知。未知国家策略会执行：{policy}。",
+          "allowedByCountry": "{country} 会被当前策略放行。",
+          "blockedByAllowMode": "{country} 不在允许列表中，会被阻止。",
+          "blockedByCountry": "{country} 命中国家黑名单，会被阻止。"
         }
       }
     }

@@ -3576,10 +3576,15 @@
         },
         "actions": {
           "testLookup": "検索をテスト",
-          "clearCache": "キャッシュをクリア"
+          "clearCache": "キャッシュをクリア",
+          "importEntries": "Import entries",
+          "showAdvanced": "Show advanced",
+          "hideAdvanced": "Hide advanced",
+          "addEntry": "Add"
         },
         "placeholders": {
-          "testIp": "テストする IP アドレス"
+          "testIp": "テストする IP アドレス",
+          "countrySelect": "Search country name or ISO code"
         },
         "messages": {
           "saveSuccess": "GeoIP アクセス制御設定を保存しました。",
@@ -3607,6 +3612,47 @@
           "country": "国",
           "reason": "理由",
           "decision": "判定"
+        },
+        "sectionDescriptions": {
+          "provider": "Choose how public player IPs are resolved. Keep advanced timing defaults unless lookups are slow or rate-limited.",
+          "countryPolicy": "Start with disabled or block-list mode, then tighten after real login decisions look correct.",
+          "ipExceptions": "Explicit IP and CIDR entries are evaluated before country lookup.",
+          "status": "Test a public IP and review recent decisions before enabling strict blocking."
+        },
+        "overview": {
+          "mode": "Policy mode",
+          "provider": "Provider"
+        },
+        "providerBadges": {
+          "recommended": "Recommended",
+          "http": "HTTP",
+          "token": "Token"
+        },
+        "providerDescriptions": {
+          "ipWhoIs": "HTTPS lookup without token. Good default for small servers.",
+          "ipApi": "No token, but the free endpoint is HTTP and has usage limits.",
+          "ipInfo": "HTTPS lookup with account token and provider-side quota control."
+        },
+        "summaries": {
+          "disabled": "GeoIP access control is disabled. Player logins are not affected.",
+          "enabledNoPolicy": "GeoIP access control is enabled, but country policy mode is disabled. Only explicit IP exceptions can affect decisions.",
+          "allowCountries": "Only {countries} are allowed. Unknown countries: {unknown}. Private/local IPs: {privateIp}.",
+          "blockCountries": "{countries} are blocked. Unknown countries: {unknown}. Private/local IPs: {privateIp}.",
+          "none": "none",
+          "countryCount": "{count} countries"
+        },
+        "presets": {
+          "cnRegion": "Allow CN/HK/MO/TW",
+          "blockCommon": "Block common risk set",
+          "observeOnly": "Observe only"
+        },
+        "testDecision": {
+          "allowedDisabled": "This IP would be allowed because GeoIP policy is not actively blocking.",
+          "lookupFailed": "Lookup failed. Unknown-country policy would {policy}.",
+          "unknownCountry": "Country is unknown. Unknown-country policy would {policy}.",
+          "allowedByCountry": "{country} would be allowed by the current policy.",
+          "blockedByAllowMode": "{country} would be blocked because it is not in the allow-list.",
+          "blockedByCountry": "{country} would be blocked by the country block-list."
         }
       }
     }
