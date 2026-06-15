@@ -26,6 +26,7 @@ const { confirm } = usePopup();
 const formRef = useTemplateRef<FormInstance>('formRef');
 const testMessage = ref('');
 const testWebhookTargetKey = ref('');
+const activeTab = ref('overview');
 const initialValues = ref<FormModel>(buildDefaults());
 const form = reactive<FormModel>(buildDefaults());
 const botFormModel = computed({
@@ -174,157 +175,163 @@ onBeforeRouteLeave(async () => {
         class="discord-settings__form"
         @submit.prevent="onSubmit"
       >
-        <el-row :gutter="16">
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="isEnabled" :label="t('views.discordIntegration.settings.fields.isEnabled')">
-              <el-switch
-                v-model="form.isEnabled"
-                inline-prompt
-                :active-text="t('common.yes')"
-                :inactive-text="t('common.no')"
-                size="large"
-              />
-            </el-form-item>
-          </el-col>
+        <el-tabs v-model="activeTab" class="discord-settings__tabs">
+          <el-tab-pane :label="t('views.discordIntegration.settings.tabs.overview')" name="overview">
+            <el-row :gutter="16">
+              <el-col :xs="24" :md="12">
+                <el-form-item prop="isEnabled" :label="t('views.discordIntegration.settings.fields.isEnabled')">
+                  <el-switch
+                    v-model="form.isEnabled"
+                    inline-prompt
+                    :active-text="t('common.yes')"
+                    :inactive-text="t('common.no')"
+                    size="large"
+                  />
+                </el-form-item>
+              </el-col>
 
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="allowEventAutomationMessages" :label="t('views.discordIntegration.settings.fields.allowEventAutomationMessages')">
-              <el-switch
-                v-model="form.allowEventAutomationMessages"
-                inline-prompt
-                :active-text="t('common.yes')"
-                :inactive-text="t('common.no')"
-                size="large"
-              />
-            </el-form-item>
-          </el-col>
+              <el-col :xs="24" :md="12">
+                <el-form-item prop="allowEventAutomationMessages" :label="t('views.discordIntegration.settings.fields.allowEventAutomationMessages')">
+                  <el-switch
+                    v-model="form.allowEventAutomationMessages"
+                    inline-prompt
+                    :active-text="t('common.yes')"
+                    :inactive-text="t('common.no')"
+                    size="large"
+                  />
+                </el-form-item>
+              </el-col>
 
-          <el-col :xs="24">
+              <el-col :xs="24" :md="12">
+                <el-form-item prop="defaultUsername" :label="t('views.discordIntegration.settings.fields.defaultUsername')">
+                  <el-input
+                    v-model="form.defaultUsername"
+                    clearable
+                    maxlength="80"
+                    show-word-limit
+                  />
+                </el-form-item>
+              </el-col>
+
+              <el-col :xs="24" :md="12">
+                <el-form-item prop="timeoutSeconds" :label="t('views.discordIntegration.settings.fields.timeoutSeconds')">
+                  <el-input-number
+                    v-model="form.timeoutSeconds"
+                    class="w-full"
+                    :min="1"
+                    :max="30"
+                    :precision="0"
+                  />
+                </el-form-item>
+              </el-col>
+
+              <el-col :xs="24">
+                <el-form-item prop="defaultAvatarUrl" :label="t('views.discordIntegration.settings.fields.defaultAvatarUrl')">
+                  <el-input
+                    v-model="form.defaultAvatarUrl"
+                    clearable
+                    :placeholder="t('views.discordIntegration.settings.placeholders.defaultAvatarUrl')"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+
+          <el-tab-pane :label="t('views.discordIntegration.settings.tabs.webhooks')" name="webhooks">
+            <el-row :gutter="16">
+              <el-col :xs="24">
+                <el-form-item prop="webhookUrl" :label="t('views.discordIntegration.settings.fields.webhookUrl')">
+                  <el-input
+                    v-model="form.webhookUrl"
+                    type="password"
+                    show-password
+                    clearable
+                    autocomplete="off"
+                    :placeholder="t('views.discordIntegration.settings.placeholders.webhookUrl')"
+                  />
+                </el-form-item>
+              </el-col>
+
+              <el-col :xs="24">
+                <WebhookTargetsSection v-model:targets="webhookTargetsModel" />
+              </el-col>
+
+              <el-col :xs="24">
+                <el-form-item :label="t('views.discordIntegration.settings.fields.testMessage')">
+                  <el-input
+                    v-model="testMessage"
+                    type="textarea"
+                    :rows="3"
+                    maxlength="1900"
+                    show-word-limit
+                    clearable
+                    :placeholder="t('views.discordIntegration.settings.placeholders.testMessage')"
+                  />
+                </el-form-item>
+              </el-col>
+
+              <el-col :xs="24" :md="12">
+                <el-form-item :label="t('views.discordIntegration.settings.fields.testWebhookTargetKey')">
+                  <el-select
+                    v-model="testWebhookTargetKey"
+                    class="w-full"
+                    filterable
+                    clearable
+                    :placeholder="t('views.discordIntegration.settings.placeholders.testWebhookTargetKey')"
+                  >
+                    <el-option
+                      v-for="option in webhookTargetOptions"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :xs="24">
+                <NetworkProxySection v-model:model="networkProxyModel" />
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+
+          <el-tab-pane :label="t('views.discordIntegration.settings.tabs.chatBridge')" name="chatBridge">
             <ChatBridgeSection v-model:model="chatBridgeModel" :webhook-target-options="webhookTargetOptions" />
-          </el-col>
+          </el-tab-pane>
 
-          <el-col :xs="24">
-            <BotIntegrationSection
-              v-model:form="botFormModel"
-              :bot-test-result="botTestResult"
-              :bot-status="botStatus"
-              :network-diagnostics="networkDiagnostics"
-              :network-diagnostic-summary="networkDiagnosticSummary"
-              :is-submitting="isSubmitting"
-              :is-bot-testing="isBotTesting"
-              :is-bot-status-loading="isBotStatusLoading"
-              :is-diagnostics-running="isDiagnosticsRunning"
-              :is-slash-syncing="isSlashSyncing"
-              @refresh-bot-status="loadBotStatus"
-              @run-diagnostics="runNetworkDiagnostics"
-              @sync-slash-commands="onSyncSlashCommands"
-              @test-bot="onTestBot"
-            />
-          </el-col>
-
-          <el-col :xs="24">
-            <el-form-item prop="webhookUrl" :label="t('views.discordIntegration.settings.fields.webhookUrl')">
-              <el-input
-                v-model="form.webhookUrl"
-                type="password"
-                show-password
-                clearable
-                autocomplete="off"
-                :placeholder="t('views.discordIntegration.settings.placeholders.webhookUrl')"
+          <el-tab-pane :label="t('views.discordIntegration.settings.tabs.botCommands')" name="botCommands">
+            <div class="discord-settings__tab-stack">
+              <BotIntegrationSection
+                v-model:form="botFormModel"
+                :bot-test-result="botTestResult"
+                :bot-status="botStatus"
+                :network-diagnostics="networkDiagnostics"
+                :network-diagnostic-summary="networkDiagnosticSummary"
+                :is-submitting="isSubmitting"
+                :is-bot-testing="isBotTesting"
+                :is-bot-status-loading="isBotStatusLoading"
+                :is-diagnostics-running="isDiagnosticsRunning"
+                :is-slash-syncing="isSlashSyncing"
+                @refresh-bot-status="loadBotStatus"
+                @run-diagnostics="runNetworkDiagnostics"
+                @sync-slash-commands="onSyncSlashCommands"
+                @test-bot="onTestBot"
               />
-            </el-form-item>
-          </el-col>
+              <CommandRelaySection v-model:model="commandRelayModel" />
+            </div>
+          </el-tab-pane>
 
-          <el-col :xs="24">
-            <NetworkProxySection v-model:model="networkProxyModel" />
-          </el-col>
-
-          <el-col :xs="24">
-            <WebhookTargetsSection v-model:targets="webhookTargetsModel" />
-          </el-col>
-
-          <el-col :xs="24">
-            <CommandRelaySection v-model:model="commandRelayModel" />
-          </el-col>
-
-          <el-col :xs="24">
+          <el-tab-pane :label="t('views.discordIntegration.settings.tabs.accountBinding')" name="accountBinding">
             <AccountBindingSection />
-          </el-col>
+          </el-tab-pane>
 
-          <el-col :xs="24">
-            <RelayTestsSection />
-          </el-col>
-
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="defaultUsername" :label="t('views.discordIntegration.settings.fields.defaultUsername')">
-              <el-input
-                v-model="form.defaultUsername"
-                clearable
-                maxlength="80"
-                show-word-limit
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :md="12">
-            <el-form-item prop="timeoutSeconds" :label="t('views.discordIntegration.settings.fields.timeoutSeconds')">
-              <el-input-number
-                v-model="form.timeoutSeconds"
-                class="w-full"
-                :min="1"
-                :max="30"
-                :precision="0"
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24">
-            <el-form-item prop="defaultAvatarUrl" :label="t('views.discordIntegration.settings.fields.defaultAvatarUrl')">
-              <el-input
-                v-model="form.defaultAvatarUrl"
-                clearable
-                :placeholder="t('views.discordIntegration.settings.placeholders.defaultAvatarUrl')"
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24">
-            <FailureAlertsSection v-model:model="failureAlertsModel" :webhook-target-options="webhookTargetOptions" />
-          </el-col>
-
-          <el-col :xs="24">
-            <el-form-item :label="t('views.discordIntegration.settings.fields.testMessage')">
-              <el-input
-                v-model="testMessage"
-                type="textarea"
-                :rows="3"
-                maxlength="1900"
-                show-word-limit
-                clearable
-                :placeholder="t('views.discordIntegration.settings.placeholders.testMessage')"
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :md="12">
-            <el-form-item :label="t('views.discordIntegration.settings.fields.testWebhookTargetKey')">
-              <el-select
-                v-model="testWebhookTargetKey"
-                class="w-full"
-                filterable
-                clearable
-                :placeholder="t('views.discordIntegration.settings.placeholders.testWebhookTargetKey')"
-              >
-                <el-option
-                  v-for="option in webhookTargetOptions"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
+          <el-tab-pane :label="t('views.discordIntegration.settings.tabs.alertsDiagnostics')" name="alertsDiagnostics">
+            <div class="discord-settings__tab-stack">
+              <FailureAlertsSection v-model:model="failureAlertsModel" :webhook-target-options="webhookTargetOptions" />
+              <RelayTestsSection />
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </el-form>
     </template>
   </div>
@@ -337,12 +344,42 @@ onBeforeRouteLeave(async () => {
 }
 
 .discord-settings__form {
-  width: min(100%, 1100px);
+  width: min(100%, 1360px);
+}
+
+.discord-settings__tabs {
+  margin-top: 14px;
+}
+
+.discord-settings__tab-stack {
+  display: grid;
+  gap: 16px;
+}
+
+:deep(.discord-settings__tabs > .el-tabs__header) {
+  margin-bottom: 16px;
+}
+
+:deep(.discord-settings__tabs .el-tabs__nav-wrap::after) {
+  height: 1px;
+}
+
+:deep(.discord-settings__tabs .el-tabs__item) {
+  padding: 0 16px;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
   .discord-settings {
     max-width: none;
+  }
+
+  :deep(.discord-settings__tabs .el-tabs__nav-scroll) {
+    overflow-x: auto;
+  }
+
+  :deep(.discord-settings__tabs .el-tabs__item) {
+    padding: 0 12px;
   }
 }
 </style>

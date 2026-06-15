@@ -3507,6 +3507,14 @@
           "restGateway": "Discord API",
           "gatewayWebSocket": "Bot 实时连接",
           "gatewayProxyTunnel": "Bot 代理连接"
+        },
+        "tabs": {
+          "overview": "概览",
+          "webhooks": "Webhook 与频道",
+          "chatBridge": "聊天桥接",
+          "botCommands": "Bot 与命令",
+          "accountBinding": "账号绑定",
+          "alertsDiagnostics": "告警与诊断"
         }
       }
     }

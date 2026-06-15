@@ -3507,6 +3507,14 @@
           "restGateway": "Discord API",
           "gatewayWebSocket": "Bot real-time connection",
           "gatewayProxyTunnel": "Bot proxy connection"
+        },
+        "tabs": {
+          "overview": "Overview",
+          "webhooks": "Webhooks & channels",
+          "chatBridge": "Chat bridge",
+          "botCommands": "Bot & commands",
+          "accountBinding": "Account binding",
+          "alertsDiagnostics": "Alerts & diagnostics"
         }
       }
     }
