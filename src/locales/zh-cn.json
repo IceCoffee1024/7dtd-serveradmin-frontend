@@ -104,7 +104,9 @@
     "eventAutomationSettings": "设置",
     "eventAutomationRuns": "执行历史",
     "discordIntegration": "Discord 集成",
-    "discordIntegrationSettings": "设置"
+    "discordIntegrationSettings": "设置",
+    "geoIpAccessControl": "GeoIP 访问控制",
+    "geoIpAccessControlSettings": "设置"
   },
   "components": {
     "myTable": {
@@ -2764,7 +2766,20 @@
         "discordPublicAdminChannelSame": "公共频道和管理频道相同，建议拆分以降低误触发风险。",
         "discordCommandAllowListContainsBlockedDangerous": "命令白名单包含仍会被阻止的高风险命令：{0}。",
         "discordCommandExecutionWithoutAccountBinding": "Discord 指令中继未启用账号绑定，建议启用以收紧身份边界。",
-        "discordAccountBindingEnabled": "Discord 账号绑定已启用。"
+        "discordAccountBindingEnabled": "Discord 账号绑定已启用。",
+        "geoIpProviderInvalid": "GeoIP 查询服务配置无效：{0}。",
+        "geoIpIpApiHttpWarning": "ip-api 免费接口使用 HTTP，且存在频率/商用限制。",
+        "geoIpModeDisabled": "GeoIP 国家策略模式已禁用。",
+        "geoIpAllowedCountriesEmpty": "已启用仅允许国家模式，但未配置允许国家代码。",
+        "geoIpBlockedCountriesEmpty": "已启用阻止国家模式，但未配置阻止国家代码。",
+        "geoIpAllowedCountryInvalid": "无效的允许国家代码：{0}。",
+        "geoIpBlockedCountryInvalid": "无效的阻止国家代码：{0}。",
+        "geoIpIpAllowListInvalid": "无效的 IP/CIDR 白名单项：{0}。",
+        "geoIpIpBlockListInvalid": "无效的 IP/CIDR 黑名单项：{0}。",
+        "geoIpUnknownCountryBlocked": "未知国家会被阻止，查询服务失败时可能拒绝玩家。",
+        "geoIpLastLookupError": "最近一次 GeoIP 查询错误：{0}。",
+        "geoIpAllowCountries": "GeoIP 仅允许国家策略已生效。",
+        "geoIpBlockCountries": "GeoIP 阻止国家策略已生效。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2838,7 +2853,12 @@
         "discordAccountBinding": "Discord 账号绑定",
         "discordBindingCodes": "Discord 绑定码",
         "discordBot": "Discord Bot 网关",
-        "discordSlashCommands": "Discord 斜杠命令"
+        "discordSlashCommands": "Discord 斜杠命令",
+        "remoteGeoIpProviders": "远程 GeoIP 查询服务",
+        "countryAllowBlock": "国家允许/阻止规则",
+        "ipCidrExceptions": "IP/CIDR 例外",
+        "lookupCache": "查询缓存",
+        "accessDecisionLog": "访问决策日志"
       },
       "stateScopes": {
         "cooldown": "冷却状态",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot 与命令",
           "accountBinding": "账号绑定",
           "alertsDiagnostics": "告警与诊断"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "基于远程 GeoIP 查询、国家规则和 IP/CIDR 例外控制玩家登录访问。",
+        "sections": {
+          "provider": "查询服务",
+          "countryPolicy": "国家策略",
+          "ipExceptions": "IP 例外",
+          "status": "状态与查询"
+        },
+        "fields": {
+          "isEnabled": "启用 GeoIP 访问控制",
+          "provider": "查询服务",
+          "ipInfoToken": "ipinfo Token",
+          "requestTimeoutSeconds": "请求超时（秒）",
+          "cacheTtlMinutes": "成功缓存时长（分钟）",
+          "failureCacheTtlMinutes": "失败缓存时长（分钟）",
+          "mode": "策略模式",
+          "unknownCountryPolicy": "未知国家策略",
+          "privateIpPolicy": "私网/本机 IP 策略",
+          "allowedCountryCodes": "允许的国家代码",
+          "blockedCountryCodes": "阻止的国家代码",
+          "ipAllowList": "IP/CIDR 白名单",
+          "ipBlockList": "IP/CIDR 黑名单",
+          "kickMessage": "踢出提示",
+          "logAllowedDecisions": "记录放行决策",
+          "bypassAdmins": "管理员绕过 GeoIP 规则"
+        },
+        "modes": {
+          "disabled": "禁用",
+          "allowCountries": "仅允许列表中的国家",
+          "blockCountries": "阻止列表中的国家"
+        },
+        "policies": {
+          "allow": "放行",
+          "block": "阻止"
+        },
+        "actions": {
+          "testLookup": "测试查询",
+          "clearCache": "清理缓存"
+        },
+        "placeholders": {
+          "testIp": "要测试的 IP 地址"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP 访问控制设置已保存。",
+          "resetConfirm": "确定重置 GeoIP 访问控制设置吗？",
+          "resetSuccess": "GeoIP 访问控制设置已重置。",
+          "unsavedChanges": "GeoIP 访问控制有未保存修改，确定离开吗？",
+          "lookupSuccess": "GeoIP 查询完成。",
+          "ipApiWarning": "ip-api 免费接口使用 HTTP 且有限流/用途限制，建议仅用于测试或小规模自用。",
+          "clearCacheConfirm": "确定清理 GeoIP 查询缓存吗？后续登录会重新查询远程服务。",
+          "clearCacheSuccess": "GeoIP 查询缓存已清理：{count} 条。"
+        },
+        "status": {
+          "cacheCount": "缓存 IP 数",
+          "lastLookupAt": "最近查询",
+          "lastBlockedAt": "最近阻止"
+        },
+        "result": {
+          "country": "国家",
+          "city": "城市",
+          "provider": "服务"
+        },
+        "log": {
+          "timestamp": "时间",
+          "player": "玩家",
+          "country": "国家",
+          "reason": "原因",
+          "decision": "决策"
         }
       }
     }

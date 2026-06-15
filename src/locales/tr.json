@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "GeoIP erişim kontrolü",
+    "geoIpAccessControlSettings": "Ayarlar"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "GeoIP sağlayıcı yapılandırması geçersiz: {0}.",
+        "geoIpIpApiHttpWarning": "ip-api ücretsiz endpoint HTTP kullanır ve hız/ticari kullanım limitleri vardır.",
+        "geoIpModeDisabled": "GeoIP ülke politikası modu devre dışı.",
+        "geoIpAllowedCountriesEmpty": "Ülke izin modu etkin ancak izin verilen ülke kodu yok.",
+        "geoIpBlockedCountriesEmpty": "Ülke engel modu etkin ancak engellenen ülke kodu yok.",
+        "geoIpAllowedCountryInvalid": "Geçersiz izin verilen ülke kodu: {0}.",
+        "geoIpBlockedCountryInvalid": "Geçersiz engellenen ülke kodu: {0}.",
+        "geoIpIpAllowListInvalid": "IP/CIDR izin listesinde geçersiz giriş: {0}.",
+        "geoIpIpBlockListInvalid": "IP/CIDR engel listesinde geçersiz giriş: {0}.",
+        "geoIpUnknownCountryBlocked": "Bilinmeyen ülkeler engelleniyor. Sağlayıcı hataları oyuncuları reddedebilir.",
+        "geoIpLastLookupError": "Son GeoIP sorgu hatası: {0}.",
+        "geoIpAllowCountries": "GeoIP ülke izin politikası aktif.",
+        "geoIpBlockCountries": "GeoIP ülke engel politikası aktif."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Uzak GeoIP sağlayıcıları",
+        "countryAllowBlock": "Ülke izin/engel kuralları",
+        "ipCidrExceptions": "IP/CIDR istisnaları",
+        "lookupCache": "Sorgu önbelleği",
+        "accessDecisionLog": "Erişim karar günlüğü"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Uzak GeoIP sorgusu, ülke kuralları ve IP/CIDR istisnalarıyla oyuncu girişini denetler.",
+        "sections": {
+          "provider": "Sağlayıcı",
+          "countryPolicy": "Ülke politikası",
+          "ipExceptions": "IP istisnaları",
+          "status": "Durum ve sorgu"
+        },
+        "fields": {
+          "isEnabled": "GeoIP erişim kontrolünü etkinleştir",
+          "provider": "Sorgu sağlayıcısı",
+          "ipInfoToken": "ipinfo token",
+          "requestTimeoutSeconds": "İstek zaman aşımı (saniye)",
+          "cacheTtlMinutes": "Başarılı önbellek TTL (dakika)",
+          "failureCacheTtlMinutes": "Hata önbellek TTL (dakika)",
+          "mode": "Politika modu",
+          "unknownCountryPolicy": "Bilinmeyen ülke politikası",
+          "privateIpPolicy": "Özel/yerel IP politikası",
+          "allowedCountryCodes": "İzin verilen ülke kodları",
+          "blockedCountryCodes": "Engellenen ülke kodları",
+          "ipAllowList": "IP/CIDR izin listesi",
+          "ipBlockList": "IP/CIDR engel listesi",
+          "kickMessage": "Atma mesajı",
+          "logAllowedDecisions": "İzin kararlarını kaydet",
+          "bypassAdmins": "Yöneticiler için GeoIP kurallarını atla"
+        },
+        "modes": {
+          "disabled": "Devre dışı",
+          "allowCountries": "Yalnızca listedeki ülkelere izin ver",
+          "blockCountries": "Listedeki ülkeleri engelle"
+        },
+        "policies": {
+          "allow": "İzin ver",
+          "block": "Engelle"
+        },
+        "actions": {
+          "testLookup": "Sorguyu test et",
+          "clearCache": "Önbelleği temizle"
+        },
+        "placeholders": {
+          "testIp": "Test edilecek IP adresi"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP erişim kontrolü ayarları kaydedildi.",
+          "resetConfirm": "GeoIP erişim kontrolü ayarları sıfırlansın mı?",
+          "resetSuccess": "GeoIP erişim kontrolü ayarları sıfırlandı.",
+          "unsavedChanges": "Kaydedilmemiş GeoIP değişiklikleri var. Sayfadan çıkılsın mı?",
+          "lookupSuccess": "GeoIP sorgusu tamamlandı.",
+          "ipApiWarning": "ip-api ücretsiz endpoint HTTP kullanır ve kullanım limitleri vardır. Yalnızca test veya küçük özel sunucular için önerilir.",
+          "clearCacheConfirm": "GeoIP sorgu önbelleği temizlensin mi? Sonraki girişler uzak sağlayıcıyı yeniden sorgular.",
+          "clearCacheSuccess": "GeoIP sorgu önbelleği temizlendi: {count}."
+        },
+        "status": {
+          "cacheCount": "Önbellekteki IPler",
+          "lastLookupAt": "Son sorgu",
+          "lastBlockedAt": "Son engelleme"
+        },
+        "result": {
+          "country": "Ülke",
+          "city": "Şehir",
+          "provider": "Sağlayıcı"
+        },
+        "log": {
+          "timestamp": "Zaman",
+          "player": "Oyuncu",
+          "country": "Ülke",
+          "reason": "Neden",
+          "decision": "Karar"
         }
       }
     }

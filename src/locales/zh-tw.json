@@ -104,7 +104,9 @@
     "eventAutomationSettings": "設定",
     "eventAutomationRuns": "執行歷史",
     "discordIntegration": "Discord 整合",
-    "discordIntegrationSettings": "設定"
+    "discordIntegrationSettings": "設定",
+    "geoIpAccessControl": "GeoIP 存取控制",
+    "geoIpAccessControlSettings": "設定"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord 帳號綁定已啟用。",
-        "economyInvalidShopItem": "商店商品 #{0}「{1}」使用了無效的遊戲物品 ID：{2}。"
+        "economyInvalidShopItem": "商店商品 #{0}「{1}」使用了無效的遊戲物品 ID：{2}。",
+        "geoIpProviderInvalid": "GeoIP 查詢服務設定無效：{0}。",
+        "geoIpIpApiHttpWarning": "ip-api 免費端點使用 HTTP，且存在頻率/商用限制。",
+        "geoIpModeDisabled": "GeoIP 國家策略模式已停用。",
+        "geoIpAllowedCountriesEmpty": "已啟用僅允許國家模式，但未設定允許國家代碼。",
+        "geoIpBlockedCountriesEmpty": "已啟用阻擋國家模式，但未設定阻擋國家代碼。",
+        "geoIpAllowedCountryInvalid": "無效的允許國家代碼：{0}。",
+        "geoIpBlockedCountryInvalid": "無效的阻擋國家代碼：{0}。",
+        "geoIpIpAllowListInvalid": "無效的 IP/CIDR 白名單項目：{0}。",
+        "geoIpIpBlockListInvalid": "無效的 IP/CIDR 黑名單項目：{0}。",
+        "geoIpUnknownCountryBlocked": "未知國家會被阻擋，查詢服務失敗時可能拒絕玩家。",
+        "geoIpLastLookupError": "最近一次 GeoIP 查詢錯誤：{0}。",
+        "geoIpAllowCountries": "GeoIP 僅允許國家策略已生效。",
+        "geoIpBlockCountries": "GeoIP 阻擋國家策略已生效。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord 帳號綁定",
         "discordBindingCodes": "Discord 綁定碼",
         "discordBot": "Discord Bot 閘道",
-        "discordSlashCommands": "Discord 斜線命令"
+        "discordSlashCommands": "Discord 斜線命令",
+        "remoteGeoIpProviders": "遠端 GeoIP 查詢服務",
+        "countryAllowBlock": "國家允許/阻擋規則",
+        "ipCidrExceptions": "IP/CIDR 例外",
+        "lookupCache": "查詢快取",
+        "accessDecisionLog": "存取判定日誌"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot 與指令",
           "accountBinding": "帳號綁定",
           "alertsDiagnostics": "告警與診斷"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "透過遠端 GeoIP 查詢、國家規則與 IP/CIDR 例外控制玩家登入。",
+        "sections": {
+          "provider": "查詢服務",
+          "countryPolicy": "國家策略",
+          "ipExceptions": "IP 例外",
+          "status": "狀態與查詢"
+        },
+        "fields": {
+          "isEnabled": "啟用 GeoIP 存取控制",
+          "provider": "查詢服務",
+          "ipInfoToken": "ipinfo Token",
+          "requestTimeoutSeconds": "請求逾時（秒）",
+          "cacheTtlMinutes": "成功快取時間（分鐘）",
+          "failureCacheTtlMinutes": "失敗快取時間（分鐘）",
+          "mode": "策略模式",
+          "unknownCountryPolicy": "未知國家策略",
+          "privateIpPolicy": "私網/本機 IP 策略",
+          "allowedCountryCodes": "允許的國家代碼",
+          "blockedCountryCodes": "阻擋的國家代碼",
+          "ipAllowList": "IP/CIDR 白名單",
+          "ipBlockList": "IP/CIDR 黑名單",
+          "kickMessage": "踢出提示",
+          "logAllowedDecisions": "記錄放行判定",
+          "bypassAdmins": "管理員繞過 GeoIP 規則"
+        },
+        "modes": {
+          "disabled": "停用",
+          "allowCountries": "僅允許清單中的國家",
+          "blockCountries": "阻擋清單中的國家"
+        },
+        "policies": {
+          "allow": "放行",
+          "block": "阻擋"
+        },
+        "actions": {
+          "testLookup": "測試查詢",
+          "clearCache": "清理快取"
+        },
+        "placeholders": {
+          "testIp": "要測試的 IP 位址"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP 存取控制設定已儲存。",
+          "resetConfirm": "確定重設 GeoIP 存取控制設定嗎？",
+          "resetSuccess": "GeoIP 存取控制設定已重設。",
+          "unsavedChanges": "GeoIP 存取控制有未儲存變更，確定離開嗎？",
+          "lookupSuccess": "GeoIP 查詢完成。",
+          "ipApiWarning": "ip-api 免費端點使用 HTTP 且有限流/用途限制，建議僅用於測試或小規模自用。",
+          "clearCacheConfirm": "確定清理 GeoIP 查詢快取嗎？後續登入會重新查詢遠端服務。",
+          "clearCacheSuccess": "GeoIP 查詢快取已清理：{count} 筆。"
+        },
+        "status": {
+          "cacheCount": "快取 IP 數",
+          "lastLookupAt": "最近查詢",
+          "lastBlockedAt": "最近阻擋"
+        },
+        "result": {
+          "country": "國家",
+          "city": "城市",
+          "provider": "服務"
+        },
+        "log": {
+          "timestamp": "時間",
+          "player": "玩家",
+          "country": "國家",
+          "reason": "原因",
+          "decision": "判定"
         }
       }
     }

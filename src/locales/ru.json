@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "Контроль доступа GeoIP",
+    "geoIpAccessControlSettings": "Настройки"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "Недопустимая конфигурация провайдера GeoIP: {0}.",
+        "geoIpIpApiHttpWarning": "Бесплатный endpoint ip-api использует HTTP и имеет лимиты частоты/коммерческого использования.",
+        "geoIpModeDisabled": "Режим политики стран GeoIP отключен.",
+        "geoIpAllowedCountriesEmpty": "Режим разрешенных стран включен, но коды стран не настроены.",
+        "geoIpBlockedCountriesEmpty": "Режим блокировки стран включен, но коды стран не настроены.",
+        "geoIpAllowedCountryInvalid": "Недопустимый разрешенный код страны: {0}.",
+        "geoIpBlockedCountryInvalid": "Недопустимый заблокированный код страны: {0}.",
+        "geoIpIpAllowListInvalid": "Недопустимая запись IP/CIDR в списке разрешений: {0}.",
+        "geoIpIpBlockListInvalid": "Недопустимая запись IP/CIDR в списке блокировки: {0}.",
+        "geoIpUnknownCountryBlocked": "Неизвестные страны блокируются. Сбои провайдера могут отклонять игроков.",
+        "geoIpLastLookupError": "Последняя ошибка GeoIP-запроса: {0}.",
+        "geoIpAllowCountries": "Политика разрешенных стран GeoIP активна.",
+        "geoIpBlockCountries": "Политика блокировки стран GeoIP активна."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Удаленные провайдеры GeoIP",
+        "countryAllowBlock": "Правила разрешения/блокировки стран",
+        "ipCidrExceptions": "Исключения IP/CIDR",
+        "lookupCache": "Кэш запросов",
+        "accessDecisionLog": "Журнал решений доступа"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Управляет входом игроков через удаленный GeoIP-запрос, правила стран и исключения IP/CIDR.",
+        "sections": {
+          "provider": "Провайдер",
+          "countryPolicy": "Политика стран",
+          "ipExceptions": "Исключения IP",
+          "status": "Статус и запрос"
+        },
+        "fields": {
+          "isEnabled": "Включить контроль доступа GeoIP",
+          "provider": "Провайдер запроса",
+          "ipInfoToken": "Токен ipinfo",
+          "requestTimeoutSeconds": "Тайм-аут запроса (секунды)",
+          "cacheTtlMinutes": "TTL кэша успешных запросов (минуты)",
+          "failureCacheTtlMinutes": "TTL кэша ошибок (минуты)",
+          "mode": "Режим политики",
+          "unknownCountryPolicy": "Политика для неизвестной страны",
+          "privateIpPolicy": "Политика для частных/локальных IP",
+          "allowedCountryCodes": "Разрешенные коды стран",
+          "blockedCountryCodes": "Заблокированные коды стран",
+          "ipAllowList": "Список разрешенных IP/CIDR",
+          "ipBlockList": "Список блокировки IP/CIDR",
+          "kickMessage": "Сообщение при кике",
+          "logAllowedDecisions": "Записывать разрешающие решения",
+          "bypassAdmins": "Обходить правила GeoIP для администраторов"
+        },
+        "modes": {
+          "disabled": "Отключено",
+          "allowCountries": "Разрешать только страны из списка",
+          "blockCountries": "Блокировать страны из списка"
+        },
+        "policies": {
+          "allow": "Разрешить",
+          "block": "Блокировать"
+        },
+        "actions": {
+          "testLookup": "Проверить запрос",
+          "clearCache": "Очистить кэш"
+        },
+        "placeholders": {
+          "testIp": "IP-адрес для проверки"
+        },
+        "messages": {
+          "saveSuccess": "Настройки GeoIP сохранены.",
+          "resetConfirm": "Сбросить настройки доступа GeoIP?",
+          "resetSuccess": "Настройки GeoIP сброшены.",
+          "unsavedChanges": "Есть несохраненные изменения GeoIP. Покинуть страницу?",
+          "lookupSuccess": "GeoIP-запрос завершен.",
+          "ipApiWarning": "Бесплатный endpoint ip-api использует HTTP и имеет лимиты. Используйте его только для тестов или небольших частных серверов.",
+          "clearCacheConfirm": "Очистить кэш GeoIP? Следующие входы снова обратятся к удаленному провайдеру.",
+          "clearCacheSuccess": "Кэш GeoIP очищен: {count}."
+        },
+        "status": {
+          "cacheCount": "IP в кэше",
+          "lastLookupAt": "Последний запрос",
+          "lastBlockedAt": "Последняя блокировка"
+        },
+        "result": {
+          "country": "Страна",
+          "city": "Город",
+          "provider": "Провайдер"
+        },
+        "log": {
+          "timestamp": "Время",
+          "player": "Игрок",
+          "country": "Страна",
+          "reason": "Причина",
+          "decision": "Решение"
         }
       }
     }

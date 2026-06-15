@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "Kontrola dostępu GeoIP",
+    "geoIpAccessControlSettings": "Ustawienia"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "Konfiguracja dostawcy GeoIP jest nieprawidłowa: {0}.",
+        "geoIpIpApiHttpWarning": "Darmowy endpoint ip-api używa HTTP i ma limity zapytań/użycia komercyjnego.",
+        "geoIpModeDisabled": "Tryb polityki krajów GeoIP jest wyłączony.",
+        "geoIpAllowedCountriesEmpty": "Tryb dozwolonych krajów jest aktywny, ale nie skonfigurowano kodów krajów.",
+        "geoIpBlockedCountriesEmpty": "Tryb blokowanych krajów jest aktywny, ale nie skonfigurowano kodów krajów.",
+        "geoIpAllowedCountryInvalid": "Nieprawidłowy dozwolony kod kraju: {0}.",
+        "geoIpBlockedCountryInvalid": "Nieprawidłowy blokowany kod kraju: {0}.",
+        "geoIpIpAllowListInvalid": "Nieprawidłowy wpis IP/CIDR na liście dozwolonych: {0}.",
+        "geoIpIpBlockListInvalid": "Nieprawidłowy wpis IP/CIDR na liście blokowanych: {0}.",
+        "geoIpUnknownCountryBlocked": "Nieznane kraje są blokowane. Awarie dostawcy mogą odrzucać graczy.",
+        "geoIpLastLookupError": "Ostatni błąd zapytania GeoIP: {0}.",
+        "geoIpAllowCountries": "Polityka dozwolonych krajów GeoIP jest aktywna.",
+        "geoIpBlockCountries": "Polityka blokowanych krajów GeoIP jest aktywna."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Zdalni dostawcy GeoIP",
+        "countryAllowBlock": "Reguły krajów dozwolonych/blokowanych",
+        "ipCidrExceptions": "Wyjątki IP/CIDR",
+        "lookupCache": "Cache zapytań",
+        "accessDecisionLog": "Dziennik decyzji dostępu"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Kontroluje logowanie graczy przez zdalne zapytania GeoIP, reguły krajów i wyjątki IP/CIDR.",
+        "sections": {
+          "provider": "Dostawca",
+          "countryPolicy": "Polityka krajów",
+          "ipExceptions": "Wyjątki IP",
+          "status": "Status i zapytanie"
+        },
+        "fields": {
+          "isEnabled": "Włącz kontrolę dostępu GeoIP",
+          "provider": "Dostawca zapytań",
+          "ipInfoToken": "Token ipinfo",
+          "requestTimeoutSeconds": "Limit czasu żądania (sekundy)",
+          "cacheTtlMinutes": "TTL cache sukcesu (minuty)",
+          "failureCacheTtlMinutes": "TTL cache błędu (minuty)",
+          "mode": "Tryb polityki",
+          "unknownCountryPolicy": "Polityka dla nieznanego kraju",
+          "privateIpPolicy": "Polityka IP prywatnych/lokalnych",
+          "allowedCountryCodes": "Dozwolone kody krajów",
+          "blockedCountryCodes": "Blokowane kody krajów",
+          "ipAllowList": "Lista dozwolonych IP/CIDR",
+          "ipBlockList": "Lista blokowanych IP/CIDR",
+          "kickMessage": "Komunikat wyrzucenia",
+          "logAllowedDecisions": "Rejestruj decyzje zezwalające",
+          "bypassAdmins": "Pomiń reguły GeoIP dla administratorów"
+        },
+        "modes": {
+          "disabled": "Wyłączone",
+          "allowCountries": "Zezwalaj tylko krajom z listy",
+          "blockCountries": "Blokuj kraje z listy"
+        },
+        "policies": {
+          "allow": "Zezwól",
+          "block": "Blokuj"
+        },
+        "actions": {
+          "testLookup": "Testuj zapytanie",
+          "clearCache": "Wyczyść cache"
+        },
+        "placeholders": {
+          "testIp": "Adres IP do testu"
+        },
+        "messages": {
+          "saveSuccess": "Ustawienia GeoIP zapisane.",
+          "resetConfirm": "Zresetować ustawienia kontroli GeoIP?",
+          "resetSuccess": "Ustawienia GeoIP zresetowane.",
+          "unsavedChanges": "Masz niezapisane zmiany GeoIP. Opuścić stronę?",
+          "lookupSuccess": "Zapytanie GeoIP zakończone.",
+          "ipApiWarning": "Darmowy endpoint ip-api używa HTTP i ma limity użycia. Zalecany tylko do testów lub małych prywatnych serwerów.",
+          "clearCacheConfirm": "Wyczyścić cache GeoIP? Kolejne logowania ponownie odpytają zdalnego dostawcę.",
+          "clearCacheSuccess": "Cache GeoIP wyczyszczony: {count}."
+        },
+        "status": {
+          "cacheCount": "IP w cache",
+          "lastLookupAt": "Ostatnie zapytanie",
+          "lastBlockedAt": "Ostatnia blokada"
+        },
+        "result": {
+          "country": "Kraj",
+          "city": "Miasto",
+          "provider": "Dostawca"
+        },
+        "log": {
+          "timestamp": "Czas",
+          "player": "Gracz",
+          "country": "Kraj",
+          "reason": "Powód",
+          "decision": "Decyzja"
         }
       }
     }

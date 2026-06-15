@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "GeoIP-Zugriffskontrolle",
+    "geoIpAccessControlSettings": "Einstellungen"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "GeoIP-Anbieterkonfiguration ist ungültig: {0}.",
+        "geoIpIpApiHttpWarning": "Der kostenlose ip-api-Endpunkt nutzt HTTP und hat Raten-/kommerzielle Nutzungslimits.",
+        "geoIpModeDisabled": "Der GeoIP-Länderregelmodus ist deaktiviert.",
+        "geoIpAllowedCountriesEmpty": "Der Zulassungsmodus ist aktiv, aber es ist kein erlaubter Ländercode konfiguriert.",
+        "geoIpBlockedCountriesEmpty": "Der Sperrmodus ist aktiv, aber es ist kein blockierter Ländercode konfiguriert.",
+        "geoIpAllowedCountryInvalid": "Ungültiger erlaubter Ländercode: {0}.",
+        "geoIpBlockedCountryInvalid": "Ungültiger blockierter Ländercode: {0}.",
+        "geoIpIpAllowListInvalid": "Ungültiger IP/CIDR-Eintrag in der Zulassungsliste: {0}.",
+        "geoIpIpBlockListInvalid": "Ungültiger IP/CIDR-Eintrag in der Sperrliste: {0}.",
+        "geoIpUnknownCountryBlocked": "Unbekannte Länder werden blockiert. Anbieterfehler können Spieler abweisen.",
+        "geoIpLastLookupError": "Letzter GeoIP-Abfragefehler: {0}.",
+        "geoIpAllowCountries": "GeoIP-Zulassungsregel für Länder ist aktiv.",
+        "geoIpBlockCountries": "GeoIP-Sperrregel für Länder ist aktiv."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Externe GeoIP-Anbieter",
+        "countryAllowBlock": "Länder-Zulassungs-/Sperrregeln",
+        "ipCidrExceptions": "IP/CIDR-Ausnahmen",
+        "lookupCache": "Abfragecache",
+        "accessDecisionLog": "Zugriffsentscheidungsprotokoll"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Steuert Spieler-Logins über externe GeoIP-Abfragen, Länderregeln und IP/CIDR-Ausnahmen.",
+        "sections": {
+          "provider": "Anbieter",
+          "countryPolicy": "Länderregel",
+          "ipExceptions": "IP-Ausnahmen",
+          "status": "Status & Abfrage"
+        },
+        "fields": {
+          "isEnabled": "GeoIP-Zugriffskontrolle aktivieren",
+          "provider": "Abfrageanbieter",
+          "ipInfoToken": "ipinfo-Token",
+          "requestTimeoutSeconds": "Zeitlimit der Anfrage (Sekunden)",
+          "cacheTtlMinutes": "Cache-Dauer bei Erfolg (Minuten)",
+          "failureCacheTtlMinutes": "Cache-Dauer bei Fehler (Minuten)",
+          "mode": "Regelmodus",
+          "unknownCountryPolicy": "Regel für unbekannte Länder",
+          "privateIpPolicy": "Regel für private/lokale IPs",
+          "allowedCountryCodes": "Erlaubte Ländercodes",
+          "blockedCountryCodes": "Blockierte Ländercodes",
+          "ipAllowList": "IP/CIDR-Zulassungsliste",
+          "ipBlockList": "IP/CIDR-Sperrliste",
+          "kickMessage": "Kick-Nachricht",
+          "logAllowedDecisions": "Erlaubte Entscheidungen protokollieren",
+          "bypassAdmins": "GeoIP-Regeln für Admins umgehen"
+        },
+        "modes": {
+          "disabled": "Deaktiviert",
+          "allowCountries": "Nur gelistete Länder erlauben",
+          "blockCountries": "Gelistete Länder blockieren"
+        },
+        "policies": {
+          "allow": "Erlauben",
+          "block": "Blockieren"
+        },
+        "actions": {
+          "testLookup": "Abfrage testen",
+          "clearCache": "Cache leeren"
+        },
+        "placeholders": {
+          "testIp": "Zu testende IP-Adresse"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP-Zugriffskontrolle gespeichert.",
+          "resetConfirm": "GeoIP-Zugriffskontrolle zurücksetzen?",
+          "resetSuccess": "GeoIP-Zugriffskontrolle wurde zurückgesetzt.",
+          "unsavedChanges": "Es gibt ungespeicherte GeoIP-Änderungen. Seite verlassen?",
+          "lookupSuccess": "GeoIP-Abfrage abgeschlossen.",
+          "ipApiWarning": "Der kostenlose ip-api-Endpunkt nutzt HTTP und hat Nutzungslimits. Nur für Tests oder kleine private Server empfohlen.",
+          "clearCacheConfirm": "GeoIP-Abfragecache leeren? Zukünftige Logins fragen den externen Anbieter erneut ab.",
+          "clearCacheSuccess": "GeoIP-Abfragecache geleert: {count}."
+        },
+        "status": {
+          "cacheCount": "Gecachte IPs",
+          "lastLookupAt": "Letzte Abfrage",
+          "lastBlockedAt": "Letzte Blockierung"
+        },
+        "result": {
+          "country": "Land",
+          "city": "Stadt",
+          "provider": "Anbieter"
+        },
+        "log": {
+          "timestamp": "Zeit",
+          "player": "Spieler",
+          "country": "Land",
+          "reason": "Grund",
+          "decision": "Entscheidung"
         }
       }
     }

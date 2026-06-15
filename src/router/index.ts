@@ -467,6 +467,27 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'GeoIpAccessControl',
+        path: 'geoip-access-control',
+        component: () => import('../views/GeoIpAccessControl/index.vue'),
+        redirect: { name: 'GeoIpAccessControlSettings' },
+        meta: {
+          title: () => t('menus.geoIpAccessControl'),
+          icon: markIcon(() => import('~icons/mdi/shield-account')),
+        },
+        children: [
+          {
+            name: 'GeoIpAccessControlSettings',
+            path: 'settings',
+            component: () => import('../views/GeoIpAccessControl/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.geoIpAccessControlSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),

@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "Contrôle d’accès GeoIP",
+    "geoIpAccessControlSettings": "Paramètres"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "La configuration du fournisseur GeoIP est invalide : {0}.",
+        "geoIpIpApiHttpWarning": "Le point d’accès gratuit ip-api utilise HTTP et impose des limites de débit/usage commercial.",
+        "geoIpModeDisabled": "Le mode de politique GeoIP par pays est désactivé.",
+        "geoIpAllowedCountriesEmpty": "Le mode pays autorisés est actif mais aucun code pays n’est configuré.",
+        "geoIpBlockedCountriesEmpty": "Le mode pays bloqués est actif mais aucun code pays n’est configuré.",
+        "geoIpAllowedCountryInvalid": "Code pays autorisé invalide : {0}.",
+        "geoIpBlockedCountryInvalid": "Code pays bloqué invalide : {0}.",
+        "geoIpIpAllowListInvalid": "Entrée IP/CIDR invalide dans la liste d’autorisation : {0}.",
+        "geoIpIpBlockListInvalid": "Entrée IP/CIDR invalide dans la liste de blocage : {0}.",
+        "geoIpUnknownCountryBlocked": "Les pays inconnus sont bloqués. Les erreurs du fournisseur peuvent refuser des joueurs.",
+        "geoIpLastLookupError": "Dernière erreur de recherche GeoIP : {0}.",
+        "geoIpAllowCountries": "La politique GeoIP de pays autorisés est active.",
+        "geoIpBlockCountries": "La politique GeoIP de pays bloqués est active."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Fournisseurs GeoIP distants",
+        "countryAllowBlock": "Règles pays autorisés/bloqués",
+        "ipCidrExceptions": "Exceptions IP/CIDR",
+        "lookupCache": "Cache de recherche",
+        "accessDecisionLog": "Journal des décisions d’accès"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Contrôle l’accès des joueurs via des recherches GeoIP distantes, des règles de pays et des exceptions IP/CIDR.",
+        "sections": {
+          "provider": "Fournisseur",
+          "countryPolicy": "Politique par pays",
+          "ipExceptions": "Exceptions IP",
+          "status": "État et recherche"
+        },
+        "fields": {
+          "isEnabled": "Activer le contrôle d’accès GeoIP",
+          "provider": "Fournisseur de recherche",
+          "ipInfoToken": "Jeton ipinfo",
+          "requestTimeoutSeconds": "Délai de requête (secondes)",
+          "cacheTtlMinutes": "TTL du cache réussi (minutes)",
+          "failureCacheTtlMinutes": "TTL du cache d’échec (minutes)",
+          "mode": "Mode de politique",
+          "unknownCountryPolicy": "Politique pays inconnu",
+          "privateIpPolicy": "Politique IP privée/locale",
+          "allowedCountryCodes": "Codes pays autorisés",
+          "blockedCountryCodes": "Codes pays bloqués",
+          "ipAllowList": "Liste d’autorisation IP/CIDR",
+          "ipBlockList": "Liste de blocage IP/CIDR",
+          "kickMessage": "Message d’expulsion",
+          "logAllowedDecisions": "Journaliser les décisions autorisées",
+          "bypassAdmins": "Ignorer les règles GeoIP pour les admins"
+        },
+        "modes": {
+          "disabled": "Désactivé",
+          "allowCountries": "Autoriser uniquement les pays listés",
+          "blockCountries": "Bloquer les pays listés"
+        },
+        "policies": {
+          "allow": "Autoriser",
+          "block": "Bloquer"
+        },
+        "actions": {
+          "testLookup": "Tester la recherche",
+          "clearCache": "Vider le cache"
+        },
+        "placeholders": {
+          "testIp": "Adresse IP à tester"
+        },
+        "messages": {
+          "saveSuccess": "Paramètres GeoIP enregistrés.",
+          "resetConfirm": "Réinitialiser les paramètres GeoIP ?",
+          "resetSuccess": "Paramètres GeoIP réinitialisés.",
+          "unsavedChanges": "Des modifications GeoIP ne sont pas enregistrées. Quitter cette page ?",
+          "lookupSuccess": "Recherche GeoIP terminée.",
+          "ipApiWarning": "Le point d’accès gratuit ip-api utilise HTTP et a des limites d’utilisation. À réserver aux tests ou aux petits serveurs privés.",
+          "clearCacheConfirm": "Vider le cache GeoIP ? Les prochaines connexions interrogeront à nouveau le fournisseur distant.",
+          "clearCacheSuccess": "Cache GeoIP vidé : {count}."
+        },
+        "status": {
+          "cacheCount": "IP en cache",
+          "lastLookupAt": "Dernière recherche",
+          "lastBlockedAt": "Dernier blocage"
+        },
+        "result": {
+          "country": "Pays",
+          "city": "Ville",
+          "provider": "Fournisseur"
+        },
+        "log": {
+          "timestamp": "Heure",
+          "player": "Joueur",
+          "country": "Pays",
+          "reason": "Raison",
+          "decision": "Décision"
         }
       }
     }

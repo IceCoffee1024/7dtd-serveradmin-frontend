@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "GeoIP 접근 제어",
+    "geoIpAccessControlSettings": "설정"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "GeoIP 제공자 설정이 올바르지 않습니다: {0}.",
+        "geoIpIpApiHttpWarning": "ip-api 무료 엔드포인트는 HTTP를 사용하며 속도/상업적 사용 제한이 있습니다.",
+        "geoIpModeDisabled": "GeoIP 국가 정책 모드가 비활성화되어 있습니다.",
+        "geoIpAllowedCountriesEmpty": "허용 국가 모드가 활성화되었지만 허용 국가 코드가 없습니다.",
+        "geoIpBlockedCountriesEmpty": "차단 국가 모드가 활성화되었지만 차단 국가 코드가 없습니다.",
+        "geoIpAllowedCountryInvalid": "잘못된 허용 국가 코드: {0}.",
+        "geoIpBlockedCountryInvalid": "잘못된 차단 국가 코드: {0}.",
+        "geoIpIpAllowListInvalid": "IP/CIDR 허용 목록 항목이 잘못되었습니다: {0}.",
+        "geoIpIpBlockListInvalid": "IP/CIDR 차단 목록 항목이 잘못되었습니다: {0}.",
+        "geoIpUnknownCountryBlocked": "알 수 없는 국가는 차단됩니다. 제공자 오류로 플레이어가 거부될 수 있습니다.",
+        "geoIpLastLookupError": "마지막 GeoIP 조회 오류: {0}.",
+        "geoIpAllowCountries": "GeoIP 국가 허용 정책이 활성화되어 있습니다.",
+        "geoIpBlockCountries": "GeoIP 국가 차단 정책이 활성화되어 있습니다."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "원격 GeoIP 제공자",
+        "countryAllowBlock": "국가 허용/차단 규칙",
+        "ipCidrExceptions": "IP/CIDR 예외",
+        "lookupCache": "조회 캐시",
+        "accessDecisionLog": "접근 판정 로그"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "원격 GeoIP 조회, 국가 규칙, IP/CIDR 예외로 플레이어 로그인을 제어합니다.",
+        "sections": {
+          "provider": "제공자",
+          "countryPolicy": "국가 정책",
+          "ipExceptions": "IP 예외",
+          "status": "상태 및 조회"
+        },
+        "fields": {
+          "isEnabled": "GeoIP 접근 제어 사용",
+          "provider": "조회 제공자",
+          "ipInfoToken": "ipinfo 토큰",
+          "requestTimeoutSeconds": "요청 제한 시간(초)",
+          "cacheTtlMinutes": "성공 캐시 TTL(분)",
+          "failureCacheTtlMinutes": "실패 캐시 TTL(분)",
+          "mode": "정책 모드",
+          "unknownCountryPolicy": "알 수 없는 국가 정책",
+          "privateIpPolicy": "사설/로컬 IP 정책",
+          "allowedCountryCodes": "허용 국가 코드",
+          "blockedCountryCodes": "차단 국가 코드",
+          "ipAllowList": "IP/CIDR 허용 목록",
+          "ipBlockList": "IP/CIDR 차단 목록",
+          "kickMessage": "추방 메시지",
+          "logAllowedDecisions": "허용 판정 기록",
+          "bypassAdmins": "관리자는 GeoIP 규칙 우회"
+        },
+        "modes": {
+          "disabled": "비활성화",
+          "allowCountries": "목록의 국가만 허용",
+          "blockCountries": "목록의 국가 차단"
+        },
+        "policies": {
+          "allow": "허용",
+          "block": "차단"
+        },
+        "actions": {
+          "testLookup": "조회 테스트",
+          "clearCache": "캐시 지우기"
+        },
+        "placeholders": {
+          "testIp": "테스트할 IP 주소"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP 접근 제어 설정이 저장되었습니다.",
+          "resetConfirm": "GeoIP 접근 제어 설정을 초기화할까요?",
+          "resetSuccess": "GeoIP 접근 제어 설정이 초기화되었습니다.",
+          "unsavedChanges": "저장되지 않은 GeoIP 변경 사항이 있습니다. 페이지를 떠날까요?",
+          "lookupSuccess": "GeoIP 조회가 완료되었습니다.",
+          "ipApiWarning": "ip-api 무료 엔드포인트는 HTTP를 사용하며 사용량 제한이 있습니다. 테스트 또는 소규모 개인 서버에만 권장됩니다.",
+          "clearCacheConfirm": "GeoIP 조회 캐시를 지울까요? 이후 로그인은 원격 제공자에 다시 조회합니다.",
+          "clearCacheSuccess": "GeoIP 조회 캐시를 지웠습니다: {count}."
+        },
+        "status": {
+          "cacheCount": "캐시된 IP",
+          "lastLookupAt": "마지막 조회",
+          "lastBlockedAt": "마지막 차단"
+        },
+        "result": {
+          "country": "국가",
+          "city": "도시",
+          "provider": "제공자"
+        },
+        "log": {
+          "timestamp": "시간",
+          "player": "플레이어",
+          "country": "국가",
+          "reason": "사유",
+          "decision": "판정"
         }
       }
     }

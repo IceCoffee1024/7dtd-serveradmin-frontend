@@ -2639,6 +2639,101 @@ export const vTeleportToPlayerRequestDto = v.strictObject({
     targetEntityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
 });
 
+export const vGeoIpAccessControlProvider = v.picklist([
+    'IpWhoIs',
+    'IpApi',
+    'IpInfo'
+]);
+
+export const vGeoIpAccessControlMode = v.picklist([
+    'Disabled',
+    'AllowCountries',
+    'BlockCountries'
+]);
+
+export const vGeoIpUnknownCountryPolicy = v.picklist(['Allow', 'Block']);
+
+export const vGeoIpPrivateIpPolicy = v.picklist(['Allow', 'Block']);
+
+export const vGeoIpAccessAction = v.picklist(['Kick']);
+
+export const vGeoIpAccessControlSettingsDto = v.strictObject({
+    isEnabled: v.optional(v.boolean()),
+    provider: v.optional(vGeoIpAccessControlProvider),
+    ipInfoToken: v.nullish(v.string()),
+    cacheTtlMinutes: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    failureCacheTtlMinutes: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    requestTimeoutSeconds: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    mode: v.optional(vGeoIpAccessControlMode),
+    allowedCountryCodes: v.nullish(v.array(v.string())),
+    blockedCountryCodes: v.nullish(v.array(v.string())),
+    ipAllowList: v.nullish(v.array(v.string())),
+    ipBlockList: v.nullish(v.array(v.string())),
+    unknownCountryPolicy: v.optional(vGeoIpUnknownCountryPolicy),
+    privateIpPolicy: v.optional(vGeoIpPrivateIpPolicy),
+    bypassAdmins: v.optional(v.boolean()),
+    action: v.optional(vGeoIpAccessAction),
+    kickMessage: v.nullish(v.string()),
+    logAllowedDecisions: v.optional(v.boolean())
+});
+
+export const vGeoIpAccessDecision = v.picklist([
+    'Allowed',
+    'Blocked',
+    'LookupFailed',
+    'Skipped'
+]);
+
+export const vGeoIpAccessDecisionLogDto = v.strictObject({
+    timestamp: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    playerId: v.string(),
+    playerName: v.nullish(v.string()),
+    ip: v.nullish(v.string()),
+    countryCode: v.nullish(v.string()),
+    countryName: v.nullish(v.string()),
+    provider: v.optional(vGeoIpAccessControlProvider),
+    decision: v.optional(vGeoIpAccessDecision),
+    reason: v.string(),
+    action: v.nullish(vGeoIpAccessAction),
+    lookupSucceeded: v.optional(v.boolean()),
+    errorMessage: v.nullish(v.string())
+});
+
+export const vGeoIpAccessControlStatusDto = v.strictObject({
+    isEnabled: v.optional(v.boolean()),
+    provider: v.optional(vGeoIpAccessControlProvider),
+    cacheCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    lastLookupAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastBlockedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    lastError: v.nullish(v.string()),
+    recentDecisions: v.optional(v.array(vGeoIpAccessDecisionLogDto))
+});
+
+export const vGeoIpLookupResultDto = v.strictObject({
+    ip: v.string(),
+    countryCode: v.nullish(v.string()),
+    countryName: v.nullish(v.string()),
+    region: v.nullish(v.string()),
+    city: v.nullish(v.string()),
+    asn: v.nullish(v.string()),
+    isp: v.nullish(v.string()),
+    provider: v.string(),
+    succeeded: v.optional(v.boolean()),
+    errorMessage: v.nullish(v.string()),
+    fetchedAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    expiresAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    fromCache: v.optional(v.boolean())
+});
+
+export const vGeoIpLookupTestRequestDto = v.strictObject({
+    ip: v.string()
+});
+
+export const vGeoIpCacheClearResultDto = v.strictObject({
+    clearedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    clearedAt: v.optional(v.pipe(v.string(), v.isoTimestamp()))
+});
+
 /**
  * Settings transfer object for the online-time reward feature.
  */
@@ -3775,6 +3870,18 @@ export const vGameServerTeleportToPositionBody = vTeleportToPositionRequestDto;
  * Teleport request containing both entity ids.
  */
 export const vGameServerTeleportToPlayerBody = vTeleportToPlayerRequestDto;
+
+export const vGeoIpAccessControlResetSettingsQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGeoIpAccessControlGetSettingsQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGeoIpAccessControlUpdateSettingsBody = vGeoIpAccessControlSettingsDto;
+
+export const vGeoIpAccessControlTestLookupBody = vGeoIpLookupTestRequestDto;
 
 /**
  * Feature settings payload from the management UI.

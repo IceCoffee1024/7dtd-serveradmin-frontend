@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "Controle de acesso GeoIP",
+    "geoIpAccessControlSettings": "Configurações"
   },
   "components": {
     "myTable": {
@@ -2722,7 +2724,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "Configuração do provedor GeoIP inválida: {0}.",
+        "geoIpIpApiHttpWarning": "O endpoint gratuito do ip-api usa HTTP e tem limites de taxa/uso comercial.",
+        "geoIpModeDisabled": "O modo de política de países GeoIP está desativado.",
+        "geoIpAllowedCountriesEmpty": "O modo de países permitidos está ativo, mas nenhum código foi configurado.",
+        "geoIpBlockedCountriesEmpty": "O modo de países bloqueados está ativo, mas nenhum código foi configurado.",
+        "geoIpAllowedCountryInvalid": "Código de país permitido inválido: {0}.",
+        "geoIpBlockedCountryInvalid": "Código de país bloqueado inválido: {0}.",
+        "geoIpIpAllowListInvalid": "Entrada IP/CIDR inválida na lista permitida: {0}.",
+        "geoIpIpBlockListInvalid": "Entrada IP/CIDR inválida na lista bloqueada: {0}.",
+        "geoIpUnknownCountryBlocked": "Países desconhecidos estão bloqueados. Falhas do provedor podem rejeitar jogadores.",
+        "geoIpLastLookupError": "Último erro de consulta GeoIP: {0}.",
+        "geoIpAllowCountries": "A política GeoIP de países permitidos está ativa.",
+        "geoIpBlockCountries": "A política GeoIP de países bloqueados está ativa."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2796,7 +2811,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Provedores GeoIP remotos",
+        "countryAllowBlock": "Regras de permitir/bloquear países",
+        "ipCidrExceptions": "Exceções IP/CIDR",
+        "lookupCache": "Cache de consultas",
+        "accessDecisionLog": "Log de decisões de acesso"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Controla o login de jogadores por consulta GeoIP remota, regras de país e exceções IP/CIDR.",
+        "sections": {
+          "provider": "Provedor",
+          "countryPolicy": "Política de países",
+          "ipExceptions": "Exceções de IP",
+          "status": "Status e consulta"
+        },
+        "fields": {
+          "isEnabled": "Ativar controle de acesso GeoIP",
+          "provider": "Provedor de consulta",
+          "ipInfoToken": "Token do ipinfo",
+          "requestTimeoutSeconds": "Tempo limite da requisição (segundos)",
+          "cacheTtlMinutes": "TTL do cache de sucesso (minutos)",
+          "failureCacheTtlMinutes": "TTL do cache de falha (minutos)",
+          "mode": "Modo da política",
+          "unknownCountryPolicy": "Política para país desconhecido",
+          "privateIpPolicy": "Política para IP privado/local",
+          "allowedCountryCodes": "Códigos de país permitidos",
+          "blockedCountryCodes": "Códigos de país bloqueados",
+          "ipAllowList": "Lista permitida IP/CIDR",
+          "ipBlockList": "Lista bloqueada IP/CIDR",
+          "kickMessage": "Mensagem de expulsão",
+          "logAllowedDecisions": "Registrar decisões permitidas",
+          "bypassAdmins": "Ignorar regras GeoIP para administradores"
+        },
+        "modes": {
+          "disabled": "Desativado",
+          "allowCountries": "Permitir apenas países listados",
+          "blockCountries": "Bloquear países listados"
+        },
+        "policies": {
+          "allow": "Permitir",
+          "block": "Bloquear"
+        },
+        "actions": {
+          "testLookup": "Testar consulta",
+          "clearCache": "Limpar cache"
+        },
+        "placeholders": {
+          "testIp": "Endereço IP para testar"
+        },
+        "messages": {
+          "saveSuccess": "Configurações GeoIP salvas.",
+          "resetConfirm": "Redefinir configurações de acesso GeoIP?",
+          "resetSuccess": "Configurações GeoIP redefinidas.",
+          "unsavedChanges": "Há alterações GeoIP não salvas. Sair da página?",
+          "lookupSuccess": "Consulta GeoIP concluída.",
+          "ipApiWarning": "O endpoint gratuito do ip-api usa HTTP e tem limites de uso. Use apenas para testes ou pequenos servidores privados.",
+          "clearCacheConfirm": "Limpar o cache de GeoIP? Próximos logins consultarão novamente o provedor remoto.",
+          "clearCacheSuccess": "Cache de GeoIP limpo: {count}."
+        },
+        "status": {
+          "cacheCount": "IPs em cache",
+          "lastLookupAt": "Última consulta",
+          "lastBlockedAt": "Último bloqueio"
+        },
+        "result": {
+          "country": "País",
+          "city": "Cidade",
+          "provider": "Provedor"
+        },
+        "log": {
+          "timestamp": "Hora",
+          "player": "Jogador",
+          "country": "País",
+          "reason": "Motivo",
+          "decision": "Decisão"
         }
       }
     }

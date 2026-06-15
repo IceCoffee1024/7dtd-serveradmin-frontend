@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "GeoIP Access Control",
+    "geoIpAccessControlSettings": "Settings"
   },
   "components": {
     "myTable": {
@@ -2764,7 +2766,20 @@
         "discordPublicAdminChannelSame": "Public and admin channel IDs are the same. Split them to reduce accidental command exposure.",
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
-        "discordAccountBindingEnabled": "Discord account binding is enabled."
+        "discordAccountBindingEnabled": "Discord account binding is enabled.",
+        "geoIpProviderInvalid": "GeoIP provider configuration is invalid: {0}.",
+        "geoIpIpApiHttpWarning": "ip-api free endpoint uses HTTP and has rate/commercial-use limits.",
+        "geoIpModeDisabled": "GeoIP country policy mode is disabled.",
+        "geoIpAllowedCountriesEmpty": "Allow-country mode is enabled but no allowed country code is configured.",
+        "geoIpBlockedCountriesEmpty": "Block-country mode is enabled but no blocked country code is configured.",
+        "geoIpAllowedCountryInvalid": "Invalid allowed country code: {0}.",
+        "geoIpBlockedCountryInvalid": "Invalid blocked country code: {0}.",
+        "geoIpIpAllowListInvalid": "Invalid IP/CIDR allow-list entry: {0}.",
+        "geoIpIpBlockListInvalid": "Invalid IP/CIDR block-list entry: {0}.",
+        "geoIpUnknownCountryBlocked": "Unknown countries are blocked. Provider failures may reject players.",
+        "geoIpLastLookupError": "Last GeoIP lookup error: {0}.",
+        "geoIpAllowCountries": "GeoIP allow-country policy is active.",
+        "geoIpBlockCountries": "GeoIP block-country policy is active."
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2838,7 +2853,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "Remote GeoIP providers",
+        "countryAllowBlock": "Country allow/block rules",
+        "ipCidrExceptions": "IP/CIDR exceptions",
+        "lookupCache": "Lookup cache",
+        "accessDecisionLog": "Access decision log"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "Control player login access by remote GeoIP lookup, country rules, and IP/CIDR exceptions.",
+        "sections": {
+          "provider": "Provider",
+          "countryPolicy": "Country Policy",
+          "ipExceptions": "IP Exceptions",
+          "status": "Status & Lookup"
+        },
+        "fields": {
+          "isEnabled": "Enable GeoIP access control",
+          "provider": "Lookup provider",
+          "ipInfoToken": "ipinfo token",
+          "requestTimeoutSeconds": "Request timeout (seconds)",
+          "cacheTtlMinutes": "Success cache TTL (minutes)",
+          "failureCacheTtlMinutes": "Failure cache TTL (minutes)",
+          "mode": "Policy mode",
+          "unknownCountryPolicy": "Unknown country policy",
+          "privateIpPolicy": "Private/local IP policy",
+          "allowedCountryCodes": "Allowed country codes",
+          "blockedCountryCodes": "Blocked country codes",
+          "ipAllowList": "IP/CIDR allow-list",
+          "ipBlockList": "IP/CIDR block-list",
+          "kickMessage": "Kick message",
+          "logAllowedDecisions": "Log allowed decisions",
+          "bypassAdmins": "Bypass GeoIP rules for admins"
+        },
+        "modes": {
+          "disabled": "Disabled",
+          "allowCountries": "Allow only listed countries",
+          "blockCountries": "Block listed countries"
+        },
+        "policies": {
+          "allow": "Allow",
+          "block": "Block"
+        },
+        "actions": {
+          "testLookup": "Test lookup",
+          "clearCache": "Clear cache"
+        },
+        "placeholders": {
+          "testIp": "IP address to test"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP access control settings saved.",
+          "resetConfirm": "Reset GeoIP access control settings?",
+          "resetSuccess": "GeoIP access control settings reset.",
+          "unsavedChanges": "You have unsaved GeoIP access control changes. Leave this page?",
+          "lookupSuccess": "GeoIP lookup completed.",
+          "ipApiWarning": "ip-api free endpoint uses HTTP and has usage limits. Use it for testing or small private deployments only.",
+          "clearCacheConfirm": "Clear the GeoIP lookup cache? Future logins will query the remote provider again.",
+          "clearCacheSuccess": "GeoIP lookup cache cleared: {count}."
+        },
+        "status": {
+          "cacheCount": "Cached IPs",
+          "lastLookupAt": "Last lookup",
+          "lastBlockedAt": "Last block"
+        },
+        "result": {
+          "country": "Country",
+          "city": "City",
+          "provider": "Provider"
+        },
+        "log": {
+          "timestamp": "Time",
+          "player": "Player",
+          "country": "Country",
+          "reason": "Reason",
+          "decision": "Decision"
         }
       }
     }

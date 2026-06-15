@@ -104,7 +104,9 @@
     "eventAutomationSettings": "Settings",
     "eventAutomationRuns": "Run History",
     "discordIntegration": "Discord Integration",
-    "discordIntegrationSettings": "Settings"
+    "discordIntegrationSettings": "Settings",
+    "geoIpAccessControl": "GeoIP アクセス制御",
+    "geoIpAccessControlSettings": "設定"
   },
   "components": {
     "myTable": {
@@ -2764,7 +2766,20 @@
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
         "discordAccountBindingEnabled": "Discord account binding is enabled.",
-        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}."
+        "economyInvalidShopItem": "Shop item #{0} \"{1}\" uses an invalid game item ID: {2}.",
+        "geoIpProviderInvalid": "GeoIP プロバイダー設定が無効です: {0}。",
+        "geoIpIpApiHttpWarning": "ip-api の無料エンドポイントは HTTP を使用し、レート/商用利用制限があります。",
+        "geoIpModeDisabled": "GeoIP の国別ポリシーモードは無効です。",
+        "geoIpAllowedCountriesEmpty": "国の許可モードが有効ですが、許可する国コードが設定されていません。",
+        "geoIpBlockedCountriesEmpty": "国のブロックモードが有効ですが、ブロックする国コードが設定されていません。",
+        "geoIpAllowedCountryInvalid": "無効な許可国コード: {0}。",
+        "geoIpBlockedCountryInvalid": "無効なブロック国コード: {0}。",
+        "geoIpIpAllowListInvalid": "IP/CIDR 許可リストの無効な項目: {0}。",
+        "geoIpIpBlockListInvalid": "IP/CIDR ブロックリストの無効な項目: {0}。",
+        "geoIpUnknownCountryBlocked": "不明な国はブロックされます。プロバイダー障害でプレイヤーが拒否される可能性があります。",
+        "geoIpLastLookupError": "直近の GeoIP 検索エラー: {0}。",
+        "geoIpAllowCountries": "GeoIP の国許可ポリシーが有効です。",
+        "geoIpBlockCountries": "GeoIP の国ブロックポリシーが有効です。"
       },
       "issueCount": "{0} issues",
       "issueSeverity": {
@@ -2838,7 +2853,12 @@
         "discordAccountBinding": "Discord account binding",
         "discordBindingCodes": "Discord binding codes",
         "discordBot": "Discord Bot gateway",
-        "discordSlashCommands": "Discord slash commands"
+        "discordSlashCommands": "Discord slash commands",
+        "remoteGeoIpProviders": "リモート GeoIP プロバイダー",
+        "countryAllowBlock": "国の許可/ブロックルール",
+        "ipCidrExceptions": "IP/CIDR 例外",
+        "lookupCache": "検索キャッシュ",
+        "accessDecisionLog": "アクセス判定ログ"
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
@@ -3515,6 +3535,78 @@
           "botCommands": "Bot & commands",
           "accountBinding": "Account binding",
           "alertsDiagnostics": "Alerts & diagnostics"
+        }
+      }
+    },
+    "geoIpAccessControl": {
+      "settings": {
+        "description": "リモート GeoIP 検索、国別ルール、IP/CIDR 例外でプレイヤーのログインを制御します。",
+        "sections": {
+          "provider": "プロバイダー",
+          "countryPolicy": "国別ポリシー",
+          "ipExceptions": "IP 例外",
+          "status": "状態と検索"
+        },
+        "fields": {
+          "isEnabled": "GeoIP アクセス制御を有効化",
+          "provider": "検索プロバイダー",
+          "ipInfoToken": "ipinfo トークン",
+          "requestTimeoutSeconds": "リクエストタイムアウト（秒）",
+          "cacheTtlMinutes": "成功キャッシュ TTL（分）",
+          "failureCacheTtlMinutes": "失敗キャッシュ TTL（分）",
+          "mode": "ポリシーモード",
+          "unknownCountryPolicy": "不明な国のポリシー",
+          "privateIpPolicy": "プライベート/ローカル IP ポリシー",
+          "allowedCountryCodes": "許可する国コード",
+          "blockedCountryCodes": "ブロックする国コード",
+          "ipAllowList": "IP/CIDR 許可リスト",
+          "ipBlockList": "IP/CIDR ブロックリスト",
+          "kickMessage": "キックメッセージ",
+          "logAllowedDecisions": "許可判定を記録",
+          "bypassAdmins": "管理者は GeoIP ルールを回避"
+        },
+        "modes": {
+          "disabled": "無効",
+          "allowCountries": "リスト内の国のみ許可",
+          "blockCountries": "リスト内の国をブロック"
+        },
+        "policies": {
+          "allow": "許可",
+          "block": "ブロック"
+        },
+        "actions": {
+          "testLookup": "検索をテスト",
+          "clearCache": "キャッシュをクリア"
+        },
+        "placeholders": {
+          "testIp": "テストする IP アドレス"
+        },
+        "messages": {
+          "saveSuccess": "GeoIP アクセス制御設定を保存しました。",
+          "resetConfirm": "GeoIP アクセス制御設定をリセットしますか？",
+          "resetSuccess": "GeoIP アクセス制御設定をリセットしました。",
+          "unsavedChanges": "保存されていない GeoIP 変更があります。このページを離れますか？",
+          "lookupSuccess": "GeoIP 検索が完了しました。",
+          "ipApiWarning": "ip-api の無料エンドポイントは HTTP を使用し、利用制限があります。テストまたは小規模な個人サーバー向けです。",
+          "clearCacheConfirm": "GeoIP 検索キャッシュをクリアしますか？以後のログインではリモートプロバイダーへ再問い合わせします。",
+          "clearCacheSuccess": "GeoIP 検索キャッシュをクリアしました: {count}。"
+        },
+        "status": {
+          "cacheCount": "キャッシュ済み IP",
+          "lastLookupAt": "最終検索",
+          "lastBlockedAt": "最終ブロック"
+        },
+        "result": {
+          "country": "国",
+          "city": "都市",
+          "provider": "プロバイダー"
+        },
+        "log": {
+          "timestamp": "時刻",
+          "player": "プレイヤー",
+          "country": "国",
+          "reason": "理由",
+          "decision": "判定"
         }
       }
     }

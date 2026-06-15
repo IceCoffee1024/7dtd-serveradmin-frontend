@@ -1953,7 +1953,7 @@ export type EconomyFeatureSettingsDto = {
      */
     buyUsageTip?: string | null;
     /**
-     * Buy success reply template. Supports {name}, {quantity}, {cost}, {currency}.
+     * Buy success reply template. Supports {name}, {quantity}, {cost}, {balance}, {currency}.
      */
     buySuccessTip?: string | null;
     /**
@@ -5350,6 +5350,88 @@ export type TeleportToPlayerRequestDto = {
      * In-game entity id of the destination player whose position is used as the target.
      */
     targetEntityId: number;
+};
+
+export type GeoIpAccessControlSettingsDto = {
+    isEnabled?: boolean;
+    provider?: GeoIpAccessControlProvider;
+    ipInfoToken?: string | null;
+    cacheTtlMinutes?: number;
+    failureCacheTtlMinutes?: number;
+    requestTimeoutSeconds?: number;
+    mode?: GeoIpAccessControlMode;
+    allowedCountryCodes?: Array<string> | null;
+    blockedCountryCodes?: Array<string> | null;
+    ipAllowList?: Array<string> | null;
+    ipBlockList?: Array<string> | null;
+    unknownCountryPolicy?: GeoIpUnknownCountryPolicy;
+    privateIpPolicy?: GeoIpPrivateIpPolicy;
+    bypassAdmins?: boolean;
+    action?: GeoIpAccessAction;
+    kickMessage?: string | null;
+    logAllowedDecisions?: boolean;
+};
+
+export type GeoIpAccessControlProvider = 'IpWhoIs' | 'IpApi' | 'IpInfo';
+
+export type GeoIpAccessControlMode = 'Disabled' | 'AllowCountries' | 'BlockCountries';
+
+export type GeoIpUnknownCountryPolicy = 'Allow' | 'Block';
+
+export type GeoIpPrivateIpPolicy = 'Allow' | 'Block';
+
+export type GeoIpAccessAction = 'Kick';
+
+export type GeoIpAccessControlStatusDto = {
+    isEnabled?: boolean;
+    provider?: GeoIpAccessControlProvider;
+    cacheCount?: number;
+    lastLookupAt?: string | null;
+    lastBlockedAt?: string | null;
+    lastError?: string | null;
+    recentDecisions?: Array<GeoIpAccessDecisionLogDto>;
+};
+
+export type GeoIpAccessDecisionLogDto = {
+    timestamp?: string;
+    playerId: string;
+    playerName?: string | null;
+    ip?: string | null;
+    countryCode?: string | null;
+    countryName?: string | null;
+    provider?: GeoIpAccessControlProvider;
+    decision?: GeoIpAccessDecision;
+    reason: string;
+    action?: GeoIpAccessAction | null;
+    lookupSucceeded?: boolean;
+    errorMessage?: string | null;
+};
+
+export type GeoIpAccessDecision = 'Allowed' | 'Blocked' | 'LookupFailed' | 'Skipped';
+
+export type GeoIpLookupResultDto = {
+    ip: string;
+    countryCode?: string | null;
+    countryName?: string | null;
+    region?: string | null;
+    city?: string | null;
+    asn?: string | null;
+    isp?: string | null;
+    provider: string;
+    succeeded?: boolean;
+    errorMessage?: string | null;
+    fetchedAt?: string;
+    expiresAt?: string;
+    fromCache?: boolean;
+};
+
+export type GeoIpLookupTestRequestDto = {
+    ip: string;
+};
+
+export type GeoIpCacheClearResultDto = {
+    clearedCount?: number;
+    clearedAt?: string;
 };
 
 /**
@@ -10483,6 +10565,104 @@ export type GameServerTeleportToPlayerResponses = {
 };
 
 export type GameServerTeleportToPlayerResponse = GameServerTeleportToPlayerResponses[keyof GameServerTeleportToPlayerResponses];
+
+export type GeoIpAccessControlResetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        language?: Language | null;
+    };
+    url: '/api/GeoIpAccessControl/Settings';
+};
+
+export type GeoIpAccessControlResetSettingsResponses = {
+    200: GeoIpAccessControlSettingsDto;
+};
+
+export type GeoIpAccessControlResetSettingsResponse = GeoIpAccessControlResetSettingsResponses[keyof GeoIpAccessControlResetSettingsResponses];
+
+export type GeoIpAccessControlGetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        language?: Language | null;
+    };
+    url: '/api/GeoIpAccessControl/Settings';
+};
+
+export type GeoIpAccessControlGetSettingsResponses = {
+    200: GeoIpAccessControlSettingsDto;
+};
+
+export type GeoIpAccessControlGetSettingsResponse = GeoIpAccessControlGetSettingsResponses[keyof GeoIpAccessControlGetSettingsResponses];
+
+export type GeoIpAccessControlUpdateSettingsData = {
+    body: GeoIpAccessControlSettingsDto;
+    path?: never;
+    query?: never;
+    url: '/api/GeoIpAccessControl/Settings';
+};
+
+export type GeoIpAccessControlUpdateSettingsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GeoIpAccessControlUpdateSettingsError = GeoIpAccessControlUpdateSettingsErrors[keyof GeoIpAccessControlUpdateSettingsErrors];
+
+export type GeoIpAccessControlUpdateSettingsResponses = {
+    200: unknown;
+};
+
+export type GeoIpAccessControlGetStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/GeoIpAccessControl/Status';
+};
+
+export type GeoIpAccessControlGetStatusResponses = {
+    200: GeoIpAccessControlStatusDto;
+};
+
+export type GeoIpAccessControlGetStatusResponse = GeoIpAccessControlGetStatusResponses[keyof GeoIpAccessControlGetStatusResponses];
+
+export type GeoIpAccessControlTestLookupData = {
+    body: GeoIpLookupTestRequestDto;
+    path?: never;
+    query?: never;
+    url: '/api/GeoIpAccessControl/TestLookup';
+};
+
+export type GeoIpAccessControlTestLookupErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GeoIpAccessControlTestLookupError = GeoIpAccessControlTestLookupErrors[keyof GeoIpAccessControlTestLookupErrors];
+
+export type GeoIpAccessControlTestLookupResponses = {
+    200: GeoIpLookupResultDto;
+};
+
+export type GeoIpAccessControlTestLookupResponse = GeoIpAccessControlTestLookupResponses[keyof GeoIpAccessControlTestLookupResponses];
+
+export type GeoIpAccessControlClearCacheData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/GeoIpAccessControl/Cache';
+};
+
+export type GeoIpAccessControlClearCacheErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type GeoIpAccessControlClearCacheError = GeoIpAccessControlClearCacheErrors[keyof GeoIpAccessControlClearCacheErrors];
+
+export type GeoIpAccessControlClearCacheResponses = {
+    200: GeoIpCacheClearResultDto;
+};
+
+export type GeoIpAccessControlClearCacheResponse = GeoIpAccessControlClearCacheResponses[keyof GeoIpAccessControlClearCacheResponses];
 
 export type OnlineRewardResetSettingsData = {
     body?: never;
