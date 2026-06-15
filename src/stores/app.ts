@@ -38,7 +38,7 @@ const BASE_THEME_SETTINGS = {
     },
     sidebar: {
       collapsed: false,
-      width: 260,
+      width: 280,
       collapsedWidth: 64,
     },
     tab: {
