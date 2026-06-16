@@ -1,0 +1,145 @@
+import process from 'node:process';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const DEFAULT_BASE_URL = 'http://7dtdserver.local:8088';
+
+function loadDotEnv() {
+  const envPath = resolve(process.cwd(), '.env');
+  try {
+    const content = readFileSync(envPath, 'utf8');
+    for (const line of content.split(/\r?\n/)) {
+      const match = line.match(/^\s*([^#=\s]+)\s*=\s*(.*)\s*$/);
+      if (!match)
+        continue;
+
+      const [, key, rawValue] = match;
+      if (process.env[key] != null)
+        continue;
+
+      process.env[key] = rawValue.trim().replace(/^['"]|['"]$/g, '');
+    }
+  }
+  catch {
+    // .env is optional for CI and ad-hoc local runs.
+  }
+}
+
+function getAuthHeader() {
+  const username = process.env.LIVE_SMOKE_USERNAME || process.env.VITE_DEFAULT_USERNAME;
+  const password = process.env.LIVE_SMOKE_PASSWORD || process.env.VITE_DEFAULT_PASSWORD;
+  if (!username || !password)
+    return undefined;
+
+  return `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
+}
+
+async function requestJson(baseUrl, path, authHeader) {
+  const response = await fetch(new URL(path, baseUrl), {
+    headers: {
+      Accept: 'application/json',
+      ...(authHeader ? { Authorization: authHeader } : {}),
+    },
+  });
+
+  const text = await response.text();
+  let body = null;
+  if (text) {
+    try {
+      body = JSON.parse(text);
+    }
+    catch {
+      body = text;
+    }
+  }
+
+  if (!response.ok) {
+    const summary = typeof body === 'string' ? body.slice(0, 200) : JSON.stringify(body)?.slice(0, 200);
+    throw new Error(`${response.status} ${response.statusText}${summary ? `: ${summary}` : ''}`);
+  }
+
+  return body;
+}
+
+function assert(condition, message) {
+  if (!condition)
+    throw new Error(message);
+}
+
+async function runStep(results, name, action) {
+  const started = Date.now();
+  try {
+    const details = await action();
+    results.push({ name, status: 'PASS', durationMs: Date.now() - started, details });
+  }
+  catch (error) {
+    results.push({ name, status: 'FAIL', durationMs: Date.now() - started, error: error instanceof Error ? error.message : String(error) });
+  }
+}
+
+loadDotEnv();
+
+const baseUrl = process.env.LIVE_SMOKE_BASE_URL
+  || process.env.VITE_OPENAPI_INPUT?.replace(/\/swagger\/v1\/swagger\.json$/i, '')
+  || DEFAULT_BASE_URL;
+const authHeader = getAuthHeader();
+const results = [];
+
+await runStep(results, 'swagger schema is reachable', async () => {
+  const schema = await requestJson(baseUrl, '/swagger/v1/swagger.json', authHeader);
+  assert(schema?.paths, 'Swagger schema does not contain paths.');
+  return `${Object.keys(schema.paths).length} paths`;
+});
+
+await runStep(results, 'server settings expose 7dtd 3.0 keys', async () => {
+  const settings = await requestJson(baseUrl, '/api/GameServer/ServerSettings', authHeader);
+  assert(settings && typeof settings === 'object' && !Array.isArray(settings), 'ServerSettings response is not an object.');
+  assert(Object.keys(settings).length >= 50, `ServerSettings returned too few keys: ${Object.keys(settings).length}`);
+  assert('SandboxCode' in settings, 'ServerSettings is missing SandboxCode.');
+  return `${Object.keys(settings).length} settings`;
+});
+
+await runStep(results, 'known languages include 7dtd 3.0 columns', async () => {
+  const columns = await requestJson(baseUrl, '/api/GameServer/KnownLanguages', authHeader);
+  assert(Array.isArray(columns), 'KnownLanguages response is not an array.');
+  assert(columns.some(column => String(column).toLowerCase() === 'keeploaded'), 'KnownLanguages is missing KeepLoaded.');
+  assert(columns.some(column => String(column).toLowerCase() === 'english'), 'KnownLanguages is missing english.');
+  return columns.join(', ');
+});
+
+await runStep(results, 'english game items include localized names', async () => {
+  const items = await requestJson(baseUrl, '/api/GameServer/GameItems?language=English', authHeader);
+  assert(Array.isArray(items), 'GameItems response is not an array.');
+  assert(items.length > 0, 'GameItems returned no items.');
+  const localizedCount = items.filter(item => typeof item?.localizedName === 'string' && item.localizedName.trim()).length;
+  assert(localizedCount > 0, 'GameItems returned no localizedName values.');
+  const stone = items.find(item => item?.name === 'terrStone');
+  assert(!stone || stone.localizedName === 'Stone', `terrStone localizedName mismatch: ${stone?.localizedName ?? 'item not found'}`);
+  return `${items.length} items, ${localizedCount} localized`;
+});
+
+await runStep(results, 'geoip status endpoint is reachable', async () => {
+  const status = await requestJson(baseUrl, '/api/GeoIpAccessControl/Status', authHeader);
+  assert(status && typeof status === 'object', 'GeoIP status response is not an object.');
+  return `enabled=${Boolean(status.isEnabled)}, provider=${status.provider ?? 'unknown'}, cache=${status.cacheCount ?? 0}`;
+});
+
+await runStep(results, 'discord bot status endpoint is reachable', async () => {
+  const status = await requestJson(baseUrl, '/api/DiscordIntegration/BotStatus', authHeader);
+  assert(status && typeof status === 'object', 'Discord BotStatus response is not an object.');
+  return `state=${status.state ?? 'unknown'}, running=${Boolean(status.isRunning)}, ready=${Boolean(status.isReady)}`;
+});
+
+for (const result of results) {
+  const line = `${result.status} ${result.name} (${result.durationMs}ms)`;
+  console.log(result.details ? `${line}: ${result.details}` : `${line}${result.error ? `: ${result.error}` : ''}`);
+}
+
+const failed = results.filter(result => result.status === 'FAIL');
+if (failed.length > 0) {
+  console.error(`Live smoke failed: ${failed.length}/${results.length} checks failed.`);
+  process.exitCode = 1;
+}
+else {
+  console.log(`Live smoke passed: ${results.length}/${results.length} checks passed.`);
+}
