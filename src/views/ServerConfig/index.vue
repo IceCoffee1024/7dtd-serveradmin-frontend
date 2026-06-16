@@ -25,7 +25,7 @@ interface ServerConfigGroup {
   children: ServerConfigItem[];
 }
 
-const { t, locale } = useI18n();
+const { t, te, locale } = useI18n();
 const { prompt } = usePopup();
 
 const modelValue = ref<ServerConfigGroup[]>([]);
@@ -42,11 +42,14 @@ function applyData(data: Record<string, string>) {
   const list: ServerConfigItem[] = [];
 
   Object.keys(data).forEach((key) => {
+    const descKey = `views.serverConfig.settings.${key}.desc`;
+    const groupKey = `views.serverConfig.settings.${key}.group`;
+
     list.push({
       name: key,
       value: data[key],
-      desc: t(`views.serverConfig.settings.${key}.desc`),
-      group: t(`views.serverConfig.settings.${key}.group`),
+      desc: te(descKey) ? t(descKey) : key,
+      group: te(groupKey) ? t(groupKey) : t('views.serverConfig.fallbackGroup'),
     });
   });
 

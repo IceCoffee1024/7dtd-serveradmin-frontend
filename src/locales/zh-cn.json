@@ -2435,8 +2435,13 @@
         "QuestProgressionDailyLimit": {
           "group": "其他",
           "desc": "每日任务进度限制。限制玩家每天可完成的有助于任务等级提升的任务数量。超过限制的任务仍可完成以获得奖励"
+        },
+        "SandboxCode": {
+          "group": "其他",
+          "desc": "沙盒代码。游戏用于识别当前服务器沙盒/世界配置的唯一代码。除非明确需要创建或分离沙盒，否则不要随意修改。"
         }
-      }
+      },
+      "fallbackGroup": "其他"
     },
     "console": {
       "invalidCommand": {

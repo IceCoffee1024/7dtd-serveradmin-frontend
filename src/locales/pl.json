@@ -1158,8 +1158,13 @@
         "QuestProgressionDailyLimit": {
           "group": "Inny",
           "desc": "Dzienny limit postępu misji. \nOgranicza liczbę zadań, które gracz może wykonać każdego dnia, aby zwiększyć poziom zadań. \nZadania przekraczające limit można nadal ukończyć, aby otrzymać nagrody"
+        },
+        "SandboxCode": {
+          "group": "Inny",
+          "desc": "Kod piaskownicy. Unikalny kod używany przez grę do identyfikacji konfiguracji piaskownicy/świata tego serwera. Zmieniaj go tylko wtedy, gdy celowo chcesz utworzyć lub oddzielić piaskownicę."
         }
-      }
+      },
+      "fallbackGroup": "Inny"
     },
     "appSettings": {
       "empty": "Brak dostępnych ustawień aplikacji.",

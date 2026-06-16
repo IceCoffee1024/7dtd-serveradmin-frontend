@@ -1158,8 +1158,13 @@
         "QuestProgressionDailyLimit": {
           "group": "Diğer",
           "desc": "Günlük görev ilerleme sınırı. \nGörev seviyelerini artırmaya yardımcı olmak için bir oyuncunun her gün tamamlayabileceği görev sayısını sınırlar. \nSınırın üzerindeki görevler ödül almak için hâlâ tamamlanabilir"
+        },
+        "SandboxCode": {
+          "group": "Diğer",
+          "desc": "Sandbox kodu. Oyunun bu sunucunun sandbox/dünya yapılandırmasını tanımlamak için kullandığı benzersiz koddur. Bilerek yeni bir sandbox oluşturmak veya ayırmak istemiyorsanız değiştirmeyin."
         }
-      }
+      },
+      "fallbackGroup": "Diğer"
     },
     "appSettings": {
       "empty": "Uygulama ayarları mevcut değil.",

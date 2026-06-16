@@ -1158,8 +1158,13 @@
         "QuestProgressionDailyLimit": {
           "group": "Autre",
           "desc": "Limite de progression quotidienne des quêtes. \nLimite le nombre de quêtes qu'un joueur peut accomplir chaque jour pour l'aider à augmenter son niveau de quête. \nLes quêtes au-dessus de la limite peuvent toujours être complétées pour recevoir des récompenses"
+        },
+        "SandboxCode": {
+          "group": "Autre",
+          "desc": "Code de sandbox. Code unique utilisé par le jeu pour identifier la configuration de sandbox/monde de ce serveur. Ne le modifiez que si vous voulez créer ou séparer volontairement une sandbox."
         }
-      }
+      },
+      "fallbackGroup": "Autre"
     },
     "appSettings": {
       "empty": "Aucun paramètre d'application disponible.",

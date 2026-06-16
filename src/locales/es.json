@@ -1158,8 +1158,13 @@
         "QuestProgressionDailyLimit": {
           "group": "Otro",
           "desc": "Límite de progreso diario de la misión. \nLimita la cantidad de misiones que un jugador puede completar cada día para ayudar a aumentar su nivel de misión. \nLas misiones que superen el límite aún se pueden completar para recibir recompensas."
+        },
+        "SandboxCode": {
+          "group": "Otro",
+          "desc": "Código de sandbox. Código único que el juego usa para identificar la configuración de sandbox/mundo de este servidor. No lo cambies salvo que quieras crear o separar una sandbox."
         }
-      }
+      },
+      "fallbackGroup": "Otro"
     },
     "appSettings": {
       "empty": "No hay configuraciones de aplicación disponibles.",

@@ -1158,8 +1158,13 @@
         "QuestProgressionDailyLimit": {
           "group": "Other",
           "desc": "Daily quest progress limit. Limits the number of quests a player can complete each day to help increase their quest level. Quests above the limit can still be completed to receive rewards"
+        },
+        "SandboxCode": {
+          "group": "Other",
+          "desc": "Sandbox code. Unique code used by the game to identify this server sandbox/world configuration. Keep it unchanged unless you intentionally want to create or separate a sandbox."
         }
-      }
+      },
+      "fallbackGroup": "Other"
     },
     "appSettings": {
       "empty": "No application settings available.",

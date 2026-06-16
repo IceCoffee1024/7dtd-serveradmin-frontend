@@ -1158,8 +1158,13 @@
         "QuestProgressionDailyLimit": {
           "group": "Andere",
           "desc": "Tägliches Questfortschrittslimit. \nBegrenzt die Anzahl der Quests, die ein Spieler täglich abschließen kann, um sein Questlevel zu erhöhen. \nQuests über dem Limit können weiterhin abgeschlossen werden, um Belohnungen zu erhalten"
+        },
+        "SandboxCode": {
+          "group": "Andere",
+          "desc": "Sandbox-Code. Eindeutiger Code, mit dem das Spiel diese Server-Sandbox bzw. Weltkonfiguration erkennt. Nur ändern, wenn Sie bewusst eine Sandbox erstellen oder trennen möchten."
         }
-      }
+      },
+      "fallbackGroup": "Andere"
     },
     "appSettings": {
       "empty": "Keine Anwendungseinstellungen verfügbar.",
