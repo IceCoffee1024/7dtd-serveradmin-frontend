@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from '@pinia/colada';
-import { groupBy } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { usePopup } from '~/composables';
 import {
@@ -8,22 +7,11 @@ import {
   gameServerSettingsPutMutation,
 } from '~/generated/api/@pinia/colada.gen';
 import { invalidateGeneratedQueries } from '~/queries/generated';
+import { buildServerConfigGroups, getServerConfigDisplayName, type ServerConfigGroup, type ServerConfigItem } from './serverConfigModel';
 
 defineOptions({
   name: 'ServerConfig',
 });
-
-interface ServerConfigItem {
-  name: string;
-  value: string;
-  desc: string;
-  group: string;
-}
-
-interface ServerConfigGroup {
-  group: string;
-  children: ServerConfigItem[];
-}
 
 const { t, te, locale } = useI18n();
 const { prompt } = usePopup();
@@ -39,30 +27,7 @@ const updateSettingsMutation = useMutation({
 });
 
 function applyData(data: Record<string, string>) {
-  const list: ServerConfigItem[] = [];
-
-  Object.keys(data).forEach((key) => {
-    const descKey = `views.serverConfig.settings.${key}.desc`;
-    const groupKey = `views.serverConfig.settings.${key}.group`;
-
-    list.push({
-      name: key,
-      value: data[key],
-      desc: te(descKey) ? t(descKey) : key,
-      group: te(groupKey) ? t(groupKey) : t('views.serverConfig.fallbackGroup'),
-    });
-  });
-
-  const grouped = groupBy(list, item => item.group);
-
-  const groupedList: ServerConfigGroup[] = [];
-  Object.keys(grouped).forEach((key) => {
-    groupedList.push({
-      group: key,
-      children: grouped[key],
-    });
-  });
-
+  const groupedList = buildServerConfigGroups(data, { t, te });
   modelValue.value = groupedList;
   activeCollapseNames.value = groupedList.map((_, index) => index);
 }
@@ -87,10 +52,7 @@ async function refreshData() {
 }
 
 function getName(str: string) {
-  if (!str) {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return getServerConfigDisplayName(str);
 }
 
 async function onEdit(data: ServerConfigItem) {
