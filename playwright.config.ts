@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const runtimeEnv = (globalThis as unknown as { "process"?: { env?: Record<string, string | undefined> } })["process"]?.env ?? {};
+const runtimeEnv = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
 const baseURL = runtimeEnv.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:5174';
 const useExternalServer = Boolean(runtimeEnv.PLAYWRIGHT_BASE_URL);
 
