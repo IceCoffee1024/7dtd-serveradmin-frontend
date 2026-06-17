@@ -106,6 +106,11 @@ export function initOpenLayers(
       return;
     }
 
+    if (map.getViewport().classList.contains('is-region-pick-mode')) {
+      mapContainer.style.cursor = 'crosshair';
+      return;
+    }
+
     if (event.dragging) {
       mapContainer.style.cursor = 'grabbing';
       return;

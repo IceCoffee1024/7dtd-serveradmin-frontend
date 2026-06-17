@@ -2,8 +2,11 @@
 import type Map from 'ol/Map';
 import type { SdtdMapInfo } from './types';
 import { useQueryCache } from '@pinia/colada';
+import { useRoute, useRouter } from 'vue-router';
 import { gameServerGetMapInfoQuery } from '~/generated/api/@pinia/colada.gen';
+import { i18n } from '~/plugins/i18n';
 import { initOpenLayers } from './openlayers/initOpenLayers';
+import { setupPlayerTrackingOverlay } from './openlayers/layers/playerTrackingOverlay';
 import { layerRegistry } from './openlayers/mapRegistry';
 import PopupContainer from './PopupContainer.vue';
 import { MapLifecycle } from './types';
@@ -14,6 +17,11 @@ const mapContainerRef = useTemplateRef('mapContainerRef');
 const popupContainerRef = useTemplateRef('popupContainerRef');
 const mapInstanceRef = shallowRef<Map>();
 const queryCache = useQueryCache();
+const route = useRoute();
+const router = useRouter();
+let cleanupRegionPick: (() => void) | undefined;
+
+const isRegionPickMode = computed(() => Boolean(route.query.pickRegionForPlayerId));
 
 async function fetchMapInfo(): Promise<SdtdMapInfo> {
   const entry = queryCache.ensure(gameServerGetMapInfoQuery());
@@ -34,15 +42,76 @@ async function fetchMapInfo(): Promise<SdtdMapInfo> {
   };
 }
 
+function firstQueryValue(value: unknown): string | undefined {
+  if (Array.isArray(value))
+    return value[0]?.toString();
+  return value == null ? undefined : value.toString();
+}
+
+function queryNumber(value: unknown): number | undefined {
+  const raw = firstQueryValue(value);
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function setupRegionPick(map: Map) {
+  const playerId = firstQueryValue(route.query.pickRegionForPlayerId);
+  if (!playerId)
+    return;
+
+  const viewport = map.getViewport();
+  viewport.classList.add('is-region-pick-mode');
+
+  const handleClick = (event: { coordinate: number[] }) => {
+    const [x, z] = event.coordinate;
+    const radius = queryNumber(route.query.pickRegionRadius) ?? 100;
+
+    void router.push({
+      name: 'PlayerProfile',
+      params: {
+        locale: route.params.locale,
+        playerId,
+      },
+      query: {
+        tab: 'tracking',
+        regionCenterX: String(Math.round(x)),
+        regionCenterZ: String(Math.round(z)),
+        regionRadius: String(radius),
+        ...(route.query.pickRegionStartTime ? { regionStartTime: firstQueryValue(route.query.pickRegionStartTime) } : {}),
+        ...(route.query.pickRegionEndTime ? { regionEndTime: firstQueryValue(route.query.pickRegionEndTime) } : {}),
+      },
+    });
+  };
+
+  map.on('singleclick', handleClick);
+  cleanupRegionPick = () => {
+    map.un('singleclick', handleClick);
+    viewport.classList.remove('is-region-pick-mode');
+  };
+}
+
 onMounted(async () => {
   const mapInfo = await fetchMapInfo();
 
   if (mapContainerRef.value && popupContainerRef.value) {
     mapInstanceRef.value = initOpenLayers(mapContainerRef.value, mapInfo, popupContainerRef.value);
+    await setupPlayerTrackingOverlay({ map: mapInstanceRef.value, mapInfo }, {
+      playerId: firstQueryValue(route.query.trackingPlayerId),
+      startTime: firstQueryValue(route.query.trackingStartTime),
+      endTime: firstQueryValue(route.query.trackingEndTime),
+      minDistance: queryNumber(route.query.trackingMinDistance),
+      centerX: queryNumber(route.query.regionCenterX),
+      centerZ: queryNumber(route.query.regionCenterZ),
+      radius: queryNumber(route.query.regionRadius),
+    });
+    setupRegionPick(mapInstanceRef.value);
   }
 });
 
 onUnmounted(() => {
+  cleanupRegionPick?.();
+  cleanupRegionPick = undefined;
+
   const map = mapInstanceRef.value;
   if (map) {
     map.dispatchEvent(MapLifecycle.REMOVE);
@@ -64,6 +133,9 @@ onDeactivated(() => {
 
 <template>
   <div class="map-wrapper">
+    <div v-if="isRegionPickMode" class="map-region-picker-hint">
+      {{ i18n.global.t('views.map.pickRegionHint') }}
+    </div>
     <div ref="mapContainerRef" class="map" />
     <div ref="popupContainerRef">
       <PopupContainer />
@@ -90,12 +162,35 @@ onDeactivated(() => {
   background-size: cover;
   background-color: black;
   border-radius: 4px;
+  position: relative;
+
+  .map-region-picker-hint {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    z-index: 1;
+    max-width: min(520px, calc(100% - 24px));
+    transform: translateX(-50%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 4px;
+    background: rgba(20, 20, 20, 0.72);
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    pointer-events: none;
+  }
 
   .map {
     height: 100%;
     background-color: transparent;
 
     :deep(.ol-viewport) {
+      &.is-region-pick-mode {
+        cursor: crosshair !important;
+      }
+
       button {
         cursor: pointer;
         color: $map-button-color;

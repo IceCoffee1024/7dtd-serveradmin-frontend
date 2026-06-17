@@ -3,6 +3,7 @@ import type {
   PlayerActivityLogDto,
   PlayerDailySummaryDto,
   PlayerInventoryCompensationDraftDto,
+  PlayerInventoryCompensationExecuteResultDto,
   PlayerInventoryDiffItemDto,
   PlayerInventorySnapshotCompareDto,
   PlayerInventorySnapshotDto,
@@ -14,6 +15,7 @@ import type {
 } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 import { usePopup } from '~/composables';
 import {
   playerTrackingCaptureInventorySnapshot,
@@ -31,6 +33,23 @@ import {
 
 defineOptions({ name: 'PlayerProfileTrackingPanel' });
 
+type PlayerInventoryCompensationExecuteItem = {
+  itemKey?: string;
+  itemName?: string;
+  localizationName?: string | null;
+  count?: number;
+  quality?: number | null;
+  durabilityPercent?: number | null;
+  hasMods?: boolean;
+  mods?: string[];
+  succeeded?: boolean;
+  message?: string | null;
+};
+
+type PlayerInventoryCompensationExecuteResult = PlayerInventoryCompensationExecuteResultDto & {
+  items?: PlayerInventoryCompensationExecuteItem[];
+};
+
 const props = defineProps<{
   playerId: string;
   isOnline: boolean;
@@ -39,6 +58,8 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
+const route = useRoute();
+const router = useRouter();
 
 const isLoading = ref(false);
 const isCapturing = ref(false);
@@ -55,6 +76,7 @@ const inventorySnapshots = ref<PlayerInventorySnapshotDto[]>([]);
 const dailySummaries = ref<PlayerDailySummaryDto[]>([]);
 const compareResult = ref<PlayerInventorySnapshotCompareDto | null>(null);
 const compensationDraft = ref<PlayerInventoryCompensationDraftDto | null>(null);
+const compensationResult = ref<PlayerInventoryCompensationExecuteResult | null>(null);
 const locationTrack = ref<PlayerLocationTrackDto | null>(null);
 const regionHits = ref<PlayerLocationRegionHitDto[]>([]);
 
@@ -105,6 +127,13 @@ const snapshotOptions = computed(() => inventorySnapshots.value
 const lostDiffItems = computed(() => (compareResult.value?.items ?? []).filter(item => item.diffType === 'Removed' && item.before?.key));
 const selectedLostDiffItems = computed(() => lostDiffItems.value.filter(item => item.before?.key && selectedDiffKeys.value.includes(item.before.key)));
 const canCreateCompensation = computed(() => selectedLostDiffItems.value.length > 0 && selectedFromSnapshotId.value && selectedToSnapshotId.value);
+const canViewRegionOnMap = computed(() => regionQuery.centerX != null && regionQuery.centerZ != null && regionQuery.radius > 0);
+
+function queryNumber(value: unknown): number | undefined {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
 
 function toIso(value: string | undefined): string | undefined {
   if (!value)
@@ -277,6 +306,7 @@ async function compareInventorySnapshots(): Promise<void> {
 
   isComparing.value = true;
   compensationDraft.value = null;
+  compensationResult.value = null;
   selectedDiffKeys.value = [];
   try {
     const { data } = await playerTrackingComparePlayerInventorySnapshots({
@@ -302,6 +332,7 @@ async function createCompensationDraft(): Promise<void> {
     return;
 
   isDrafting.value = true;
+  compensationResult.value = null;
   try {
     const { data } = await playerTrackingCreateInventoryCompensationDraft({
       path: { playerId: props.playerId },
@@ -345,6 +376,7 @@ async function executeCompensation(): Promise<void> {
       },
       throwOnError: true,
     });
+    compensationResult.value = data ?? null;
     toast({
       type: data?.succeeded ? 'success' : 'warning',
       text: t('views.playerProfile.tracking.messages.executeCompensationSuccess', { count: data?.grantedItemCount ?? 0 }),
@@ -353,6 +385,69 @@ async function executeCompensation(): Promise<void> {
   finally {
     isExecuting.value = false;
   }
+}
+
+function openTrackOnMap(): void {
+  void router.push({
+    name: 'GPSMap',
+    params: { locale: route.params.locale },
+    query: {
+      trackingPlayerId: props.playerId,
+      trackingStartTime: toIso(trackRange.startTime),
+      trackingEndTime: toIso(trackRange.endTime),
+      trackingMinDistance: String(trackRange.minDistance),
+      ...(regionQuery.centerX != null ? { regionCenterX: String(regionQuery.centerX) } : {}),
+      ...(regionQuery.centerZ != null ? { regionCenterZ: String(regionQuery.centerZ) } : {}),
+      ...(regionQuery.radius != null ? { regionRadius: String(regionQuery.radius) } : {}),
+    },
+  });
+}
+
+function selectRegionOnMap(): void {
+  void router.push({
+    name: 'GPSMap',
+    params: { locale: route.params.locale },
+    query: {
+      pickRegionForPlayerId: props.playerId,
+      pickRegionStartTime: toIso(regionQuery.startTime),
+      pickRegionEndTime: toIso(regionQuery.endTime),
+      pickRegionRadius: String(regionQuery.radius),
+    },
+  });
+}
+
+function viewRegionOnMap(): void {
+  if (!canViewRegionOnMap.value)
+    return;
+
+  void router.push({
+    name: 'GPSMap',
+    params: { locale: route.params.locale },
+    query: {
+      regionCenterX: String(regionQuery.centerX),
+      regionCenterZ: String(regionQuery.centerZ),
+      regionRadius: String(regionQuery.radius),
+    },
+  });
+}
+
+function applyRegionFromQuery(): void {
+  const centerX = queryNumber(route.query.regionCenterX);
+  const centerZ = queryNumber(route.query.regionCenterZ);
+  const radius = queryNumber(route.query.regionRadius);
+  const startTime = Array.isArray(route.query.regionStartTime) ? route.query.regionStartTime[0] : route.query.regionStartTime;
+  const endTime = Array.isArray(route.query.regionEndTime) ? route.query.regionEndTime[0] : route.query.regionEndTime;
+
+  if (centerX != null)
+    regionQuery.centerX = centerX;
+  if (centerZ != null)
+    regionQuery.centerZ = centerZ;
+  if (radius != null && radius > 0)
+    regionQuery.radius = radius;
+  if (typeof startTime === 'string' && startTime.length > 0)
+    regionQuery.startTime = dayjs(startTime).format('YYYY-MM-DDTHH:mm');
+  if (typeof endTime === 'string' && endTime.length > 0)
+    regionQuery.endTime = dayjs(endTime).format('YYYY-MM-DDTHH:mm');
 }
 
 async function loadLocationTrack(): Promise<void> {
@@ -400,8 +495,12 @@ async function searchRegion(): Promise<void> {
   }
 }
 
-watch(() => props.playerId, loadTrackingData, { immediate: true });
+watch(() => props.playerId, () => {
+  applyRegionFromQuery();
+  void loadTrackingData();
+}, { immediate: true });
 watch(activityType, loadTrackingData);
+watch(() => route.query, applyRegionFromQuery);
 </script>
 
 <template>
@@ -578,6 +677,52 @@ watch(activityType, loadTrackingData);
           {{ t('views.playerProfile.tracking.executeCompensation') }}
         </el-button>
       </div>
+      <div v-if="compensationResult" class="tracking-result-block">
+        <div class="tracking-diff-summary">
+          <el-tag :type="compensationResult.succeeded ? 'success' : 'warning'" effect="plain">
+            {{ compensationResult.succeeded ? t('views.playerProfile.tracking.compensationSucceeded') : t('views.playerProfile.tracking.compensationFailed') }}
+          </el-tag>
+          <el-tag effect="plain">
+            {{ t('views.playerProfile.tracking.requestedItems', { count: compensationResult.requestedItemCount ?? 0 }) }}
+          </el-tag>
+          <el-tag effect="plain">
+            {{ t('views.playerProfile.tracking.grantedItems', { count: compensationResult.grantedItemCount ?? 0 }) }}
+          </el-tag>
+        </div>
+        <el-alert
+          v-if="compensationResult.errorMessage"
+          class="tracking-alert"
+          type="warning"
+          :closable="false"
+          :title="compensationResult.errorMessage"
+        />
+        <el-table :data="compensationResult.items ?? []" size="small" border>
+          <el-table-column :label="t('views.playerProfile.tracking.status')" width="110">
+            <template #default="{ row }">
+              <el-tag :type="row.succeeded ? 'success' : 'danger'" effect="plain">
+                {{ row.succeeded ? t('views.playerProfile.tracking.succeeded') : t('views.playerProfile.tracking.failed') }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column :label="t('views.playerProfile.tracking.item')" min-width="180">
+            <template #default="{ row }">
+              {{ formatItemName(row) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="count" :label="t('views.playerProfile.tracking.count')" width="90" />
+          <el-table-column prop="quality" :label="t('views.playerProfile.tracking.quality')" width="90" />
+          <el-table-column :label="t('views.playerProfile.tracking.durability')" width="120">
+            <template #default="{ row }">
+              {{ formatDurability(row.durabilityPercent) }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="t('views.playerProfile.tracking.message')" min-width="220">
+            <template #default="{ row }">
+              {{ row.message || '-' }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </section>
 
     <section class="profile-panel">
@@ -590,6 +735,9 @@ watch(activityType, loadTrackingData);
         <el-input-number v-model="trackRange.minDistance" :min="0" :max="1000" />
         <el-button type="primary" :loading="isLoadingTrack" @click="loadLocationTrack">
           {{ t('views.playerProfile.tracking.loadTrack') }}
+        </el-button>
+        <el-button :disabled="!props.playerId" @click="openTrackOnMap">
+          {{ t('views.playerProfile.tracking.viewTrackOnMap') }}
         </el-button>
       </div>
       <div v-if="locationTrack" class="tracking-diff-summary">
@@ -627,6 +775,12 @@ watch(activityType, loadTrackingData);
         <el-input-number v-model="regionQuery.radius" :min="1" :max="5000" />
         <el-button type="primary" :loading="isSearchingRegion" @click="searchRegion">
           {{ t('views.playerProfile.tracking.searchRegion') }}
+        </el-button>
+        <el-button @click="selectRegionOnMap">
+          {{ t('views.playerProfile.tracking.selectRegionOnMap') }}
+        </el-button>
+        <el-button :disabled="!canViewRegionOnMap" @click="viewRegionOnMap">
+          {{ t('views.playerProfile.tracking.viewRegionOnMap') }}
         </el-button>
       </div>
       <el-table :data="regionHits" size="small" border>

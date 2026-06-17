@@ -72,6 +72,7 @@ const adminEntry = ref<AdminUserDto | null>(null);
 const banEntry = ref<BanEntryDto | null>(null);
 const muteEntry = ref<MuteEntryDto | null>(null);
 const whitelistEntry = ref<WhitelistEntryDto | null>(null);
+const activeTab = ref('overview');
 
 const playerId = computed(() => {
   const value = route.params.playerId;
@@ -241,8 +242,17 @@ function goToPlayerFilteredPage(name: string) {
   });
 }
 
+function applyActiveTabFromQuery() {
+  const tab = Array.isArray(route.query.tab) ? route.query.tab[0] : route.query.tab;
+  if (typeof tab === 'string' && tab.length > 0) {
+    activeTab.value = tab;
+  }
+}
+
 onMounted(loadProfile);
+onMounted(applyActiveTabFromQuery);
 watch(playerId, loadProfile);
+watch(() => route.query.tab, applyActiveTabFromQuery);
 </script>
 
 <template>
@@ -301,8 +311,8 @@ watch(playerId, loadProfile);
         @refreshed="loadProfile"
       />
 
-      <el-tabs class="player-profile-tabs">
-        <el-tab-pane :label="t('views.playerProfile.tabs.overview')">
+      <el-tabs v-model="activeTab" class="player-profile-tabs">
+        <el-tab-pane name="overview" :label="t('views.playerProfile.tabs.overview')">
           <PlayerProfileOverviewPanel
             :details="details"
             :display-name="displayName"
@@ -319,7 +329,7 @@ watch(playerId, loadProfile);
           />
         </el-tab-pane>
 
-        <el-tab-pane :label="t('views.playerProfile.tabs.assets')">
+        <el-tab-pane name="assets" :label="t('views.playerProfile.tabs.assets')">
           <PlayerProfileAssetsPanel
             :homes="homes"
             :vehicles="vehicles"
@@ -328,7 +338,7 @@ watch(playerId, loadProfile);
           />
         </el-tab-pane>
 
-        <el-tab-pane :label="t('views.playerProfile.tabs.activity')">
+        <el-tab-pane name="activity" :label="t('views.playerProfile.tabs.activity')">
           <PlayerProfileActivityPanel
             :timeline-items="timelineItems"
             :timeline-total="timelineTotal"
@@ -347,7 +357,7 @@ watch(playerId, loadProfile);
           />
         </el-tab-pane>
 
-        <el-tab-pane :label="t('views.playerProfile.tabs.tracking')">
+        <el-tab-pane name="tracking" :label="t('views.playerProfile.tabs.tracking')">
           <PlayerProfileTrackingPanel
             :player-id="playerId"
             :is-online="isOnline"
@@ -355,7 +365,7 @@ watch(playerId, loadProfile);
           />
         </el-tab-pane>
 
-        <el-tab-pane :label="t('views.playerProfile.tabs.economy')">
+        <el-tab-pane name="economy" :label="t('views.playerProfile.tabs.economy')">
           <PlayerProfileEconomyPanel
             :economy-transactions="economyTransactions"
             :format-time="formatTime"
@@ -363,7 +373,7 @@ watch(playerId, loadProfile);
           />
         </el-tab-pane>
 
-        <el-tab-pane :label="t('views.playerProfile.tabs.teleport')">
+        <el-tab-pane name="teleport" :label="t('views.playerProfile.tabs.teleport')">
           <PlayerProfileTeleportPanel
             :teleport-logs="teleportLogs"
             :format-time="formatTime"
@@ -371,7 +381,7 @@ watch(playerId, loadProfile);
           />
         </el-tab-pane>
 
-        <el-tab-pane :label="t('views.playerProfile.tabs.governance')">
+        <el-tab-pane name="governance" :label="t('views.playerProfile.tabs.governance')">
           <PlayerProfileGovernancePanel
             :governance-summary="governanceSummary"
             :punishment-history="punishmentHistory"

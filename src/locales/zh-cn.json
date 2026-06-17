@@ -689,7 +689,18 @@
         "searchRegion": "搜索区域",
         "hitCount": "命中",
         "firstSeenAt": "首次出现",
-        "lastSeenAt": "最后出现"
+        "lastSeenAt": "最后出现",
+        "viewTrackOnMap": "在地图查看轨迹",
+        "selectRegionOnMap": "在地图选择区域",
+        "viewRegionOnMap": "在地图查看区域",
+        "compensationSucceeded": "补偿成功",
+        "compensationFailed": "补偿失败",
+        "requestedItems": "请求 {count}",
+        "grantedItems": "已发放 {count}",
+        "status": "状态",
+        "succeeded": "成功",
+        "failed": "失败",
+        "message": "消息"
       }
     },
     "map": {
@@ -737,7 +748,11 @@
       "claimActive": "已激活",
       "claimInactive": "已失效",
       "claimStatus": "领地状态",
-      "viewPlayerInventory": "查看背包"
+      "viewPlayerInventory": "查看背包",
+      "playerTrackingOverlay": "玩家追踪",
+      "trackStart": "起点",
+      "trackEnd": "终点",
+      "pickRegionHint": "点击地图选择追踪搜索区域的中心点。"
     },
     "appSettings": {
       "empty": "暂无应用设置。",

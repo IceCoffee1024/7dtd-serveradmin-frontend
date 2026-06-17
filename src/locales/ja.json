@@ -689,7 +689,18 @@
         "searchRegion": "Search region",
         "hitCount": "Hits",
         "firstSeenAt": "First seen",
-        "lastSeenAt": "Last seen"
+        "lastSeenAt": "Last seen",
+        "viewTrackOnMap": "View track on map",
+        "selectRegionOnMap": "Pick region on map",
+        "viewRegionOnMap": "View region on map",
+        "compensationSucceeded": "Compensation succeeded",
+        "compensationFailed": "Compensation failed",
+        "requestedItems": "Requested {count}",
+        "grantedItems": "Granted {count}",
+        "status": "Status",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "message": "Message"
       }
     },
     "map": {
@@ -737,7 +748,11 @@
       "claimActive": "アクティブ",
       "claimInactive": "非アクティブ",
       "claimStatus": "請求ステータス",
-      "viewPlayerInventory": "在庫を見る"
+      "viewPlayerInventory": "在庫を見る",
+      "playerTrackingOverlay": "Player Tracking",
+      "trackStart": "Start",
+      "trackEnd": "End",
+      "pickRegionHint": "Click the map to select the center of the tracking search region."
     },
     "gameChat": {
       "typeMessage": "メッセージを入力してください",

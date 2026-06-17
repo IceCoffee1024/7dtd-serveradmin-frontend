@@ -689,7 +689,18 @@
         "searchRegion": "搜索区域",
         "hitCount": "命中",
         "firstSeenAt": "首次出现",
-        "lastSeenAt": "最后出现"
+        "lastSeenAt": "最后出现",
+        "viewTrackOnMap": "在地圖查看軌跡",
+        "selectRegionOnMap": "在地圖選擇區域",
+        "viewRegionOnMap": "在地圖查看區域",
+        "compensationSucceeded": "補償成功",
+        "compensationFailed": "補償失敗",
+        "requestedItems": "請求 {count}",
+        "grantedItems": "已發放 {count}",
+        "status": "狀態",
+        "succeeded": "成功",
+        "failed": "失敗",
+        "message": "訊息"
       }
     },
     "map": {
@@ -737,7 +748,11 @@
       "claimActive": "積極的",
       "claimInactive": "不活躍",
       "claimStatus": "索賠狀態",
-      "viewPlayerInventory": "查看庫存"
+      "viewPlayerInventory": "查看庫存",
+      "playerTrackingOverlay": "玩家追蹤",
+      "trackStart": "起點",
+      "trackEnd": "終點",
+      "pickRegionHint": "點擊地圖選擇追蹤搜尋區域的中心點。"
     },
     "gameChat": {
       "typeMessage": "輸入訊息",
