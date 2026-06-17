@@ -74,7 +74,7 @@ async function onEdit(data: ServerConfigItem) {
 </script>
 
 <template>
-  <el-card class="h-full">
+  <el-card class="server-config-page h-full">
     <el-collapse v-model="activeCollapseNames" class="server-config-collapse">
       <el-collapse-item v-for="(item, index) in modelValue" :key="index" :title="item.group" :name="index">
         <el-table :data="item.children" row-key="name" size="small" :show-header="false" border>

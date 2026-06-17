@@ -99,6 +99,28 @@ await runStep(results, 'server settings expose 7dtd 3.0 keys', async () => {
   return `${Object.keys(settings).length} settings`;
 });
 
+await runStep(results, 'game server read endpoints are reachable', async () => {
+  const checks = [
+    ['/api/GameServer/Stats', value => value && typeof value === 'object' && !Array.isArray(value), 'Stats must return an object'],
+    ['/api/GameServer/Config', value => value && typeof value === 'object' && !Array.isArray(value), 'Config must return an object'],
+    ['/api/GameServer/AllowedCommands', Array.isArray, 'AllowedCommands must return an array'],
+    ['/api/GameServer/OnlinePlayers', value => value && Array.isArray(value.items), 'OnlinePlayers must return a paged object with items'],
+    ['/api/GameServer/HistoryPlayers?pageNumber=1&pageSize=5', value => value && Array.isArray(value.items), 'HistoryPlayers must return a paged object with items'],
+    ['/api/GameServer/MapInfo', value => value && typeof value === 'object', 'MapInfo must return an object'],
+    ['/api/GameServer/LandClaims', value => value && typeof value === 'object' && Array.isArray(value.claimOwners), 'LandClaims must return a snapshot object with claimOwners'],
+    ['/api/GameServer/Mods', Array.isArray, 'Mods must return an array'],
+  ];
+
+  const summaries = [];
+  for (const [path, predicate, message] of checks) {
+    const value = await requestJson(baseUrl, path, authHeader);
+    assert(predicate(value), `${message} at ${path}.`);
+    summaries.push(`${path.split('/').pop()}:${Array.isArray(value) ? value.length : value?.items ? `${value.items.length}/${value.total ?? '?'}` : 'ok'}`);
+  }
+
+  return summaries.join(', ');
+});
+
 await runStep(results, 'known languages include 7dtd 3.0 columns', async () => {
   const columns = await requestJson(baseUrl, '/api/GameServer/KnownLanguages', authHeader);
   assert(Array.isArray(columns), 'KnownLanguages response is not an array.');
