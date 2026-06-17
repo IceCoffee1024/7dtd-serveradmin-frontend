@@ -2867,7 +2867,21 @@
       },
       "stateScopes": {
         "cooldown": "冷却状态",
-        "firstJoin": "首次加入状态"
+        "firstJoin": "首次加入状态",
+        "template": "模板状态",
+        "runtime": "运行状态",
+        "binding": "绑定状态",
+        "command": "命令状态",
+        "cache": "缓存状态",
+        "decision": "决策状态",
+        "account": "账户状态",
+        "transaction": "交易状态",
+        "history": "历史状态",
+        "request": "请求状态",
+        "location": "位置状态",
+        "schedule": "计划状态",
+        "reward": "奖励状态",
+        "streak": "连续状态"
       },
       "actions": {
         "enable": "启用",
@@ -3087,7 +3101,9 @@
           "formatJson": "格式化 JSON",
           "dryRun": "试运行",
           "duplicate": "复制规则",
-          "viewRuns": "查看执行历史"
+          "viewRuns": "查看执行历史",
+          "previewTemplate": "预览模板",
+          "createFromTemplate": "从模板创建"
         },
         "validation": {
           "nameRequired": "请输入规则名称。",
@@ -3108,6 +3124,55 @@
           "duplicateName": "{name} 副本"
         },
         "templates": {
+          "categories": {
+            "local": "本地模板",
+            "welcome": "欢迎",
+            "reward": "奖励",
+            "schedule": "计划任务",
+            "discord": "Discord"
+          },
+          "parameters": {
+            "message": {
+              "label": "消息内容",
+              "description": "支持 {playerName}、{message} 等事件变量。"
+            },
+            "cooldownSeconds": {
+              "label": "冷却秒数",
+              "description": "同一规则再次执行前需要等待的时间。"
+            },
+            "itemName": {
+              "label": "物品名称",
+              "description": "要发放的 7DTD 内部物品名。"
+            },
+            "count": {
+              "label": "数量",
+              "description": "物品数量或奖励数量。"
+            },
+            "quality": {
+              "label": "品质",
+              "description": "物品品质；无品质物品可填 0。"
+            },
+            "cronExpression": {
+              "label": "Cron 表达式",
+              "description": "定时模板使用的 Cron 计划。"
+            },
+            "timeZoneId": {
+              "label": "时区",
+              "description": "用于计算计划时间的时区 ID。"
+            },
+            "webhookTargetKey": {
+              "label": "Webhook 目标",
+              "description": "Discord Webhook 目标 key，例如 public 或 admin。"
+            },
+            "messageContains": {
+              "label": "消息包含",
+              "description": "聊天消息包含该文本时匹配。"
+            },
+            "amount": {
+              "label": "金额",
+              "description": "要发放的经济金额。"
+            }
+          },
           "welcomePrivateMessage": {
             "name": "进服私聊欢迎",
             "description": "玩家进入世界时向该玩家发送一条私聊欢迎消息。",

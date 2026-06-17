@@ -24,6 +24,7 @@ import {
   eventAutomationUpdateRule,
   eventAutomationValidateRule,
 } from '~/generated/api/sdk.gen';
+import { client } from '~/generated/api/client.gen';
 import RuleActionBuilder from './components/RuleActionBuilder.vue';
 import RuleConditionBuilder from './components/RuleConditionBuilder.vue';
 import RuleDryRunSampleEditor from './components/RuleDryRunSampleEditor.vue';
@@ -63,6 +64,44 @@ interface RuleTemplate {
   actions: Array<Record<string, unknown>>;
 }
 
+type TemplateParameterType = 'Text' | 'TextArea' | 'Number' | 'Boolean' | 'Cron' | 'TimeZone' | 'Select';
+
+interface EventAutomationTemplateParameterOption {
+  value: string;
+  labelKey: string;
+}
+
+interface EventAutomationTemplateParameter {
+  key: string;
+  labelKey: string;
+  descriptionKey?: string | null;
+  type: TemplateParameterType;
+  required: boolean;
+  defaultValue?: string | null;
+  min?: number | null;
+  max?: number | null;
+  options?: EventAutomationTemplateParameterOption[] | null;
+}
+
+interface EventAutomationTemplate {
+  key: string;
+  labelKey: string;
+  descriptionKey: string;
+  categoryKey: string;
+  riskLevel: string;
+  requiredModuleKeys: string[];
+  parameters: EventAutomationTemplateParameter[];
+}
+
+interface EventAutomationTemplateRuleRequest {
+  parameters?: Record<string, string | null>;
+}
+
+interface EventAutomationTemplatePreview {
+  template: EventAutomationTemplate;
+  rule: EventAutomationRuleUpsertDto;
+}
+
 interface ReferenceItem {
   label: string;
   value: string;
@@ -80,9 +119,14 @@ const editingRule = ref<RuleRow | null>(null);
 const isSubmitting = ref(false);
 const isValidatingRule = ref(false);
 const isDryRunningRule = ref(false);
+const isLoadingTemplates = ref(false);
+const isPreviewingTemplate = ref(false);
 const dryRunResult = ref<EventAutomationRuleDryRunResultDto | null>(null);
 const dryRunSample = ref<EventAutomationRuleDryRunRequestDto | null>(null);
 const selectedTemplateKey = ref<string>();
+const serverRuleTemplates = ref<EventAutomationTemplate[]>([]);
+const templateParameters = reactive<Record<string, string | null>>({});
+const templatePreview = ref<EventAutomationTemplatePreview | null>(null);
 const editorMode = ref<'builder' | 'json'>('builder');
 const selectedDryRunSampleKey = ref<string>();
 const dryRunSampleContext = ref<EventAutomationDryRunSampleContext>(cloneDryRunSampleContext(getDefaultDryRunSample('PlayerJoined').context));
@@ -362,11 +406,25 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
 ]);
 
 const ruleTemplateOptions = computed(() =>
-  ruleTemplates.value.map(template => ({
-    label: template.name,
-    value: template.key,
-    description: template.description,
-  })),
+  serverRuleTemplates.value.length > 0
+    ? serverRuleTemplates.value.map(template => ({
+        label: resolveI18nLabel(template.labelKey, template.key),
+        value: template.key,
+        description: resolveI18nLabel(template.descriptionKey, template.key),
+        riskLevel: template.riskLevel,
+        category: resolveI18nLabel(template.categoryKey, template.categoryKey),
+      }))
+    : ruleTemplates.value.map(template => ({
+        label: template.name,
+        value: template.key,
+        description: template.description,
+        riskLevel: 'Local',
+        category: t('views.eventAutomation.rules.templates.categories.local'),
+      })),
+);
+
+const selectedServerTemplate = computed(() =>
+  serverRuleTemplates.value.find(template => template.key === selectedTemplateKey.value),
 );
 
 const variableTokens = [
@@ -605,6 +663,56 @@ function resolveLastStatusLabel(status: string | null | undefined): string {
   return label === key ? status : label;
 }
 
+function resolveI18nLabel(key: string | null | undefined, fallback: string): string {
+  if (!key)
+    return fallback;
+
+  const label = t(key);
+  return label === key ? fallback : label;
+}
+
+async function fetchTemplateCatalog() {
+  isLoadingTemplates.value = true;
+  try {
+    const response = await client.get<EventAutomationTemplate[], unknown, true>({
+      url: '/api/EventAutomation/Templates',
+      throwOnError: true,
+    });
+    serverRuleTemplates.value = response.data ?? [];
+  }
+  catch (error) {
+    serverRuleTemplates.value = [];
+    console.error(error);
+  }
+  finally {
+    isLoadingTemplates.value = false;
+  }
+}
+
+async function previewServerTemplate(templateKey: string, request: EventAutomationTemplateRuleRequest) {
+  const response = await client.post<EventAutomationTemplatePreview, unknown, true>({
+    url: `/api/EventAutomation/Templates/${encodeURIComponent(templateKey)}/Preview`,
+    body: request,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    throwOnError: true,
+  });
+  return response.data;
+}
+
+async function createRuleFromServerTemplate(templateKey: string, request: EventAutomationTemplateRuleRequest) {
+  const response = await client.post<EventAutomationRuleDto, unknown, true>({
+    url: `/api/EventAutomation/Templates/${encodeURIComponent(templateKey)}/CreateRule`,
+    body: request,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    throwOnError: true,
+  });
+  return response.data;
+}
+
 async function fetchRunStats() {
   isLoadingRunStats.value = true;
   try {
@@ -659,9 +767,16 @@ function formatJsonField(prop: 'actionsJson' | 'conditionsJson') {
   }
 }
 
-function applyRuleTemplate(templateKey: string | undefined) {
+async function applyRuleTemplate(templateKey: string | undefined) {
   if (!templateKey)
     return;
+
+  const serverTemplate = serverRuleTemplates.value.find(item => item.key === templateKey);
+  if (serverTemplate != null) {
+    resetTemplateParameters(serverTemplate);
+    await onPreviewTemplate();
+    return;
+  }
 
   const template = ruleTemplates.value.find(item => item.key === templateKey);
   if (template == null)
@@ -678,6 +793,117 @@ function applyRuleTemplate(templateKey: string | undefined) {
   nextTick(() => formRef.value?.clearValidate());
 }
 
+function resetTemplateParameters(template: EventAutomationTemplate) {
+  Object.keys(templateParameters).forEach(key => delete templateParameters[key]);
+  for (const parameter of template.parameters ?? []) {
+    templateParameters[parameter.key] = parameter.defaultValue ?? null;
+  }
+  templatePreview.value = null;
+}
+
+function buildTemplateRequest(): EventAutomationTemplateRuleRequest {
+  return {
+    parameters: Object.fromEntries(
+      Object.entries(templateParameters)
+        .map(([key, value]) => [key, value == null ? null : String(value)]),
+    ),
+  };
+}
+
+function getTemplateNumberParameter(key: string): number | undefined {
+  const value = templateParameters[key];
+  if (value == null || value === '')
+    return undefined;
+
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : undefined;
+}
+
+function setTemplateNumberParameter(key: string, value: number | undefined) {
+  templateParameters[key] = value == null ? null : String(value);
+  templatePreview.value = null;
+}
+
+function getTemplateBooleanParameter(key: string): boolean {
+  return templateParameters[key] === 'true';
+}
+
+function setTemplateBooleanParameter(key: string, value: boolean | string | number) {
+  templateParameters[key] = value === true || value === 'true' || value === 1 ? 'true' : 'false';
+  templatePreview.value = null;
+}
+
+function getTemplateStringParameter(key: string): string {
+  return templateParameters[key] ?? '';
+}
+
+function setTemplateStringParameter(key: string, value: string | number | boolean | undefined) {
+  templateParameters[key] = value == null ? null : String(value);
+  templatePreview.value = null;
+}
+
+function applyGeneratedRuleToForm(rule: EventAutomationRuleUpsertDto) {
+  form.name = rule.name ?? '';
+  form.isEnabled = rule.isEnabled ?? true;
+  form.triggerType = rule.triggerType ?? 'PlayerJoined';
+  form.conditionsJson = formatJsonText(rule.conditionsJson, '{}');
+  form.actionsJson = formatJsonText(rule.actionsJson, '[]');
+  form.description = rule.description ?? '';
+  resetDryRunSampleForTrigger(form.triggerType);
+  resetDryRun();
+  nextTick(() => formRef.value?.clearValidate());
+}
+
+function formatJsonText(value: string | null | undefined, fallback: string): string {
+  try {
+    return JSON.stringify(JSON.parse(value || fallback), null, 2);
+  }
+  catch {
+    return value || fallback;
+  }
+}
+
+async function onPreviewTemplate() {
+  if (!selectedTemplateKey.value || selectedServerTemplate.value == null)
+    return;
+
+  isPreviewingTemplate.value = true;
+  try {
+    const preview = await previewServerTemplate(selectedTemplateKey.value, buildTemplateRequest());
+    if (!preview?.rule)
+      return;
+
+    templatePreview.value = preview;
+    applyGeneratedRuleToForm(preview.rule);
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isPreviewingTemplate.value = false;
+  }
+}
+
+async function onCreateFromTemplate() {
+  if (!selectedTemplateKey.value || selectedServerTemplate.value == null)
+    return;
+
+  isSubmitting.value = true;
+  try {
+    await createRuleFromServerTemplate(selectedTemplateKey.value, buildTemplateRequest());
+    toast({ type: 'success', text: t('views.eventAutomation.rules.messages.createSuccess') });
+    dialogVisible.value = false;
+    tableRef.value?.reload();
+    fetchRunStats();
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isSubmitting.value = false;
+  }
+}
+
 function applyRuleToForm(rule: RuleRow | null) {
   const source = rule ?? buildDefaults();
   form.name = source.name ?? '';
@@ -691,6 +917,8 @@ function applyRuleToForm(rule: RuleRow | null) {
 function onAdd() {
   editingRule.value = null;
   selectedTemplateKey.value = undefined;
+  templatePreview.value = null;
+  Object.keys(templateParameters).forEach(key => delete templateParameters[key]);
   editorMode.value = 'builder';
   applyRuleToForm(null);
   resetDryRunSampleForTrigger(form.triggerType);
@@ -702,6 +930,8 @@ function onAdd() {
 function onEdit(row: RuleRow) {
   editingRule.value = row;
   selectedTemplateKey.value = undefined;
+  templatePreview.value = null;
+  Object.keys(templateParameters).forEach(key => delete templateParameters[key]);
   editorMode.value = 'builder';
   applyRuleToForm(row);
   resetDryRunSampleForTrigger(form.triggerType);
@@ -713,6 +943,8 @@ function onEdit(row: RuleRow) {
 function onDuplicate(row: RuleRow) {
   editingRule.value = null;
   selectedTemplateKey.value = undefined;
+  templatePreview.value = null;
+  Object.keys(templateParameters).forEach(key => delete templateParameters[key]);
   editorMode.value = 'builder';
   applyRuleToForm(row);
   form.name = t('views.eventAutomation.rules.messages.duplicateName', { name: row.name });
@@ -958,6 +1190,7 @@ async function onDelete(row: RuleRow) {
 }
 
 onMounted(() => {
+  fetchTemplateCatalog();
   fetchRunStats();
 });
 </script>
@@ -1103,6 +1336,7 @@ onMounted(() => {
                     class="w-full"
                     clearable
                     filterable
+                    :loading="isLoadingTemplates"
                     :placeholder="t('views.eventAutomation.rules.form.templatePlaceholder')"
                     @change="applyRuleTemplate"
                   >
@@ -1114,11 +1348,82 @@ onMounted(() => {
                     >
                       <div class="event-automation-template-option">
                         <span>{{ option.label }}</span>
-                        <small>{{ option.description }}</small>
+                        <small>{{ option.category }} · {{ option.riskLevel }} · {{ option.description }}</small>
                       </div>
                     </el-option>
                   </el-select>
                 </el-form-item>
+              </el-col>
+              <el-col v-if="selectedServerTemplate" :xs="24">
+                <div class="event-automation-template-params">
+                  <div class="event-automation-template-params__header">
+                    <div>
+                      <strong>{{ resolveI18nLabel(selectedServerTemplate.labelKey, selectedServerTemplate.key) }}</strong>
+                      <span>{{ resolveI18nLabel(selectedServerTemplate.descriptionKey, selectedServerTemplate.key) }}</span>
+                    </div>
+                    <el-tag :type="selectedServerTemplate.riskLevel === 'High' ? 'danger' : selectedServerTemplate.riskLevel === 'Medium' ? 'warning' : 'info'" effect="plain">
+                      {{ selectedServerTemplate.riskLevel }}
+                    </el-tag>
+                  </div>
+                  <div class="event-automation-template-params__grid">
+                    <el-form-item
+                      v-for="parameter in selectedServerTemplate.parameters"
+                      :key="parameter.key"
+                      :label="resolveI18nLabel(parameter.labelKey, parameter.key)"
+                    >
+                      <el-input-number
+                        v-if="parameter.type === 'Number'"
+                        :model-value="getTemplateNumberParameter(parameter.key)"
+                        class="w-full"
+                        controls-position="right"
+                        :min="parameter.min ?? undefined"
+                        :max="parameter.max ?? undefined"
+                        @update:model-value="value => setTemplateNumberParameter(parameter.key, value)"
+                      />
+                      <el-switch
+                        v-else-if="parameter.type === 'Boolean'"
+                        :model-value="getTemplateBooleanParameter(parameter.key)"
+                        inline-prompt
+                        :active-text="t('common.yes')"
+                        :inactive-text="t('common.no')"
+                        @update:model-value="value => setTemplateBooleanParameter(parameter.key, value)"
+                      />
+                      <el-select
+                        v-else-if="parameter.type === 'Select'"
+                        :model-value="getTemplateStringParameter(parameter.key)"
+                        class="w-full"
+                        filterable
+                        @update:model-value="value => setTemplateStringParameter(parameter.key, value)"
+                      >
+                        <el-option
+                          v-for="option in parameter.options ?? []"
+                          :key="option.value"
+                          :label="resolveI18nLabel(option.labelKey, option.value)"
+                          :value="option.value"
+                        />
+                      </el-select>
+                      <el-input
+                        v-else
+                        :model-value="getTemplateStringParameter(parameter.key)"
+                        :type="parameter.type === 'TextArea' ? 'textarea' : 'text'"
+                        :rows="parameter.type === 'TextArea' ? 2 : undefined"
+                        clearable
+                        @update:model-value="value => setTemplateStringParameter(parameter.key, value)"
+                      />
+                      <template #description>
+                        {{ resolveI18nLabel(parameter.descriptionKey, '') }}
+                      </template>
+                    </el-form-item>
+                  </div>
+                  <div class="event-automation-template-params__actions">
+                    <el-button :loading="isPreviewingTemplate" @click="onPreviewTemplate">
+                      {{ t('views.eventAutomation.rules.actions.previewTemplate') }}
+                    </el-button>
+                    <el-button type="primary" :loading="isSubmitting" @click="onCreateFromTemplate">
+                      {{ t('views.eventAutomation.rules.actions.createFromTemplate') }}
+                    </el-button>
+                  </div>
+                </div>
               </el-col>
               <el-col :xs="24" :md="12">
                 <el-form-item prop="name" :label="t('views.eventAutomation.rules.form.name')">
@@ -1546,6 +1851,55 @@ onMounted(() => {
 .event-automation-template-option small {
   color: var(--el-text-color-secondary);
   font-size: 12px;
+}
+
+.event-automation-template-params {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  background: var(--el-fill-color-extra-light);
+  padding: 12px;
+}
+
+.event-automation-template-params__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.event-automation-template-params__header > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.event-automation-template-params__header strong {
+  color: var(--el-text-color-primary);
+  font-size: 14px;
+}
+
+.event-automation-template-params__header span {
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
+}
+
+.event-automation-template-params__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+
+.event-automation-template-params__grid :deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.event-automation-template-params__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .event-automation-reference {

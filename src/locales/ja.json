@@ -2867,7 +2867,21 @@
       },
       "stateScopes": {
         "cooldown": "Cooldown State",
-        "firstJoin": "First Join State"
+        "firstJoin": "First Join State",
+        "template": "Template state",
+        "runtime": "Runtime state",
+        "binding": "Binding state",
+        "command": "Command state",
+        "cache": "Cache state",
+        "decision": "Decision state",
+        "account": "Account state",
+        "transaction": "Transaction state",
+        "history": "History state",
+        "request": "Request state",
+        "location": "Location state",
+        "schedule": "Schedule state",
+        "reward": "Reward state",
+        "streak": "Streak state"
       },
       "actions": {
         "enable": "Enable",
@@ -3087,7 +3101,9 @@
           "formatJson": "Format JSON",
           "dryRun": "Dry run",
           "duplicate": "Duplicate",
-          "viewRuns": "View run history"
+          "viewRuns": "View run history",
+          "previewTemplate": "Preview template",
+          "createFromTemplate": "Create from template"
         },
         "validation": {
           "nameRequired": "Rule name is required.",
@@ -3192,6 +3208,55 @@
             "name": "Discord admin keyword alert",
             "description": "Forward chat messages starting with !admin to the admin Discord target.",
             "message": "[Admin] {playerName}: {message}"
+          },
+          "categories": {
+            "local": "Local templates",
+            "welcome": "Welcome",
+            "reward": "Rewards",
+            "schedule": "Schedules",
+            "discord": "Discord"
+          },
+          "parameters": {
+            "message": {
+              "label": "Message",
+              "description": "Supports event variables such as {playerName} and {message}."
+            },
+            "cooldownSeconds": {
+              "label": "Cooldown seconds",
+              "description": "Minimum interval before this rule can run again."
+            },
+            "itemName": {
+              "label": "Item name",
+              "description": "Internal 7DTD item name to grant."
+            },
+            "count": {
+              "label": "Count",
+              "description": "Number of items or reward units."
+            },
+            "quality": {
+              "label": "Quality",
+              "description": "Item quality. Use 0 when the item has no quality."
+            },
+            "cronExpression": {
+              "label": "Cron expression",
+              "description": "Schedule used by Cron trigger templates."
+            },
+            "timeZoneId": {
+              "label": "Time zone",
+              "description": "Time zone id used to evaluate the schedule."
+            },
+            "webhookTargetKey": {
+              "label": "Webhook target",
+              "description": "Discord webhook target key, for example public or admin."
+            },
+            "messageContains": {
+              "label": "Message contains",
+              "description": "Chat text that must be present before the rule matches."
+            },
+            "amount": {
+              "label": "Amount",
+              "description": "Economy amount to grant."
+            }
           }
         },
         "status": {

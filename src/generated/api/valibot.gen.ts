@@ -292,6 +292,7 @@ export const vLanguage = v.picklist([
     'Type',
     'UsedInMainMenu',
     'NoTranslate',
+    'KeepLoaded',
     'English',
     'ContextAlternateText',
     'German',

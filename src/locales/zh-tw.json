@@ -2825,7 +2825,21 @@
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
-        "firstJoin": "首次加入狀態"
+        "firstJoin": "首次加入狀態",
+        "template": "Template state",
+        "runtime": "Runtime state",
+        "binding": "Binding state",
+        "command": "Command state",
+        "cache": "Cache state",
+        "decision": "Decision state",
+        "account": "Account state",
+        "transaction": "Transaction state",
+        "history": "History state",
+        "request": "Request state",
+        "location": "Location state",
+        "schedule": "Schedule state",
+        "reward": "Reward state",
+        "streak": "Streak state"
       },
       "actions": {
         "enable": "启用",
@@ -2997,7 +3011,9 @@
           "formatJson": "格式化 JSON",
           "duplicate": "複製規則",
           "viewRuns": "查看執行歷史",
-          "dryRun": "試運行"
+          "dryRun": "試運行",
+          "previewTemplate": "Preview template",
+          "createFromTemplate": "Create from template"
         },
         "validation": {
           "nameRequired": "請輸入規則名稱。",
@@ -3102,6 +3118,55 @@
             "name": "Discord 管理關鍵字告警",
             "description": "全域聊天以 !admin 開頭時轉發到管理頻道。",
             "message": "[管理] {playerName}: {message}"
+          },
+          "categories": {
+            "local": "Local templates",
+            "welcome": "Welcome",
+            "reward": "Rewards",
+            "schedule": "Schedules",
+            "discord": "Discord"
+          },
+          "parameters": {
+            "message": {
+              "label": "Message",
+              "description": "Supports event variables such as {playerName} and {message}."
+            },
+            "cooldownSeconds": {
+              "label": "Cooldown seconds",
+              "description": "Minimum interval before this rule can run again."
+            },
+            "itemName": {
+              "label": "Item name",
+              "description": "Internal 7DTD item name to grant."
+            },
+            "count": {
+              "label": "Count",
+              "description": "Number of items or reward units."
+            },
+            "quality": {
+              "label": "Quality",
+              "description": "Item quality. Use 0 when the item has no quality."
+            },
+            "cronExpression": {
+              "label": "Cron expression",
+              "description": "Schedule used by Cron trigger templates."
+            },
+            "timeZoneId": {
+              "label": "Time zone",
+              "description": "Time zone id used to evaluate the schedule."
+            },
+            "webhookTargetKey": {
+              "label": "Webhook target",
+              "description": "Discord webhook target key, for example public or admin."
+            },
+            "messageContains": {
+              "label": "Message contains",
+              "description": "Chat text that must be present before the rule matches."
+            },
+            "amount": {
+              "label": "Amount",
+              "description": "Economy amount to grant."
+            }
           }
         },
         "status": {

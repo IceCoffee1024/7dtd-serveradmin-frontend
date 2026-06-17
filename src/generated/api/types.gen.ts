@@ -509,7 +509,7 @@ export type ServerConfigBackupSettingsDto = {
 /**
  * Defines localization columns used by the game's language data model.
  */
-export type Language = 'File' | 'Type' | 'UsedInMainMenu' | 'NoTranslate' | 'English' | 'ContextAlternateText' | 'German' | 'Spanish' | 'French' | 'Italian' | 'Japanese' | 'Koreana' | 'Polish' | 'Brazilian' | 'Russian' | 'Turkish' | 'Schinese' | 'Tchinese';
+export type Language = 'File' | 'Type' | 'UsedInMainMenu' | 'NoTranslate' | 'KeepLoaded' | 'English' | 'ContextAlternateText' | 'German' | 'Spanish' | 'French' | 'Italian' | 'Japanese' | 'Koreana' | 'Polish' | 'Brazilian' | 'Russian' | 'Turkish' | 'Schinese' | 'Tchinese';
 
 /**
  * Represents one unified scheduled task run history row returned to the management UI.
