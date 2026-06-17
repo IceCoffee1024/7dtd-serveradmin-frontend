@@ -560,7 +560,11 @@
         "trackingActivity": "Tracking Activity",
         "locations": "Location Samples",
         "inventorySnapshots": "Inventory Snapshots",
-        "dailySummaries": "Daily Summaries"
+        "dailySummaries": "Daily Summaries",
+        "inventoryDiff": "Inventory Diff",
+        "inventoryCompensation": "Inventory Compensation",
+        "locationTrack": "Location Track",
+        "regionSearch": "Region Search"
       },
       "fields": {
         "balance": "Balance",
@@ -641,7 +645,9 @@
         "distanceTravelled": "Distance",
         "snapshotSummary": "Bag {bag}, belt {belt}, equipment {equipment}",
         "messages": {
-          "captureSuccess": "Inventory snapshot captured. Total items: {count}."
+          "captureSuccess": "Inventory snapshot captured. Total items: {count}.",
+          "executeCompensationConfirm": "Execute inventory compensation for this player? This action is audited.",
+          "executeCompensationSuccess": "Inventory compensation executed. Granted item count: {count}."
         },
         "activityTypes": {
           "Login": "Login",
@@ -654,7 +660,36 @@
           "Location": "Location",
           "Inventory": "Inventory",
           "Session": "Session"
-        }
+        },
+        "fromSnapshot": "From snapshot",
+        "toSnapshot": "To snapshot",
+        "compareSnapshots": "Compare snapshots",
+        "removedCount": "Removed {count}",
+        "addedCount": "Added {count}",
+        "changedCount": "Changed {count}",
+        "movedCount": "Moved {count}",
+        "diffType": "Diff type",
+        "item": "Item",
+        "count": "Count",
+        "countDelta": "Delta",
+        "quality": "Quality",
+        "durability": "Durability",
+        "mods": "Mods",
+        "ticketId": "Ticket ID",
+        "compensationReason": "Compensation reason",
+        "createCompensationDraft": "Create draft",
+        "exactRestore": "Exact restore",
+        "requireExactRestore": "Require exact restore",
+        "executeCompensation": "Execute compensation",
+        "loadTrack": "Load track",
+        "trackPoints": "Track points {returned}/{total}",
+        "trackDistance": "Travel distance {distance}",
+        "centerX": "Center X",
+        "centerZ": "Center Z",
+        "searchRegion": "Search region",
+        "hitCount": "Hits",
+        "firstSeenAt": "First seen",
+        "lastSeenAt": "Last seen"
       }
     },
     "map": {

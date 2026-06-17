@@ -560,7 +560,11 @@
         "trackingActivity": "Tracking Activity",
         "locations": "Location Samples",
         "inventorySnapshots": "Inventory Snapshots",
-        "dailySummaries": "Daily Summaries"
+        "dailySummaries": "Daily Summaries",
+        "inventoryDiff": "背包差异",
+        "inventoryCompensation": "物品补偿",
+        "locationTrack": "移动轨迹",
+        "regionSearch": "区域反查"
       },
       "fields": {
         "balance": "餘額",
@@ -641,7 +645,9 @@
         "distanceTravelled": "Distance",
         "snapshotSummary": "Bag {bag}, belt {belt}, equipment {equipment}",
         "messages": {
-          "captureSuccess": "Inventory snapshot captured. Total items: {count}."
+          "captureSuccess": "Inventory snapshot captured. Total items: {count}.",
+          "executeCompensationConfirm": "确定为该玩家执行背包补偿吗？此操作会记录审计日志。",
+          "executeCompensationSuccess": "背包补偿已执行，发放物品数：{count}。"
         },
         "activityTypes": {
           "Login": "Login",
@@ -654,7 +660,36 @@
           "Location": "Location",
           "Inventory": "Inventory",
           "Session": "Session"
-        }
+        },
+        "fromSnapshot": "起始快照",
+        "toSnapshot": "目标快照",
+        "compareSnapshots": "对比快照",
+        "removedCount": "减少 {count}",
+        "addedCount": "新增 {count}",
+        "changedCount": "变化 {count}",
+        "movedCount": "移动 {count}",
+        "diffType": "差异类型",
+        "item": "物品",
+        "count": "数量",
+        "countDelta": "差值",
+        "quality": "品质",
+        "durability": "耐久",
+        "mods": "配件",
+        "ticketId": "工单号",
+        "compensationReason": "补偿原因",
+        "createCompensationDraft": "创建补偿草稿",
+        "exactRestore": "精确还原",
+        "requireExactRestore": "要求精确还原",
+        "executeCompensation": "执行补偿",
+        "loadTrack": "加载轨迹",
+        "trackPoints": "轨迹点 {returned}/{total}",
+        "trackDistance": "移动距离 {distance}",
+        "centerX": "中心 X",
+        "centerZ": "中心 Z",
+        "searchRegion": "搜索区域",
+        "hitCount": "命中",
+        "firstSeenAt": "首次出现",
+        "lastSeenAt": "最后出现"
       }
     },
     "map": {

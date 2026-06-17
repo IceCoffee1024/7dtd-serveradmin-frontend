@@ -168,7 +168,18 @@ await runStep(results, 'player tracking endpoints are reachable', async () => {
   if (firstPlayer?.playerId) {
     const activities = await requestJson(baseUrl, `/api/PlayerTracking/Players/${encodeURIComponent(firstPlayer.playerId)}/Activities?pageNumber=1&pageSize=5`, authHeader);
     assert(activities && Array.isArray(activities.items), 'PlayerTracking activities response is not paged.');
-    return `enabled=${status.isEnabled}, sessions=${status.sessionCount ?? 0}, checkedPlayer=${firstPlayer.playerId}, activities=${activities.items.length}/${activities.total ?? '?'}`;
+    const track = await requestJson(baseUrl, `/api/PlayerTracking/Players/${encodeURIComponent(firstPlayer.playerId)}/Locations/Track?maxPoints=5`, authHeader);
+    assert(track && Array.isArray(track.points), 'PlayerTracking location track response is not valid.');
+    const region = await requestJson(baseUrl, '/api/PlayerTracking/Locations/Search?pageNumber=1&pageSize=5', authHeader);
+    assert(region && Array.isArray(region.items), 'PlayerTracking region search response is not paged.');
+    const snapshots = await requestJson(baseUrl, `/api/PlayerTracking/Players/${encodeURIComponent(firstPlayer.playerId)}/InventorySnapshots?pageNumber=1&pageSize=2`, authHeader);
+    assert(snapshots && Array.isArray(snapshots.items), 'PlayerTracking inventory snapshots response is not paged.');
+    if (snapshots.items.length >= 2) {
+      const [toSnapshot, fromSnapshot] = snapshots.items;
+      const compare = await requestJson(baseUrl, `/api/PlayerTracking/Players/${encodeURIComponent(firstPlayer.playerId)}/InventorySnapshots/Compare?fromSnapshotId=${encodeURIComponent(fromSnapshot.id)}&toSnapshotId=${encodeURIComponent(toSnapshot.id)}`, authHeader);
+      assert(compare && Array.isArray(compare.items), 'PlayerTracking inventory compare response is not valid.');
+    }
+    return `enabled=${status.isEnabled}, sessions=${status.sessionCount ?? 0}, checkedPlayer=${firstPlayer.playerId}, activities=${activities.items.length}/${activities.total ?? '?'}, track=${track.points.length}/${track.totalPoints ?? '?'}, region=${region.items.length}/${region.total ?? '?'}`;
   }
 
   return `enabled=${status.isEnabled}, sessions=${status.sessionCount ?? 0}, no history player available`;

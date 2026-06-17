@@ -5759,6 +5759,39 @@ export type PagedDtoOfPlayerLocationSampleDto = {
     items: Array<PlayerLocationSampleDto>;
 };
 
+export type PlayerLocationTrackDto = {
+    playerId?: string;
+    totalPoints?: number;
+    returnedPoints?: number;
+    distanceTravelled?: number;
+    points?: Array<PlayerLocationSampleDto>;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerLocationRegionHitDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerLocationRegionHitDto>;
+};
+
+export type PlayerLocationRegionHitDto = {
+    playerId?: string;
+    playerName?: string | null;
+    firstSeenAt?: string;
+    lastSeenAt?: string;
+    hitCount?: number;
+    lastX?: number;
+    lastY?: number;
+    lastZ?: number;
+};
+
 /**
  * Represents a paged query result with total count and current page items.
  */
@@ -5771,6 +5804,90 @@ export type PagedDtoOfPlayerInventorySnapshotDto = {
      * Items returned for the current page.
      */
     items: Array<PlayerInventorySnapshotDto>;
+};
+
+export type PlayerInventorySnapshotCompareDto = {
+    fromSnapshot?: PlayerInventorySnapshotDto;
+    toSnapshot?: PlayerInventorySnapshotDto;
+    addedCount?: number;
+    removedCount?: number;
+    changedCount?: number;
+    movedCount?: number;
+    items?: Array<PlayerInventoryDiffItemDto>;
+};
+
+export type PlayerInventoryDiffItemDto = {
+    diffType?: PlayerInventoryDiffType;
+    before?: PlayerInventoryItemRecordDto | null;
+    after?: PlayerInventoryItemRecordDto | null;
+    countDelta?: number;
+    isCompensable?: boolean;
+    compensationBlockReason?: string | null;
+};
+
+export type PlayerInventoryDiffType = 'Added' | 'Removed' | 'CountChanged' | 'DurabilityChanged' | 'ModsChanged' | 'Moved' | 'Changed';
+
+export type PlayerInventoryItemRecordDto = {
+    key?: string;
+    itemName?: string;
+    localizationName?: string | null;
+    container?: string;
+    slotIndex?: number;
+    count?: number;
+    quality?: number | null;
+    useTimes?: number;
+    maxUseTimes?: number;
+    durabilityPercent?: number | null;
+    hasMods?: boolean;
+    mods?: Array<string>;
+    rawJson?: string | null;
+};
+
+export type PlayerInventoryCompensationDraftDto = {
+    draftId?: string;
+    playerId?: string;
+    fromSnapshotId?: number;
+    toSnapshotId?: number;
+    ticketId?: string | null;
+    reason?: string | null;
+    exactRestoreSupported?: boolean;
+    warning?: string | null;
+    items?: Array<PlayerInventoryCompensationItemDto>;
+};
+
+export type PlayerInventoryCompensationItemDto = {
+    itemKey?: string;
+    itemName?: string;
+    localizationName?: string | null;
+    count?: number;
+    quality?: number | null;
+    durabilityPercent?: number | null;
+    hasMods?: boolean;
+    mods?: Array<string>;
+    exactRestoreSupported?: boolean;
+    exactRestoreBlockReason?: string | null;
+};
+
+export type PlayerInventoryCompensationDraftRequestDto = {
+    fromSnapshotId?: number;
+    toSnapshotId?: number;
+    ticketId?: string | null;
+    reason?: string | null;
+    itemKeys?: Array<string> | null;
+};
+
+export type PlayerInventoryCompensationExecuteResultDto = {
+    succeeded?: boolean;
+    errorMessage?: string | null;
+    exactRestoreSupported?: boolean;
+    requestedItemCount?: number;
+    grantedItemCount?: number;
+    output?: Array<string>;
+};
+
+export type PlayerInventoryCompensationExecuteRequestDto = {
+    draft?: PlayerInventoryCompensationDraftDto | null;
+    requireExactRestore?: boolean;
 };
 
 /**
@@ -11310,6 +11427,69 @@ export type PlayerTrackingGetPlayerLocationsResponses = {
 
 export type PlayerTrackingGetPlayerLocationsResponse = PlayerTrackingGetPlayerLocationsResponses[keyof PlayerTrackingGetPlayerLocationsResponses];
 
+export type PlayerTrackingGetPlayerLocationTrackData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        startTime?: string | null;
+        endTime?: string | null;
+        minDistance?: number | null;
+        maxPoints?: number | null;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/Locations/Track';
+};
+
+export type PlayerTrackingGetPlayerLocationTrackResponses = {
+    200: PlayerLocationTrackDto;
+};
+
+export type PlayerTrackingGetPlayerLocationTrackResponse = PlayerTrackingGetPlayerLocationTrackResponses[keyof PlayerTrackingGetPlayerLocationTrackResponses];
+
+export type PlayerTrackingSearchLocationRegionData = {
+    body?: never;
+    path?: never;
+    query?: {
+        startTime?: string | null;
+        endTime?: string | null;
+        x1?: number | null;
+        z1?: number | null;
+        x2?: number | null;
+        z2?: number | null;
+        centerX?: number | null;
+        centerZ?: number | null;
+        radius?: number | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Locations/Search';
+};
+
+export type PlayerTrackingSearchLocationRegionResponses = {
+    200: PagedDtoOfPlayerLocationRegionHitDto;
+};
+
+export type PlayerTrackingSearchLocationRegionResponse = PlayerTrackingSearchLocationRegionResponses[keyof PlayerTrackingSearchLocationRegionResponses];
+
 export type PlayerTrackingGetPlayerInventorySnapshotsData = {
     body?: never;
     path: {
@@ -11368,6 +11548,75 @@ export type PlayerTrackingCaptureInventorySnapshotResponses = {
 };
 
 export type PlayerTrackingCaptureInventorySnapshotResponse = PlayerTrackingCaptureInventorySnapshotResponses[keyof PlayerTrackingCaptureInventorySnapshotResponses];
+
+export type PlayerTrackingComparePlayerInventorySnapshotsData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        fromSnapshotId?: number | null;
+        toSnapshotId?: number | null;
+        fromTime?: string | null;
+        toTime?: string | null;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/InventorySnapshots/Compare';
+};
+
+export type PlayerTrackingComparePlayerInventorySnapshotsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type PlayerTrackingComparePlayerInventorySnapshotsError = PlayerTrackingComparePlayerInventorySnapshotsErrors[keyof PlayerTrackingComparePlayerInventorySnapshotsErrors];
+
+export type PlayerTrackingComparePlayerInventorySnapshotsResponses = {
+    200: PlayerInventorySnapshotCompareDto;
+};
+
+export type PlayerTrackingComparePlayerInventorySnapshotsResponse = PlayerTrackingComparePlayerInventorySnapshotsResponses[keyof PlayerTrackingComparePlayerInventorySnapshotsResponses];
+
+export type PlayerTrackingCreateInventoryCompensationDraftData = {
+    body: PlayerInventoryCompensationDraftRequestDto;
+    path: {
+        playerId: string;
+    };
+    query?: never;
+    url: '/api/PlayerTracking/Players/{playerId}/InventoryCompensation/Draft';
+};
+
+export type PlayerTrackingCreateInventoryCompensationDraftErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type PlayerTrackingCreateInventoryCompensationDraftError = PlayerTrackingCreateInventoryCompensationDraftErrors[keyof PlayerTrackingCreateInventoryCompensationDraftErrors];
+
+export type PlayerTrackingCreateInventoryCompensationDraftResponses = {
+    200: PlayerInventoryCompensationDraftDto;
+};
+
+export type PlayerTrackingCreateInventoryCompensationDraftResponse = PlayerTrackingCreateInventoryCompensationDraftResponses[keyof PlayerTrackingCreateInventoryCompensationDraftResponses];
+
+export type PlayerTrackingExecuteInventoryCompensationData = {
+    body: PlayerInventoryCompensationExecuteRequestDto;
+    path: {
+        playerId: string;
+    };
+    query?: never;
+    url: '/api/PlayerTracking/Players/{playerId}/InventoryCompensation/Execute';
+};
+
+export type PlayerTrackingExecuteInventoryCompensationErrors = {
+    400: ProblemDetailsDto;
+    409: ProblemDetailsDto;
+};
+
+export type PlayerTrackingExecuteInventoryCompensationError = PlayerTrackingExecuteInventoryCompensationErrors[keyof PlayerTrackingExecuteInventoryCompensationErrors];
+
+export type PlayerTrackingExecuteInventoryCompensationResponses = {
+    200: PlayerInventoryCompensationExecuteResultDto;
+};
+
+export type PlayerTrackingExecuteInventoryCompensationResponse = PlayerTrackingExecuteInventoryCompensationResponses[keyof PlayerTrackingExecuteInventoryCompensationResponses];
 
 export type PlayerTrackingGetPlayerDailySummariesData = {
     body?: never;
