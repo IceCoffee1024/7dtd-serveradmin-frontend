@@ -12,6 +12,7 @@
   "scripts": {
     "api:gen": "openapi-ts",
     "api:check": "pnpm api:gen && pnpm typecheck",
+    "build:analyze": "pnpm build && node scripts/analyze-build.mjs",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
