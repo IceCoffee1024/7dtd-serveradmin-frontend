@@ -1,17 +1,16 @@
 import type { Language } from 'element-plus/es/locale';
 import type { App } from 'vue';
 import type { LocaleType } from '~/locales/constant';
-import ElementPlus from 'element-plus';
+import en from 'element-plus/es/locale/lang/en';
 import { LOCALE_TYPE } from '~/locales/constant';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 
 export function setupElementPlus(app: App) {
-  app.use(ElementPlus);
+  void app;
 };
 
 const locales: Partial<Record<LocaleType, () => Promise<Language>>> = {
   [LOCALE_TYPE.DE]: () => import('element-plus/es/locale/lang/de').then(m => m.default),
-  [LOCALE_TYPE.EN]: () => import('element-plus/es/locale/lang/en').then(m => m.default),
   [LOCALE_TYPE.ES]: () => import('element-plus/es/locale/lang/es').then(m => m.default),
   [LOCALE_TYPE.FR]: () => import('element-plus/es/locale/lang/fr').then(m => m.default),
   [LOCALE_TYPE.IT]: () => import('element-plus/es/locale/lang/it').then(m => m.default),
@@ -28,9 +27,15 @@ const locales: Partial<Record<LocaleType, () => Promise<Language>>> = {
 export const currentLanguage = ref<Language>();
 
 export async function setElementLanguage(locale: LocaleType) {
+  if (locale === LOCALE_TYPE.EN) {
+    currentLanguage.value = en;
+    return;
+  }
+
   let loader = locales[locale];
   if (!loader) {
-    loader = locales[LOCALE_TYPE.EN]!;
+    currentLanguage.value = en;
+    return;
   }
 
   try {

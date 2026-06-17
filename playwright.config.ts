@@ -4,6 +4,11 @@ const runtimeEnv = (globalThis as unknown as { process?: { env?: Record<string, 
 const baseURL = runtimeEnv.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:5174';
 const useExternalServer = Boolean(runtimeEnv.PLAYWRIGHT_BASE_URL);
 
+function parseWorkers(value: string | undefined): number {
+  const workers = Number(value);
+  return Number.isInteger(workers) && workers > 0 ? workers : 1;
+}
+
 function toWebServerEnv(env: Record<string, string | undefined>): Record<string, string> {
   return Object.fromEntries(Object.entries(env).filter((entry): entry is [string, string] => entry[1] != null));
 }
@@ -11,6 +16,7 @@ function toWebServerEnv(env: Record<string, string | undefined>): Record<string,
 export default defineConfig({
   testDir: './tests/visual',
   timeout: 60_000,
+  workers: parseWorkers(runtimeEnv.PLAYWRIGHT_WORKERS),
   expect: {
     timeout: 10_000,
   },

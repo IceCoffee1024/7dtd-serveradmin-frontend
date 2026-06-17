@@ -133,3 +133,38 @@
 - 失败规则 RunLog ID。
 - 是否出现重复触发或刷屏。
 - 是否出现审计缺失。
+
+## 回归命令建议
+
+真服验证前后建议至少运行：
+
+```bash
+pnpm smoke:live
+pnpm test:unit
+pnpm locale:check
+pnpm typecheck
+```
+
+如果本轮涉及页面布局或规则 Builder，额外运行：
+
+```bash
+pnpm visual:critical
+```
+
+后端建议运行：
+
+```bash
+dotnet test tests/LSTY.Sdtd.ServerAdmin.Tests/LSTY.Sdtd.ServerAdmin.Tests.csproj -v:minimal
+```
+
+## 失败排查优先级
+
+优先排查顺序：
+
+1. 规则是否启用，触发器是否属于 MVP 范围。
+2. 条件 JSON 是否与事件上下文实际字段匹配。
+3. 冷却或首次加入状态是否已存在。
+4. 动作依赖的模块是否启用且配置有效。
+5. RunLog 的错误摘要和异常详情。
+6. 审计日志中是否记录了高风险动作的允许或拒绝。
+7. 如果涉及 Discord，确认 Webhook 目标或 Bot 状态可用。

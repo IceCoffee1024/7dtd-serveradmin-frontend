@@ -52,3 +52,32 @@ Before enabling strict blocking on a live server:
 8. Disable allowed-decision logging after verification if the extra noise is not needed.
 
 Do not rely on simulated chat or console messages to validate this feature. The important path is the real player login event, because that is where the server-provided player IP is read.
+
+## Acceptance Record
+
+Record each live verification run with:
+
+- Backend commit.
+- Frontend commit.
+- Test server name.
+- Test player id.
+- Test player public IP or masked IP range.
+- Provider selected for the test.
+- Mode selected for the test.
+- Unknown country policy.
+- Private IP policy.
+- Recent decision reason before blocking.
+- Recent decision reason after blocking.
+- Kick message observed by the player.
+- Whether the cache was cleared before retry.
+- Whether the player could rejoin after removing the block rule.
+
+Minimum acceptance criteria:
+
+- A normal allowed login appears in recent decisions when allowed-decision logging is enabled.
+- An explicit IP/CIDR block-list match blocks before remote lookup.
+- An explicit IP allow-list match allows before country policy.
+- Unknown-country behavior follows `UnknownCountryPolicy`.
+- Private or loopback behavior follows `PrivateIpPolicy`.
+- The configured kick message is visible to the blocked player.
+- Cache clear changes the next lookup behavior when provider results or settings change.

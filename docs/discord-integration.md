@@ -116,6 +116,36 @@ Bot 内置命令：
 
 频道级验证必须通过真实 Discord 消息完成，因为频道过滤发生在 Gateway 事件处理链路中。
 
+## 真服闭环验证记录
+
+建议每轮 Discord 真服验证都记录以下信息，避免只凭“测试按钮成功”判断功能可用：
+
+- 后端 commit。
+- 前端 commit。
+- Discord Guild ID 后 4 位。
+- Public Channel ID 后 4 位。
+- Admin Channel ID 后 4 位。
+- Bot 状态截图或状态文本。
+- 网络诊断结果。
+- Webhook 测试结果。
+- `/serverstatus` 响应时间和返回摘要。
+- `!serverstatus` 响应时间和返回摘要。
+- `!listplayers` 成功或拒绝结果。
+- 一条游戏聊天到 Discord 的消息时间。
+- 一条 Discord 公共频道到游戏聊天的消息时间。
+- 一次账号绑定成功或拒绝记录。
+- 对应审计日志 ID 或时间范围。
+
+最小验收标准：
+
+- Bot 状态为 Connected 或 Ready。
+- Slash Command 能返回到发起命令的 Discord 交互。
+- 前缀命令结果能回写到管理频道。
+- 公共频道消息不会触发管理命令。
+- 非白名单命令和危险命令都会被拒绝。
+- 启用账号绑定时，未绑定用户无法执行管理命令。
+- 代理启用时，诊断结果与 Bot 实际状态一致。
+
 ## 长稳验证
 
 Bot Gateway、代理和 Slash Command 属于长连接链路，功能测试通过后还需要做一轮短时稳定性观察。

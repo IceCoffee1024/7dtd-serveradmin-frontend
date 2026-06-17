@@ -12,6 +12,29 @@ import en from '../locales/en.json';
 import zhCN from '../locales/zh-cn.json';
 import zhTW from '../locales/zh-tw.json';
 
+type LocaleMessages = Record<string, any>;
+
+const getResourceMessages = (r: any) => r.default || r;
+
+const staticMessages: Partial<Record<LocaleType, LocaleMessages>> = {
+  [LOCALE_TYPE.EN]: en,
+  [LOCALE_TYPE.ZH_CN]: zhCN,
+  [LOCALE_TYPE.ZH_TW]: zhTW,
+};
+
+const lazyMessageLoaders: Partial<Record<LocaleType, () => Promise<LocaleMessages>>> = {
+  [LOCALE_TYPE.DE]: () => import('../locales/de.json').then(getResourceMessages),
+  [LOCALE_TYPE.ES]: () => import('../locales/es.json').then(getResourceMessages),
+  [LOCALE_TYPE.FR]: () => import('../locales/fr.json').then(getResourceMessages),
+  [LOCALE_TYPE.IT]: () => import('../locales/it.json').then(getResourceMessages),
+  [LOCALE_TYPE.JA]: () => import('../locales/ja.json').then(getResourceMessages),
+  [LOCALE_TYPE.KO]: () => import('../locales/ko.json').then(getResourceMessages),
+  [LOCALE_TYPE.PL]: () => import('../locales/pl.json').then(getResourceMessages),
+  [LOCALE_TYPE.PT_BR]: () => import('../locales/pt-br.json').then(getResourceMessages),
+  [LOCALE_TYPE.RU]: () => import('../locales/ru.json').then(getResourceMessages),
+  [LOCALE_TYPE.TR]: () => import('../locales/tr.json').then(getResourceMessages),
+};
+
 function isSupportedLocale(locale: unknown): locale is LocaleType {
   return typeof locale === 'string' && (SUPPORT_LOCALES as readonly string[]).includes(locale);
 }
@@ -103,18 +126,15 @@ const i18n = createI18n({
   locale: detectPreferredLocale(),
   fallbackLocale: LOCALE_TYPE.EN,
   legacy: false,
-  messages: {
-    en,
-    [LOCALE_TYPE.ZH_CN]: zhCN,
-    [LOCALE_TYPE.ZH_TW]: zhTW,
-  } as Record<string, any>,
+  messages: staticMessages as Record<string, LocaleMessages>,
   globalInjection: true, // In <template> can use $t
 });
 
-const getResourceMessages = (r: any) => r.default || r;
 async function loadLocaleMessages(locale: LocaleType) {
-  // load locale messages with dynamic import
-  const messages = await import(`../locales/${locale}.json`).then(getResourceMessages);
+  const messages = staticMessages[locale] ?? await lazyMessageLoaders[locale]?.();
+  if (!messages) {
+    throw new Error(`Unsupported locale: ${locale}`);
+  }
 
   // set locale and locale message
   i18n.global.setLocaleMessage(locale, messages);

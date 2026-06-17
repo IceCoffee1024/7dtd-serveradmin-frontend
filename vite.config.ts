@@ -13,6 +13,7 @@ import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
 
 const COMPONENTS_INCLUDE = [/\.vue$/, /\.vue\?vue/, /\.md$/];
+const NODE_MODULES = /[\\/]node_modules[\\/]/;
 
 function normalizePublicBasePath(value: string | undefined) {
   const base = value?.trim();
@@ -123,8 +124,46 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    // build: {
-    //   sourcemap: true,
-    // },
+    build: {
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'vendor-vue',
+                test: /[\\/]node_modules[\\/](vue|vue-router|pinia|@pinia[\\/]colada)[\\/]/,
+                priority: 30,
+              },
+              {
+                name: 'vendor-element-plus',
+                test: /[\\/]node_modules[\\/](element-plus|@element-plus)[\\/]/,
+                priority: 25,
+              },
+              {
+                name: 'vendor-openlayers',
+                test: /[\\/]node_modules[\\/](ol|ol-ext|ol-layerswitcher)[\\/]/,
+                priority: 25,
+              },
+              {
+                name: 'vendor-i18n',
+                test: /[\\/]node_modules[\\/](@intlify|vue-i18n)[\\/]/,
+                priority: 20,
+              },
+              {
+                name: 'vendor-charts',
+                test: /[\\/]node_modules[\\/](chart\.js|vue-chartjs)[\\/]/,
+                priority: 20,
+              },
+              {
+                name: 'vendor-misc',
+                test: NODE_MODULES,
+                minSize: 20000,
+                priority: 1,
+              },
+            ],
+          },
+        },
+      },
+    },
   };
 });
