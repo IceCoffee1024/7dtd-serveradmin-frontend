@@ -8,6 +8,10 @@ import type {
   EventAutomationRuleDryRunResultDto,
   EventAutomationRuleDto,
   EventAutomationRuleQueryOrder,
+  EventAutomationTemplateDto,
+  EventAutomationTemplateParameterDto,
+  EventAutomationTemplatePreviewDto,
+  EventAutomationTemplateRuleRequestDto,
   EventAutomationRuleUpsertDto,
   EventAutomationRunStatsDto,
 } from '~/generated/api/types.gen';
@@ -17,14 +21,16 @@ import { useRouter } from 'vue-router';
 import { usePopup } from '~/composables';
 import {
   eventAutomationCreateRule,
+  eventAutomationCreateRuleFromTemplate,
   eventAutomationDeleteRule,
   eventAutomationDryRunRule,
   eventAutomationGetRules,
   eventAutomationGetRunStats,
+  eventAutomationGetTemplates,
+  eventAutomationPreviewTemplate,
   eventAutomationUpdateRule,
   eventAutomationValidateRule,
 } from '~/generated/api/sdk.gen';
-import { client } from '~/generated/api/client.gen';
 import RuleActionBuilder from './components/RuleActionBuilder.vue';
 import RuleConditionBuilder from './components/RuleConditionBuilder.vue';
 import RuleDryRunSampleEditor from './components/RuleDryRunSampleEditor.vue';
@@ -64,44 +70,6 @@ interface RuleTemplate {
   actions: Array<Record<string, unknown>>;
 }
 
-type TemplateParameterType = 'Text' | 'TextArea' | 'Number' | 'Boolean' | 'Cron' | 'TimeZone' | 'Select';
-
-interface EventAutomationTemplateParameterOption {
-  value: string;
-  labelKey: string;
-}
-
-interface EventAutomationTemplateParameter {
-  key: string;
-  labelKey: string;
-  descriptionKey?: string | null;
-  type: TemplateParameterType;
-  required: boolean;
-  defaultValue?: string | null;
-  min?: number | null;
-  max?: number | null;
-  options?: EventAutomationTemplateParameterOption[] | null;
-}
-
-interface EventAutomationTemplate {
-  key: string;
-  labelKey: string;
-  descriptionKey: string;
-  categoryKey: string;
-  riskLevel: string;
-  requiredModuleKeys: string[];
-  parameters: EventAutomationTemplateParameter[];
-}
-
-interface EventAutomationTemplateRuleRequest {
-  parameters?: Record<string, string | null>;
-}
-
-interface EventAutomationTemplatePreview {
-  template: EventAutomationTemplate;
-  rule: EventAutomationRuleUpsertDto;
-}
-
 interface ReferenceItem {
   label: string;
   value: string;
@@ -124,9 +92,9 @@ const isPreviewingTemplate = ref(false);
 const dryRunResult = ref<EventAutomationRuleDryRunResultDto | null>(null);
 const dryRunSample = ref<EventAutomationRuleDryRunRequestDto | null>(null);
 const selectedTemplateKey = ref<string>();
-const serverRuleTemplates = ref<EventAutomationTemplate[]>([]);
+const serverRuleTemplates = ref<EventAutomationTemplateDto[]>([]);
 const templateParameters = reactive<Record<string, string | null>>({});
-const templatePreview = ref<EventAutomationTemplatePreview | null>(null);
+const templatePreview = ref<EventAutomationTemplatePreviewDto | null>(null);
 const editorMode = ref<'builder' | 'json'>('builder');
 const selectedDryRunSampleKey = ref<string>();
 const dryRunSampleContext = ref<EventAutomationDryRunSampleContext>(cloneDryRunSampleContext(getDefaultDryRunSample('PlayerJoined').context));
@@ -674,11 +642,10 @@ function resolveI18nLabel(key: string | null | undefined, fallback: string): str
 async function fetchTemplateCatalog() {
   isLoadingTemplates.value = true;
   try {
-    const response = await client.get<EventAutomationTemplate[], unknown, true>({
-      url: '/api/EventAutomation/Templates',
+    const { data } = await eventAutomationGetTemplates({
       throwOnError: true,
     });
-    serverRuleTemplates.value = response.data ?? [];
+    serverRuleTemplates.value = data ?? [];
   }
   catch (error) {
     serverRuleTemplates.value = [];
@@ -689,28 +656,26 @@ async function fetchTemplateCatalog() {
   }
 }
 
-async function previewServerTemplate(templateKey: string, request: EventAutomationTemplateRuleRequest) {
-  const response = await client.post<EventAutomationTemplatePreview, unknown, true>({
-    url: `/api/EventAutomation/Templates/${encodeURIComponent(templateKey)}/Preview`,
-    body: request,
-    headers: {
-      'Content-Type': 'application/json',
+async function previewServerTemplate(templateKey: string, request: EventAutomationTemplateRuleRequestDto) {
+  const { data } = await eventAutomationPreviewTemplate({
+    path: {
+      key: templateKey,
     },
+    body: request,
     throwOnError: true,
   });
-  return response.data;
+  return data;
 }
 
-async function createRuleFromServerTemplate(templateKey: string, request: EventAutomationTemplateRuleRequest) {
-  const response = await client.post<EventAutomationRuleDto, unknown, true>({
-    url: `/api/EventAutomation/Templates/${encodeURIComponent(templateKey)}/CreateRule`,
-    body: request,
-    headers: {
-      'Content-Type': 'application/json',
+async function createRuleFromServerTemplate(templateKey: string, request: EventAutomationTemplateRuleRequestDto) {
+  const { data } = await eventAutomationCreateRuleFromTemplate({
+    path: {
+      key: templateKey,
     },
+    body: request,
     throwOnError: true,
   });
-  return response.data;
+  return data;
 }
 
 async function fetchRunStats() {
@@ -793,7 +758,7 @@ async function applyRuleTemplate(templateKey: string | undefined) {
   nextTick(() => formRef.value?.clearValidate());
 }
 
-function resetTemplateParameters(template: EventAutomationTemplate) {
+function resetTemplateParameters(template: EventAutomationTemplateDto) {
   Object.keys(templateParameters).forEach(key => delete templateParameters[key]);
   for (const parameter of template.parameters ?? []) {
     templateParameters[parameter.key] = parameter.defaultValue ?? null;
@@ -801,7 +766,7 @@ function resetTemplateParameters(template: EventAutomationTemplate) {
   templatePreview.value = null;
 }
 
-function buildTemplateRequest(): EventAutomationTemplateRuleRequest {
+function buildTemplateRequest(): EventAutomationTemplateRuleRequestDto {
   return {
     parameters: Object.fromEntries(
       Object.entries(templateParameters)

@@ -1508,27 +1508,64 @@ export const vEventAutomationRunStatsDto = v.strictObject({
 });
 
 /**
- * Result of an event automation run history cleanup request.
+ * User-facing input type used by an event automation template parameter.
  */
-export const vEventAutomationRunLogCleanupResultDto = v.strictObject({
-    matchedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    deletedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    previewOnly: v.optional(v.boolean()),
-    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
-    criteria: v.string(),
-    oldestStartedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
-    newestStartedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp()))
+export const vEventAutomationTemplateParameterType = v.picklist([
+    'Text',
+    'TextArea',
+    'Number',
+    'Boolean',
+    'Cron',
+    'TimeZone',
+    'Select'
+]);
+
+/**
+ * One selectable option for an event automation template parameter.
+ */
+export const vEventAutomationTemplateParameterOptionDto = v.strictObject({
+    value: v.string(),
+    labelKey: v.string()
 });
 
 /**
- * Request payload for controlled event automation run history cleanup.
+ * Describes one parameter required to create a rule from a template.
  */
-export const vEventAutomationRunLogCleanupRequestDto = v.strictObject({
-    deleteTestRuns: v.optional(v.boolean()),
-    olderThanDays: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
-    keyword: v.nullish(v.string()),
-    previewOnly: v.optional(v.boolean())
+export const vEventAutomationTemplateParameterDto = v.strictObject({
+    key: v.string(),
+    labelKey: v.string(),
+    descriptionKey: v.nullish(v.string()),
+    type: vEventAutomationTemplateParameterType,
+    required: v.boolean(),
+    defaultValue: v.nullish(v.string()),
+    min: v.nullish(v.number()),
+    max: v.nullish(v.number()),
+    options: v.array(vEventAutomationTemplateParameterOptionDto)
+});
+
+/**
+ * Describes a built-in event automation template that can generate a normal rule.
+ */
+export const vEventAutomationTemplateDto = v.strictObject({
+    key: v.string(),
+    labelKey: v.string(),
+    descriptionKey: v.string(),
+    categoryKey: v.string(),
+    riskLevel: v.string(),
+    requiredModuleKeys: v.array(v.string()),
+    parameters: v.array(vEventAutomationTemplateParameterDto)
+});
+
+/**
+ * Request model for creating or updating an event automation rule.
+ */
+export const vEventAutomationRuleUpsertDto = v.strictObject({
+    name: v.string(),
+    isEnabled: v.optional(v.boolean()),
+    triggerType: v.string(),
+    conditionsJson: v.nullish(v.string()),
+    actionsJson: v.nullish(v.string()),
+    description: v.nullish(v.string())
 });
 
 /**
@@ -1558,15 +1595,43 @@ export const vEventAutomationRuleValidationResultDto = v.strictObject({
 });
 
 /**
- * Request model for creating or updating an event automation rule.
+ * Result of rendering a template into a normal rule payload.
  */
-export const vEventAutomationRuleUpsertDto = v.strictObject({
-    name: v.string(),
-    isEnabled: v.optional(v.boolean()),
-    triggerType: v.string(),
-    conditionsJson: v.nullish(v.string()),
-    actionsJson: v.nullish(v.string()),
-    description: v.nullish(v.string())
+export const vEventAutomationTemplatePreviewDto = v.strictObject({
+    template: vEventAutomationTemplateDto,
+    rule: vEventAutomationRuleUpsertDto,
+    validation: vEventAutomationRuleValidationResultDto
+});
+
+/**
+ * Request for previewing or creating a rule from an event automation template.
+ */
+export const vEventAutomationTemplateRuleRequestDto = v.strictObject({
+    parameters: v.nullish(v.object({}))
+});
+
+/**
+ * Result of an event automation run history cleanup request.
+ */
+export const vEventAutomationRunLogCleanupResultDto = v.strictObject({
+    matchedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    deletedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    previewOnly: v.optional(v.boolean()),
+    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    criteria: v.string(),
+    oldestStartedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    newestStartedAt: v.nullish(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Request payload for controlled event automation run history cleanup.
+ */
+export const vEventAutomationRunLogCleanupRequestDto = v.strictObject({
+    deleteTestRuns: v.optional(v.boolean()),
+    olderThanDays: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    olderThanUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    keyword: v.nullish(v.string()),
+    previewOnly: v.optional(v.boolean())
 });
 
 /**
@@ -3554,6 +3619,18 @@ export const vEventAutomationGetRunsQuery = v.object({
     keyword: v.nullish(v.string()),
     order: v.nullish(vEventAutomationRunLogQueryOrder),
     desc: v.optional(v.boolean())
+});
+
+export const vEventAutomationPreviewTemplateBody = vEventAutomationTemplateRuleRequestDto;
+
+export const vEventAutomationPreviewTemplatePath = v.object({
+    key: v.string()
+});
+
+export const vEventAutomationCreateRuleFromTemplateBody = vEventAutomationTemplateRuleRequestDto;
+
+export const vEventAutomationCreateRuleFromTemplatePath = v.object({
+    key: v.string()
 });
 
 export const vEventAutomationCleanupRunsBody = vEventAutomationRunLogCleanupRequestDto;

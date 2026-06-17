@@ -2741,6 +2741,198 @@ export type EventAutomationRecentFailureDto = {
 };
 
 /**
+ * Describes a built-in event automation template that can generate a normal rule.
+ */
+export type EventAutomationTemplateDto = {
+    /**
+     * Stable template key.
+     */
+    key: string;
+    /**
+     * Frontend i18n key used for the template name.
+     */
+    labelKey: string;
+    /**
+     * Frontend i18n key used for the template description.
+     */
+    descriptionKey: string;
+    /**
+     * Frontend i18n key used for grouping templates.
+     */
+    categoryKey: string;
+    /**
+     * Low, Medium, or High risk hint for management UIs.
+     */
+    riskLevel: string;
+    /**
+     * Modules that should be enabled for the generated rule to work.
+     */
+    requiredModuleKeys: Array<string>;
+    /**
+     * Parameters accepted by this template.
+     */
+    parameters: Array<EventAutomationTemplateParameterDto>;
+};
+
+/**
+ * Describes one parameter required to create a rule from a template.
+ */
+export type EventAutomationTemplateParameterDto = {
+    /**
+     * Stable parameter key.
+     */
+    key: string;
+    /**
+     * Frontend i18n key used for the parameter label.
+     */
+    labelKey: string;
+    /**
+     * Optional frontend i18n key used for the parameter help text.
+     */
+    descriptionKey?: string | null;
+    /**
+     * Input type expected by the frontend.
+     */
+    type: EventAutomationTemplateParameterType;
+    /**
+     * True when the parameter must be supplied before previewing or creating a rule.
+     */
+    required: boolean;
+    /**
+     * Default string value. Numeric and boolean values are encoded as strings for transport consistency.
+     */
+    defaultValue?: string | null;
+    /**
+     * Optional minimum numeric value.
+     */
+    min?: number | null;
+    /**
+     * Optional maximum numeric value.
+     */
+    max?: number | null;
+    /**
+     * Selectable options for select-style inputs.
+     */
+    options: Array<EventAutomationTemplateParameterOptionDto>;
+};
+
+/**
+ * User-facing input type used by an event automation template parameter.
+ */
+export type EventAutomationTemplateParameterType = 'Text' | 'TextArea' | 'Number' | 'Boolean' | 'Cron' | 'TimeZone' | 'Select';
+
+/**
+ * One selectable option for an event automation template parameter.
+ */
+export type EventAutomationTemplateParameterOptionDto = {
+    /**
+     * Option value written to the template parameter payload.
+     */
+    value: string;
+    /**
+     * Frontend i18n key used for the option label.
+     */
+    labelKey: string;
+};
+
+/**
+ * Result of rendering a template into a normal rule payload.
+ */
+export type EventAutomationTemplatePreviewDto = {
+    /**
+     * Template metadata used for rendering.
+     */
+    template: EventAutomationTemplateDto;
+    /**
+     * Generated rule payload. It is not persisted by preview endpoints.
+     */
+    rule: EventAutomationRuleUpsertDto;
+    /**
+     * Validation result for the generated rule.
+     */
+    validation: EventAutomationRuleValidationResultDto;
+};
+
+/**
+ * Request model for creating or updating an event automation rule.
+ */
+export type EventAutomationRuleUpsertDto = {
+    /**
+     * Human-readable rule name.
+     */
+    name: string;
+    /**
+     * Whether this rule is currently active.
+     */
+    isEnabled?: boolean;
+    /**
+     * Trigger type, for example PlayerJoined, PlayerLeft, ChatMessage, or Cron.
+     */
+    triggerType: string;
+    /**
+     * JSON object that stores trigger-specific conditions.
+     */
+    conditionsJson?: string | null;
+    /**
+     * JSON array that stores actions to execute when the rule matches.
+     */
+    actionsJson?: string | null;
+    /**
+     * Optional human-readable description shown in the management UI.
+     */
+    description?: string | null;
+};
+
+/**
+ * Validation result for an event automation rule payload.
+ */
+export type EventAutomationRuleValidationResultDto = {
+    /**
+     * Whether the rule has no blocking validation errors.
+     */
+    isValid?: boolean;
+    /**
+     * Issues found during validation.
+     */
+    issues: Array<EventAutomationRuleValidationIssueDto>;
+};
+
+/**
+ * One validation issue found while checking an event automation rule.
+ */
+export type EventAutomationRuleValidationIssueDto = {
+    /**
+     * JSON path or logical field path related to the issue.
+     */
+    path: string;
+    /**
+     * Issue severity.
+     */
+    severity?: EventAutomationRuleValidationSeverity;
+    /**
+     * Human-readable issue message.
+     */
+    message: string;
+};
+
+/**
+ * Severity for one event automation validation issue.
+ */
+export type EventAutomationRuleValidationSeverity = 'Info' | 'Warning' | 'Error';
+
+/**
+ * Request for previewing or creating a rule from an event automation template.
+ */
+export type EventAutomationTemplateRuleRequestDto = {
+    /**
+     * Parameter values keyed by template parameter key.
+     */
+    parameters?: {
+        [key: string]: string | null;
+    } | null;
+};
+
+/**
  * Result of an event automation run history cleanup request.
  */
 export type EventAutomationRunLogCleanupResultDto = {
@@ -2798,73 +2990,6 @@ export type EventAutomationRunLogCleanupRequestDto = {
      * When true, returns the match count without deleting anything.
      */
     previewOnly?: boolean;
-};
-
-/**
- * Validation result for an event automation rule payload.
- */
-export type EventAutomationRuleValidationResultDto = {
-    /**
-     * Whether the rule has no blocking validation errors.
-     */
-    isValid?: boolean;
-    /**
-     * Issues found during validation.
-     */
-    issues: Array<EventAutomationRuleValidationIssueDto>;
-};
-
-/**
- * One validation issue found while checking an event automation rule.
- */
-export type EventAutomationRuleValidationIssueDto = {
-    /**
-     * JSON path or logical field path related to the issue.
-     */
-    path: string;
-    /**
-     * Issue severity.
-     */
-    severity?: EventAutomationRuleValidationSeverity;
-    /**
-     * Human-readable issue message.
-     */
-    message: string;
-};
-
-/**
- * Severity for one event automation validation issue.
- */
-export type EventAutomationRuleValidationSeverity = 'Info' | 'Warning' | 'Error';
-
-/**
- * Request model for creating or updating an event automation rule.
- */
-export type EventAutomationRuleUpsertDto = {
-    /**
-     * Human-readable rule name.
-     */
-    name: string;
-    /**
-     * Whether this rule is currently active.
-     */
-    isEnabled?: boolean;
-    /**
-     * Trigger type, for example PlayerJoined, PlayerLeft, ChatMessage, or Cron.
-     */
-    triggerType: string;
-    /**
-     * JSON object that stores trigger-specific conditions.
-     */
-    conditionsJson?: string | null;
-    /**
-     * JSON array that stores actions to execute when the rule matches.
-     */
-    actionsJson?: string | null;
-    /**
-     * Optional human-readable description shown in the management UI.
-     */
-    description?: string | null;
 };
 
 /**
@@ -8795,6 +8920,69 @@ export type EventAutomationGetRunStatsResponses = {
 };
 
 export type EventAutomationGetRunStatsResponse = EventAutomationGetRunStatsResponses[keyof EventAutomationGetRunStatsResponses];
+
+export type EventAutomationGetTemplatesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/EventAutomation/Templates';
+};
+
+export type EventAutomationGetTemplatesErrors = {
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationGetTemplatesError = EventAutomationGetTemplatesErrors[keyof EventAutomationGetTemplatesErrors];
+
+export type EventAutomationGetTemplatesResponses = {
+    200: Array<EventAutomationTemplateDto>;
+};
+
+export type EventAutomationGetTemplatesResponse = EventAutomationGetTemplatesResponses[keyof EventAutomationGetTemplatesResponses];
+
+export type EventAutomationPreviewTemplateData = {
+    body: EventAutomationTemplateRuleRequestDto;
+    path: {
+        key: string;
+    };
+    query?: never;
+    url: '/api/EventAutomation/Templates/{key}/Preview';
+};
+
+export type EventAutomationPreviewTemplateErrors = {
+    400: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationPreviewTemplateError = EventAutomationPreviewTemplateErrors[keyof EventAutomationPreviewTemplateErrors];
+
+export type EventAutomationPreviewTemplateResponses = {
+    200: EventAutomationTemplatePreviewDto;
+};
+
+export type EventAutomationPreviewTemplateResponse = EventAutomationPreviewTemplateResponses[keyof EventAutomationPreviewTemplateResponses];
+
+export type EventAutomationCreateRuleFromTemplateData = {
+    body: EventAutomationTemplateRuleRequestDto;
+    path: {
+        key: string;
+    };
+    query?: never;
+    url: '/api/EventAutomation/Templates/{key}/CreateRule';
+};
+
+export type EventAutomationCreateRuleFromTemplateErrors = {
+    400: ProblemDetailsDto;
+    503: ProblemDetailsDto;
+};
+
+export type EventAutomationCreateRuleFromTemplateError = EventAutomationCreateRuleFromTemplateErrors[keyof EventAutomationCreateRuleFromTemplateErrors];
+
+export type EventAutomationCreateRuleFromTemplateResponses = {
+    200: EventAutomationRuleDto;
+};
+
+export type EventAutomationCreateRuleFromTemplateResponse = EventAutomationCreateRuleFromTemplateResponses[keyof EventAutomationCreateRuleFromTemplateResponses];
 
 export type EventAutomationCleanupRunsData = {
     body: EventAutomationRunLogCleanupRequestDto;
