@@ -42,7 +42,7 @@ type FeatureModuleConfigurationStatusPayload = FeatureModuleConfigurationStatus 
 type FeatureModuleConfigurationIssueSeverityPayload = FeatureModuleConfigurationIssueSeverity | string | number | null | undefined;
 type FeatureModuleHealthIssueSourcePayload = FeatureModuleHealthIssueSource | string | number | null | undefined;
 type ModuleFilter = 'all' | 'disabled' | 'enabled' | 'issues' | 'unavailable';
-type ModuleStateCategory = 'all' | 'cooldown' | 'daily' | 'firstJoin' | 'other';
+type ModuleStateCategory = 'all' | 'runtime' | 'history' | 'cooldown' | 'reward' | 'request' | 'cache' | 'firstJoin' | 'other';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -83,9 +83,13 @@ const isCompactViewport = computed(() => windowWidth.value <= 1280);
 
 const moduleStateCategoryOptions = computed(() => [
   { label: t('views.featureModules.state.categories.all'), value: 'all' },
+  { label: t('views.featureModules.state.categories.runtime'), value: 'runtime' },
+  { label: t('views.featureModules.state.categories.history'), value: 'history' },
   { label: t('views.featureModules.state.categories.cooldown'), value: 'cooldown' },
+  { label: t('views.featureModules.state.categories.reward'), value: 'reward' },
+  { label: t('views.featureModules.state.categories.request'), value: 'request' },
+  { label: t('views.featureModules.state.categories.cache'), value: 'cache' },
   { label: t('views.featureModules.state.categories.firstJoin'), value: 'firstJoin' },
-  { label: t('views.featureModules.state.categories.daily'), value: 'daily' },
   { label: t('views.featureModules.state.categories.other'), value: 'other' },
 ]);
 
@@ -126,9 +130,13 @@ const moduleStateOverview = computed(() => {
   return {
     total: moduleStateTotal.value,
     loaded: moduleStates.value.length,
+    runtime: getModuleStateCountByCategory('runtime'),
+    history: getModuleStateCountByCategory('history'),
     cooldown: getModuleStateCountByCategory('cooldown'),
+    reward: getModuleStateCountByCategory('reward'),
+    request: getModuleStateCountByCategory('request'),
+    cache: getModuleStateCountByCategory('cache'),
     firstJoin: getModuleStateCountByCategory('firstJoin'),
-    daily: getModuleStateCountByCategory('daily'),
     other: getModuleStateCountByCategory('other'),
     latestUpdatedAt,
   };
@@ -667,12 +675,20 @@ function formatModuleStateValue(valueJson: string): string {
 function getModuleStateCategory(row: ModuleStateDto): ModuleStateCategory {
   const scope = row.scope.toLowerCase();
   const stateKey = row.stateKey.toLowerCase();
+  if (scope.includes('runtime'))
+    return 'runtime';
+  if (scope.includes('history'))
+    return 'history';
   if (scope.includes('cooldown'))
     return 'cooldown';
+  if (scope.includes('reward') || scope.includes('daily') || scope.includes('streak') || stateKey.includes('daily') || stateKey.includes('claim'))
+    return 'reward';
+  if (scope.includes('request'))
+    return 'request';
+  if (scope.includes('cache') || scope.includes('decision'))
+    return 'cache';
   if (scope.includes('firstjoin') || scope.includes('first_join'))
     return 'firstJoin';
-  if (scope.includes('daily') || scope.includes('reward') || stateKey.includes('daily') || stateKey.includes('claim'))
-    return 'daily';
   return 'other';
 }
 
@@ -682,12 +698,20 @@ function getModuleStateCategoryLabel(row: ModuleStateDto): string {
 
 function getModuleStateCategoryTagType(row: ModuleStateDto) {
   const category = getModuleStateCategory(row);
+  if (category === 'runtime')
+    return 'primary';
+  if (category === 'history')
+    return 'danger';
   if (category === 'cooldown')
     return 'warning';
+  if (category === 'reward')
+    return 'success';
+  if (category === 'request')
+    return 'warning';
+  if (category === 'cache')
+    return 'info';
   if (category === 'firstJoin')
     return 'success';
-  if (category === 'daily')
-    return 'primary';
   return 'info';
 }
 
@@ -726,7 +750,7 @@ function readDateTimeFromStateValue(value: unknown): string | null {
 
   if (value != null && typeof value === 'object') {
     const record = value as Record<string, unknown>;
-    for (const key of ['completedAt', 'lastTriggeredAt', 'claimedAt', 'updatedAt']) {
+    for (const key of ['completedAt', 'lastTriggeredAt', 'claimedAt', 'updatedAt', 'UpdatedAt', 'timestamp', 'Timestamp', 'lastUseAt', 'LastUseAt', 'lastRewardAt', 'LastRewardAt', 'awardedAt', 'AwardedAt', 'startedAt', 'StartedAt', 'endedAt', 'EndedAt', 'fetchedAt', 'FetchedAt']) {
       const fieldValue = record[key];
       if (typeof fieldValue === 'string' && dayjs(fieldValue).isValid()) {
         return fieldValue;
@@ -741,6 +765,40 @@ function getModuleStateReadableValue(row: ModuleStateDto): string {
   const parsedValue = parseModuleStateValue(row.valueJson);
   const timestamp = readDateTimeFromStateValue(parsedValue);
   const category = getModuleStateCategory(row);
+
+  if (parsedValue != null && typeof parsedValue === 'object') {
+    const record = parsedValue as Record<string, unknown>;
+    if (category === 'runtime') {
+      return t('views.featureModules.state.readable.runtime', [
+        String(record.State ?? record.state ?? '-'),
+        String(record.Message ?? record.message ?? '-'),
+      ]);
+    }
+
+    if (category === 'history') {
+      return t('views.featureModules.state.readable.history', [
+        String(record.TaskName ?? record.taskName ?? '-'),
+        String(record.Status ?? record.status ?? '-'),
+        String(record.Summary ?? record.summary ?? '-'),
+      ]);
+    }
+
+    if (category === 'request') {
+      return t('views.featureModules.state.readable.request', [
+        String(record.Status ?? record.status ?? '-'),
+        String(record.SourcePlayerName ?? record.sourcePlayerName ?? record.SourcePlayerId ?? record.sourcePlayerId ?? '-'),
+        String(record.TargetPlayerName ?? record.targetPlayerName ?? record.TargetPlayerId ?? record.targetPlayerId ?? '-'),
+      ]);
+    }
+
+    if (category === 'cache') {
+      return t('views.featureModules.state.readable.cache', [
+        String(record.Provider ?? record.provider ?? row.scope),
+        String(record.CountryCode ?? record.countryCode ?? record.Decision ?? record.decision ?? '-'),
+        timestamp == null ? '-' : formatModuleStateTime(timestamp),
+      ]);
+    }
+  }
 
   if (category === 'cooldown' && timestamp != null) {
     return t('views.featureModules.state.readable.cooldown', [
@@ -759,8 +817,8 @@ function getModuleStateReadableValue(row: ModuleStateDto): string {
     ]);
   }
 
-  if (category === 'daily' && timestamp != null) {
-    return t('views.featureModules.state.readable.daily', [
+  if (category === 'reward' && timestamp != null) {
+    return t('views.featureModules.state.readable.reward', [
       formatModuleStateTime(timestamp),
       formatDurationFromNow(timestamp),
     ]);
@@ -1486,16 +1544,28 @@ onMounted(loadModules);
               <strong>{{ moduleStateOverview.total }}</strong>
             </div>
             <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.runtime') }}</span>
+              <strong>{{ moduleStateOverview.runtime }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.history') }}</span>
+              <strong>{{ moduleStateOverview.history }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
               <span>{{ t('views.featureModules.state.overview.cooldown') }}</span>
               <strong>{{ moduleStateOverview.cooldown }}</strong>
             </div>
             <div class="feature-module-detail__state-overview-item">
-              <span>{{ t('views.featureModules.state.overview.firstJoin') }}</span>
-              <strong>{{ moduleStateOverview.firstJoin }}</strong>
+              <span>{{ t('views.featureModules.state.overview.reward') }}</span>
+              <strong>{{ moduleStateOverview.reward }}</strong>
             </div>
             <div class="feature-module-detail__state-overview-item">
-              <span>{{ t('views.featureModules.state.overview.daily') }}</span>
-              <strong>{{ moduleStateOverview.daily }}</strong>
+              <span>{{ t('views.featureModules.state.overview.request') }}</span>
+              <strong>{{ moduleStateOverview.request }}</strong>
+            </div>
+            <div class="feature-module-detail__state-overview-item">
+              <span>{{ t('views.featureModules.state.overview.cache') }}</span>
+              <strong>{{ moduleStateOverview.cache }}</strong>
             </div>
             <div class="feature-module-detail__state-overview-item">
               <span>{{ t('views.featureModules.state.overview.other') }}</span>

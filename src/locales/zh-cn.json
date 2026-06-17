@@ -2611,16 +2611,24 @@
         "searchPlaceholder": "搜索范围键、状态键或值",
         "categories": {
           "all": "全部",
+          "runtime": "运行",
+          "history": "历史",
           "cooldown": "冷却",
+          "reward": "奖励",
+          "request": "请求",
+          "cache": "缓存",
           "firstJoin": "首次加入",
-          "daily": "每日",
           "other": "其他"
         },
         "overview": {
           "total": "状态总数",
+          "runtime": "运行",
+          "history": "历史",
           "cooldown": "冷却",
+          "reward": "奖励",
+          "request": "请求",
+          "cache": "缓存",
           "firstJoin": "首次加入",
-          "daily": "每日",
           "other": "其他",
           "latestUpdatedAt": "最近更新"
         },
@@ -2631,9 +2639,13 @@
           "days": "{0} 天前"
         },
         "readable": {
+          "runtime": "{0}：{1}",
+          "history": "{0} 结束状态 {1}：{2}",
           "cooldown": "最近触发 {0}，{1}",
           "firstJoin": "已完成 {0}，玩家 {1}",
-          "daily": "最近每日状态 {0}，{1}"
+          "reward": "最近奖励状态 {0}，{1}",
+          "request": "{0}：{1} -> {2}",
+          "cache": "{0} / {1}，更新于 {2}"
         },
         "cleanupScopePlaceholder": "清理范围",
         "cleanupAction": "清理状态",
@@ -2805,6 +2817,10 @@
         "requiredDependencyDisabled": "必需依赖“{0}”未启用。",
         "requiredDependencyUnavailable": "必需依赖“{0}”不可用。",
         "eventAutomationRecentFailures": "事件自动化今日失败 {0} 次，最近失败规则：{1}。",
+        "discordBotNotReady": "Discord Bot 运行态尚未就绪，当前状态：{0}。",
+        "discordBotLastError": "Discord Bot 运行态报告错误。状态：{0}，错误：{1}。",
+        "geoIpRecentLookupFailure": "GeoIP 最近查询 {0} 失败：{1}。",
+        "lastRunFailed": "{0} 最近一次运行结束状态为 {1}：{2}。",
         "consoleCommandPolicyEnforced": "控制台命令执行已启用安全策略：白名单={0}，危险命令显式确认={1}。",
         "eventAutomationDiscordDependencyDisabled": "存在已启用规则会发送 Discord 消息，但 Discord 集成当前未启用。",
         "discordProxyInvalid": "Discord 代理配置无效：{0}。",
@@ -2949,7 +2965,10 @@
         "enableDependency": "先启用依赖模块，再回到当前模块重新验证。",
         "installDependency": "依赖模块当前不可用，确认功能是否已部署或注册。",
         "inspectRunHistory": "查看执行历史中的失败详情，优先处理最近失败规则。",
-        "reviewSecurityPolicy": "确认敏感动作、审计动作和控制台命令白名单策略符合预期。"
+        "reviewSecurityPolicy": "确认敏感动作、审计动作和控制台命令白名单策略符合预期。",
+        "inspectRuntimeState": "打开运行状态，确认模块是否已经恢复。",
+        "checkDiscordConnection": "检查 Bot Token、频道 ID、代理设置和 Discord Gateway 连通性。",
+        "checkGeoIpProvider": "检查当前 GeoIP 查询服务、代理/网络路径和未知国家策略。"
       },
       "healthIssueFixes": {
         "open": "打开",

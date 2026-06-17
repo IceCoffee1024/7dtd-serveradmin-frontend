@@ -2781,7 +2781,11 @@
         "discordPublicAdminChannelSame": "Public and admin channel IDs are the same. Split them to reduce accidental command exposure.",
         "discordCommandAllowListContainsBlockedDangerous": "Command allow-list contains high-risk commands that will still be blocked: {0}.",
         "discordCommandExecutionWithoutAccountBinding": "Discord command relay is enabled without account binding. Enable binding to tighten identity checks.",
-        "discordAccountBindingEnabled": "Discord account binding is enabled."
+        "discordAccountBindingEnabled": "Discord account binding is enabled.",
+        "discordBotNotReady": "Discord Bot runtime is not ready. Current state: {0}.",
+        "discordBotLastError": "Discord Bot runtime reported an error. State: {0}. Error: {1}.",
+        "geoIpRecentLookupFailure": "GeoIP recently had a lookup failure for {0}: {1}.",
+        "lastRunFailed": "Latest run of {0} ended with {1}: {2}."
       },
       "security": {
         "sensitiveActions": "Sensitive Actions",
@@ -2871,16 +2875,24 @@
           "all": "All",
           "cooldown": "Cooldown",
           "firstJoin": "First Join",
-          "daily": "Daily",
-          "other": "Other"
+          "other": "Other",
+          "runtime": "Runtime",
+          "history": "History",
+          "reward": "Reward",
+          "request": "Request",
+          "cache": "Cache"
         },
         "overview": {
           "total": "Total State",
           "cooldown": "Cooldown",
           "firstJoin": "First Join",
-          "daily": "Daily",
           "other": "Other",
-          "latestUpdatedAt": "Latest Update"
+          "latestUpdatedAt": "Latest Update",
+          "runtime": "Runtime",
+          "history": "History",
+          "reward": "Reward",
+          "request": "Request",
+          "cache": "Cache"
         },
         "duration": {
           "seconds": "{0} seconds ago",
@@ -2891,7 +2903,11 @@
         "readable": {
           "cooldown": "Last triggered at {0}, {1}",
           "firstJoin": "Completed at {0}, player {1}",
-          "daily": "Latest daily state at {0}, {1}"
+          "runtime": "{0}: {1}",
+          "history": "{0} finished with {1}: {2}",
+          "reward": "Latest reward state at {0}, {1}",
+          "request": "{0}: {1} -> {2}",
+          "cache": "{0} / {1}, updated {2}"
         },
         "cleanupScopePlaceholder": "Cleanup scope",
         "cleanupAction": "Clean State",
@@ -2949,7 +2965,10 @@
         "enableDependency": "Enable the dependency first, then validate this module again.",
         "installDependency": "The dependency module is unavailable. Confirm the feature is deployed or registered.",
         "inspectRunHistory": "Open run history and fix the latest failed rule first.",
-        "reviewSecurityPolicy": "Confirm sensitive actions, audited actions, and console command allow-list policy."
+        "reviewSecurityPolicy": "Confirm sensitive actions, audited actions, and console command allow-list policy.",
+        "inspectRuntimeState": "Open runtime state and check whether the module has recovered.",
+        "checkDiscordConnection": "Check Bot token, channel IDs, proxy settings, and Discord Gateway connectivity.",
+        "checkGeoIpProvider": "Check the selected GeoIP provider, proxy/network path, and unknown-country policy."
       },
       "healthIssueFixes": {
         "open": "Open",

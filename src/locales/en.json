@@ -2611,16 +2611,24 @@
         "searchPlaceholder": "Search scope key, state key, or value",
         "categories": {
           "all": "All",
+          "runtime": "Runtime",
+          "history": "History",
           "cooldown": "Cooldown",
+          "reward": "Reward",
+          "request": "Request",
+          "cache": "Cache",
           "firstJoin": "First Join",
-          "daily": "Daily",
           "other": "Other"
         },
         "overview": {
           "total": "Total State",
+          "runtime": "Runtime",
+          "history": "History",
           "cooldown": "Cooldown",
+          "reward": "Reward",
+          "request": "Request",
+          "cache": "Cache",
           "firstJoin": "First Join",
-          "daily": "Daily",
           "other": "Other",
           "latestUpdatedAt": "Latest Update"
         },
@@ -2631,9 +2639,13 @@
           "days": "{0} days ago"
         },
         "readable": {
+          "runtime": "{0}: {1}",
+          "history": "{0} finished with {1}: {2}",
           "cooldown": "Last triggered at {0}, {1}",
           "firstJoin": "Completed at {0}, player {1}",
-          "daily": "Latest daily state at {0}, {1}"
+          "reward": "Latest reward state at {0}, {1}",
+          "request": "{0}: {1} -> {2}",
+          "cache": "{0} / {1}, updated {2}"
         },
         "cleanupScopePlaceholder": "Cleanup scope",
         "cleanupAction": "Clean State",
@@ -2805,6 +2817,10 @@
         "requiredDependencyDisabled": "Required dependency \"{0}\" is disabled.",
         "requiredDependencyUnavailable": "Required dependency \"{0}\" is unavailable.",
         "eventAutomationRecentFailures": "Event automation failed {0} time(s) today. Latest failed rule: {1}.",
+        "discordBotNotReady": "Discord Bot runtime is not ready. Current state: {0}.",
+        "discordBotLastError": "Discord Bot runtime reported an error. State: {0}. Error: {1}.",
+        "geoIpRecentLookupFailure": "GeoIP recently had a lookup failure for {0}: {1}.",
+        "lastRunFailed": "Latest run of {0} ended with {1}: {2}.",
         "consoleCommandPolicyEnforced": "Console command execution is protected by policy: allow-list={0}, unsafe opt-in={1}.",
         "eventAutomationDiscordDependencyDisabled": "One or more enabled rules send Discord messages while Discord integration is disabled.",
         "discordProxyInvalid": "Discord proxy configuration is invalid: {0}.",
@@ -2949,7 +2965,10 @@
         "enableDependency": "Enable the dependency first, then validate this module again.",
         "installDependency": "The dependency module is unavailable. Confirm the feature is deployed or registered.",
         "inspectRunHistory": "Open run history and fix the latest failed rule first.",
-        "reviewSecurityPolicy": "Confirm sensitive actions, audited actions, and console command allow-list policy."
+        "reviewSecurityPolicy": "Confirm sensitive actions, audited actions, and console command allow-list policy.",
+        "inspectRuntimeState": "Open runtime state and check whether the module has recovered.",
+        "checkDiscordConnection": "Check Bot token, channel IDs, proxy settings, and Discord Gateway connectivity.",
+        "checkGeoIpProvider": "Check the selected GeoIP provider, proxy/network path, and unknown-country policy."
       },
       "healthIssueFixes": {
         "open": "Open",
