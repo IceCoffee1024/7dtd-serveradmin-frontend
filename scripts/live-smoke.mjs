@@ -152,6 +152,28 @@ await runStep(results, 'discord bot status endpoint is reachable', async () => {
   return `state=${status.state ?? 'unknown'}, running=${Boolean(status.isRunning)}, ready=${Boolean(status.isReady)}`;
 });
 
+await runStep(results, 'player tracking endpoints are reachable', async () => {
+  const [settings, status, historyPlayers] = await Promise.all([
+    requestJson(baseUrl, '/api/PlayerTracking/Settings', authHeader),
+    requestJson(baseUrl, '/api/PlayerTracking/Status', authHeader),
+    requestJson(baseUrl, '/api/GameServer/HistoryPlayers?pageNumber=1&pageSize=1', authHeader),
+  ]);
+  assert(settings && typeof settings === 'object', 'PlayerTracking settings response is not an object.');
+  assert(status && typeof status === 'object', 'PlayerTracking status response is not an object.');
+  assert(typeof status.isEnabled === 'boolean', 'PlayerTracking status is missing isEnabled.');
+  assert(Number.isFinite(Number(status.sessionCount)), 'PlayerTracking status is missing sessionCount.');
+  assert(historyPlayers && Array.isArray(historyPlayers.items), 'HistoryPlayers did not return items for tracking check.');
+
+  const firstPlayer = historyPlayers.items[0];
+  if (firstPlayer?.playerId) {
+    const activities = await requestJson(baseUrl, `/api/PlayerTracking/Players/${encodeURIComponent(firstPlayer.playerId)}/Activities?pageNumber=1&pageSize=5`, authHeader);
+    assert(activities && Array.isArray(activities.items), 'PlayerTracking activities response is not paged.');
+    return `enabled=${status.isEnabled}, sessions=${status.sessionCount ?? 0}, checkedPlayer=${firstPlayer.playerId}, activities=${activities.items.length}/${activities.total ?? '?'}`;
+  }
+
+  return `enabled=${status.isEnabled}, sessions=${status.sessionCount ?? 0}, no history player available`;
+});
+
 for (const result of results) {
   const line = `${result.status} ${result.name} (${result.durationMs}ms)`;
   console.log(result.details ? `${line}: ${result.details}` : `${line}${result.error ? `: ${result.error}` : ''}`);

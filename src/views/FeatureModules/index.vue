@@ -2270,8 +2270,7 @@ onMounted(loadModules);
     line-height: 18px;
   }
 
-  dd span,
-  dd code {
+  dd span {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2279,9 +2278,14 @@ onMounted(loadModules);
   }
 
   dd code {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     color: var(--el-text-color-secondary);
     font-size: 11px;
     line-height: 16px;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 }
 
@@ -2323,13 +2327,27 @@ onMounted(loadModules);
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  min-width: 0;
+
+  :deep(.el-segmented) {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  :deep(.el-segmented__group) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 
   .el-input {
+    min-width: 180px;
     width: 260px;
   }
 
   .el-select {
-    width: 180px;
+    min-width: 180px;
+    width: 200px;
   }
 }
 
@@ -2367,8 +2385,7 @@ onMounted(loadModules);
   gap: 2px;
   min-width: 0;
 
-  span,
-  code {
+  span {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2382,9 +2399,14 @@ onMounted(loadModules);
   }
 
   code {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
     color: var(--el-text-color-secondary);
     font-size: 11px;
     line-height: 16px;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 }
 

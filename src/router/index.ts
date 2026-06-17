@@ -488,6 +488,27 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        name: 'PlayerTracking',
+        path: 'player-tracking',
+        component: () => import('../views/PlayerTracking/index.vue'),
+        redirect: { name: 'PlayerTrackingSettings' },
+        meta: {
+          title: () => t('menus.playerTracking'),
+          icon: markIcon(() => import('~icons/mdi/chart-timeline-variant')),
+        },
+        children: [
+          {
+            name: 'PlayerTrackingSettings',
+            path: 'settings',
+            component: () => import('../views/PlayerTracking/Settings/index.vue'),
+            meta: {
+              title: () => t('menus.playerTrackingSettings'),
+              icon: markIcon(() => import('~icons/mdi/cog-outline')),
+            },
+          },
+        ],
+      },
+      {
         name: 'BanWhitelist',
         path: 'ban-whitelist',
         component: () => import('../views/BanWhitelist/index.vue'),

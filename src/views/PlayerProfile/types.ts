@@ -5,7 +5,7 @@ export interface ProfileStatus {
   isWhitelisted: boolean;
 }
 
-export type TimelineType = 'chat' | 'event' | 'economy' | 'teleport' | 'audit';
+export type TimelineType = 'chat' | 'event' | 'economy' | 'teleport' | 'audit' | 'tracking';
 
 export interface TimelineItem {
   id: string;

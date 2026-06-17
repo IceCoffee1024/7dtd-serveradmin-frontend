@@ -57,6 +57,10 @@ const timelineTypeOptions = computed(() => [
     label: t('views.playerProfile.timeline.audit'),
     value: 'Audit' as const,
   },
+  {
+    label: t('views.playerProfile.timeline.tracking'),
+    value: 'Tracking' as const,
+  },
 ]);
 
 function toTimelineType(type: PlayerProfileTimelineItemType): TimelineType {
@@ -79,6 +83,8 @@ function resolveTimelineTagType(type: PlayerProfileTimelineItemType | undefined)
       return 'info';
     case 'Audit':
       return 'danger';
+    case 'Tracking':
+      return 'primary';
     default:
       return 'info';
   }

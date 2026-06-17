@@ -106,7 +106,9 @@
     "discordIntegration": "Discord 整合",
     "discordIntegrationSettings": "設定",
     "geoIpAccessControl": "GeoIP 存取控制",
-    "geoIpAccessControlSettings": "設定"
+    "geoIpAccessControlSettings": "設定",
+    "playerTracking": "Player Tracking",
+    "playerTrackingSettings": "Settings"
   },
   "components": {
     "myTable": {
@@ -524,7 +526,8 @@
         "status": "狀態",
         "balance": "餘額",
         "landClaims": "領地",
-        "vehicles": "車輛"
+        "vehicles": "車輛",
+        "playTime": "Play Time"
       },
       "tabs": {
         "overview": "概覽",
@@ -532,7 +535,8 @@
         "activity": "活動",
         "economy": "經濟",
         "teleport": "傳送",
-        "governance": "治理"
+        "governance": "治理",
+        "tracking": "Tracking"
       },
       "sections": {
         "basic": "基礎資訊",
@@ -549,7 +553,14 @@
         "punishmentHistory": "處罰歷史",
         "auditLogs": "最近管理員操作",
         "adminActionTimeline": "管理员操作时间线",
-        "trends": "長期趨勢"
+        "trends": "長期趨勢",
+        "tracking": "Player Tracking",
+        "trackingOverview": "Tracking Overview",
+        "sessions": "Sessions",
+        "trackingActivity": "Tracking Activity",
+        "locations": "Location Samples",
+        "inventorySnapshots": "Inventory Snapshots",
+        "dailySummaries": "Daily Summaries"
       },
       "fields": {
         "balance": "餘額",
@@ -576,7 +587,8 @@
         "event": "事件",
         "economy": "經濟",
         "teleport": "傳送",
-        "audit": "審計"
+        "audit": "審計",
+        "tracking": "Tracking"
       },
       "governance": {
         "auditCount": "審計記錄",
@@ -600,6 +612,49 @@
         "unmute": "解除禁言",
         "kick": "踢出",
         "other": "其他"
+      },
+      "tracking": {
+        "totalSessionTime": "Total Session Time",
+        "sessionCount": "Sessions",
+        "lastActivityAt": "Last Activity",
+        "lastLocation": "Last Location",
+        "lastInventorySnapshot": "Last Inventory Snapshot",
+        "startedAt": "Started At",
+        "endedAt": "Ended At",
+        "duration": "Duration",
+        "endReason": "End Reason",
+        "createdAt": "Created At",
+        "activityType": "Type",
+        "summary": "Summary",
+        "source": "Source",
+        "worldName": "World",
+        "snapshotReason": "Reason",
+        "totalItemCount": "Items",
+        "snapshotContents": "Contents",
+        "captureInventorySnapshot": "Capture Snapshot",
+        "loginCount": "Logins",
+        "chatCount": "Chats",
+        "deathCount": "Deaths",
+        "killZombieCount": "Zombie Kills",
+        "killPlayerCount": "Player Kills",
+        "sessionSeconds": "Session Time",
+        "distanceTravelled": "Distance",
+        "snapshotSummary": "Bag {bag}, belt {belt}, equipment {equipment}",
+        "messages": {
+          "captureSuccess": "Inventory snapshot captured. Total items: {count}."
+        },
+        "activityTypes": {
+          "Login": "Login",
+          "Joined": "Joined",
+          "Left": "Left",
+          "Chat": "Chat",
+          "Death": "Death",
+          "KillZombie": "Zombie Kill",
+          "KillPlayer": "Player Kill",
+          "Location": "Location",
+          "Inventory": "Inventory",
+          "Session": "Session"
+        }
       }
     },
     "map": {
@@ -2742,7 +2797,13 @@
         "geoIpUnknownCountryBlocked": "未知國家會被阻擋，查詢服務失敗時可能拒絕玩家。",
         "geoIpLastLookupError": "最近一次 GeoIP 查詢錯誤：{0}。",
         "geoIpAllowCountries": "GeoIP 僅允許國家策略已生效。",
-        "geoIpBlockCountries": "GeoIP 阻擋國家策略已生效。"
+        "geoIpBlockCountries": "GeoIP 阻擋國家策略已生效。",
+        "playerTrackingConfigured": "Player tracking is configured.",
+        "playerTrackingCoreDisabled": "Session and activity tracking are both disabled.",
+        "playerTrackingLocationHighFrequency": "Location sampling interval is low: {0}s.",
+        "playerTrackingInventoryEnabled": "Inventory snapshots are enabled every {0} minutes.",
+        "playerTrackingShortRetention": "Tracking retention is short: {0} days.",
+        "playerTrackingLastRuntimeError": "Latest player tracking runtime error: {0}."
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2785,7 +2846,9 @@
         "discordBotNotReady": "Discord Bot runtime is not ready. Current state: {0}.",
         "discordBotLastError": "Discord Bot runtime reported an error. State: {0}. Error: {1}.",
         "geoIpRecentLookupFailure": "GeoIP recently had a lookup failure for {0}: {1}.",
-        "lastRunFailed": "Latest run of {0} ended with {1}: {2}."
+        "lastRunFailed": "Latest run of {0} ended with {1}: {2}.",
+        "playerTrackingLastRuntimeError": "Player tracking runtime error in {0}: {1}.",
+        "playerTrackingLocationNoSamples": "Location sampler has run but did not record any player samples."
       },
       "security": {
         "sensitiveActions": "敏感動作",
@@ -2825,7 +2888,13 @@
         "countryAllowBlock": "國家允許/阻擋規則",
         "ipCidrExceptions": "IP/CIDR 例外",
         "lookupCache": "查詢快取",
-        "accessDecisionLog": "存取判定日誌"
+        "accessDecisionLog": "存取判定日誌",
+        "playerSessions": "Player sessions",
+        "playerActivityLogs": "Player activity logs",
+        "playerLocationTracking": "Location tracking",
+        "playerInventorySnapshots": "Inventory snapshots",
+        "playerTrendSummaries": "Trend summaries",
+        "playerProfileEnrichment": "Player profile enrichment"
       },
       "stateScopes": {
         "cooldown": "冷卻狀態",
@@ -2983,6 +3052,10 @@
       },
       "commands": {
         "discordbind": "產生一次性 Discord 帳號綁定碼。"
+      },
+      "hooks": {
+        "entityKilled": "Entity killed",
+        "savePlayerData": "Save player data"
       }
     },
     "eventAutomation": {
@@ -3742,6 +3815,85 @@
           "allowedByCountry": "{country} 會被目前策略放行。",
           "blockedByAllowMode": "{country} 不在允許清單中，會被阻擋。",
           "blockedByCountry": "{country} 命中國家黑名單，會被阻擋。"
+        }
+      }
+    },
+    "playerTracking": {
+      "settings": {
+        "description": "Track player sessions, activity, locations, inventory snapshots, and daily trend summaries for player operations and analysis.",
+        "sections": {
+          "core": "Core Tracking",
+          "locations": "Location Tracking",
+          "inventory": "Inventory Snapshots",
+          "status": "Runtime Status"
+        },
+        "sectionDescriptions": {
+          "core": "Keep sessions and activity enabled for player profiles. Disable noisy sources only when storage needs to be reduced.",
+          "locations": "Samples online player positions at an interval and stores movement only after the threshold is reached.",
+          "inventory": "Snapshots player inventory on join, leave, save, schedule, or manual capture. Unchanged snapshots are skipped.",
+          "status": "Review counters and clean expired tracking rows according to retention settings."
+        },
+        "fields": {
+          "trackSessions": "Track sessions",
+          "trackActivityLogs": "Track activity logs",
+          "trackChatActivity": "Include chat activity",
+          "trackLocations": "Track locations",
+          "trackInventorySnapshots": "Track inventory snapshots",
+          "trackDailySummaries": "Build daily summaries",
+          "locationSampleIntervalSeconds": "Location sample interval (seconds)",
+          "locationMovementThresholdMeters": "Movement threshold (meters)",
+          "inventorySnapshotIntervalMinutes": "Snapshot interval (minutes)",
+          "inventorySnapshotOnJoin": "Snapshot on join",
+          "inventorySnapshotOnLeave": "Snapshot on leave",
+          "retentionDays": "Activity retention days",
+          "locationRetentionDays": "Location retention days",
+          "inventorySnapshotRetentionDays": "Inventory retention days",
+          "dailySummaryRetentionDays": "Daily summary retention days",
+          "maxActivityLogsPerPlayer": "Max activity logs per player",
+          "excludeAdmins": "Exclude admins",
+          "excludedPlayerIds": "Excluded player IDs"
+        },
+        "placeholders": {
+          "excludedPlayerIds": "One player ID per line, or comma-separated"
+        },
+        "summaries": {
+          "disabled": "Player tracking is disabled. Player profile enrichment and tracking tables will not update.",
+          "enabled": "Player tracking is enabled for: {sources}.",
+          "enabledNoSources": "Player tracking is enabled, but all data sources are disabled."
+        },
+        "summaryParts": {
+          "sessions": "sessions",
+          "activity": "activity",
+          "locations": "locations",
+          "inventory": "inventory",
+          "daily": "daily summaries"
+        },
+        "status": {
+          "activeSessions": "Active Sessions",
+          "sessions": "Sessions",
+          "activities": "Activities",
+          "inventorySnapshots": "Inventory Snapshots",
+          "lastActivityAt": "Last Activity",
+          "lastLocationSampleAt": "Last Location Sample",
+          "lastInventorySnapshotAt": "Last Inventory Snapshot",
+          "lastCleanupAt": "Last Cleanup"
+        },
+        "actions": {
+          "cleanup": "Clean Expired Data"
+        },
+        "messages": {
+          "saveSuccess": "Player tracking settings saved.",
+          "resetConfirm": "Reset player tracking settings to defaults?",
+          "resetSuccess": "Player tracking settings reset.",
+          "unsavedChanges": "You have unsaved player tracking settings. Leave this page?",
+          "cleanupConfirm": "Clean expired player tracking data now?",
+          "cleanupSuccess": "Expired player tracking data cleaned."
+        },
+        "cleanup": {
+          "deletedActivities": "Deleted activities",
+          "deletedLocations": "Deleted locations",
+          "deletedInventorySnapshots": "Deleted snapshots",
+          "deletedDailySummaries": "Deleted daily summaries"
         }
       }
     }

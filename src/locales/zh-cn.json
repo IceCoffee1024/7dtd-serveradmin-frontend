@@ -106,7 +106,9 @@
     "discordIntegration": "Discord 集成",
     "discordIntegrationSettings": "设置",
     "geoIpAccessControl": "GeoIP 访问控制",
-    "geoIpAccessControlSettings": "设置"
+    "geoIpAccessControlSettings": "设置",
+    "playerTracking": "玩家追踪",
+    "playerTrackingSettings": "设置"
   },
   "components": {
     "myTable": {
@@ -524,7 +526,8 @@
         "status": "状态",
         "balance": "余额",
         "landClaims": "领地",
-        "vehicles": "车辆"
+        "vehicles": "车辆",
+        "playTime": "游玩时长"
       },
       "tabs": {
         "overview": "概览",
@@ -532,7 +535,8 @@
         "activity": "活动",
         "economy": "经济",
         "teleport": "传送",
-        "governance": "治理"
+        "governance": "治理",
+        "tracking": "追踪"
       },
       "sections": {
         "basic": "基础信息",
@@ -549,7 +553,14 @@
         "punishmentHistory": "处罚历史",
         "auditLogs": "最近管理员操作",
         "adminActionTimeline": "管理员操作时间线",
-        "trends": "长期趋势"
+        "trends": "长期趋势",
+        "tracking": "玩家追踪",
+        "trackingOverview": "追踪概览",
+        "sessions": "会话记录",
+        "trackingActivity": "追踪活动",
+        "locations": "位置采样",
+        "inventorySnapshots": "背包快照",
+        "dailySummaries": "每日汇总"
       },
       "fields": {
         "balance": "余额",
@@ -576,7 +587,8 @@
         "event": "事件",
         "economy": "经济",
         "teleport": "传送",
-        "audit": "审计"
+        "audit": "审计",
+        "tracking": "追踪"
       },
       "governance": {
         "auditCount": "审计记录",
@@ -600,6 +612,49 @@
         "unmute": "解除禁言",
         "kick": "踢出",
         "other": "其他"
+      },
+      "tracking": {
+        "totalSessionTime": "总会话时长",
+        "sessionCount": "会话数",
+        "lastActivityAt": "最近活动",
+        "lastLocation": "最近位置",
+        "lastInventorySnapshot": "最近背包快照",
+        "startedAt": "开始时间",
+        "endedAt": "结束时间",
+        "duration": "时长",
+        "endReason": "结束原因",
+        "createdAt": "创建时间",
+        "activityType": "类型",
+        "summary": "摘要",
+        "source": "来源",
+        "worldName": "世界",
+        "snapshotReason": "原因",
+        "totalItemCount": "物品数",
+        "snapshotContents": "内容",
+        "captureInventorySnapshot": "采集快照",
+        "loginCount": "登录",
+        "chatCount": "聊天",
+        "deathCount": "死亡",
+        "killZombieCount": "击杀僵尸",
+        "killPlayerCount": "击杀玩家",
+        "sessionSeconds": "会话时长",
+        "distanceTravelled": "移动距离",
+        "snapshotSummary": "背包 {bag}，腰带 {belt}，装备 {equipment}",
+        "messages": {
+          "captureSuccess": "背包快照已采集，物品总数：{count}。"
+        },
+        "activityTypes": {
+          "Login": "登录",
+          "Joined": "进入游戏",
+          "Left": "离开游戏",
+          "Chat": "聊天",
+          "Death": "死亡",
+          "KillZombie": "击杀僵尸",
+          "KillPlayer": "击杀玩家",
+          "Location": "位置",
+          "Inventory": "背包",
+          "Session": "会话"
+        }
       }
     },
     "map": {
@@ -2796,7 +2851,13 @@
         "geoIpUnknownCountryBlocked": "未知国家会被阻止，查询服务失败时可能拒绝玩家。",
         "geoIpLastLookupError": "最近一次 GeoIP 查询错误：{0}。",
         "geoIpAllowCountries": "GeoIP 仅允许国家策略已生效。",
-        "geoIpBlockCountries": "GeoIP 阻止国家策略已生效。"
+        "geoIpBlockCountries": "GeoIP 阻止国家策略已生效。",
+        "playerTrackingConfigured": "玩家追踪已配置。",
+        "playerTrackingCoreDisabled": "会话追踪和活动追踪都已关闭。",
+        "playerTrackingLocationHighFrequency": "位置采样间隔较低：{0} 秒。",
+        "playerTrackingInventoryEnabled": "背包快照已启用，间隔 {0} 分钟。",
+        "playerTrackingShortRetention": "追踪数据保留时间较短：{0} 天。",
+        "playerTrackingLastRuntimeError": "最近玩家追踪运行错误：{0}。"
       },
       "issueCount": "{0} 个问题",
       "issueSeverity": {
@@ -2839,7 +2900,9 @@
         "discordPublicAdminChannelSame": "公共频道和管理频道相同，建议拆分以降低误触发风险。",
         "discordCommandAllowListContainsBlockedDangerous": "命令白名单包含仍会被阻止的高风险命令：{0}。",
         "discordCommandExecutionWithoutAccountBinding": "Discord 指令中继未启用账号绑定，建议启用以收紧身份边界。",
-        "discordAccountBindingEnabled": "Discord 账号绑定已启用。"
+        "discordAccountBindingEnabled": "Discord 账号绑定已启用。",
+        "playerTrackingLastRuntimeError": "玩家追踪在 {0} 发生运行错误：{1}。",
+        "playerTrackingLocationNoSamples": "位置采样器已运行，但没有记录任何玩家样本。"
       },
       "security": {
         "sensitiveActions": "敏感动作",
@@ -2879,7 +2942,13 @@
         "countryAllowBlock": "国家允许/阻止规则",
         "ipCidrExceptions": "IP/CIDR 例外",
         "lookupCache": "查询缓存",
-        "accessDecisionLog": "访问决策日志"
+        "accessDecisionLog": "访问决策日志",
+        "playerSessions": "玩家会话",
+        "playerActivityLogs": "玩家活动日志",
+        "playerLocationTracking": "位置追踪",
+        "playerInventorySnapshots": "背包快照",
+        "playerTrendSummaries": "趋势汇总",
+        "playerProfileEnrichment": "玩家画像增强"
       },
       "stateScopes": {
         "cooldown": "冷却状态",
@@ -2983,6 +3052,10 @@
       },
       "commands": {
         "discordbind": "生成一次性 Discord 账号绑定码。"
+      },
+      "hooks": {
+        "entityKilled": "实体被击杀",
+        "savePlayerData": "保存玩家数据"
       }
     },
     "eventAutomation": {
@@ -3742,6 +3815,85 @@
           "allowedByCountry": "{country} 会被当前策略放行。",
           "blockedByAllowMode": "{country} 不在允许列表中，会被阻止。",
           "blockedByCountry": "{country} 命中国家黑名单，会被阻止。"
+        }
+      }
+    },
+    "playerTracking": {
+      "settings": {
+        "description": "追踪玩家会话、活动、位置、背包快照和每日趋势汇总，用于玩家运营与分析。",
+        "sections": {
+          "core": "核心追踪",
+          "locations": "位置追踪",
+          "inventory": "背包快照",
+          "status": "运行状态"
+        },
+        "sectionDescriptions": {
+          "core": "建议保持会话和活动追踪开启。只有在需要减少存储时，再关闭高频来源。",
+          "locations": "按间隔采样在线玩家位置，并且仅在移动超过阈值后写入。",
+          "inventory": "可在进入、离开、保存、计划或手动时采集背包快照，内容未变化会跳过。",
+          "status": "查看计数器，并按保留期清理过期追踪数据。"
+        },
+        "fields": {
+          "trackSessions": "追踪会话",
+          "trackActivityLogs": "追踪活动日志",
+          "trackChatActivity": "包含聊天活动",
+          "trackLocations": "追踪位置",
+          "trackInventorySnapshots": "追踪背包快照",
+          "trackDailySummaries": "生成每日汇总",
+          "locationSampleIntervalSeconds": "位置采样间隔（秒）",
+          "locationMovementThresholdMeters": "移动阈值（米）",
+          "inventorySnapshotIntervalMinutes": "快照间隔（分钟）",
+          "inventorySnapshotOnJoin": "进入游戏时快照",
+          "inventorySnapshotOnLeave": "离开游戏时快照",
+          "retentionDays": "活动保留天数",
+          "locationRetentionDays": "位置保留天数",
+          "inventorySnapshotRetentionDays": "背包快照保留天数",
+          "dailySummaryRetentionDays": "每日汇总保留天数",
+          "maxActivityLogsPerPlayer": "每名玩家最大活动日志数",
+          "excludeAdmins": "排除管理员",
+          "excludedPlayerIds": "排除的玩家 ID"
+        },
+        "placeholders": {
+          "excludedPlayerIds": "每行一个玩家 ID，或使用逗号分隔"
+        },
+        "summaries": {
+          "disabled": "玩家追踪已禁用。玩家画像增强和追踪表不会更新。",
+          "enabled": "玩家追踪已启用：{sources}。",
+          "enabledNoSources": "玩家追踪已启用，但所有数据来源都已关闭。"
+        },
+        "summaryParts": {
+          "sessions": "会话",
+          "activity": "活动",
+          "locations": "位置",
+          "inventory": "背包",
+          "daily": "每日汇总"
+        },
+        "status": {
+          "activeSessions": "活跃会话",
+          "sessions": "会话",
+          "activities": "活动",
+          "inventorySnapshots": "背包快照",
+          "lastActivityAt": "最近活动",
+          "lastLocationSampleAt": "最近位置采样",
+          "lastInventorySnapshotAt": "最近背包快照",
+          "lastCleanupAt": "最近清理"
+        },
+        "actions": {
+          "cleanup": "清理过期数据"
+        },
+        "messages": {
+          "saveSuccess": "玩家追踪设置已保存。",
+          "resetConfirm": "将玩家追踪设置恢复为默认值？",
+          "resetSuccess": "玩家追踪设置已重置。",
+          "unsavedChanges": "玩家追踪设置尚未保存，确定离开吗？",
+          "cleanupConfirm": "现在清理过期玩家追踪数据？",
+          "cleanupSuccess": "过期玩家追踪数据已清理。"
+        },
+        "cleanup": {
+          "deletedActivities": "删除活动",
+          "deletedLocations": "删除位置",
+          "deletedInventorySnapshots": "删除快照",
+          "deletedDailySummaries": "删除每日汇总"
         }
       }
     }

@@ -8,6 +8,7 @@ import type {
   HomeLocationDto,
   MuteEntryDto,
   PlayerDetailsDto,
+  PlayerTrackingSummaryDto,
   VehicleLocationDto,
 } from '~/generated/api/types.gen';
 import { useI18n } from 'vue-i18n';
@@ -24,10 +25,27 @@ defineProps<{
   adminEntry: AdminUserDto | null;
   banEntry: BanEntryDto | null;
   muteEntry: MuteEntryDto | null;
+  trackingSummary: PlayerTrackingSummaryDto | null;
   formatTime: (value: string | null | undefined) => string;
 }>();
 
 const { t } = useI18n();
+
+function formatSessionSeconds(seconds: number | null | undefined): string {
+  const value = Math.max(0, seconds ?? 0);
+  const hours = Math.floor(value / 3600);
+  const minutes = Math.floor((value % 3600) / 60);
+  if (hours > 0)
+    return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
+
+function formatLocation(summary: PlayerTrackingSummaryDto | null): string {
+  const location = summary?.lastLocation;
+  if (!location || location.x == null || location.y == null || location.z == null)
+    return '--';
+  return `${Math.round(location.x)}, ${Math.round(location.y)}, ${Math.round(location.z)}`;
+}
 </script>
 
 <template>
@@ -91,6 +109,22 @@ const { t } = useI18n();
         <dd>{{ banEntry ? formatTime(banEntry.bannedUntil) : t('common.no') }}</dd>
         <dt>{{ t('views.playerProfile.flags.muted') }}</dt>
         <dd>{{ muteEntry ? (muteEntry.mutedUntil ? formatTime(muteEntry.mutedUntil) : t('views.playerProfile.permanent')) : t('common.no') }}</dd>
+      </dl>
+    </section>
+
+    <section class="profile-panel">
+      <h3>{{ t('views.playerProfile.sections.tracking') }}</h3>
+      <dl>
+        <dt>{{ t('views.playerProfile.tracking.totalSessionTime') }}</dt>
+        <dd>{{ formatSessionSeconds(trackingSummary?.totalSessionSeconds) }}</dd>
+        <dt>{{ t('views.playerProfile.tracking.sessionCount') }}</dt>
+        <dd>{{ trackingSummary?.sessionCount ?? 0 }}</dd>
+        <dt>{{ t('views.playerProfile.tracking.lastActivityAt') }}</dt>
+        <dd>{{ formatTime(trackingSummary?.lastActivityAt) }}</dd>
+        <dt>{{ t('views.playerProfile.tracking.lastLocation') }}</dt>
+        <dd>{{ formatLocation(trackingSummary) }}</dd>
+        <dt>{{ t('views.playerProfile.tracking.lastInventorySnapshot') }}</dt>
+        <dd>{{ formatTime(trackingSummary?.lastInventorySnapshot?.createdAt) }}</dd>
       </dl>
     </section>
   </div>

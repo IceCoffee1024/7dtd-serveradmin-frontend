@@ -27,7 +27,7 @@
     "typecheck:playwright": "tsc --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 --skipLibCheck playwright.config.ts",
     "verify:local": "pnpm api:gen && pnpm typecheck && pnpm typecheck:playwright && pnpm test:unit && pnpm locale:check && pnpm build:analyze && pnpm visual:critical",
     "visual:discord": "playwright test tests/visual/discord-integration.spec.ts",
-    "visual:critical": "playwright test tests/visual/discord-integration.spec.ts tests/visual/economy-shop.spec.ts tests/visual/event-automation-rules.spec.ts tests/visual/critical-interactions.spec.ts tests/visual/geoip-access-control.spec.ts tests/visual/server-config.spec.ts"
+    "visual:critical": "playwright test tests/visual/discord-integration.spec.ts tests/visual/economy-shop.spec.ts tests/visual/event-automation-rules.spec.ts tests/visual/critical-interactions.spec.ts tests/visual/geoip-access-control.spec.ts tests/visual/player-tracking.spec.ts tests/visual/server-config.spec.ts"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",

@@ -4732,6 +4732,10 @@ export type PlayerProfileOverviewDto = {
      * Matching whitelist entry when the player is whitelisted.
      */
     whitelistEntry?: WhitelistEntryDto | null;
+    /**
+     * Player tracking summary derived from sessions, activity, locations, and inventory snapshots.
+     */
+    trackingSummary?: PlayerTrackingSummaryDto | null;
 };
 
 /**
@@ -5003,7 +5007,62 @@ export type PlayerProfileTrendBucketDto = {
      * Number of punishment records in the bucket.
      */
     punishmentCount?: number;
+    /**
+     * Player tracking session seconds in this bucket.
+     */
+    trackingSessionSeconds?: number;
+    /**
+     * Player tracking activity rows in this bucket.
+     */
+    trackingActivityCount?: number;
+    /**
+     * Inventory snapshot/change rows in this bucket.
+     */
+    inventoryChangeCount?: number;
+    /**
+     * Approximate tracked distance travelled in this bucket.
+     */
+    distanceTravelled?: number;
 };
+
+export type PlayerTrackingSummaryDto = {
+    totalSessionSeconds?: number;
+    sessionCount?: number;
+    firstSeenAt?: string | null;
+    lastSeenAt?: string | null;
+    lastActivityAt?: string | null;
+    lastLocation?: PlayerLocationSampleDto | null;
+    lastInventorySnapshot?: PlayerInventorySnapshotDto | null;
+};
+
+export type PlayerLocationSampleDto = {
+    id?: number;
+    createdAt?: string;
+    playerId?: string;
+    playerName?: string | null;
+    x?: number;
+    y?: number;
+    z?: number;
+    worldName?: string | null;
+    source?: string | null;
+    sessionId?: number | null;
+};
+
+export type PlayerInventorySnapshotDto = {
+    id?: number;
+    createdAt?: string;
+    playerId?: string;
+    playerName?: string | null;
+    snapshotReason?: PlayerTrackingSnapshotReason;
+    itemHash?: string;
+    bagJson?: string | null;
+    beltJson?: string | null;
+    equipmentJson?: string | null;
+    totalItemCount?: number;
+    changedFromSnapshotId?: number | null;
+};
+
+export type PlayerTrackingSnapshotReason = 'Manual' | 'Join' | 'Leave' | 'Save' | 'Scheduled';
 
 /**
  * Represents a paged query result with total count and current page items.
@@ -5052,7 +5111,7 @@ export type PlayerProfileTimelineItemDto = {
 /**
  * Timeline item type used by the player profile page.
  */
-export type PlayerProfileTimelineItemType = 'Chat' | 'Event' | 'Economy' | 'Teleport' | 'Audit';
+export type PlayerProfileTimelineItemType = 'Chat' | 'Event' | 'Economy' | 'Teleport' | 'Audit' | 'Tracking';
 
 /**
  * Represents a player's inventory partitioned by gameplay container type.
@@ -5584,6 +5643,177 @@ export type OnlineRewardFeatureSettingsDto = {
      * Optional private-message template. Supports {amount}, {currency}, {totalMinutes}.
      */
     playerMessage?: string | null;
+};
+
+export type PlayerTrackingFeatureSettingsDto = {
+    isEnabled?: boolean;
+    trackSessions?: boolean;
+    trackActivityLogs?: boolean;
+    trackChatActivity?: boolean;
+    trackLocations?: boolean;
+    trackInventorySnapshots?: boolean;
+    trackDailySummaries?: boolean;
+    locationSampleIntervalSeconds?: number;
+    locationMovementThresholdMeters?: number;
+    inventorySnapshotIntervalMinutes?: number;
+    inventorySnapshotOnJoin?: boolean;
+    inventorySnapshotOnLeave?: boolean;
+    retentionDays?: number;
+    locationRetentionDays?: number;
+    inventorySnapshotRetentionDays?: number;
+    dailySummaryRetentionDays?: number;
+    maxActivityLogsPerPlayer?: number;
+    excludeAdmins?: boolean;
+    excludedPlayerIds?: Array<string> | null;
+};
+
+export type PlayerTrackingStatusDto = {
+    isEnabled?: boolean;
+    lastActivityAt?: string | null;
+    lastLocationSampleAt?: string | null;
+    lastInventorySnapshotAt?: string | null;
+    lastCleanupAt?: string | null;
+    lastAggregationAt?: string | null;
+    lastError?: string | null;
+    activeSessionCount?: number;
+    sessionCount?: number;
+    activityCount?: number;
+    locationSampleCount?: number;
+    inventorySnapshotCount?: number;
+    dailySummaryCount?: number;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerSessionDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerSessionDto>;
+};
+
+export type PlayerSessionDto = {
+    id?: number;
+    playerId?: string;
+    playerName?: string | null;
+    startedAt?: string;
+    endedAt?: string | null;
+    durationSeconds?: number;
+    loginIp?: string | null;
+    geoCountryCode?: string | null;
+    endReason?: string | null;
+    lastKnownX?: number | null;
+    lastKnownY?: number | null;
+    lastKnownZ?: number | null;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerActivityLogDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerActivityLogDto>;
+};
+
+export type PlayerActivityLogDto = {
+    id?: number;
+    createdAt?: string;
+    playerId?: string;
+    playerName?: string | null;
+    activityType?: PlayerTrackingActivityType;
+    summary?: string;
+    source?: string | null;
+    x?: number | null;
+    y?: number | null;
+    z?: number | null;
+    relatedPlayerId?: string | null;
+    relatedPlayerName?: string | null;
+    relatedEntity?: string | null;
+    detailsJson?: string | null;
+};
+
+export type PlayerTrackingActivityType = 'Login' | 'Joined' | 'Left' | 'Chat' | 'Death' | 'KillZombie' | 'KillPlayer' | 'Location' | 'Inventory' | 'Session';
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerLocationSampleDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerLocationSampleDto>;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerInventorySnapshotDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerInventorySnapshotDto>;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerDailySummaryDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerDailySummaryDto>;
+};
+
+export type PlayerDailySummaryDto = {
+    id?: number;
+    date?: string;
+    playerId?: string;
+    playerName?: string | null;
+    sessionSeconds?: number;
+    loginCount?: number;
+    chatCount?: number;
+    deathCount?: number;
+    killZombieCount?: number;
+    killPlayerCount?: number;
+    teleportCount?: number;
+    economyTransactionCount?: number;
+    inventoryChangeCount?: number;
+    distanceTravelled?: number;
+};
+
+export type PlayerTrackingCleanupResultDto = {
+    cleanupAt?: string;
+    activityCutoffUtc?: string | null;
+    locationCutoffUtc?: string | null;
+    inventoryCutoffUtc?: string | null;
+    dailySummaryCutoffUtc?: string | null;
+    deletedActivities?: number;
+    deletedLocations?: number;
+    deletedInventorySnapshots?: number;
+    deletedDailySummaries?: number;
 };
 
 /**
@@ -10906,6 +11136,295 @@ export type OnlineRewardUpdateSettingsResponses = {
      */
     200: unknown;
 };
+
+export type PlayerTrackingResetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        language?: Language | null;
+    };
+    url: '/api/PlayerTracking/Settings';
+};
+
+export type PlayerTrackingResetSettingsResponses = {
+    200: PlayerTrackingFeatureSettingsDto;
+};
+
+export type PlayerTrackingResetSettingsResponse = PlayerTrackingResetSettingsResponses[keyof PlayerTrackingResetSettingsResponses];
+
+export type PlayerTrackingGetSettingsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        language?: Language | null;
+    };
+    url: '/api/PlayerTracking/Settings';
+};
+
+export type PlayerTrackingGetSettingsResponses = {
+    200: PlayerTrackingFeatureSettingsDto;
+};
+
+export type PlayerTrackingGetSettingsResponse = PlayerTrackingGetSettingsResponses[keyof PlayerTrackingGetSettingsResponses];
+
+export type PlayerTrackingUpdateSettingsData = {
+    body: PlayerTrackingFeatureSettingsDto;
+    path?: never;
+    query?: never;
+    url: '/api/PlayerTracking/Settings';
+};
+
+export type PlayerTrackingUpdateSettingsErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type PlayerTrackingUpdateSettingsError = PlayerTrackingUpdateSettingsErrors[keyof PlayerTrackingUpdateSettingsErrors];
+
+export type PlayerTrackingUpdateSettingsResponses = {
+    200: unknown;
+};
+
+export type PlayerTrackingGetStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/PlayerTracking/Status';
+};
+
+export type PlayerTrackingGetStatusResponses = {
+    200: PlayerTrackingStatusDto;
+};
+
+export type PlayerTrackingGetStatusResponse = PlayerTrackingGetStatusResponses[keyof PlayerTrackingGetStatusResponses];
+
+export type PlayerTrackingGetPlayerSessionsData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/Sessions';
+};
+
+export type PlayerTrackingGetPlayerSessionsResponses = {
+    200: PagedDtoOfPlayerSessionDto;
+};
+
+export type PlayerTrackingGetPlayerSessionsResponse = PlayerTrackingGetPlayerSessionsResponses[keyof PlayerTrackingGetPlayerSessionsResponses];
+
+export type PlayerTrackingGetPlayerActivitiesData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        activityType?: PlayerTrackingActivityType | null;
+        startTime?: string | null;
+        endTime?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/Activities';
+};
+
+export type PlayerTrackingGetPlayerActivitiesResponses = {
+    200: PagedDtoOfPlayerActivityLogDto;
+};
+
+export type PlayerTrackingGetPlayerActivitiesResponse = PlayerTrackingGetPlayerActivitiesResponses[keyof PlayerTrackingGetPlayerActivitiesResponses];
+
+export type PlayerTrackingGetPlayerLocationsData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        startTime?: string | null;
+        endTime?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/Locations';
+};
+
+export type PlayerTrackingGetPlayerLocationsResponses = {
+    200: PagedDtoOfPlayerLocationSampleDto;
+};
+
+export type PlayerTrackingGetPlayerLocationsResponse = PlayerTrackingGetPlayerLocationsResponses[keyof PlayerTrackingGetPlayerLocationsResponses];
+
+export type PlayerTrackingGetPlayerInventorySnapshotsData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        startTime?: string | null;
+        endTime?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/InventorySnapshots';
+};
+
+export type PlayerTrackingGetPlayerInventorySnapshotsResponses = {
+    200: PagedDtoOfPlayerInventorySnapshotDto;
+};
+
+export type PlayerTrackingGetPlayerInventorySnapshotsResponse = PlayerTrackingGetPlayerInventorySnapshotsResponses[keyof PlayerTrackingGetPlayerInventorySnapshotsResponses];
+
+export type PlayerTrackingCaptureInventorySnapshotData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: never;
+    url: '/api/PlayerTracking/Players/{playerId}/InventorySnapshots';
+};
+
+export type PlayerTrackingCaptureInventorySnapshotErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type PlayerTrackingCaptureInventorySnapshotError = PlayerTrackingCaptureInventorySnapshotErrors[keyof PlayerTrackingCaptureInventorySnapshotErrors];
+
+export type PlayerTrackingCaptureInventorySnapshotResponses = {
+    200: PlayerInventorySnapshotDto;
+};
+
+export type PlayerTrackingCaptureInventorySnapshotResponse = PlayerTrackingCaptureInventorySnapshotResponses[keyof PlayerTrackingCaptureInventorySnapshotResponses];
+
+export type PlayerTrackingGetPlayerDailySummariesData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        startTime?: string | null;
+        endTime?: string | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/DailySummaries';
+};
+
+export type PlayerTrackingGetPlayerDailySummariesResponses = {
+    200: PagedDtoOfPlayerDailySummaryDto;
+};
+
+export type PlayerTrackingGetPlayerDailySummariesResponse = PlayerTrackingGetPlayerDailySummariesResponses[keyof PlayerTrackingGetPlayerDailySummariesResponses];
+
+export type PlayerTrackingCleanupData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/PlayerTracking/Cleanup';
+};
+
+export type PlayerTrackingCleanupErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type PlayerTrackingCleanupError = PlayerTrackingCleanupErrors[keyof PlayerTrackingCleanupErrors];
+
+export type PlayerTrackingCleanupResponses = {
+    200: PlayerTrackingCleanupResultDto;
+};
+
+export type PlayerTrackingCleanupResponse = PlayerTrackingCleanupResponses[keyof PlayerTrackingCleanupResponses];
 
 export type RestartGetSettingsData = {
     body?: never;

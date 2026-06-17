@@ -20,6 +20,7 @@ import type {
   PlayerProfileTimelineItemDto,
   PlayerProfileTimelineItemType,
   PlayerProfileTrendBucketDto,
+  PlayerTrackingSummaryDto,
   TeleportLogDto,
   VehicleLocationDto,
   WhitelistEntryDto,
@@ -36,6 +37,7 @@ import PlayerProfileEconomyPanel from './PlayerProfileEconomyPanel.vue';
 import PlayerProfileGovernancePanel from './PlayerProfileGovernancePanel.vue';
 import PlayerProfileOverviewPanel from './PlayerProfileOverviewPanel.vue';
 import PlayerProfileTeleportPanel from './PlayerProfileTeleportPanel.vue';
+import PlayerProfileTrackingPanel from './PlayerProfileTrackingPanel.vue';
 
 defineOptions({ name: 'PlayerProfilePage' });
 
@@ -65,6 +67,7 @@ const auditLogs = ref<AuditLogDto[]>([]);
 const punishmentHistory = ref<PlayerProfilePunishmentRecordDto[]>([]);
 const governanceSummary = ref<PlayerProfileGovernanceSummaryDto | null>(null);
 const trendBuckets = ref<PlayerProfileTrendBucketDto[]>([]);
+const trackingSummary = ref<PlayerTrackingSummaryDto | null>(null);
 const adminEntry = ref<AdminUserDto | null>(null);
 const banEntry = ref<BanEntryDto | null>(null);
 const muteEntry = ref<MuteEntryDto | null>(null);
@@ -107,9 +110,9 @@ const summaryCards = computed(() => [
     type: economyAccount.value?.isFrozen ? 'warning' : 'success',
   },
   {
-    label: t('views.playerProfile.summary.landClaims'),
-    value: String(landClaims.value?.claimPositions?.length ?? 0),
-    type: 'primary',
+    label: t('views.playerProfile.summary.playTime'),
+    value: formatSessionSeconds(trackingSummary.value?.totalSessionSeconds),
+    type: 'success',
   },
   {
     label: t('views.playerProfile.summary.vehicles'),
@@ -117,6 +120,15 @@ const summaryCards = computed(() => [
     type: 'primary',
   },
 ]);
+
+function formatSessionSeconds(seconds: number | null | undefined): string {
+  const value = Math.max(0, seconds ?? 0);
+  const hours = Math.floor(value / 3600);
+  const minutes = Math.floor((value % 3600) / 60);
+  if (hours > 0)
+    return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
 
 function formatTime(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
@@ -152,6 +164,7 @@ async function loadProfile() {
     punishmentHistory.value = data?.punishmentHistory ?? [];
     governanceSummary.value = data?.governanceSummary ?? null;
     trendBuckets.value = data?.trendBuckets ?? [];
+    trackingSummary.value = data?.trackingSummary ?? null;
     adminEntry.value = data?.adminEntry ?? null;
     banEntry.value = data?.banEntry ?? null;
     muteEntry.value = data?.muteEntry ?? null;
@@ -301,6 +314,7 @@ watch(playerId, loadProfile);
             :admin-entry="adminEntry"
             :ban-entry="banEntry"
             :mute-entry="muteEntry"
+            :tracking-summary="trackingSummary"
             :format-time="formatTime"
           />
         </el-tab-pane>
@@ -330,6 +344,14 @@ watch(playerId, loadProfile);
             @update:timeline-type="onTimelineTypeChange"
             @update:timeline-page="onTimelinePageChange"
             @view-page="goToPlayerFilteredPage"
+          />
+        </el-tab-pane>
+
+        <el-tab-pane :label="t('views.playerProfile.tabs.tracking')">
+          <PlayerProfileTrackingPanel
+            :player-id="playerId"
+            :is-online="isOnline"
+            :format-time="formatTime"
           />
         </el-tab-pane>
 
