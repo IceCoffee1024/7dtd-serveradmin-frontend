@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useWindowScroll, useWindowSize } from '@vueuse/core';
-import { addUnit } from 'element-plus/es/utils/index';
 import { storeToRefs } from 'pinia';
 import { useTheme } from '~/composables';
 import { LAYOUT_LIMITS, resolveExpandedSidebarWidth } from '~/constants/layout';
@@ -18,6 +17,10 @@ const compactLayoutMaxWidth = 768;
 
 const { currentTheme } = useTheme();
 const { currentLocale } = storeToRefs(useLocaleStore());
+
+function addUnit(value: number | string): string {
+  return typeof value === 'number' ? `${value}px` : value;
+}
 
 const headerHeightValue = computed(() =>
   Math.max(currentTheme.value.layout.header.height, LAYOUT_LIMITS.minHeaderHeight),

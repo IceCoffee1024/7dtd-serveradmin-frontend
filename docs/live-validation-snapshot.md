@@ -48,3 +48,11 @@ Use the feature-specific runbooks for manual acceptance details:
 - `docs/discord-integration.md`
 - `docs/geoip-access-control.md`
 - `docs/event-automation-validation.md`
+
+For a guided manual pass, run:
+
+```bash
+pnpm live:acceptance
+```
+
+The checklist only records operator confirmation. It does not send Discord messages, join the game server, edit GeoIP settings, or trigger automation rules automatically.
