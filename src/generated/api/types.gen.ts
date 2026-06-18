@@ -5882,7 +5882,21 @@ export type PlayerInventoryCompensationExecuteResultDto = {
     exactRestoreSupported?: boolean;
     requestedItemCount?: number;
     grantedItemCount?: number;
+    items?: Array<PlayerInventoryCompensationExecuteItemDto>;
     output?: Array<string>;
+};
+
+export type PlayerInventoryCompensationExecuteItemDto = {
+    itemKey?: string;
+    itemName?: string;
+    localizationName?: string | null;
+    count?: number;
+    quality?: number | null;
+    durabilityPercent?: number | null;
+    hasMods?: boolean;
+    mods?: Array<string>;
+    succeeded?: boolean;
+    message?: string | null;
 };
 
 export type PlayerInventoryCompensationExecuteRequestDto = {

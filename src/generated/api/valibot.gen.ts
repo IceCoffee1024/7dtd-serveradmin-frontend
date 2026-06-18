@@ -3126,12 +3126,26 @@ export const vPlayerInventoryCompensationDraftRequestDto = v.strictObject({
     itemKeys: v.nullish(v.array(v.string()))
 });
 
+export const vPlayerInventoryCompensationExecuteItemDto = v.strictObject({
+    itemKey: v.optional(v.string()),
+    itemName: v.optional(v.string()),
+    localizationName: v.nullish(v.string()),
+    count: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    durabilityPercent: v.nullish(v.number()),
+    hasMods: v.optional(v.boolean()),
+    mods: v.optional(v.array(v.string())),
+    succeeded: v.optional(v.boolean()),
+    message: v.nullish(v.string())
+});
+
 export const vPlayerInventoryCompensationExecuteResultDto = v.strictObject({
     succeeded: v.optional(v.boolean()),
     errorMessage: v.nullish(v.string()),
     exactRestoreSupported: v.optional(v.boolean()),
     requestedItemCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     grantedItemCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    items: v.optional(v.array(vPlayerInventoryCompensationExecuteItemDto)),
     output: v.optional(v.array(v.string()))
 });
 
