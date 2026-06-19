@@ -4334,6 +4334,10 @@ export type HistoryPlayerDto = PlayerBasicInfoDto & {
      */
     isOffline?: boolean;
     /**
+     * Indicates whether the player is currently online.
+     */
+    isOnline: boolean;
+    /**
      * Party or group association persisted for the player.
      */
     playGroup: string;
@@ -4341,6 +4345,50 @@ export type HistoryPlayerDto = PlayerBasicInfoDto & {
      * Last known login time used by cleanup and analytics flows.
      */
     lastLogin: string;
+    /**
+     * Latest timestamp when this player was observed by the mod.
+     */
+    lastSeenAt: string | null;
+    /**
+     * Last known player progression level.
+     */
+    level: number;
+    /**
+     * Last known game stage value used by difficulty scaling systems.
+     */
+    gameStage: number | null;
+    /**
+     * Total zombie kills recorded for this player.
+     */
+    zombieKills: number;
+    /**
+     * Total PvP kills recorded for this player.
+     */
+    playerKills: number;
+    /**
+     * Total death count.
+     */
+    deaths: number;
+    /**
+     * Cumulative time the player has been online across all sessions, in seconds.
+     */
+    totalTimePlayed: number;
+    /**
+     * Experience required to reach the next level.
+     */
+    expToNextLevel: number;
+    /**
+     * Unspent skill points available for progression.
+     */
+    skillPoints: number;
+    /**
+     * Last known remote IP address.
+     */
+    lastKnownIp: string | null;
+    /**
+     * UTC timestamp when the cached history snapshot was last updated.
+     */
+    updatedAt: string;
     /**
      * ACL tags attached to this player in persistence.
      */
@@ -4407,7 +4455,7 @@ export type QuestpositionData = {
  * Supported sort fields for historical player list queries,
  * enabling the management UI to order persisted player records flexibly.
  */
-export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOffline' | 'PlayGroup' | 'LastLogin';
+export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOffline' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'TotalTimePlayed' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
 
 export type PlayerDetailsDto = PlayerBasicInfoDto & {
     /**

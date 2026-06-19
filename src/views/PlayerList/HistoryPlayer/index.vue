@@ -46,12 +46,41 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
     sortable: true,
     exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
   },
+  {
+    prop: 'lastSeenAt',
+    label: t('views.playerProfile.tracking.lastSeenAt'),
+    slot: 'lastSeenAt',
+    sortable: true,
+    exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
+  },
+  { prop: 'level', label: t('views.playerList.level'), sortable: true },
+  { prop: 'gameStage', label: t('views.playerList.gameStage'), sortable: true },
+  { prop: 'zombieKills', label: t('views.playerList.zombieKills'), sortable: true },
+  { prop: 'playerKills', label: t('views.playerList.playerKills'), sortable: true },
+  { prop: 'deaths', label: t('views.playerList.deaths'), sortable: true },
+  {
+    prop: 'totalTimePlayed',
+    label: t('views.playerList.totalTimePlayed'),
+    slot: 'totalTimePlayed',
+    sortable: true,
+    exportFormatter: value => formatPlayTime(Number(value ?? 0)),
+  },
+  { prop: 'expToNextLevel', label: t('views.playerList.expToNextLevel'), sortable: true },
+  { prop: 'skillPoints', label: t('views.playerList.skillPoints'), sortable: true },
+  { prop: 'lastKnownIp', label: t('views.playerList.ip'), sortable: true },
   { prop: 'position', label: t('views.playerList.position'), slot: 'position', exportFormatter: value => formatPosition(value as PositionDto | null | undefined) },
   { prop: 'permissionLevel', label: t('views.playerList.permissionLevel'), sortable: true },
   { prop: 'bedroll', label: t('views.playerList.bedroll'), slot: 'bedroll', exportFormatter: value => formatPosition(value as PositionDto | null | undefined) },
   { prop: 'playerId', label: t('views.playerList.playerId') },
   { prop: 'platformId', label: t('views.playerList.platformId') },
   { prop: 'playGroup', label: t('views.playerList.playGroup'), sortable: true },
+  {
+    prop: 'updatedAt',
+    label: t('views.featureModules.state.updatedAt'),
+    slot: 'updatedAt',
+    sortable: true,
+    exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
+  },
 ]);
 
 const playerInventoryDialogRef = useTemplateRef('playerInventoryDialogRef');
@@ -91,12 +120,36 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
     case 'isOffline': return 'IsOffline';
     case 'playGroup': return 'PlayGroup';
     case 'lastLogin': return 'LastLogin';
+    case 'lastSeenAt': return 'LastSeenAt';
+    case 'level': return 'Level';
+    case 'gameStage': return 'GameStage';
+    case 'zombieKills': return 'ZombieKills';
+    case 'playerKills': return 'PlayerKills';
+    case 'deaths': return 'Deaths';
+    case 'totalTimePlayed': return 'TotalTimePlayed';
+    case 'expToNextLevel': return 'ExpToNextLevel';
+    case 'skillPoints': return 'SkillPoints';
+    case 'lastKnownIp': return 'LastKnownIp';
+    case 'updatedAt': return 'UpdatedAt';
     default: return undefined;
   }
 }
 
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+}
+
+function formatPlayTime(seconds: number | null | undefined): string {
+  const value = Math.max(0, Math.floor(seconds ?? 0));
+  const days = Math.floor(value / 86400);
+  const hours = Math.floor((value % 86400) / 3600);
+  const minutes = Math.floor((value % 3600) / 60);
+
+  if (days > 0)
+    return `${days}d ${hours}h`;
+  if (hours > 0)
+    return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
 }
 
 const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
@@ -155,6 +208,15 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       </template>
       <template #lastLogin="{ row }">
         {{ formatTimestamp(row.lastLogin) }}
+      </template>
+      <template #lastSeenAt="{ row }">
+        {{ formatTimestamp(row.lastSeenAt) }}
+      </template>
+      <template #updatedAt="{ row }">
+        {{ formatTimestamp(row.updatedAt) }}
+      </template>
+      <template #totalTimePlayed="{ row }">
+        {{ formatPlayTime(row.totalTimePlayed) }}
       </template>
       <template #position="{ row }">
         {{ formatPosition(row.position) }}
