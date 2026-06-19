@@ -16,7 +16,6 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
-    "contract:check": "pnpm api:gen && pnpm typecheck && pnpm locale:check && pnpm build",
     "locale:check": "node scripts/check-locales.mjs",
     "live:acceptance": "node scripts/live-acceptance-checklist.mjs",
     "preview": "vite preview",
@@ -24,7 +23,7 @@
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "typecheck": "vue-tsc --noEmit",
-    "verify:local": "pnpm api:gen && pnpm typecheck && pnpm test:unit && pnpm locale:check && pnpm build:analyze"
+    "verify:local": "pnpm api:gen && pnpm typecheck && pnpm lint && pnpm test:unit && pnpm locale:check && pnpm build:analyze"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
