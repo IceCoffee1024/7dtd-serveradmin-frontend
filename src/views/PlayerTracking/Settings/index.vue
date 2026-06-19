@@ -4,8 +4,8 @@ import type {
   PlayerTrackingFeatureSettingsDto,
   PlayerTrackingStatusDto,
 } from '~/generated/api/types.gen';
-import { isEqual } from 'es-toolkit';
 import dayjs from 'dayjs';
+import { isEqual } from 'es-toolkit';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave } from 'vue-router';
 import { usePopup } from '~/composables';

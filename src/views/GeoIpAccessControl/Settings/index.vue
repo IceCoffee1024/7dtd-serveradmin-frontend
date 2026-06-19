@@ -10,9 +10,9 @@ import { onBeforeRouteLeave } from 'vue-router';
 import { usePopup } from '~/composables';
 import { ISO_COUNTRIES } from '~/constants/countries';
 import {
+  geoIpAccessControlClearCache,
   geoIpAccessControlGetSettings,
   geoIpAccessControlGetStatus,
-  geoIpAccessControlClearCache,
   geoIpAccessControlResetSettings,
   geoIpAccessControlTestLookup,
   geoIpAccessControlUpdateSettings,
@@ -135,14 +135,16 @@ const testDecisionSummary = computed(() => {
     return t('views.geoIpAccessControl.settings.testDecision.allowedDisabled');
   if (!code)
     return t('views.geoIpAccessControl.settings.testDecision.unknownCountry', { policy: policyLabel(form.unknownCountryPolicy) });
-  if (form.mode === 'AllowCountries')
+  if (form.mode === 'AllowCountries') {
     return form.allowedCountryCodes.includes(code)
       ? t('views.geoIpAccessControl.settings.testDecision.allowedByCountry', { country: code })
       : t('views.geoIpAccessControl.settings.testDecision.blockedByAllowMode', { country: code });
-  if (form.mode === 'BlockCountries')
+  }
+  if (form.mode === 'BlockCountries') {
     return form.blockedCountryCodes.includes(code)
       ? t('views.geoIpAccessControl.settings.testDecision.blockedByCountry', { country: code })
       : t('views.geoIpAccessControl.settings.testDecision.allowedByCountry', { country: code });
+  }
   return null;
 });
 
@@ -734,12 +736,18 @@ onBeforeRouteLeave(async () => {
           :title="testDecisionSummary"
         />
         <el-descriptions v-if="testResult" class="mt-3" :column="2" border>
-          <el-descriptions-item label="IP">{{ testResult.ip }}</el-descriptions-item>
+          <el-descriptions-item label="IP">
+            {{ testResult.ip }}
+          </el-descriptions-item>
           <el-descriptions-item :label="t('views.geoIpAccessControl.settings.result.country')">
             {{ testResult.countryCode || '-' }} {{ testResult.countryName || '' }}
           </el-descriptions-item>
-          <el-descriptions-item :label="t('views.geoIpAccessControl.settings.result.city')">{{ testResult.city || '-' }}</el-descriptions-item>
-          <el-descriptions-item :label="t('views.geoIpAccessControl.settings.result.provider')">{{ testResult.provider }}</el-descriptions-item>
+          <el-descriptions-item :label="t('views.geoIpAccessControl.settings.result.city')">
+            {{ testResult.city || '-' }}
+          </el-descriptions-item>
+          <el-descriptions-item :label="t('views.geoIpAccessControl.settings.result.provider')">
+            {{ testResult.provider }}
+          </el-descriptions-item>
         </el-descriptions>
 
         <el-table class="mt-4" :data="status?.recentDecisions ?? []" size="small">

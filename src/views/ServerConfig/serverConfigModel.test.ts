@@ -4,7 +4,7 @@ import { buildServerConfigGroups, getServerConfigDisplayName } from './serverCon
 function createTranslator(messages: Record<string, string>) {
   return {
     t: (key: string) => messages[key] ?? key,
-    te: (key: string) => Object.prototype.hasOwnProperty.call(messages, key),
+    te: (key: string) => Object.hasOwn(messages, key),
   };
 }
 

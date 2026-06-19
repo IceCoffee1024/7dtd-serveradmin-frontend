@@ -8,12 +8,11 @@ import type {
   EventAutomationRuleDryRunResultDto,
   EventAutomationRuleDto,
   EventAutomationRuleQueryOrder,
-  EventAutomationTemplateDto,
-  EventAutomationTemplateParameterDto,
-  EventAutomationTemplatePreviewDto,
-  EventAutomationTemplateRuleRequestDto,
   EventAutomationRuleUpsertDto,
   EventAutomationRunStatsDto,
+  EventAutomationTemplateDto,
+  EventAutomationTemplatePreviewDto,
+  EventAutomationTemplateRuleRequestDto,
 } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';

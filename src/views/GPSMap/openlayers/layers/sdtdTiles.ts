@@ -1,11 +1,44 @@
+import type ImageTile from 'ol/ImageTile';
 import type Projection from 'ol/proj/Projection';
 import type { SdtdMapInfo } from '../../types';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
 import TileGrid from 'ol/tilegrid/TileGrid';
+import TileState from 'ol/TileState';
 import { useUserInfoStore } from '~/stores/userInfo';
 import { getMapTileUrl } from '~/utils/gameServerAssets';
 import { LAYER_ID } from '../../constants';
+
+async function loadAuthenticatedTile(tile: ImageTile, url: string): Promise<void> {
+  try {
+    const token = await useUserInfoStore().getAccessToken();
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok === false) {
+      tile.setState(TileState.ERROR);
+      return;
+    }
+
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(await response.blob());
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      tile.setImage(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      tile.setState(TileState.ERROR);
+    };
+    image.src = objectUrl;
+  }
+  catch {
+    tile.setState(TileState.ERROR);
+  }
+}
 
 /**
  * Creates SDTD raster tile layer for OpenLayers map.
@@ -31,15 +64,16 @@ export function createSdtdTileLayer(mapInfo: SdtdMapInfo, projection: Projection
     maxZoom: mapInfo.maxZoom,
     wrapX: false,
     attributions: '© The Fun Pimps LLC',
+    tileLoadFunction: (tile, url) => {
+      void loadAuthenticatedTile(tile as ImageTile, url);
+    },
     tileUrlFunction: (tileCoord) => {
-      // Builds a tile endpoint URL for OpenLayers tile requests.
-      const z = tileCoord[0]; // Tile zoom level.
-      const x = tileCoord[1]; // Tile x index.
-      const y = tileCoord[2]; // Tile y index.
-      const tmsY = -y - 1; // Convert XYZ y to TMS y index.
+      const z = tileCoord[0];
+      const x = tileCoord[1];
+      const y = tileCoord[2];
+      const tmsY = -y - 1;
 
-      const token = useUserInfoStore().accessToken; // Current user access token.
-      return getMapTileUrl(z, x, tmsY, token);
+      return getMapTileUrl(z, x, tmsY);
     },
   });
 

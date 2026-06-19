@@ -32,7 +32,7 @@ export async function setElementLanguage(locale: LocaleType) {
     return;
   }
 
-  let loader = locales[locale];
+  const loader = locales[locale];
   if (!loader) {
     currentLanguage.value = en;
     return;

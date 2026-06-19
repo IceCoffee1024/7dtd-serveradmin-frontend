@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { nextTick, ref } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
+import { nextTick, ref } from 'vue';
 import ServerConfig from './index.vue';
 
 const queryState = {
@@ -55,7 +55,7 @@ vi.mock('~/queries/generated', () => ({
 
 const renderedRows: unknown[] = [];
 
-describe('ServerConfig page', () => {
+describe('serverConfig page', () => {
   it('uses fallback text for unknown serverconfig keys instead of rendering raw i18n keys', async () => {
     renderedRows.length = 0;
     queryState.data.value = {
@@ -66,22 +66,22 @@ describe('ServerConfig page', () => {
     const wrapper = mount(ServerConfig, {
       global: {
         stubs: {
-          ElCard: { template: '<section><slot /></section>' },
-          ElCollapse: { template: '<div><slot /></div>' },
-          ElCollapseItem: {
+          'ElCard': { template: '<section><slot /></section>' },
+          'ElCollapse': { template: '<div><slot /></div>' },
+          'ElCollapseItem': {
             props: ['title'],
             template: '<article><h2>{{ title }}</h2><slot /></article>',
           },
-          ElTable: {
+          'ElTable': {
             props: ['data'],
             setup(props) {
               renderedRows.push(...props.data);
               return () => null;
             },
           },
-          ElTableColumn: true,
-          ElTag: { template: '<span><slot /></span>' },
-          IconButton: { template: '<button><slot /></button>' },
+          'ElTableColumn': true,
+          'ElTag': { template: '<span><slot /></span>' },
+          'IconButton': { template: '<button><slot /></button>' },
           'icon-mdi:pencil': true,
         },
         mocks: {

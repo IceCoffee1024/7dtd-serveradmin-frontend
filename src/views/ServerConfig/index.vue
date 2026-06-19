@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ServerConfigGroup, ServerConfigItem } from './serverConfigModel';
 import { useMutation, useQuery } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
 import { usePopup } from '~/composables';
@@ -7,7 +8,7 @@ import {
   gameServerSettingsPutMutation,
 } from '~/generated/api/@pinia/colada.gen';
 import { invalidateGeneratedQueries } from '~/queries/generated';
-import { buildServerConfigGroups, getServerConfigDisplayName, type ServerConfigGroup, type ServerConfigItem } from './serverConfigModel';
+import { buildServerConfigGroups, getServerConfigDisplayName } from './serverConfigModel';
 
 defineOptions({
   name: 'ServerConfig',

@@ -21,6 +21,6 @@ export function getUiIconUrl(name: string, iconColor?: string | null): string {
   return buildApiUrl(`UiIcons/${withColorSuffix(name, iconColor)}.png`);
 }
 
-export function getMapTileUrl(z: number, x: number, y: number, accessToken: string): string {
-  return `${buildApiUrl(`MapTile/${z}/${x}/${y}.png`)}?access_token=${encodeURIComponent(accessToken)}`;
+export function getMapTileUrl(z: number, x: number, y: number): string {
+  return buildApiUrl(`MapTile/${z}/${x}/${y}.png`);
 }

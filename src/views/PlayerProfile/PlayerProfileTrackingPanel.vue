@@ -33,7 +33,13 @@ import {
 
 defineOptions({ name: 'PlayerProfileTrackingPanel' });
 
-type PlayerInventoryCompensationExecuteItem = {
+const props = defineProps<{
+  playerId: string;
+  isOnline: boolean;
+  formatTime: (value: string | null | undefined) => string;
+}>();
+
+interface PlayerInventoryCompensationExecuteItem {
   itemKey?: string;
   itemName?: string;
   localizationName?: string | null;
@@ -44,17 +50,11 @@ type PlayerInventoryCompensationExecuteItem = {
   mods?: string[];
   succeeded?: boolean;
   message?: string | null;
-};
+}
 
 type PlayerInventoryCompensationExecuteResult = PlayerInventoryCompensationExecuteResultDto & {
   items?: PlayerInventoryCompensationExecuteItem[];
 };
-
-const props = defineProps<{
-  playerId: string;
-  isOnline: boolean;
-  formatTime: (value: string | null | undefined) => string;
-}>();
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();

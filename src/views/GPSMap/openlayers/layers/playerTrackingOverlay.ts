@@ -64,7 +64,7 @@ export async function setupPlayerTrackingOverlay(
     source,
     zIndex: 90,
     visible: true,
-    style: (feature) => feature.get('style') as Style | undefined,
+    style: feature => feature.get('style') as Style | undefined,
   });
 
   layer.set('id', LAYER_ID.PLAYER_TRACKING_OVERLAY);
