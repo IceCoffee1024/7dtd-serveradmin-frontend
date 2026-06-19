@@ -145,11 +145,7 @@ pnpm locale:check
 pnpm typecheck
 ```
 
-如果本轮涉及页面布局或规则 Builder，额外运行：
-
-```bash
-pnpm visual:critical
-```
+如果本轮涉及页面布局或规则 Builder，额外按照 `docs/chrome-devtools-mcp-ui-checklist.md` 使用 Chrome DevTools MCP 检查真实页面，包括 Console、Network、布局溢出、文本裁切、规则 Builder 表单和运行历史区域。
 
 后端建议运行：
 

@@ -1,6 +1,6 @@
 # Frontend Build Analysis
 
-This project uses Vite/Rolldown for production builds. The current build strategy focuses on predictable lazy routes, stable visual regression runs, and explicit vendor chunk boundaries.
+This project uses Vite/Rolldown for production builds. The current build strategy focuses on predictable lazy routes, manual real-page UI inspection, and explicit vendor chunk boundaries.
 
 ## Commands
 
@@ -46,7 +46,7 @@ The application routes are already lazy-loaded in `src/router/index.ts`, so page
 - Do not hide real size regressions by raising `build.chunkSizeWarningLimit` unless the warning is intentionally accepted.
 - Prefer reducing eager imports in global layout/plugins before splitting arbitrary chunks.
 - Avoid over-splitting Element Plus by internal component folders unless the measured result improves the initial route payload. It can make the config harder to maintain without reducing `index`.
-- Keep shared form components synchronous unless a measured build report shows a clear benefit and visual regression tests pass.
+- Keep shared form components synchronous unless a measured build report shows a clear benefit and the affected pages pass the Chrome DevTools MCP UI checklist.
 - After changing chunk strategy, run:
 
 ```bash
@@ -54,13 +54,6 @@ pnpm typecheck
 pnpm test:unit
 pnpm locale:check
 pnpm build:analyze
-pnpm visual:critical
 ```
 
-## Visual Regression Workers
-
-Playwright defaults to one worker in this project to avoid local Vite dev-server cold-start races when many lazy routes load at the same time. For local exploratory runs, override it explicitly:
-
-```bash
-PLAYWRIGHT_WORKERS=4 pnpm visual:critical
-```
+If the change affects route layout, dialogs, tables, translated text, or responsive behavior, also run the checklist in `docs/chrome-devtools-mcp-ui-checklist.md` against the local browser page.

@@ -10,15 +10,18 @@ Run the full local frontend gate from the frontend repository root:
 pnpm verify:local
 ```
 
-The command regenerates the OpenAPI client, type-checks application and Playwright configuration code, runs Vitest unit tests, checks locale key parity, analyzes a production build, and runs the critical visual regression suite.
+The command regenerates the OpenAPI client, type-checks application code, runs Vitest unit tests, checks locale key parity, and analyzes a production build.
 
 For a faster targeted pass while developing, run only the checks related to the area you changed:
 
 ```bash
 pnpm typecheck
 pnpm test:unit
-pnpm visual:critical
+pnpm locale:check
+pnpm build:analyze
 ```
+
+When a change affects real page layout, route composition, dialogs, tables, or translated UI text, run the Chrome DevTools MCP checklist in `docs/chrome-devtools-mcp-ui-checklist.md` against the live local page.
 
 ## Backend Gate
 
@@ -56,3 +59,4 @@ Manual acceptance is still required for real Discord interactions, game chat bri
 2. Frontend: `pnpm verify:local`
 3. Live server: `pnpm smoke:live`
 4. Manual: `pnpm live:acceptance`
+5. UI inspection when applicable: `docs/chrome-devtools-mcp-ui-checklist.md`
