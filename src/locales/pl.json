@@ -488,6 +488,7 @@
       "zombieKills": "Zombie zabija",
       "playerKills": "Gracz zabija",
       "deaths": "Zgony",
+      "totalTimePlayed": "Całkowity czas gry",
       "level": "Poziom",
       "expToNextLevel": "Ekspansja do następnego poziomu",
       "skillPoints": "Punkty umiejętności",

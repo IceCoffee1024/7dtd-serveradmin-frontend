@@ -488,6 +488,7 @@
       "zombieKills": "击杀僵尸",
       "playerKills": "击杀玩家",
       "deaths": "死亡次数",
+      "totalTimePlayed": "总游戏时长",
       "level": "等级",
       "expToNextLevel": "至下一级的经验",
       "skillPoints": "技能点数",

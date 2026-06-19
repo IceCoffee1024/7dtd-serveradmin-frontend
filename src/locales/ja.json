@@ -488,6 +488,7 @@
       "zombieKills": "ゾンビキル",
       "playerKills": "プレイヤーキル数",
       "deaths": "死亡者（数",
+      "totalTimePlayed": "合計プレイ時間",
       "level": "レベル",
       "expToNextLevel": "次のレベルへの経験値",
       "skillPoints": "スキルポイント",

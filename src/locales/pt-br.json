@@ -488,6 +488,7 @@
       "zombieKills": "Mortes de zumbis",
       "playerKills": "Mortes de jogadores",
       "deaths": "Mortes",
+      "totalTimePlayed": "Tempo total jogado",
       "level": "Nível",
       "expToNextLevel": "Exp para o próximo nível",
       "skillPoints": "Pontos de habilidade",

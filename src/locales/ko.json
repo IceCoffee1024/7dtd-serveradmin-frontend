@@ -488,6 +488,7 @@
       "zombieKills": "좀비 처치",
       "playerKills": "플레이어 킬",
       "deaths": "사망자",
+      "totalTimePlayed": "총 플레이 시간",
       "level": "수준",
       "expToNextLevel": "다음 레벨로의 경험치",
       "skillPoints": "스킬 포인트",

@@ -488,6 +488,7 @@
       "zombieKills": "Убийства зомби",
       "playerKills": "Убийства игроков",
       "deaths": "Летальные исходы",
+      "totalTimePlayed": "Общее время игры",
       "level": "Уровень",
       "expToNextLevel": "Опыт перехода на следующий уровень",
       "skillPoints": "Очки навыков",

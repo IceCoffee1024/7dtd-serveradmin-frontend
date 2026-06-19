@@ -488,6 +488,7 @@
       "zombieKills": "Les zombies tuent",
       "playerKills": "Joueur tue",
       "deaths": "Décès",
+      "totalTimePlayed": "Temps total joué",
       "level": "Niveau",
       "expToNextLevel": "Exp au niveau suivant",
       "skillPoints": "Points de compétence",

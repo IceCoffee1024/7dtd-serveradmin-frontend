@@ -488,6 +488,7 @@
       "zombieKills": "Zombie Kills",
       "playerKills": "Player Kills",
       "deaths": "Deaths",
+      "totalTimePlayed": "Total Time Played",
       "level": "Level",
       "expToNextLevel": "Exp To Next Level",
       "skillPoints": "Skill Points",
