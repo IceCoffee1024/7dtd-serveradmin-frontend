@@ -1,5 +1,5 @@
-import type { InvItemDto } from '~/generated/api/types.gen';
 import type { InventorySlotItem } from './types';
+import type { InvItemDto } from '~/generated/api/types.gen';
 
 export function createInventorySlotItems(
   items: Array<InvItemDto | null | undefined>,

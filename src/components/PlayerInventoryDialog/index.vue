@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { InventoryDto } from '~/generated/api/types.gen';
-import type { InventorySlotItem, RemovePlayerInventoryItemRequestDto } from './types';
+import type { InventorySlotItem } from './types';
+import type { InventoryDto, RemovePlayerInventoryItemRequestDto } from '~/generated/api/types.gen';
 import { useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
 import { useLatestAsync } from '~/composables/useLatestAsync';
 import { usePopup } from '~/composables/usePopup';
 import { gameServerGetPlayerInventoryQuery } from '~/generated/api/@pinia/colada.gen';
 import { removePlayerInventoryItem } from './api';
-import { createInventorySlotItems } from './inventorySlots';
 import Grid from './Grid/index.vue';
+import { createInventorySlotItems } from './inventorySlots';
 import List from './List/index.vue';
 
 type LayoutMode = 'list' | 'grid';

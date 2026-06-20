@@ -5540,7 +5540,43 @@ export type GiveItemToPlayerRequestDto = {
      * Optional quality tier for quality-based items.
      */
     quality?: number | null;
+    /**
+     * Optional modification item names to install into the granted item.
+     */
+    mods?: Array<string> | null;
 };
+
+/**
+ * Request body for removing player inventory items.
+ */
+export type RemovePlayerInventoryItemRequestDto = {
+    /**
+     * Internal 7 Days to Die item identifier.
+     */
+    itemName: string;
+    /**
+     * Removal mode. Use SelectedSlot for exact slot removal.
+     */
+    mode?: PlayerInventoryRemovalMode;
+    /**
+     * Target inventory container for selected-slot removal.
+     */
+    container?: PlayerInventoryItemContainer | null;
+    /**
+     * Zero-based slot index within the target container for selected-slot removal.
+     */
+    slotIndex?: number | null;
+};
+
+/**
+ * Specifies how player inventory items should be removed.
+ */
+export type PlayerInventoryRemovalMode = 'AllMatching' | 'SelectedSlot';
+
+/**
+ * Player inventory container names that support administrative item removal.
+ */
+export type PlayerInventoryItemContainer = 'Toolbelt' | 'Backpack';
 
 /**
  * Request body for teleporting a player to absolute world coordinates.
@@ -11108,6 +11144,38 @@ export type GameServerGiveItemToOnlinePlayerResponses = {
 };
 
 export type GameServerGiveItemToOnlinePlayerResponse = GameServerGiveItemToOnlinePlayerResponses[keyof GameServerGiveItemToOnlinePlayerResponses];
+
+export type GameServerRemovePlayerInventoryItemData = {
+    /**
+     * Item removal payload containing item id, mode, and optional exact slot.
+     */
+    body: RemovePlayerInventoryItemRequestDto;
+    path: {
+        /**
+         * Cross-platform player identifier of the target player.
+         */
+        playerId: string;
+    };
+    query?: never;
+    url: '/api/GameServer/Players/{playerId}/Inventory/RemoveItem';
+};
+
+export type GameServerRemovePlayerInventoryItemErrors = {
+    400: ProblemDetailsDto;
+    404: ProblemDetailsDto;
+    409: ProblemDetailsDto;
+};
+
+export type GameServerRemovePlayerInventoryItemError = GameServerRemovePlayerInventoryItemErrors[keyof GameServerRemovePlayerInventoryItemErrors];
+
+export type GameServerRemovePlayerInventoryItemResponses = {
+    /**
+     * Console-style output from the item removal pipeline.
+     */
+    200: Array<string>;
+};
+
+export type GameServerRemovePlayerInventoryItemResponse = GameServerRemovePlayerInventoryItemResponses[keyof GameServerRemovePlayerInventoryItemResponses];
 
 export type GameServerTeleportToPositionData = {
     /**

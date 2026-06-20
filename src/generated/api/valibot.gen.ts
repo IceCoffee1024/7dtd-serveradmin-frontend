@@ -2755,7 +2755,28 @@ export const vKickPlayerRequestDto = v.strictObject({
 export const vGiveItemToPlayerRequestDto = v.strictObject({
     itemName: v.pipe(v.string(), v.minLength(1)),
     count: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(999999))),
-    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(6)))
+    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(6))),
+    mods: v.nullish(v.array(v.string()))
+});
+
+/**
+ * Specifies how player inventory items should be removed.
+ */
+export const vPlayerInventoryRemovalMode = v.picklist(['AllMatching', 'SelectedSlot']);
+
+/**
+ * Player inventory container names that support administrative item removal.
+ */
+export const vPlayerInventoryItemContainer = v.picklist(['Toolbelt', 'Backpack']);
+
+/**
+ * Request body for removing player inventory items.
+ */
+export const vRemovePlayerInventoryItemRequestDto = v.strictObject({
+    itemName: v.pipe(v.string(), v.minLength(1)),
+    mode: v.optional(vPlayerInventoryRemovalMode),
+    container: v.nullish(vPlayerInventoryItemContainer),
+    slotIndex: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(2147483647)))
 });
 
 /**
@@ -4338,6 +4359,15 @@ export const vGameServerGiveItemToAllOnlinePlayersBody = vGiveItemToPlayerReques
 export const vGameServerGiveItemToOnlinePlayerBody = vGiveItemToPlayerRequestDto;
 
 export const vGameServerGiveItemToOnlinePlayerPath = v.object({
+    playerId: v.string()
+});
+
+/**
+ * Item removal payload containing item id, mode, and optional exact slot.
+ */
+export const vGameServerRemovePlayerInventoryItemBody = vRemovePlayerInventoryItemRequestDto;
+
+export const vGameServerRemovePlayerInventoryItemPath = v.object({
     playerId: v.string()
 });
 
