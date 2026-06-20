@@ -164,7 +164,18 @@
       "useTimes": "使用回数",
       "maxUseTimes": "最大使用回数",
       "mod": "MOD",
-      "block": "ブロック"
+      "block": "ブロック",
+      "removeSelected": "Remove selected",
+      "removeAllMatching": "Remove all matching items",
+      "removeSelectedConfirm": "Remove {item} from {slot}?",
+      "removeAllMatchingConfirm": "Remove every {item} from this player's inventory?",
+      "removeSelectedUnsupported": "Equipment slots do not support selected-slot removal yet.",
+      "removeSuccess": "Item removal command executed.",
+      "containers": {
+        "Backpack": "Backpack",
+        "Toolbelt": "Toolbelt",
+        "Equipment": "Equipment"
+      }
     },
     "playerSkillsDialog": {
       "header": "プレイヤースキル",

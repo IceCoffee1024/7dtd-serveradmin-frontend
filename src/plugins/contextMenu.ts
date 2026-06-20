@@ -26,6 +26,7 @@ function transformMenuItems<T>(options: ContextMenuOption<T>[], data?: T): MenuI
     return {
       label: item.label,
       icon: item.icon ? h(item.icon) : undefined,
+      divided: item.divided,
       disabled: typeof item.disabled === 'function' ? item.disabled(data) : item.disabled,
       children,
       onClick: () => {

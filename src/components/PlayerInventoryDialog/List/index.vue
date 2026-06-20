@@ -1,36 +1,49 @@
 <script setup lang="ts">
-import type { InvItemDto } from '~/generated/api/types.gen';
+import type { InventorySlotItem } from '../types';
 import Table from './Table.vue';
 
 interface Props {
-  bag?: InvItemDto[];
-  belt?: InvItemDto[];
-  equipment?: Array<InvItemDto | null>;
+  bag?: InventorySlotItem[];
+  belt?: InventorySlotItem[];
+  equipment?: InventorySlotItem[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   bag: () => [],
   belt: () => [],
   equipment: () => [],
 });
 
-const activeTab = ref('bag');
+const emit = defineEmits<{
+  removeSelected: [slot: InventorySlotItem];
+  removeAll: [slot: InventorySlotItem];
+}>();
 
-const equipmentItems = computed<InvItemDto[]>(() => {
-  return props.equipment.filter((item): item is InvItemDto => !!item);
-});
+const activeTab = ref('bag');
 </script>
 
 <template>
   <el-tabs v-model="activeTab" class="inventory-tabs">
     <el-tab-pane name="bag" :label="$t('components.playerInventoryDialog.bag')">
-      <Table :table-data="bag" />
+      <Table
+        :table-data="bag"
+        @remove-selected="slot => emit('removeSelected', slot)"
+        @remove-all="slot => emit('removeAll', slot)"
+      />
     </el-tab-pane>
     <el-tab-pane name="belt" :label="$t('components.playerInventoryDialog.belt')">
-      <Table :table-data="belt" />
+      <Table
+        :table-data="belt"
+        @remove-selected="slot => emit('removeSelected', slot)"
+        @remove-all="slot => emit('removeAll', slot)"
+      />
     </el-tab-pane>
     <el-tab-pane name="equipment" :label="$t('components.playerInventoryDialog.equipment')">
-      <Table :table-data="equipmentItems" />
+      <Table
+        :table-data="equipment"
+        @remove-selected="slot => emit('removeSelected', slot)"
+        @remove-all="slot => emit('removeAll', slot)"
+      />
     </el-tab-pane>
   </el-tabs>
 </template>

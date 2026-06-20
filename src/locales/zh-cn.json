@@ -164,7 +164,18 @@
       "useTimes": "使用次数",
       "maxUseTimes": "最大使用次数",
       "mod": "模组",
-      "block": "是否为方块"
+      "block": "是否为方块",
+      "removeSelected": "移除选定",
+      "removeAllMatching": "移除所有同名物品",
+      "removeSelectedConfirm": "确定要从 {slot} 移除 {item} 吗？",
+      "removeAllMatchingConfirm": "确定要移除该玩家背包中的所有 {item} 吗？",
+      "removeSelectedUnsupported": "装备栏暂不支持按槽位移除。",
+      "removeSuccess": "物品移除命令已执行。",
+      "containers": {
+        "Backpack": "背包",
+        "Toolbelt": "腰带",
+        "Equipment": "装备"
+      }
     },
     "playerSkillsDialog": {
       "header": "玩家技能",

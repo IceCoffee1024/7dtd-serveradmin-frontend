@@ -164,7 +164,18 @@
       "useTimes": "Użycia",
       "maxUseTimes": "Maksymalna liczba użyć",
       "mod": "Mod",
-      "block": "Zablokuj"
+      "block": "Zablokuj",
+      "removeSelected": "Remove selected",
+      "removeAllMatching": "Remove all matching items",
+      "removeSelectedConfirm": "Remove {item} from {slot}?",
+      "removeAllMatchingConfirm": "Remove every {item} from this player's inventory?",
+      "removeSelectedUnsupported": "Equipment slots do not support selected-slot removal yet.",
+      "removeSuccess": "Item removal command executed.",
+      "containers": {
+        "Backpack": "Backpack",
+        "Toolbelt": "Toolbelt",
+        "Equipment": "Equipment"
+      }
     },
     "playerSkillsDialog": {
       "header": "Umiejętności gracza",
