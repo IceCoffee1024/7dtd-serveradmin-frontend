@@ -33,11 +33,11 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   },
   { prop: 'playerName', label: t('views.playerList.playerName'), slot: 'playerName', sortable: true, fixed: 'left' },
   {
-    prop: 'isOffline',
+    prop: 'isOnline',
     label: t('views.playerList.status'),
     slot: 'isOffline',
     sortable: true,
-    exportFormatter: value => (value ? t('common.offline') : t('common.online')),
+    exportFormatter: value => (value ? t('common.online') : t('common.offline')),
   },
   {
     prop: 'lastLogin',
@@ -117,7 +117,7 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
     case 'entityId': return 'EntityId';
     case 'playerName': return 'PlayerName';
     case 'permissionLevel': return 'PermissionLevel';
-    case 'isOffline': return 'IsOffline';
+    case 'isOnline': return 'IsOnline';
     case 'playGroup': return 'PlayGroup';
     case 'lastLogin': return 'LastLogin';
     case 'lastSeenAt': return 'LastSeenAt';

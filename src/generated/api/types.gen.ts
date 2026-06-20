@@ -4455,7 +4455,7 @@ export type QuestpositionData = {
  * Supported sort fields for historical player list queries,
  * enabling the management UI to order persisted player records flexibly.
  */
-export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOffline' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'TotalTimePlayed' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
+export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'TotalTimePlayed' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
 
 export type PlayerDetailsDto = PlayerBasicInfoDto & {
     /**

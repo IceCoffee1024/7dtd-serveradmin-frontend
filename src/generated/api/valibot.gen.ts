@@ -2288,7 +2288,6 @@ export const vHistoryPlayerQueryOrder = v.picklist([
     'EntityId',
     'PlayerName',
     'PermissionLevel',
-    'IsOffline',
     'IsOnline',
     'PlayGroup',
     'LastLogin',
