@@ -4330,10 +4330,6 @@ export type HistoryPlayerDto = PlayerBasicInfoDto & {
      */
     isAdmin?: boolean;
     /**
-     * Indicates whether the player is currently offline.
-     */
-    isOffline?: boolean;
-    /**
      * Indicates whether the player is currently online.
      */
     isOnline: boolean;
@@ -4503,9 +4499,9 @@ export type PlayerDetailsDto = PlayerBasicInfoDto & {
      */
     gameStage: number | null;
     /**
-     * Indicates whether the player is currently offline.
+     * Indicates whether the player is currently online.
      */
-    isOffline?: boolean;
+    isOnline?: boolean;
     /**
      * Party or group association persisted for this player.
      */

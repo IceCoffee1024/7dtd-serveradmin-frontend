@@ -35,7 +35,7 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   {
     prop: 'isOnline',
     label: t('views.playerList.status'),
-    slot: 'isOffline',
+    slot: 'isOnline',
     sortable: true,
     exportFormatter: value => (value ? t('common.online') : t('common.offline')),
   },
@@ -224,9 +224,9 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       <template #bedroll="{ row }">
         {{ formatPosition(row.bedroll) }}
       </template>
-      <template #isOffline="{ row }">
-        <el-tag :type="row.isOffline ? 'danger' : 'success'">
-          {{ row.isOffline ? $t('common.offline') : $t('common.online') }}
+      <template #isOnline="{ row }">
+        <el-tag :type="row.isOnline ? 'success' : 'danger'">
+          {{ row.isOnline ? $t('common.online') : $t('common.offline') }}
         </el-tag>
       </template>
       <template #operation />

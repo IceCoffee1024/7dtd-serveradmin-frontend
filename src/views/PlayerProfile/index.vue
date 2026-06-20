@@ -97,7 +97,7 @@ const status = computed<ProfileStatus>(() => ({
   isWhitelisted: whitelistEntry.value != null,
 }));
 
-const isOnline = computed(() => details.value != null && details.value.isOffline === false);
+const isOnline = computed(() => details.value?.isOnline === true);
 
 const summaryCards = computed(() => [
   {

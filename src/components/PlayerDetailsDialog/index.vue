@@ -100,7 +100,7 @@ function getModel(data: PlayerDetailsDto): DetailRow[] {
     { label: t('components.playerDetailsDialog.platformId'), value: data.platformId ?? '' },
     { label: t('components.playerDetailsDialog.playGroup'), value: data.playGroup ?? '' },
     { label: t('components.playerDetailsDialog.admin'), value: data.isAdmin ? t('common.yes') : t('common.no') },
-    { label: t('components.playerDetailsDialog.online'), value: !data.isOffline ? t('common.yes') : t('common.no') },
+    { label: t('components.playerDetailsDialog.online'), value: data.isOnline ? t('common.yes') : t('common.no') },
     { label: t('components.playerDetailsDialog.ip'), value: data.ip ?? '' },
     { label: t('components.playerDetailsDialog.ping'), value: normalizeNumber(data.ping) },
     { label: t('components.playerDetailsDialog.position'), value: formatPosition(data.position) },
