@@ -21,6 +21,10 @@ interface Props {
   fontSize?: number;
 }
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const props = withDefaults(defineProps<Props>(), {
   size: 80,
   itemName: '',
@@ -40,6 +44,8 @@ const props = withDefaults(defineProps<Props>(), {
   backgroundColor: undefined,
   fontSize: 24,
 });
+
+const attrs = useAttrs();
 
 const qualityColor = computed(() => {
   const size = props.size;
@@ -105,7 +111,7 @@ function onPreviewClose() {
     popper-class="inventory-icon-tooltip"
     raw-content
   >
-    <div class="game-icon-ex" :style="{ backgroundColor }">
+    <div class="game-icon-ex" :style="{ backgroundColor }" v-bind="attrs">
       <GameIcon
         :icon-name="iconName"
         :icon-color="iconColor"
