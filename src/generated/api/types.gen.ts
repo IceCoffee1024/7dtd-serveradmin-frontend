@@ -5180,6 +5180,10 @@ export type InventoryDto = {
  */
 export type InvItemDto = {
     /**
+     * Zero-based slot index in the source inventory container; null when the item is not tied to a slot.
+     */
+    slotIndex?: number | null;
+    /**
      * Internal item identifier used by game definitions.
      */
     itemName: string;

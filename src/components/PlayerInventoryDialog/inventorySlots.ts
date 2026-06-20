@@ -10,7 +10,7 @@ export function createInventorySlotItems(
       ? {
           item,
           container,
-          slotIndex,
+          slotIndex: item.slotIndex ?? slotIndex,
         }
       : null)
     .filter((item): item is InventorySlotItem => item !== null);

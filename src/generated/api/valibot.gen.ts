@@ -2600,6 +2600,7 @@ export const vPagedDtoOfPlayerProfileTimelineItemDto = v.strictObject({
  * Represents a normalized inventory item snapshot returned by player inspection APIs.
  */
 export const vInvItemDto: v.GenericSchema = v.strictObject({
+    slotIndex: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     itemName: v.string(),
     iconName: v.string(),
     iconColor: v.nullable(v.string()),
