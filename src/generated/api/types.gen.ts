@@ -4366,7 +4366,11 @@ export type HistoryPlayerDto = PlayerBasicInfoDto & {
      */
     deaths: number;
     /**
-     * Cumulative time the player has been online across all sessions, in seconds.
+     * Duration of the player's single longest survival run, in game minutes.
+     */
+    longestLife: number;
+    /**
+     * Cumulative time the player has been online across all sessions, in game minutes.
      */
     totalTimePlayed: number;
     /**
@@ -4451,7 +4455,7 @@ export type QuestpositionData = {
  * Supported sort fields for historical player list queries,
  * enabling the management UI to order persisted player records flexibly.
  */
-export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'TotalTimePlayed' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
+export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'LongestLife' | 'TotalTimePlayed' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
 
 export type PlayerDetailsDto = PlayerBasicInfoDto & {
     /**
@@ -4559,15 +4563,15 @@ export type PlayerDetailsDto = PlayerBasicInfoDto & {
      */
     totalItemsCrafted: number;
     /**
-     * Duration of the player's single longest survival run, in seconds.
+     * Duration of the player's single longest survival run, in game minutes.
      */
     longestLife: number;
     /**
-     * Duration of the player's current active survival run, in seconds.
+     * Duration of the player's current active survival run, in game minutes.
      */
     currentLife: number;
     /**
-     * Cumulative time the player has been online across all sessions, in seconds.
+     * Cumulative time the player has been online across all sessions, in game minutes.
      */
     totalTimePlayed: number;
     /**
@@ -5180,10 +5184,6 @@ export type InventoryDto = {
  */
 export type InvItemDto = {
     /**
-     * Zero-based slot index in the source inventory container; null when the item is not tied to a slot.
-     */
-    slotIndex?: number | null;
-    /**
      * Internal item identifier used by game definitions.
      */
     itemName: string;
@@ -5199,6 +5199,10 @@ export type InvItemDto = {
      * Localized display name resolved for UI display.
      */
     localizationName: string;
+    /**
+     * Zero-based slot index in the source inventory container; null when the item is not tied to a slot.
+     */
+    slotIndex?: number | null;
     /**
      * Stack count currently held in this slot.
      */

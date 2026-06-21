@@ -500,6 +500,7 @@
       "playerKills": "Joueur tue",
       "deaths": "Décès",
       "totalTimePlayed": "Temps total joué",
+      "longestLife": "Vie la plus longue",
       "level": "Niveau",
       "expToNextLevel": "Exp au niveau suivant",
       "skillPoints": "Points de compétence",

@@ -500,6 +500,7 @@
       "playerKills": "プレイヤーキル数",
       "deaths": "死亡者（数",
       "totalTimePlayed": "合計プレイ時間",
+      "longestLife": "最長のライフ",
       "level": "レベル",
       "expToNextLevel": "次のレベルへの経験値",
       "skillPoints": "スキルポイント",

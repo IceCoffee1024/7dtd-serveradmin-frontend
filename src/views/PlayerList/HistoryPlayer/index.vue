@@ -12,7 +12,7 @@ import { useI18n } from 'vue-i18n';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { usePlayerProfileNavigation } from '~/composables';
 import { gameServerGetHistoryPlayersQuery } from '~/generated/api/@pinia/colada.gen';
-import { formatPosition } from '~/utils';
+import { formatMinute, formatPosition } from '~/utils';
 
 type HistoryPlayerRow = HistoryPlayerDto;
 
@@ -63,7 +63,14 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
     label: t('views.playerList.totalTimePlayed'),
     slot: 'totalTimePlayed',
     sortable: true,
-    exportFormatter: value => formatPlayTime(Number(value ?? 0)),
+    exportFormatter: value => formatMinute(Number(value ?? 0)),
+  },
+  {
+    prop: 'longestLife',
+    label: t('views.playerList.longestLife'),
+    slot: 'longestLife',
+    sortable: true,
+    exportFormatter: value => formatMinute(Number(value ?? 0)),
   },
   { prop: 'expToNextLevel', label: t('views.playerList.expToNextLevel'), sortable: true },
   { prop: 'skillPoints', label: t('views.playerList.skillPoints'), sortable: true },
@@ -127,6 +134,7 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
     case 'playerKills': return 'PlayerKills';
     case 'deaths': return 'Deaths';
     case 'totalTimePlayed': return 'TotalTimePlayed';
+    case 'longestLife': return 'LongestLife';
     case 'expToNextLevel': return 'ExpToNextLevel';
     case 'skillPoints': return 'SkillPoints';
     case 'lastKnownIp': return 'LastKnownIp';
@@ -137,19 +145,6 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
 
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
-}
-
-function formatPlayTime(seconds: number | null | undefined): string {
-  const value = Math.max(0, Math.floor(seconds ?? 0));
-  const days = Math.floor(value / 86400);
-  const hours = Math.floor((value % 86400) / 3600);
-  const minutes = Math.floor((value % 3600) / 60);
-
-  if (days > 0)
-    return `${days}d ${hours}h`;
-  if (hours > 0)
-    return `${hours}h ${minutes}m`;
-  return `${minutes}m`;
 }
 
 const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
@@ -216,7 +211,10 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
         {{ formatTimestamp(row.updatedAt) }}
       </template>
       <template #totalTimePlayed="{ row }">
-        {{ formatPlayTime(row.totalTimePlayed) }}
+        {{ formatMinute(row.totalTimePlayed) }}
+      </template>
+      <template #longestLife="{ row }">
+        {{ formatMinute(row.longestLife) }}
       </template>
       <template #position="{ row }">
         {{ formatPosition(row.position) }}

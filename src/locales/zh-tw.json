@@ -500,6 +500,7 @@
       "playerKills": "玩家擊殺數",
       "deaths": "死亡人數",
       "totalTimePlayed": "總玩時間",
+      "longestLife": "最長生命",
       "level": "等級",
       "expToNextLevel": "體驗到下一個級別",
       "skillPoints": "技能點",

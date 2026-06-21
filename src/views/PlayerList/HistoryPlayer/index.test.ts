@@ -8,6 +8,7 @@ const localesDir = path.resolve(currentDir, '../../../locales');
 
 const requiredLocaleKeys = [
   'views.playerList.totalTimePlayed',
+  'views.playerList.longestLife',
 ];
 
 function flattenMessages(source: unknown, prefix = '', output: Record<string, unknown> = {}) {
