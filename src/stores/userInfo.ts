@@ -2,6 +2,7 @@ import { useStorage } from '@vueuse/core';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
+import { clearQueryCache } from '~/plugins/pinia';
 import * as authService from '~/services/auth';
 
 export const useUserInfoStore = defineStore('userInfo', () => {
@@ -121,6 +122,7 @@ export const useUserInfoStore = defineStore('userInfo', () => {
    */
   const signOut = async (shouldNavigate = true) => {
     refreshPromise = null;
+    clearQueryCache();
 
     // Resetting to initial values will automatically trigger dynamicStorage.removeItem via VueUse.
     authData.value = {

@@ -1,6 +1,6 @@
 import type { Store } from 'pinia';
 import type { App } from 'vue';
-import { PiniaColada } from '@pinia/colada';
+import { PiniaColada, useQueryCache } from '@pinia/colada';
 import { createPinia } from 'pinia';
 
 const storeRegistry = new Map<string, Store>();
@@ -25,7 +25,16 @@ export function resetAllStores() {
   });
 }
 
+export function clearQueryCache() {
+  const queryCache = useQueryCache();
+  queryCache.cancelQueries();
+  queryCache.getEntries().forEach((entry) => {
+    queryCache.remove(entry);
+  });
+}
+
 export function disposeAllStores() {
+  clearQueryCache();
   storeRegistry.forEach((store) => {
     store.$dispose();
   });
