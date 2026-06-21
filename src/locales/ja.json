@@ -726,6 +726,7 @@
       "onlinePlayer": "プレイヤー（オンライン）",
       "trader": "トレーダー",
       "vehicle": "乗り物",
+      "drone": "ドローン",
       "prefab": "プレハブ",
       "areaPosition": "エリア位置",
       "protectArea": "保護エリア",

@@ -726,6 +726,7 @@
       "onlinePlayer": "Joueur (en ligne)",
       "trader": "Marchand",
       "vehicle": "Véhicule",
+      "drone": "Drone",
       "prefab": "Prefab",
       "areaPosition": "Position de la zone",
       "protectArea": "Zone protégée",

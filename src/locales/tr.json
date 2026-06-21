@@ -726,6 +726,7 @@
       "onlinePlayer": "Oyuncu (Çevrimiçi)",
       "trader": "Tüccar",
       "vehicle": "Araç",
+      "drone": "Drone",
       "prefab": "Prefab",
       "areaPosition": "Alan Konumu",
       "protectArea": "Koruma Alanı",

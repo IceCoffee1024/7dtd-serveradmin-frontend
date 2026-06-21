@@ -102,6 +102,20 @@ export interface VehicleLocationFeatureData extends MapPointFeatureData {
 }
 
 /**
+ * Defines the structure of drone data stored in OpenLayers features.
+ */
+export interface DroneLocationFeatureData extends MapPointFeatureData {
+  entityId: number;
+  entityName: string;
+  localizedName?: string | null;
+  position: PositionDto;
+  isLoaded: boolean;
+  ownerId?: string | null;
+  ownerName?: string | null;
+  ownerEntityId?: number | null;
+}
+
+/**
  * Defines the vehicle storage payload returned by the lazy inventory endpoint.
  */
 export interface VehicleInventoryData {

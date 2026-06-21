@@ -14,6 +14,7 @@ import { setupGlobalPopupOverlay } from './globalPopupOverlay';
 import { setupGlobalSelectCluster } from './globalSelectCluster';
 import { setupGlobalTooltipOverlay } from './globalTooltipOverlay';
 import { setupAnimalsLayer } from './layers/animals';
+import { setupDronesLayer } from './layers/drones';
 import { setupHostilesLayer } from './layers/hostiles';
 import { setupLandClaimsLayer } from './layers/landClaims';
 import { setupOfflinePlayersLayer } from './layers/offlinePlayers';
@@ -88,6 +89,7 @@ export function initOpenLayers(
   const onlinePlayersLayer = setupOnlinePlayersLayer(context);
   setupTradersLayer(context);
   setupVehiclesLayer(context);
+  setupDronesLayer(context);
 
   setupGameTimeControl(map);
   const renderActionsElement = setupRenderActionsControl(map, sdtdTileSource);

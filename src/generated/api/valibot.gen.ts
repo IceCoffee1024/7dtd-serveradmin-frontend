@@ -2674,6 +2674,20 @@ export const vTraderLocationDto = v.strictObject({
 });
 
 /**
+ * Represents a drone location and basic runtime state for map rendering.
+ */
+export const vDroneLocationDto = v.strictObject({
+    entityId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    entityName: v.string(),
+    localizedName: v.nullish(v.string()),
+    position: vPositionDto,
+    isLoaded: v.boolean(),
+    ownerId: v.nullish(v.string()),
+    ownerName: v.nullish(v.string()),
+    ownerEntityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
  * Represents a vehicle storage snapshot.
  */
 export const vVehicleInventoryDto = v.strictObject({
@@ -4286,6 +4300,10 @@ export const vGameServerGetTraderLocationsQuery = v.object({
 });
 
 export const vGameServerGetVehicleLocationsQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGameServerGetDroneLocationsQuery = v.object({
     language: v.nullish(vLanguage)
 });
 

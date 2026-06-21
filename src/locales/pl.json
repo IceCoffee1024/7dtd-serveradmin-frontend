@@ -726,6 +726,7 @@
       "onlinePlayer": "Gracz (online)",
       "trader": "Handlarz",
       "vehicle": "Pojazd",
+      "drone": "Dron",
       "prefab": "Prefab",
       "areaPosition": "Pozycja obszaru",
       "protectArea": "Obszar chroniony",

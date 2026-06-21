@@ -10,6 +10,7 @@ export const LAYER_ID = {
   HOSTILES_CLUSTER_LAYER: 'sdtd_hostiles_cluster_layer',
   TRADERS_CLUSTER_LAYER: 'sdtd_traders_cluster_layer',
   VEHICLES_CLUSTER_LAYER: 'sdtd_vehicles_cluster_layer',
+  DRONES_CLUSTER_LAYER: 'sdtd_drones_cluster_layer',
   PLAYER_TRACKING_OVERLAY: 'sdtd_player_tracking_overlay',
 } as const;
 

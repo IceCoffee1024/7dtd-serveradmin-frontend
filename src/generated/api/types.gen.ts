@@ -5370,6 +5370,44 @@ export type TraderLocationDto = {
 };
 
 /**
+ * Represents a drone location and basic runtime state for map rendering.
+ */
+export type DroneLocationDto = {
+    /**
+     * Runtime entity id assigned by the game.
+     */
+    entityId: number;
+    /**
+     * Entity class name used by the game definition.
+     */
+    entityName: string;
+    /**
+     * Localized drone display name resolved for the selected game language.
+     */
+    localizedName?: string | null;
+    /**
+     * Current or last known drone position.
+     */
+    position: PositionDto;
+    /**
+     * True when the drone entity is currently loaded in the world.
+     */
+    isLoaded: boolean;
+    /**
+     * Owner platform id when known.
+     */
+    ownerId?: string | null;
+    /**
+     * Owner display name when known.
+     */
+    ownerName?: string | null;
+    /**
+     * Owner entity id when known.
+     */
+    ownerEntityId?: number | null;
+};
+
+/**
  * Represents a vehicle storage snapshot.
  */
 export type VehicleInventoryDto = {
@@ -10736,6 +10774,27 @@ export type GameServerGetVehicleLocationsResponses = {
 };
 
 export type GameServerGetVehicleLocationsResponse = GameServerGetVehicleLocationsResponses[keyof GameServerGetVehicleLocationsResponses];
+
+export type GameServerGetDroneLocationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Localization column to resolve drone names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/DroneLocations';
+};
+
+export type GameServerGetDroneLocationsResponses = {
+    /**
+     * A collection of drone map locations.
+     */
+    200: Array<DroneLocationDto>;
+};
+
+export type GameServerGetDroneLocationsResponse = GameServerGetDroneLocationsResponses[keyof GameServerGetDroneLocationsResponses];
 
 export type GameServerGetVehicleInventoryData = {
     body?: never;

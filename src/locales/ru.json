@@ -726,6 +726,7 @@
       "onlinePlayer": "Игрок (Онлайн)",
       "trader": "Торговец",
       "vehicle": "Транспорт",
+      "drone": "Дрон",
       "prefab": "Prefab",
       "areaPosition": "Позиция области",
       "protectArea": "Защищенная область",
