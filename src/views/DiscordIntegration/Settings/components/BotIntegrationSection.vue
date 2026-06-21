@@ -5,6 +5,7 @@ import type {
   DiscordNetworkDiagnosticsDto,
 } from '~/generated/api/types.gen';
 import { useI18n } from 'vue-i18n';
+import { sanitizeDisplayText } from '../displayText';
 import BotRuntimePanel from './BotRuntimePanel.vue';
 
 interface BotSettingsFormModel {
@@ -61,6 +62,10 @@ function updateFormField<Key extends keyof BotSettingsFormModel>(key: Key, value
     ...props.form,
     [key]: value,
   });
+}
+
+function displayText(value: string | null | undefined): string {
+  return sanitizeDisplayText(value);
 }
 </script>
 
@@ -207,7 +212,7 @@ function updateFormField<Key extends keyof BotSettingsFormModel>(key: Key, value
       :type="props.botTestResult.succeeded ? 'success' : 'error'"
       show-icon
       :closable="false"
-      :title="props.botTestResult.message"
+      :title="displayText(props.botTestResult.message)"
     >
       <template v-if="props.botTestResult.succeeded" #default>
         {{ t('views.discordIntegration.settings.messages.botTestSuccessDetail', {
@@ -276,6 +281,14 @@ function updateFormField<Key extends keyof BotSettingsFormModel>(key: Key, value
   justify-content: flex-end;
   height: 100%;
   min-height: 54px;
+}
+
+:deep(.el-alert__content),
+:deep(.el-alert__title),
+:deep(.el-alert__description) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 768px) {

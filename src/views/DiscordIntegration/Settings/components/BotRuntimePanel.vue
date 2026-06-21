@@ -7,6 +7,7 @@ import type {
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { findNetworkDiagnosticStep } from '../diagnosticsModel';
+import { sanitizeDisplayText } from '../displayText';
 
 interface Props {
   botStatus: DiscordBotRuntimeStatusDto | null;
@@ -67,6 +68,10 @@ function getAdvancedDiagnosticSteps() {
 function formatBotTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
 }
+
+function displayText(value: string | null | undefined): string {
+  return sanitizeDisplayText(value);
+}
 </script>
 
 <template>
@@ -74,7 +79,7 @@ function formatBotTimestamp(value: string | null | undefined): string {
     <div class="discord-settings__runtime-main">
       <div>
         <span class="discord-settings__runtime-label">{{ t('views.discordIntegration.settings.sections.botRuntime') }}</span>
-        <strong>{{ props.botStatus?.message || t('views.discordIntegration.settings.messages.botStatusUnknown') }}</strong>
+        <strong>{{ displayText(props.botStatus?.message) || t('views.discordIntegration.settings.messages.botStatusUnknown') }}</strong>
       </div>
       <el-tag :type="getBotStatusTagType(props.botStatus?.state)" effect="plain">
         {{ props.botStatus?.state || '-' }}
@@ -91,7 +96,7 @@ function formatBotTimestamp(value: string | null | undefined): string {
       type="error"
       show-icon
       :closable="false"
-      :title="props.botStatus.lastError"
+      :title="displayText(props.botStatus.lastError)"
     />
   </div>
 
@@ -106,8 +111,8 @@ function formatBotTimestamp(value: string | null | undefined): string {
       </el-button>
     </div>
     <div v-if="props.networkDiagnostics" class="discord-settings__runtime-grid">
-      <span>{{ t('views.discordIntegration.settings.fields.proxy') }}: {{ props.networkDiagnostics.useProxy ? (props.networkDiagnostics.proxyUrl || '-') : '-' }}</span>
-      <span>{{ t('views.discordIntegration.settings.fields.gatewayTarget') }}: {{ props.networkDiagnostics.gatewayUrl }}</span>
+      <span>{{ t('views.discordIntegration.settings.fields.proxy') }}: {{ props.networkDiagnostics.useProxy ? (displayText(props.networkDiagnostics.proxyUrl) || '-') : '-' }}</span>
+      <span>{{ t('views.discordIntegration.settings.fields.gatewayTarget') }}: {{ displayText(props.networkDiagnostics.gatewayUrl) }}</span>
       <span>{{ t('views.discordIntegration.settings.fields.checkedAt') }}: {{ formatBotTimestamp(props.networkDiagnostics.checkedAt) }}</span>
     </div>
     <el-alert
@@ -136,7 +141,7 @@ function formatBotTimestamp(value: string | null | undefined): string {
             <small>{{ step.elapsedMilliseconds }}ms</small>
           </div>
         </div>
-        <p>{{ step.message }}</p>
+        <p>{{ displayText(step.message) }}</p>
       </div>
     </div>
     <el-collapse v-if="props.networkDiagnostics" class="discord-settings__diagnostic-advanced">
@@ -158,10 +163,10 @@ function formatBotTimestamp(value: string | null | undefined): string {
               </el-tag>
               <div>
                 <strong>{{ getDiagnosticDisplayName(step) }}</strong>
-                <small>{{ step.stage }} · {{ step.elapsedMilliseconds }}ms · {{ step.target }}</small>
+                <small>{{ displayText(step.stage) }} · {{ step.elapsedMilliseconds }}ms · {{ displayText(step.target) }}</small>
               </div>
             </div>
-            <p>{{ step.message }}</p>
+            <p>{{ displayText(step.message) }}</p>
             <el-alert
               v-if="step.error"
               type="error"
@@ -170,7 +175,7 @@ function formatBotTimestamp(value: string | null | undefined): string {
               :title="t('views.discordIntegration.settings.messages.rawDiagnosticError')"
             >
               <template #default>
-                <pre class="discord-settings__diagnostic-error">{{ step.error }}</pre>
+                <pre class="discord-settings__diagnostic-error">{{ displayText(step.error) }}</pre>
               </template>
             </el-alert>
           </div>
@@ -212,6 +217,27 @@ function formatBotTimestamp(value: string | null | undefined): string {
     font-size: 13px;
     line-height: 20px;
   }
+}
+
+.discord-settings__runtime-main,
+.discord-settings__runtime-grid {
+  min-width: 0;
+
+  span,
+  strong,
+  small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+:deep(.el-alert__content),
+:deep(.el-alert__title),
+:deep(.el-alert__description) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .discord-settings__runtime-label {

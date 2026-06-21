@@ -154,11 +154,17 @@ defineExpose({
     :loading="loading"
     @closed="onDialogClosed"
   >
-    <div :style="{ height: fullscreen ? 'calc(100vh - 80px)' : '618px' }">
+    <div data-testid="player-inventory-dialog" :style="{ height: fullscreen ? 'calc(100vh - 80px)' : '618px' }">
       <div class="text-lg mb-3 flex gap-4 items-center justify-between">
-        <span>{{ title }}</span>
+        <span class="min-w-0 break-words">{{ title }}</span>
         <el-radio-group v-model="layout" size="small">
-          <el-radio-button v-for="item in options" :key="item.value" :value="item.value">
+          <el-radio-button
+            v-for="item in options"
+            :key="item.value"
+            :value="item.value"
+            :aria-label="item.label"
+            :data-testid="`inventory-layout-${item.value}`"
+          >
             <el-tooltip :content="item.label">
               <el-icon :size="16">
                 <icon-ic-round-view-list v-if="item.value === 'list'" />

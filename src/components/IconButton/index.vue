@@ -5,12 +5,13 @@ defineOptions({
   inheritAttrs: false,
 });
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   tooltipContent: '',
   tooltipPlacement: 'bottom',
   aTag: false,
   border: false,
 });
+const attrs = useAttrs();
 type ElButtonProps = InstanceType<typeof ElButton>['$props'];
 type ElTooltipProps = InstanceType<typeof ElTooltip>['$props'];
 interface Props extends /* @vue-ignore */ Omit<ElButtonProps, 'size'> {
@@ -28,13 +29,19 @@ interface Props extends /* @vue-ignore */ Omit<ElButtonProps, 'size'> {
   round?: boolean;
   loading?: boolean;
 }
+
+const buttonAttrs = computed(() => ({
+  ...attrs,
+  'aria-label': (attrs['aria-label'] ?? props.tooltipContent) || undefined,
+  'title': (attrs.title ?? props.tooltipContent) || undefined,
+}));
 </script>
 
 <template>
   <el-tooltip :placement="tooltipPlacement" :content="tooltipContent" :disabled="!tooltipContent">
     <el-button
       class="icon-button" :class="{ 'icon-button--pill': round, 'icon-button--border': border }" :size="buttonSize" :text="!border" :tag="aTag ? 'a' : undefined"
-      :target="aTag ? '_blank' : undefined" :rel="aTag ? 'noopener noreferrer' : undefined" :loading="loading" v-bind="$attrs"
+      :target="aTag ? '_blank' : undefined" :rel="aTag ? 'noopener noreferrer' : undefined" :loading="loading" v-bind="buttonAttrs"
     >
       <el-icon v-show="!loading" class="text-lg" :color="color" :size="iconSize">
         <slot />

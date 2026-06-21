@@ -28,6 +28,16 @@ const { t } = useI18n();
 const iconRemoveSelected = markIcon(() => import('~icons/mdi/package-variant-remove'));
 const iconRemoveAll = markIcon(() => import('~icons/mdi/delete-sweep-outline'));
 
+function getSlotTestId(slot: InventorySlotItem): string {
+  return `inventory-grid-item-${slot.container}-${slot.slotIndex}`;
+}
+
+function getSlotAriaLabel(slot: InventorySlotItem): string {
+  const container = t(`components.playerInventoryDialog.containers.${slot.container}`);
+  const itemName = slot.item.localizationName || slot.item.itemName;
+  return `${container} #${slot.slotIndex} ${itemName}`.trim();
+}
+
 function onItemContextMenu(event: MouseEvent, slot: InventorySlotItem): void {
   const options: ContextMenuOption<InventorySlotItem>[] = [
     {
@@ -60,6 +70,10 @@ function onItemContextMenu(event: MouseEvent, slot: InventorySlotItem): void {
           :size="iconSize"
           v-bind="slot.item"
           background-color="#4d4d4d"
+          :data-testid="getSlotTestId(slot)"
+          :aria-label="getSlotAriaLabel(slot)"
+          role="button"
+          tabindex="0"
           @contextmenu.prevent="onItemContextMenu($event, slot)"
         />
       </div>
@@ -75,6 +89,10 @@ function onItemContextMenu(event: MouseEvent, slot: InventorySlotItem): void {
           :size="iconSize"
           v-bind="slot.item"
           background-color="#4d4d4d"
+          :data-testid="getSlotTestId(slot)"
+          :aria-label="getSlotAriaLabel(slot)"
+          role="button"
+          tabindex="0"
           @contextmenu.prevent="onItemContextMenu($event, slot)"
         />
       </div>
@@ -91,6 +109,10 @@ function onItemContextMenu(event: MouseEvent, slot: InventorySlotItem): void {
         :size="iconSize"
         v-bind="slot.item"
         background-color="#4d4d4d"
+        :data-testid="getSlotTestId(slot)"
+        :aria-label="getSlotAriaLabel(slot)"
+        role="button"
+        tabindex="0"
         @contextmenu.prevent="onItemContextMenu($event, slot)"
       />
     </div>

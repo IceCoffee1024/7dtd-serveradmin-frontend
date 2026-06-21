@@ -22,6 +22,7 @@ import {
   discordIntegrationUpdateSettings,
 } from '~/generated/api/sdk.gen';
 import { buildNetworkDiagnosticSummary } from './diagnosticsModel';
+import { sanitizeDisplayText } from './displayText';
 import { applyFormValues, toFormModel, toPayload } from './formModel';
 
 interface UseDiscordSettingsRuntimeOptions {
@@ -78,9 +79,10 @@ export function useDiscordSettingsRuntime(options: UseDiscordSettingsRuntimeOpti
 
   function showBotTestResult(result: DiscordBotTestResultDto | undefined): void {
     botTestResult.value = result ?? null;
+    const message = sanitizeDisplayText(result?.message);
     toast({
       type: result?.succeeded ? 'success' : 'error',
-      text: result?.message || t('views.discordIntegration.settings.messages.botTestFailed'),
+      text: message || t('views.discordIntegration.settings.messages.botTestFailed'),
     });
   }
 
@@ -197,7 +199,7 @@ export function useDiscordSettingsRuntime(options: UseDiscordSettingsRuntimeOpti
 
     toast({
       type: 'error',
-      text: result?.message || t('views.discordIntegration.settings.messages.testFailed'),
+      text: sanitizeDisplayText(result?.message) || t('views.discordIntegration.settings.messages.testFailed'),
     });
   }
 
@@ -291,7 +293,7 @@ export function useDiscordSettingsRuntime(options: UseDiscordSettingsRuntimeOpti
       const { data } = await discordIntegrationSyncSlashCommands({ throwOnError: true });
       toast({
         type: data.succeeded ? 'success' : 'error',
-        text: data.message || t('views.discordIntegration.settings.messages.slashSyncFailed'),
+        text: sanitizeDisplayText(data.message) || t('views.discordIntegration.settings.messages.slashSyncFailed'),
       });
     }
     catch (error) {

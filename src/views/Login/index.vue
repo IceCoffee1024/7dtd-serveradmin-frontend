@@ -75,14 +75,14 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="flex-center size-screen bg-base">
+  <div class="px-4 py-6 flex-center min-h-screen w-full bg-base">
     <!-- From Uiverse.io by themrsami -->
-    <div class="py-3 relative sm:mx-auto sm:max-w-xl">
-      <div class="mx-8 px-4 py-10 border rounded-3xl border-card w-500px shadow-card relative bg-card md:mx-0 sm:p-10">
+    <div class="max-w-500px w-full relative">
+      <div class="px-4 py-8 border rounded-3xl border-card w-full shadow-card relative bg-card sm:p-10">
         <el-form ref="loginFormRef" :model="loginForm" :rules="rules" @submit.prevent="handleLogin">
-          <div class="flex items-center justify-center space-x-5">
-            <div class="text-2xl tracking-wide font-extrabold flex">
-              <span class="text-transparent from-purple-500 to-blue-500 bg-gradient-to-r bg-clip-text">{{ appTitle }}</span>
+          <div class="flex min-w-0 items-center justify-center">
+            <div class="text-2xl tracking-wide font-extrabold text-center min-w-0">
+              <span class="text-transparent break-words from-purple-500 to-blue-500 bg-gradient-to-r bg-clip-text">{{ appTitle }}</span>
             </div>
           </div>
           <div class="mt-5">
@@ -136,9 +136,9 @@ async function handleLogin() {
               {{ $t('views.login.submit') }}
             </el-button>
           </div>
-          <div class="mt-4 flex items-center justify-between">
+          <div class="mt-4 flex gap-3 items-center justify-between">
             <span class="border-b border-gray-200 w-1/5 dark:border-gray-400 md:w-1/4" />
-            <span class="text-xs text-gray-500 uppercase dark:text-gray-400">Or Sign in with</span>
+            <span class="text-xs text-gray-500 text-center uppercase dark:text-gray-400">Or Sign in with</span>
             <span class="border-b border-gray-200 w-1/5 dark:border-gray-400 md:w-1/4" />
           </div>
           <div>
@@ -147,7 +147,7 @@ async function handleLogin() {
               class="text-white font-semibold mt-4 rounded-lg border-none no-underline flex h-11 w-full cursor-pointer shadow-md transition duration-200 ease-in items-center justify-center from-[#72A233] to-[#599342] bg-gradient-to-r hover:opacity-90"
             >
               <img class="w-8" :src="steamIcon">
-              <span class="text-base ml-2">Sign in with Steam</span>
+              <span class="text-base ml-2 break-words">Sign in with Steam</span>
             </a>
           </div>
         </el-form>

@@ -23,6 +23,24 @@ const { t } = useI18n();
 const iconRemoveSelected = markIcon(() => import('~icons/mdi/package-variant-remove'));
 const iconRemoveAll = markIcon(() => import('~icons/mdi/delete-sweep-outline'));
 
+function getSlotTestId(slot: InventorySlotItem): string {
+  return `inventory-list-item-${slot.container}-${slot.slotIndex}`;
+}
+
+function getSlotAriaLabel(slot: InventorySlotItem): string {
+  const container = t(`components.playerInventoryDialog.containers.${slot.container}`);
+  const itemName = slot.item.localizationName || slot.item.itemName;
+  return `${container} #${slot.slotIndex} ${itemName}`.trim();
+}
+
+function getRowClassName({ row }: { row: InventorySlotItem }): string {
+  return `inventory-table__row inventory-table__row--${row.container}-${row.slotIndex}`;
+}
+
+function asInventorySlot(row: unknown): InventorySlotItem {
+  return row as InventorySlotItem;
+}
+
 function onRowContextMenu(row: InventorySlotItem, _column: unknown, event: MouseEvent): void {
   event.preventDefault();
   const options: ContextMenuOption<InventorySlotItem>[] = [
@@ -44,7 +62,17 @@ function onRowContextMenu(row: InventorySlotItem, _column: unknown, event: Mouse
 </script>
 
 <template>
-  <el-table :data="tableData" stripe border size="small" height="100%" class="inventory-table" @row-contextmenu="onRowContextMenu">
+  <el-table
+    :data="tableData"
+    stripe
+    border
+    size="small"
+    height="100%"
+    class="inventory-table"
+    :row-key="row => `${row.container}-${row.slotIndex}`"
+    :row-class-name="getRowClassName"
+    @row-contextmenu="onRowContextMenu"
+  >
     <template #empty>
       <div class="app-empty-state inventory-table__empty">
         <div class="app-empty-state__icon">
@@ -61,14 +89,22 @@ function onRowContextMenu(row: InventorySlotItem, _column: unknown, event: Mouse
 
     <el-table-column :label="$t('components.playerInventoryDialog.icon')" min-width="90">
       <template #default="{ row }">
-        <GameIconEx :size="48" :font-size="18" v-bind="row.item" />
+        <GameIconEx
+          :size="48"
+          :font-size="18"
+          v-bind="asInventorySlot(row).item"
+          :data-testid="getSlotTestId(asInventorySlot(row))"
+          :aria-label="getSlotAriaLabel(asInventorySlot(row))"
+          role="button"
+          tabindex="0"
+        />
       </template>
     </el-table-column>
 
     <el-table-column prop="item.localizationName" :label="$t('components.playerInventoryDialog.localizationName')" min-width="180" sortable>
       <template #default="{ row }">
         <el-tag type="info" effect="plain">
-          {{ row.item.localizationName || row.item.itemName }}
+          {{ asInventorySlot(row).item.localizationName || asInventorySlot(row).item.itemName }}
         </el-tag>
       </template>
     </el-table-column>
@@ -78,7 +114,14 @@ function onRowContextMenu(row: InventorySlotItem, _column: unknown, event: Mouse
     <el-table-column :label="$t('components.playerInventoryDialog.mod')" min-width="220">
       <template #default="{ row }">
         <div class="flex flex-wrap gap-1">
-          <GameIconEx v-for="(item, index) in (row.item.parts || [])" :key="index" :size="60" v-bind="item" />
+          <GameIconEx
+            v-for="(item, index) in (asInventorySlot(row).item.parts || [])"
+            :key="index"
+            :size="60"
+            v-bind="item"
+            :data-testid="`${getSlotTestId(asInventorySlot(row))}-mod-${index}`"
+            :aria-label="`${getSlotAriaLabel(asInventorySlot(row))} mod #${index}`"
+          />
         </div>
       </template>
     </el-table-column>

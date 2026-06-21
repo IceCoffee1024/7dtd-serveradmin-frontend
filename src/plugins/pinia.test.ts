@@ -1,7 +1,7 @@
 import { PiniaColada, useQueryCache } from '@pinia/colada';
-import { createApp, nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
+import { createApp, nextTick } from 'vue';
 import { clearQueryCache } from './pinia';
 
 function setupQueryCache() {
