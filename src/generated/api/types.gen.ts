@@ -2292,6 +2292,10 @@ export type EconomyRedeemCodeDto = {
      */
     isEnabled?: boolean;
     /**
+     * Optional reward package executed after successful redemption.
+     */
+    rewardPackageId?: number | null;
+    /**
      * UTC timestamp when the code was created.
      */
     createdAt?: string;
@@ -2332,6 +2336,10 @@ export type EconomyCreateRedeemCodeRequestDto = {
      * UTC expiry timestamp. Null means the code never expires.
      */
     expiresAt?: string | null;
+    /**
+     * Optional reward package executed after successful redemption.
+     */
+    rewardPackageId?: number | null;
     /**
      * Console commands executed for each player who redeems this code.
      * Each entry supports {EntityId}, {PlayerId}, and {PlayerName} placeholders.
@@ -2421,6 +2429,14 @@ export type EconomyShopItemDto = {
      */
     stockLimit?: number;
     /**
+     * Product kind. GameItem grants ItemName/ItemCount; RewardPackage executes RewardPackageId.
+     */
+    productType?: string;
+    /**
+     * Optional reward package id for package products.
+     */
+    rewardPackageId?: number | null;
+    /**
      * Running count of units sold to all players.
      */
     soldCount?: number;
@@ -2475,6 +2491,14 @@ export type EconomyUpsertShopItemRequestDto = {
      * Maximum total units that can be sold. Zero means unlimited.
      */
     stockLimit?: number;
+    /**
+     * Product kind. GameItem grants ItemName/ItemCount; RewardPackage executes RewardPackageId.
+     */
+    productType?: string;
+    /**
+     * Optional reward package id for package products.
+     */
+    rewardPackageId?: number | null;
 };
 
 /**
@@ -6185,6 +6209,160 @@ export type CancelRestartResponseDto = {
      * Human-readable description of the outcome.
      */
     message?: string;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfRewardPackageDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<RewardPackageDto>;
+};
+
+/**
+ * Reward package returned to management clients.
+ */
+export type RewardPackageDto = {
+    /**
+     * Database identity.
+     */
+    id?: number;
+    /**
+     * Stable package key.
+     */
+    key: string;
+    /**
+     * Human-readable package name.
+     */
+    name: string;
+    /**
+     * Optional administrative description.
+     */
+    description?: string | null;
+    /**
+     * Whether this package can be executed.
+     */
+    isEnabled?: boolean;
+    /**
+     * UTC creation timestamp.
+     */
+    createdAt?: string;
+    /**
+     * UTC update timestamp.
+     */
+    updatedAt?: string;
+};
+
+/**
+ * Sortable columns for reward package list queries.
+ */
+export type RewardPackageQueryOrder = 'CreatedAt' | 'UpdatedAt' | 'Key' | 'Name' | 'IsEnabled';
+
+/**
+ * Reward package and its ordered entries.
+ */
+export type RewardPackageDetailDto = {
+    /**
+     * Package metadata.
+     */
+    package: RewardPackageDto;
+    /**
+     * Ordered package entries.
+     */
+    entries: Array<RewardPackageEntryDto>;
+};
+
+/**
+ * Reward package entry returned to management clients.
+ */
+export type RewardPackageEntryDto = {
+    /**
+     * Database identity.
+     */
+    id?: number;
+    /**
+     * Parent reward package id.
+     */
+    packageId?: number;
+    /**
+     * Entry kind.
+     */
+    entryType?: RewardPackageEntryType;
+    /**
+     * Entry-specific JSON payload.
+     */
+    payloadJson: string;
+    /**
+     * Relative execution order.
+     */
+    sortOrder?: number;
+    /**
+     * Whether this entry participates in execution.
+     */
+    isEnabled?: boolean;
+    /**
+     * UTC creation timestamp.
+     */
+    createdAt?: string;
+    /**
+     * UTC update timestamp.
+     */
+    updatedAt?: string;
+};
+
+/**
+ * Supported reward package entry kinds.
+ */
+export type RewardPackageEntryType = 'GameItem' | 'EconomyCurrency' | 'ConsoleCommand';
+
+/**
+ * Request used to create or update a reward package.
+ */
+export type RewardPackageUpsertDto = {
+    /**
+     * Stable package key.
+     */
+    key: string;
+    /**
+     * Human-readable package name.
+     */
+    name: string;
+    /**
+     * Optional administrative description.
+     */
+    description?: string | null;
+    /**
+     * Whether this package can be executed.
+     */
+    isEnabled?: boolean;
+};
+
+/**
+ * Request used to create or update a reward package entry.
+ */
+export type RewardPackageEntryUpsertDto = {
+    /**
+     * Entry kind.
+     */
+    entryType?: RewardPackageEntryType;
+    /**
+     * Entry-specific JSON payload.
+     */
+    payloadJson: string;
+    /**
+     * Relative execution order.
+     */
+    sortOrder?: number;
+    /**
+     * Whether this entry participates in execution.
+     */
+    isEnabled?: boolean;
 };
 
 /**
@@ -11953,6 +12131,187 @@ export type RestartCancelRestartResponses = {
 };
 
 export type RestartCancelRestartResponse = RestartCancelRestartResponses[keyof RestartCancelRestartResponses];
+
+export type RewardPackagesGetPackagesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Optional enabled-state filter.
+         */
+        isEnabled?: boolean | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Column to sort by; null retains the default order.
+         */
+        order?: RewardPackageQueryOrder | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/RewardPackages';
+};
+
+export type RewardPackagesGetPackagesResponses = {
+    200: PagedDtoOfRewardPackageDto;
+};
+
+export type RewardPackagesGetPackagesResponse = RewardPackagesGetPackagesResponses[keyof RewardPackagesGetPackagesResponses];
+
+export type RewardPackagesCreatePackageData = {
+    body: RewardPackageUpsertDto;
+    path?: never;
+    query?: never;
+    url: '/api/RewardPackages';
+};
+
+export type RewardPackagesCreatePackageErrors = {
+    400: ProblemDetailsDto;
+};
+
+export type RewardPackagesCreatePackageError = RewardPackagesCreatePackageErrors[keyof RewardPackagesCreatePackageErrors];
+
+export type RewardPackagesCreatePackageResponses = {
+    200: RewardPackageDto;
+};
+
+export type RewardPackagesCreatePackageResponse = RewardPackagesCreatePackageResponses[keyof RewardPackagesCreatePackageResponses];
+
+export type RewardPackagesDeletePackageData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/RewardPackages/{id}';
+};
+
+export type RewardPackagesDeletePackageErrors = {
+    400: ProblemDetailsDto;
+    404: ProblemDetailsDto;
+};
+
+export type RewardPackagesDeletePackageError = RewardPackagesDeletePackageErrors[keyof RewardPackagesDeletePackageErrors];
+
+export type RewardPackagesDeletePackageResponses = {
+    204: void;
+};
+
+export type RewardPackagesDeletePackageResponse = RewardPackagesDeletePackageResponses[keyof RewardPackagesDeletePackageResponses];
+
+export type RewardPackagesGetPackageData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/RewardPackages/{id}';
+};
+
+export type RewardPackagesGetPackageErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type RewardPackagesGetPackageError = RewardPackagesGetPackageErrors[keyof RewardPackagesGetPackageErrors];
+
+export type RewardPackagesGetPackageResponses = {
+    200: RewardPackageDetailDto;
+};
+
+export type RewardPackagesGetPackageResponse = RewardPackagesGetPackageResponses[keyof RewardPackagesGetPackageResponses];
+
+export type RewardPackagesUpdatePackageData = {
+    body: RewardPackageUpsertDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/RewardPackages/{id}';
+};
+
+export type RewardPackagesUpdatePackageErrors = {
+    400: ProblemDetailsDto;
+    404: ProblemDetailsDto;
+};
+
+export type RewardPackagesUpdatePackageError = RewardPackagesUpdatePackageErrors[keyof RewardPackagesUpdatePackageErrors];
+
+export type RewardPackagesUpdatePackageResponses = {
+    200: unknown;
+};
+
+export type RewardPackagesCreateEntryData = {
+    body: RewardPackageEntryUpsertDto;
+    path: {
+        packageId: number;
+    };
+    query?: never;
+    url: '/api/RewardPackages/{packageId}/Entries';
+};
+
+export type RewardPackagesCreateEntryErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type RewardPackagesCreateEntryError = RewardPackagesCreateEntryErrors[keyof RewardPackagesCreateEntryErrors];
+
+export type RewardPackagesCreateEntryResponses = {
+    200: RewardPackageEntryDto;
+};
+
+export type RewardPackagesCreateEntryResponse = RewardPackagesCreateEntryResponses[keyof RewardPackagesCreateEntryResponses];
+
+export type RewardPackagesDeleteEntryData = {
+    body?: never;
+    path: {
+        entryId: number;
+    };
+    query?: never;
+    url: '/api/RewardPackages/Entries/{entryId}';
+};
+
+export type RewardPackagesDeleteEntryErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type RewardPackagesDeleteEntryError = RewardPackagesDeleteEntryErrors[keyof RewardPackagesDeleteEntryErrors];
+
+export type RewardPackagesDeleteEntryResponses = {
+    204: void;
+};
+
+export type RewardPackagesDeleteEntryResponse = RewardPackagesDeleteEntryResponses[keyof RewardPackagesDeleteEntryResponses];
+
+export type RewardPackagesUpdateEntryData = {
+    body: RewardPackageEntryUpsertDto;
+    path: {
+        entryId: number;
+    };
+    query?: never;
+    url: '/api/RewardPackages/Entries/{entryId}';
+};
+
+export type RewardPackagesUpdateEntryErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type RewardPackagesUpdateEntryError = RewardPackagesUpdateEntryErrors[keyof RewardPackagesUpdateEntryErrors];
+
+export type RewardPackagesUpdateEntryResponses = {
+    200: unknown;
+};
 
 export type ScheduledCommandsResetSettingsData = {
     body?: never;

@@ -1241,6 +1241,7 @@ export const vEconomyRedeemCodeDto = v.strictObject({
     usedCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     isEnabled: v.optional(v.boolean()),
+    rewardPackageId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
     commandRewards: v.nullish(v.array(v.string()))
 });
@@ -1279,6 +1280,7 @@ export const vEconomyCreateRedeemCodeRequestDto = v.strictObject({
     ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
     maxUses: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     expiresAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    rewardPackageId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     commandRewards: v.nullish(v.array(v.string()))
 });
 
@@ -1310,6 +1312,8 @@ export const vEconomyShopItemDto = v.strictObject({
     isEnabled: v.optional(v.boolean()),
     displayOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     stockLimit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    productType: v.optional(v.string()),
+    rewardPackageId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     soldCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
     updatedAt: v.optional(v.pipe(v.string(), v.isoTimestamp()))
@@ -1352,7 +1356,9 @@ export const vEconomyUpsertShopItemRequestDto = v.strictObject({
     ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
     isEnabled: v.optional(v.boolean()),
     displayOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    stockLimit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+    stockLimit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    productType: v.optional(v.string()),
+    rewardPackageId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
 });
 
 /**
@@ -3301,6 +3307,93 @@ export const vCancelRestartResponseDto = v.strictObject({
 });
 
 /**
+ * Reward package returned to management clients.
+ */
+export const vRewardPackageDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    key: v.string(),
+    name: v.string(),
+    description: v.nullish(v.string()),
+    isEnabled: v.optional(v.boolean()),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    updatedAt: v.optional(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfRewardPackageDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vRewardPackageDto)
+});
+
+/**
+ * Sortable columns for reward package list queries.
+ */
+export const vRewardPackageQueryOrder = v.picklist([
+    'CreatedAt',
+    'UpdatedAt',
+    'Key',
+    'Name',
+    'IsEnabled'
+]);
+
+/**
+ * Supported reward package entry kinds.
+ */
+export const vRewardPackageEntryType = v.picklist([
+    'GameItem',
+    'EconomyCurrency',
+    'ConsoleCommand'
+]);
+
+/**
+ * Reward package entry returned to management clients.
+ */
+export const vRewardPackageEntryDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    packageId: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    entryType: v.optional(vRewardPackageEntryType),
+    payloadJson: v.string(),
+    sortOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    isEnabled: v.optional(v.boolean()),
+    createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    updatedAt: v.optional(v.pipe(v.string(), v.isoTimestamp()))
+});
+
+/**
+ * Reward package and its ordered entries.
+ */
+export const vRewardPackageDetailDto = v.strictObject({
+    package: vRewardPackageDto,
+    entries: v.array(vRewardPackageEntryDto)
+});
+
+/**
+ * Request used to create or update a reward package.
+ */
+export const vRewardPackageUpsertDto = v.strictObject({
+    key: v.string(),
+    name: v.string(),
+    description: v.nullish(v.string()),
+    isEnabled: v.optional(v.boolean())
+});
+
+/**
+ * Request used to create or update a reward package entry.
+ */
+export const vRewardPackageEntryUpsertDto = v.strictObject({
+    entryType: v.optional(vRewardPackageEntryType),
+    payloadJson: v.string(),
+    sortOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    isEnabled: v.optional(v.boolean())
+});
+
+/**
  * Global settings for the scheduled command feature.
  */
 export const vScheduledCommandFeatureSettingsDto = v.strictObject({
@@ -4562,6 +4655,47 @@ export const vRestartUpdateSettingsBody = vRestartFeatureSettingsDto;
  * Optional reason and override parameters from the management UI.
  */
 export const vRestartRunRestartBody = v.nullable(vRestartRunRequestDto);
+
+export const vRewardPackagesGetPackagesQuery = v.object({
+    isEnabled: v.nullish(v.boolean()),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(vRewardPackageQueryOrder),
+    desc: v.optional(v.boolean())
+});
+
+export const vRewardPackagesCreatePackageBody = vRewardPackageUpsertDto;
+
+export const vRewardPackagesDeletePackagePath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vRewardPackagesGetPackagePath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vRewardPackagesUpdatePackageBody = vRewardPackageUpsertDto;
+
+export const vRewardPackagesUpdatePackagePath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vRewardPackagesCreateEntryBody = vRewardPackageEntryUpsertDto;
+
+export const vRewardPackagesCreateEntryPath = v.object({
+    packageId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vRewardPackagesDeleteEntryPath = v.object({
+    entryId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vRewardPackagesUpdateEntryBody = vRewardPackageEntryUpsertDto;
+
+export const vRewardPackagesUpdateEntryPath = v.object({
+    entryId: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
 
 /**
  * Feature settings payload from the management UI.
