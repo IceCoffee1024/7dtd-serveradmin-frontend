@@ -1794,7 +1794,7 @@
       },
       "rewardPackages": {
         "columns": {
-          "key": "键名",
+          "key": "識別碼",
           "name": "名称",
           "description": "描述",
           "isEnabled": "已启用",
@@ -1812,7 +1812,7 @@
           "addTitle": "新增奖励包",
           "editTitle": "编辑奖励包",
           "fields": {
-            "key": "键名",
+            "key": "唯一識別碼",
             "name": "名称",
             "description": "描述",
             "isEnabled": "已启用"
