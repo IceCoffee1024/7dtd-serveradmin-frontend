@@ -209,6 +209,15 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
+            name: 'EconomyRewardPackages',
+            path: 'reward-packages',
+            component: () => import('../views/Economy/RewardPackages/index.vue'),
+            meta: {
+              title: () => t('menus.economyRewardPackages'),
+              icon: markIcon(() => import('~icons/mdi/gift-outline')),
+            },
+          },
+          {
             name: 'EconomyRedeemCodes',
             path: 'redeem-codes',
             component: () => import('../views/Economy/RedeemCodes/index.vue'),

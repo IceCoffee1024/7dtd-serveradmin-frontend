@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 type ActionType
   = | 'AdjustEconomy'
     | 'ExecuteConsoleCommand'
+    | 'ExecuteRewardPackage'
     | 'GiveItem'
     | 'KickPlayer'
     | 'MutePlayer'
@@ -31,6 +32,7 @@ type ActionKey
     | 'inMainThread'
     | 'itemName'
     | 'message'
+    | 'packageId'
     | 'playerId'
     | 'quality'
     | 'reason'
@@ -59,6 +61,7 @@ const ACTION_TYPES: ActionType[] = [
   'KickPlayer',
   'MutePlayer',
   'ExecuteConsoleCommand',
+  'ExecuteRewardPackage',
 ];
 
 const targetOptions = ['TriggerPlayer', 'TargetPlayer', 'PlayerId'];
@@ -212,6 +215,12 @@ function buildDefaultAction(type: ActionType, previous?: ActionModel): ActionMod
         allowConsoleCommand: previous?.allowConsoleCommand === true,
         inMainThread: previous?.inMainThread !== false,
       };
+    case 'ExecuteRewardPackage':
+      return {
+        type,
+        target: getPreviousString(previous, 'target', 'TriggerPlayer'),
+        packageId: getPreviousNumber(previous, 'packageId', 1),
+      };
   }
 }
 
@@ -232,7 +241,7 @@ function getPreviousNumber(source: ActionModel | undefined, key: ActionKey, fall
 }
 
 function isPlayerTargetAction(type: string) {
-  return ['AdjustEconomy', 'GiveItem', 'KickPlayer', 'MutePlayer', 'SendPrivateMessage'].includes(type);
+  return ['AdjustEconomy', 'ExecuteRewardPackage', 'GiveItem', 'KickPlayer', 'MutePlayer', 'SendPrivateMessage'].includes(type);
 }
 
 function shouldShowPlayerId(action: ActionModel) {
@@ -457,6 +466,20 @@ function resolveHighRiskDescription(type: string) {
                   :model-value="getStringValue(action, 'reason')"
                   clearable
                   @update:model-value="setActionValue(index, 'reason', $event)"
+                />
+              </el-form-item>
+            </el-col>
+          </template>
+
+          <template v-if="getStringValue(action, 'type') === 'ExecuteRewardPackage'">
+            <el-col :xs="24" :md="12">
+              <el-form-item :label="t('views.eventAutomation.rules.builder.fields.packageId')">
+                <el-input-number
+                  :model-value="getNumberValue(action, 'packageId')"
+                  class="w-full"
+                  :min="1"
+                  :precision="0"
+                  @update:model-value="setActionValue(index, 'packageId', $event)"
                 />
               </el-form-item>
             </el-col>

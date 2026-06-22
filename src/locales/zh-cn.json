@@ -108,7 +108,8 @@
     "geoIpAccessControl": "GeoIP 访问控制",
     "geoIpAccessControlSettings": "设置",
     "playerTracking": "玩家追踪",
-    "playerTrackingSettings": "设置"
+    "playerTrackingSettings": "设置",
+    "economyRewardPackages": "奖励包"
   },
   "components": {
     "myTable": {
@@ -1202,7 +1203,8 @@
           "isEnabled": "已启用",
           "displayOrder": "排序",
           "stockLimit": "库存上限",
-          "soldCount": "已售数量"
+          "soldCount": "已售数量",
+          "productType": "商品类型"
         },
         "actions": {
           "add": "新增商品",
@@ -1221,13 +1223,21 @@
             "price": "售价",
             "isEnabled": "上架状态",
             "displayOrder": "排列顺序",
-            "stockLimit": "库存上限（0 为无限制）"
+            "stockLimit": "库存上限（0 为无限制）",
+            "productType": "商品类型",
+            "rewardPackageId": "奖励包"
           }
         },
         "messages": {
           "createSuccess": "商品已创建。",
           "updateSuccess": "商品已更新。",
-          "deleteSuccess": "商品已删除。"
+          "deleteSuccess": "商品已删除。",
+          "itemRequired": "请选择该商品发放的游戏物品。",
+          "rewardPackageRequired": "请选择该商品关联的奖励包。"
+        },
+        "productTypes": {
+          "GameItem": "游戏物品",
+          "RewardPackage": "奖励包"
         }
       },
       "redeemCodes": {
@@ -1239,7 +1249,8 @@
           "usedCount": "已使用次数",
           "expiresAt": "过期时间",
           "isEnabled": "已启用",
-          "createdAt": "创建时间"
+          "createdAt": "创建时间",
+          "rewardPackageId": "奖励包"
         },
         "actions": {
           "add": "新增兑换码",
@@ -1255,7 +1266,8 @@
             "amount": "奖励金额",
             "maxUses": "最大使用次数（0 为无限制）",
             "expiresAt": "过期时间（可选）",
-            "commandRewards": "命令奖励"
+            "commandRewards": "命令奖励",
+            "rewardPackageId": "奖励包"
           },
           "placeholders": {
             "commandReward": "例如：giveself {EntityId} iron_sword 1 0 false",
@@ -1286,6 +1298,69 @@
         "messages": {
           "createSuccess": "兑换码已创建。",
           "deleteSuccess": "兑换码已删除。"
+        }
+      },
+      "rewardPackages": {
+        "columns": {
+          "key": "键名",
+          "name": "名称",
+          "description": "描述",
+          "isEnabled": "已启用",
+          "updatedAt": "更新时间"
+        },
+        "actions": {
+          "entries": "条目",
+          "addEntry": "新增条目",
+          "edit": "编辑",
+          "delete": "删除",
+          "deleteConfirm": "确认删除奖励包“{name}”？",
+          "deleteEntryConfirm": "确认删除该奖励条目吗？"
+        },
+        "form": {
+          "addTitle": "新增奖励包",
+          "editTitle": "编辑奖励包",
+          "fields": {
+            "key": "键名",
+            "name": "名称",
+            "description": "描述",
+            "isEnabled": "已启用"
+          }
+        },
+        "entriesDialog": {
+          "title": "奖励条目：{name}"
+        },
+        "entryColumns": {
+          "sortOrder": "排序",
+          "entryType": "类型",
+          "payloadJson": "负载 JSON",
+          "isEnabled": "已启用"
+        },
+        "entryForm": {
+          "addTitle": "新增奖励条目",
+          "editTitle": "编辑奖励条目",
+          "fields": {
+            "entryType": "条目类型",
+            "payloadJson": "负载 JSON",
+            "sortOrder": "排序",
+            "isEnabled": "已启用"
+          },
+          "actions": {
+            "applyTemplate": "套用模板"
+          }
+        },
+        "entryTypes": {
+          "GameItem": "游戏物品",
+          "EconomyCurrency": "经济货币",
+          "ConsoleCommand": "控制台命令"
+        },
+        "messages": {
+          "createSuccess": "奖励包已创建。",
+          "updateSuccess": "奖励包已更新。",
+          "deleteSuccess": "奖励包已删除。",
+          "entryCreateSuccess": "奖励条目已创建。",
+          "entryUpdateSuccess": "奖励条目已更新。",
+          "entryDeleteSuccess": "奖励条目已删除。",
+          "invalidPayloadJson": "负载 JSON 格式无效。"
         }
       }
     },
@@ -3224,7 +3299,8 @@
             "cooldownSeconds": "冷却秒数",
             "cooldownScope": "冷却范围",
             "username": "用户名",
-            "webhookTargetKey": "Webhook 目标键"
+            "webhookTargetKey": "Webhook 目标键",
+            "packageId": "奖励包 ID"
           },
           "targets": {
             "TriggerPlayer": "触发玩家",
@@ -3244,7 +3320,8 @@
             "KickPlayer": "踢出玩家",
             "MutePlayer": "禁言玩家",
             "ExecuteConsoleCommand": "执行控制台命令",
-            "SendDiscordMessage": "发送 Discord 消息"
+            "SendDiscordMessage": "发送 Discord 消息",
+            "ExecuteRewardPackage": "执行奖励包"
           },
           "highRiskTitle": "高风险动作",
           "highRiskDescriptions": {

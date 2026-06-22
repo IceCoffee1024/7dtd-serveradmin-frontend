@@ -108,7 +108,8 @@
     "geoIpAccessControl": "Controle de acesso GeoIP",
     "geoIpAccessControlSettings": "Configurações",
     "playerTracking": "Player Tracking",
-    "playerTrackingSettings": "Settings"
+    "playerTrackingSettings": "Settings",
+    "economyRewardPackages": "Reward Packages"
   },
   "components": {
     "myTable": {
@@ -1694,7 +1695,8 @@
           "isEnabled": "Habilitado",
           "displayOrder": "Ordem",
           "stockLimit": "Limite de estoque",
-          "soldCount": "Vendido"
+          "soldCount": "Vendido",
+          "productType": "Type"
         },
         "actions": {
           "add": "Adicionar item",
@@ -1713,13 +1715,21 @@
             "price": "Preço",
             "isEnabled": "Habilitado",
             "displayOrder": "Ordem de exibição",
-            "stockLimit": "Limite de estoque (0 = ilimitado)"
+            "stockLimit": "Limite de estoque (0 = ilimitado)",
+            "productType": "Product Type",
+            "rewardPackageId": "Reward Package"
           }
         },
         "messages": {
           "createSuccess": "Item da loja criado.",
           "updateSuccess": "Item da loja atualizado.",
-          "deleteSuccess": "Item da loja excluído."
+          "deleteSuccess": "Item da loja excluído.",
+          "itemRequired": "Select a game item for this shop product.",
+          "rewardPackageRequired": "Select a reward package for this shop product."
+        },
+        "productTypes": {
+          "GameItem": "Game Item",
+          "RewardPackage": "Reward Package"
         }
       },
       "redeemCodes": {
@@ -1731,7 +1741,8 @@
           "usedCount": "Usado",
           "expiresAt": "Expira em",
           "isEnabled": "Habilitado",
-          "createdAt": "Criado em"
+          "createdAt": "Criado em",
+          "rewardPackageId": "Reward Package"
         },
         "actions": {
           "add": "Adicionar código",
@@ -1747,7 +1758,8 @@
             "amount": "Valor da recompensa",
             "maxUses": "Usos máximos (0 = ilimitado)",
             "expiresAt": "Expira em (opcional)",
-            "commandRewards": "Recompensas de comando"
+            "commandRewards": "Recompensas de comando",
+            "rewardPackageId": "Reward Package"
           },
           "placeholders": {
             "commandReward": "por exemplo \ngiveself {EntityId} iron_sword 1 0 falso",
@@ -1778,6 +1790,69 @@
         "messages": {
           "createSuccess": "Resgatar código criado.",
           "deleteSuccess": "Código de resgate excluído."
+        }
+      },
+      "rewardPackages": {
+        "columns": {
+          "key": "Key",
+          "name": "Name",
+          "description": "Description",
+          "isEnabled": "Enabled",
+          "updatedAt": "Updated At"
+        },
+        "actions": {
+          "entries": "Entries",
+          "addEntry": "Add Entry",
+          "edit": "Edit",
+          "delete": "Delete",
+          "deleteConfirm": "Delete reward package \"{name}\"?",
+          "deleteEntryConfirm": "Delete this reward package entry?"
+        },
+        "form": {
+          "addTitle": "Add Reward Package",
+          "editTitle": "Edit Reward Package",
+          "fields": {
+            "key": "Key",
+            "name": "Name",
+            "description": "Description",
+            "isEnabled": "Enabled"
+          }
+        },
+        "entriesDialog": {
+          "title": "Entries: {name}"
+        },
+        "entryColumns": {
+          "sortOrder": "Order",
+          "entryType": "Type",
+          "payloadJson": "Payload JSON",
+          "isEnabled": "Enabled"
+        },
+        "entryForm": {
+          "addTitle": "Add Reward Entry",
+          "editTitle": "Edit Reward Entry",
+          "fields": {
+            "entryType": "Entry Type",
+            "payloadJson": "Payload JSON",
+            "sortOrder": "Sort Order",
+            "isEnabled": "Enabled"
+          },
+          "actions": {
+            "applyTemplate": "Apply Template"
+          }
+        },
+        "entryTypes": {
+          "GameItem": "Game Item",
+          "EconomyCurrency": "Currency",
+          "ConsoleCommand": "Console Command"
+        },
+        "messages": {
+          "createSuccess": "Reward package created.",
+          "updateSuccess": "Reward package updated.",
+          "deleteSuccess": "Reward package deleted.",
+          "entryCreateSuccess": "Reward entry created.",
+          "entryUpdateSuccess": "Reward entry updated.",
+          "entryDeleteSuccess": "Reward entry deleted.",
+          "invalidPayloadJson": "Payload JSON is invalid."
         }
       }
     },
@@ -3416,7 +3491,8 @@
             "cooldownSeconds": "Cooldown seconds",
             "cooldownScope": "Cooldown scope",
             "username": "Username",
-            "webhookTargetKey": "Webhook target key"
+            "webhookTargetKey": "Webhook target key",
+            "packageId": "Reward Package ID"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3436,7 +3512,8 @@
             "KickPlayer": "Kick player",
             "MutePlayer": "Mute player",
             "ExecuteConsoleCommand": "Execute console command",
-            "SendDiscordMessage": "Send Discord message"
+            "SendDiscordMessage": "Send Discord message",
+            "ExecuteRewardPackage": "Execute reward package"
           },
           "highRiskTitle": "High-risk action",
           "highRiskDescriptions": {

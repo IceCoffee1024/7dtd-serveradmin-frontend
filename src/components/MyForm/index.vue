@@ -6,7 +6,7 @@
  */
 import type { ElForm, ElTooltip, FormInstance, FormRules } from 'element-plus';
 import type { MyFormField } from '~/composables/useMyForm';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FieldRenderer from '~/components/FieldRenderer/index.vue';
 
@@ -31,6 +31,14 @@ const formData = defineModel<Partial<T>>('modelValue', { required: true });
 const formRef = ref<FormInstance | null>(null);
 
 const { t } = useI18n();
+
+const visibleFields = computed(() =>
+  props.fields.filter((field) => {
+    if (typeof field.show === 'function')
+      return field.show(formData.value ?? {});
+    return field.show !== false;
+  }),
+);
 
 defineExpose({
   validate: () => formRef.value?.validate(),
@@ -98,7 +106,7 @@ function getColProps(span: MyFormField<T>['span']): Record<string, number> {
   >
     <el-row :gutter="gutter">
       <el-col
-        v-for="field in fields"
+        v-for="field in visibleFields"
         :key="field.prop"
         class="my-form__col"
         v-bind="getColProps(field.span)"

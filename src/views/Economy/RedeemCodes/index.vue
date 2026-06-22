@@ -4,10 +4,14 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import type { MyFormField } from '~/composables/useMyForm';
 import type {
   EconomyCodeRedemptionDto,
-  EconomyCreateRedeemCodeRequestDto,
   EconomyRedeemCodeDto,
   EconomyRedeemCodeQueryOrder,
 } from '~/generated/api/types.gen';
+import type { RewardPackageOption } from '~/queries/rewardPackages';
+import type {
+  EconomyCreateRedeemCodeWithRewardPackage,
+  EconomyRedeemCodeWithRewardPackage,
+} from '~/types/rewardPackageExtensions';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
@@ -23,6 +27,7 @@ import {
 } from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
 import { invalidateEconomyRedeemCodeQueries } from '~/queries/economy';
+import { loadRewardPackageOptions } from '~/queries/rewardPackages';
 import { generateElementRules } from '~/utils';
 
 defineOptions({ name: 'EconomyRedeemCodesPage' });
@@ -36,6 +41,7 @@ interface FormModel {
   code: string;
   description: string;
   amount: number;
+  rewardPackageId: number | null;
   maxUses: number;
   expiresAt: string;
 }
@@ -69,12 +75,27 @@ const commandRewards = ref<string[]>([]);
 const selectedRewardItem = ref('');
 const selectedRewardCount = ref(1);
 const selectedRewardQuality = ref(1);
+const rewardPackageOptions = ref<RewardPackageOption[]>([]);
+const rewardPackageOptionsLoading = ref(false);
+
+async function loadRewardPackages() {
+  if (rewardPackageOptions.value.length > 0)
+    return;
+  rewardPackageOptionsLoading.value = true;
+  try {
+    rewardPackageOptions.value = await loadRewardPackageOptions();
+  }
+  finally {
+    rewardPackageOptionsLoading.value = false;
+  }
+}
 
 function buildDefaults(): FormModel {
   return {
     code: '',
     description: '',
     amount: 0,
+    rewardPackageId: null,
     maxUses: 0,
     expiresAt: '',
   };
@@ -86,6 +107,7 @@ const schema = v.object({
   code: v.pipe(v.string(), v.minLength(1)),
   description: v.optional(v.string()),
   amount: v.pipe(v.number(), v.minValue(0)),
+  rewardPackageId: v.optional(v.nullable(v.number())),
   maxUses: v.pipe(v.number(), v.minValue(0)),
   expiresAt: v.optional(v.string()),
 });
@@ -104,6 +126,12 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.redeemCodes.form.fields.amount'),
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'rewardPackageId',
+    label: t('views.economy.redeemCodes.form.fields.rewardPackageId'),
+    el: 'custom',
     span: { xs: 24, md: 12 },
   },
   {
@@ -129,7 +157,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-const columns = computed<MyTableColumn<EconomyRedeemCodeDto>[]>(() => [
+const columns = computed<MyTableColumn<EconomyRedeemCodeWithRewardPackage>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
@@ -154,6 +182,11 @@ const columns = computed<MyTableColumn<EconomyRedeemCodeDto>[]>(() => [
     label: t('views.economy.redeemCodes.columns.amount'),
     slot: 'amount',
     sortable: true,
+  },
+  {
+    prop: 'rewardPackageId',
+    label: t('views.economy.redeemCodes.columns.rewardPackageId'),
+    slot: 'rewardPackageId',
   },
   {
     prop: 'maxUses',
@@ -202,7 +235,7 @@ function toOrder(sortField: string | undefined): EconomyRedeemCodeQueryOrder | u
   }
 }
 
-async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyRedeemCodeDto>> {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyRedeemCodeWithRewardPackage>> {
   const options = economyRedeemCodeGetCodesQuery({
     query: {
       pageNumber: params.pageNumber,
@@ -222,7 +255,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 
   const response = state.data;
 
-  return { list: response?.items ?? [], total: response?.total ?? 0 };
+  return { list: (response?.items ?? []) as EconomyRedeemCodeWithRewardPackage[], total: response?.total ?? 0 };
 }
 
 function formatTimestamp(value: string | null | undefined): string {
@@ -235,6 +268,7 @@ function openAdd() {
   selectedRewardItem.value = '';
   selectedRewardCount.value = 1;
   selectedRewardQuality.value = 1;
+  loadRewardPackages();
   createDialogRef.value?.open();
   nextTick(() => formRef.value?.clearValidate());
 }
@@ -267,15 +301,16 @@ async function onConfirm(): Promise<boolean | void> {
 
   try {
     const filteredCommands = commandRewards.value.map(c => c.trim()).filter(c => c.length > 0);
-    if (form.amount === 0 && filteredCommands.length === 0) {
+    if (form.amount === 0 && filteredCommands.length === 0 && form.rewardPackageId == null) {
       toast({ type: 'warning', text: t('views.economy.redeemCodes.form.messages.noReward') });
       return false;
     }
 
-    const payload: EconomyCreateRedeemCodeRequestDto = {
+    const payload: EconomyCreateRedeemCodeWithRewardPackage = {
       code: form.code.trim(),
       description: form.description.trim() || null,
       amount: Number(form.amount),
+      rewardPackageId: form.rewardPackageId,
       maxUses: Number(form.maxUses),
       expiresAt: form.expiresAt || null,
       commandRewards: filteredCommands.length > 0 ? filteredCommands : null,
@@ -360,6 +395,13 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
           <span class="text-amber-600 font-semibold dark:text-amber-400">{{ row.amount }}</span>
         </template>
 
+        <template #rewardPackageId="{ row }">
+          <span v-if="row.rewardPackageId" class="text-xs text-gray-500 font-mono dark:text-gray-400">
+            #{{ row.rewardPackageId }}
+          </span>
+          <span v-else class="text-gray-400">--</span>
+        </template>
+
         <template #isEnabled="{ row }">
           <el-tag :type="row.isEnabled ? 'success' : 'info'">
             {{ row.isEnabled ? t('common.yes') : t('common.no') }}
@@ -415,7 +457,19 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
         label-position="top"
         label-width="auto"
         :gutter="16"
-      />
+      >
+        <template #rewardPackageId>
+          <el-select-v2
+            v-model="form.rewardPackageId"
+            :options="rewardPackageOptions"
+            :loading="rewardPackageOptionsLoading"
+            filterable
+            clearable
+            class="w-full"
+            :placeholder="t('views.economy.redeemCodes.form.fields.rewardPackageId')"
+          />
+        </template>
+      </MyForm>
 
       <!-- Command rewards list — managed outside MyForm because it is a dynamic array -->
       <div class="mt-4 px-1">

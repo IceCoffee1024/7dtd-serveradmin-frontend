@@ -108,7 +108,8 @@
     "geoIpAccessControl": "GeoIP 접근 제어",
     "geoIpAccessControlSettings": "설정",
     "playerTracking": "Player Tracking",
-    "playerTrackingSettings": "Settings"
+    "playerTrackingSettings": "Settings",
+    "economyRewardPackages": "Reward Packages"
   },
   "components": {
     "myTable": {
@@ -1694,7 +1695,8 @@
           "isEnabled": "활성화됨",
           "displayOrder": "주문하다",
           "stockLimit": "재고한도",
-          "soldCount": "판매된"
+          "soldCount": "판매된",
+          "productType": "Type"
         },
         "actions": {
           "add": "항목 추가",
@@ -1713,13 +1715,21 @@
             "price": "가격",
             "isEnabled": "활성화됨",
             "displayOrder": "표시 순서",
-            "stockLimit": "재고 한도(0 = 무제한)"
+            "stockLimit": "재고 한도(0 = 무제한)",
+            "productType": "Product Type",
+            "rewardPackageId": "Reward Package"
           }
         },
         "messages": {
           "createSuccess": "상점 아이템이 생성되었습니다.",
           "updateSuccess": "상점 아이템이 업데이트되었습니다.",
-          "deleteSuccess": "상점 아이템이 삭제되었습니다."
+          "deleteSuccess": "상점 아이템이 삭제되었습니다.",
+          "itemRequired": "Select a game item for this shop product.",
+          "rewardPackageRequired": "Select a reward package for this shop product."
+        },
+        "productTypes": {
+          "GameItem": "Game Item",
+          "RewardPackage": "Reward Package"
         }
       },
       "redeemCodes": {
@@ -1731,7 +1741,8 @@
           "usedCount": "사용된",
           "expiresAt": "만료 날짜",
           "isEnabled": "활성화됨",
-          "createdAt": "생성 날짜"
+          "createdAt": "생성 날짜",
+          "rewardPackageId": "Reward Package"
         },
         "actions": {
           "add": "코드 추가",
@@ -1747,7 +1758,8 @@
             "amount": "보상금액",
             "maxUses": "최대 사용(0 = 무제한)",
             "expiresAt": "만료 날짜(선택 사항)",
-            "commandRewards": "명령 보상"
+            "commandRewards": "명령 보상",
+            "rewardPackageId": "Reward Package"
           },
           "placeholders": {
             "commandReward": "예를 들어 \ngiveself {EntityId} iron_sword 1 0 false",
@@ -1778,6 +1790,69 @@
         "messages": {
           "createSuccess": "생성된 코드를 사용하세요.",
           "deleteSuccess": "사용 코드가 삭제되었습니다."
+        }
+      },
+      "rewardPackages": {
+        "columns": {
+          "key": "Key",
+          "name": "Name",
+          "description": "Description",
+          "isEnabled": "Enabled",
+          "updatedAt": "Updated At"
+        },
+        "actions": {
+          "entries": "Entries",
+          "addEntry": "Add Entry",
+          "edit": "Edit",
+          "delete": "Delete",
+          "deleteConfirm": "Delete reward package \"{name}\"?",
+          "deleteEntryConfirm": "Delete this reward package entry?"
+        },
+        "form": {
+          "addTitle": "Add Reward Package",
+          "editTitle": "Edit Reward Package",
+          "fields": {
+            "key": "Key",
+            "name": "Name",
+            "description": "Description",
+            "isEnabled": "Enabled"
+          }
+        },
+        "entriesDialog": {
+          "title": "Entries: {name}"
+        },
+        "entryColumns": {
+          "sortOrder": "Order",
+          "entryType": "Type",
+          "payloadJson": "Payload JSON",
+          "isEnabled": "Enabled"
+        },
+        "entryForm": {
+          "addTitle": "Add Reward Entry",
+          "editTitle": "Edit Reward Entry",
+          "fields": {
+            "entryType": "Entry Type",
+            "payloadJson": "Payload JSON",
+            "sortOrder": "Sort Order",
+            "isEnabled": "Enabled"
+          },
+          "actions": {
+            "applyTemplate": "Apply Template"
+          }
+        },
+        "entryTypes": {
+          "GameItem": "Game Item",
+          "EconomyCurrency": "Currency",
+          "ConsoleCommand": "Console Command"
+        },
+        "messages": {
+          "createSuccess": "Reward package created.",
+          "updateSuccess": "Reward package updated.",
+          "deleteSuccess": "Reward package deleted.",
+          "entryCreateSuccess": "Reward entry created.",
+          "entryUpdateSuccess": "Reward entry updated.",
+          "entryDeleteSuccess": "Reward entry deleted.",
+          "invalidPayloadJson": "Payload JSON is invalid."
         }
       }
     },
@@ -3416,7 +3491,8 @@
             "cooldownSeconds": "Cooldown seconds",
             "cooldownScope": "Cooldown scope",
             "username": "Username",
-            "webhookTargetKey": "Webhook target key"
+            "webhookTargetKey": "Webhook target key",
+            "packageId": "Reward Package ID"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3436,7 +3512,8 @@
             "KickPlayer": "Kick player",
             "MutePlayer": "Mute player",
             "ExecuteConsoleCommand": "Execute console command",
-            "SendDiscordMessage": "Send Discord message"
+            "SendDiscordMessage": "Send Discord message",
+            "ExecuteRewardPackage": "Execute reward package"
           },
           "highRiskTitle": "High-risk action",
           "highRiskDescriptions": {
