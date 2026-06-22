@@ -3208,7 +3208,7 @@
         "PlayerKilledZombie": "Player Killed Entity"
       },
       "rules": {
-        "hint": "MVP 階段支援玩家進入/離開、聊天和定時觸發。動作支援訊息、私聊、公告、給物品、經濟調整、踢出、禁言和受限控制台命令。",
+        "hint": "MVP 階段支援玩家進入/離開、聊天和定時觸發。動作支援訊息、私聊、公告、給物品、經濟調整、執行獎勵包、踢出、禁言和受限控制台命令。",
         "columns": {
           "name": "名稱",
           "isEnabled": "啟用",
@@ -3424,6 +3424,7 @@
             "sendPrivateMessage": "向觸發規則的玩家傳送私聊訊息。",
             "giveItem": "向觸發規則的玩家發放物品。",
             "adjustEconomy": "增加或扣除觸發規則玩家的經濟帳戶餘額。",
+            "executeRewardPackage": "為目標玩家執行可複用獎勵包。",
             "sendAnnouncement": "Sends an audited server announcement.",
             "kickPlayer": "Kicks the target player. Requires allowKick=true.",
             "mutePlayer": "Mutes the target player. Requires allowMute=true.",
@@ -3492,7 +3493,8 @@
             "cooldownScope": "冷卻範圍",
             "username": "使用者名稱",
             "webhookTargetKey": "Webhook 目標鍵",
-            "packageId": "奖励包 ID"
+            "packageId": "獎勵包 ID",
+            "rewardPackage": "獎勵包"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3513,7 +3515,7 @@
             "MutePlayer": "Mute player",
             "ExecuteConsoleCommand": "Execute console command",
             "SendDiscordMessage": "傳送 Discord 訊息",
-            "ExecuteRewardPackage": "执行奖励包"
+            "ExecuteRewardPackage": "執行獎勵包"
           },
           "highRiskTitle": "High-risk action",
           "highRiskDescriptions": {

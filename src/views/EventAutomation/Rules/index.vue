@@ -468,6 +468,11 @@ const actionReferences = computed<ReferenceItem[]>(() => [
     description: t('views.eventAutomation.rules.reference.actions.adjustEconomy'),
   },
   {
+    label: 'ExecuteRewardPackage',
+    value: '{ "type": "ExecuteRewardPackage", "target": "TriggerPlayer", "packageId": 1 }',
+    description: t('views.eventAutomation.rules.reference.actions.executeRewardPackage'),
+  },
+  {
     label: 'KickPlayer',
     value: '{ "type": "KickPlayer", "target": "TriggerPlayer", "reason": "Rule violation", "allowKick": true }',
     description: t('views.eventAutomation.rules.reference.actions.kickPlayer'),

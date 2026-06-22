@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { RewardPackageOption } from '~/queries/rewardPackages';
 import { useI18n } from 'vue-i18n';
+import { loadRewardPackageOptions } from '~/queries/rewardPackages';
 
 type ActionType
   = | 'AdjustEconomy'
@@ -66,6 +68,8 @@ const ACTION_TYPES: ActionType[] = [
 
 const targetOptions = ['TriggerPlayer', 'TargetPlayer', 'PlayerId'];
 const selectedActionType = ref<ActionType>('SendPrivateMessage');
+const rewardPackageOptions = ref<RewardPackageOption[]>([]);
+const isLoadingRewardPackages = ref(false);
 
 const parsedActions = computed(() => parseActions(props.modelValue));
 const hasInvalidJson = computed(() => parsedActions.value == null);
@@ -132,6 +136,27 @@ function setActionValue(index: number, key: ActionKey, value: unknown) {
     mutableAction[key] = value;
 
   formatActions(next);
+}
+
+async function loadRewardPackages() {
+  if (isLoadingRewardPackages.value || rewardPackageOptions.value.length > 0)
+    return;
+
+  try {
+    isLoadingRewardPackages.value = true;
+    rewardPackageOptions.value = await loadRewardPackageOptions(true);
+  }
+  catch (error) {
+    console.error(error);
+  }
+  finally {
+    isLoadingRewardPackages.value = false;
+  }
+}
+
+function onRewardPackageSelectVisibleChange(visible: boolean) {
+  if (visible)
+    void loadRewardPackages();
 }
 
 function setActionType(index: number, type: ActionType) {
@@ -219,7 +244,7 @@ function buildDefaultAction(type: ActionType, previous?: ActionModel): ActionMod
       return {
         type,
         target: getPreviousString(previous, 'target', 'TriggerPlayer'),
-        packageId: getPreviousNumber(previous, 'packageId', 1),
+        packageId: getPreviousNumber(previous, 'packageId', 0),
       };
   }
 }
@@ -264,6 +289,15 @@ function resolveHighRiskDescription(type: string) {
       return '';
   }
 }
+
+watch(
+  () => actions.value.some(action => getStringValue(action, 'type') === 'ExecuteRewardPackage'),
+  (hasRewardPackageAction) => {
+    if (hasRewardPackageAction)
+      void loadRewardPackages();
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -473,14 +507,24 @@ function resolveHighRiskDescription(type: string) {
 
           <template v-if="getStringValue(action, 'type') === 'ExecuteRewardPackage'">
             <el-col :xs="24" :md="12">
-              <el-form-item :label="t('views.eventAutomation.rules.builder.fields.packageId')">
-                <el-input-number
+              <el-form-item :label="t('views.eventAutomation.rules.builder.fields.rewardPackage')">
+                <el-select
                   :model-value="getNumberValue(action, 'packageId')"
                   class="w-full"
-                  :min="1"
-                  :precision="0"
+                  filterable
+                  :loading="isLoadingRewardPackages"
+                  clearable
                   @update:model-value="setActionValue(index, 'packageId', $event)"
-                />
+                  @visible-change="onRewardPackageSelectVisibleChange"
+                >
+                  <el-option
+                    v-for="option in rewardPackageOptions"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                    :disabled="option.disabled"
+                  />
+                </el-select>
               </el-form-item>
             </el-col>
           </template>

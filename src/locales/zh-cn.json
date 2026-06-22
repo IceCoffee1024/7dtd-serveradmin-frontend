@@ -3208,7 +3208,7 @@
         "PlayerKilledZombie": "玩家击杀实体"
       },
       "rules": {
-        "hint": "MVP 阶段支持玩家进入/离开、聊天和定时触发。动作支持消息、私聊、公告、给物品、经济调整、踢出、禁言和受限控制台命令。",
+        "hint": "MVP 阶段支持玩家进入/离开、聊天和定时触发。动作支持消息、私聊、公告、给物品、经济调整、执行奖励包、踢出、禁言和受限控制台命令。",
         "columns": {
           "name": "名称",
           "isEnabled": "启用",
@@ -3300,7 +3300,8 @@
             "cooldownScope": "冷却范围",
             "username": "用户名",
             "webhookTargetKey": "Webhook 目标键",
-            "packageId": "奖励包 ID"
+            "packageId": "奖励包 ID",
+            "rewardPackage": "奖励包"
           },
           "targets": {
             "TriggerPlayer": "触发玩家",
@@ -3516,6 +3517,7 @@
             "sendPrivateMessage": "向触发规则的玩家发送私聊消息。",
             "giveItem": "向触发规则的玩家发放物品。",
             "adjustEconomy": "增加或扣除触发规则玩家的经济账户余额。",
+            "executeRewardPackage": "为目标玩家执行可复用奖励包。",
             "sendAnnouncement": "发送带审计记录的服务器公告。",
             "kickPlayer": "踢出目标玩家，必须显式设置 allowKick=true。",
             "mutePlayer": "禁言目标玩家，必须显式设置 allowMute=true。",

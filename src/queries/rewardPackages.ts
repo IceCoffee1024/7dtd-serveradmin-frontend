@@ -17,10 +17,15 @@ export async function loadRewardPackageOptions(includeDisabled = false): Promise
     order: 'Name',
   });
 
-  return response.items.map(toRewardPackageOption);
+  return response.items
+    .map(toRewardPackageOption)
+    .filter((option): option is RewardPackageOption => option != null);
 }
 
-export function toRewardPackageOption(item: RewardPackageDto): RewardPackageOption {
+export function toRewardPackageOption(item: RewardPackageDto): RewardPackageOption | null {
+  if (item.id == null)
+    return null;
+
   return {
     value: item.id,
     label: item.key ? `${item.name} (${item.key})` : item.name,

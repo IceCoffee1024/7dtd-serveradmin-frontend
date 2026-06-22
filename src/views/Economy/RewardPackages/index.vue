@@ -268,6 +268,14 @@ function asEntry(row: unknown): RewardPackageEntryDto {
   return row as RewardPackageEntryDto;
 }
 
+function resolvePackageId(row: RewardPackageDto): number | null {
+  return row.id ?? null;
+}
+
+function resolveEntryId(row: RewardPackageEntryDto): number | null {
+  return row.id ?? null;
+}
+
 function toOrder(sortField: string | undefined): RewardPackageQueryOrder | undefined {
   switch (sortField) {
     case 'key': return 'Key';
@@ -304,11 +312,15 @@ function openAddPackage() {
 }
 
 function openEditPackage(row: RewardPackageDto) {
-  editingPackageId.value = row.id;
+  const id = resolvePackageId(row);
+  if (id == null)
+    return;
+
+  editingPackageId.value = id;
   packageForm.key = row.key;
   packageForm.name = row.name;
   packageForm.description = row.description ?? '';
-  packageForm.isEnabled = row.isEnabled;
+  packageForm.isEnabled = row.isEnabled !== false;
   packageDialogRef.value?.open();
   nextTick(() => packageFormRef.value?.clearValidate());
 }
@@ -347,6 +359,10 @@ async function onConfirmPackage(): Promise<boolean | void> {
 }
 
 async function onDeletePackage(row: RewardPackageDto) {
+  const id = resolvePackageId(row);
+  if (id == null)
+    return;
+
   const confirmed = await confirm({
     text: t('views.economy.rewardPackages.actions.deleteConfirm', { name: row.name }),
     type: 'warning',
@@ -354,16 +370,20 @@ async function onDeletePackage(row: RewardPackageDto) {
   if (!confirmed)
     return;
 
-  await deleteRewardPackage(row.id);
+  await deleteRewardPackage(id);
   toast({ type: 'success', text: t('views.economy.rewardPackages.messages.deleteSuccess') });
   tableRef.value?.reload();
 }
 
 async function openEntries(row: RewardPackageDto) {
+  const id = resolvePackageId(row);
+  if (id == null)
+    return;
+
   currentPackage.value = row;
   entries.value = [];
   entriesDialogRef.value?.open();
-  await reloadEntries(row.id);
+  await reloadEntries(id);
 }
 
 async function reloadEntries(packageId = currentPackage.value?.id) {
@@ -389,11 +409,15 @@ function openAddEntry() {
 }
 
 function openEditEntry(row: RewardPackageEntryDto) {
-  editingEntryId.value = row.id;
-  entryForm.entryType = row.entryType;
+  const id = resolveEntryId(row);
+  if (id == null)
+    return;
+
+  editingEntryId.value = id;
+  entryForm.entryType = row.entryType ?? 'GameItem';
   entryForm.payloadJson = row.payloadJson;
-  entryForm.sortOrder = row.sortOrder;
-  entryForm.isEnabled = row.isEnabled;
+  entryForm.sortOrder = row.sortOrder ?? 0;
+  entryForm.isEnabled = row.isEnabled !== false;
   entryDialogRef.value?.open();
   nextTick(() => entryFormRef.value?.clearValidate());
 }
@@ -415,7 +439,8 @@ async function onConfirmEntry(): Promise<boolean | void> {
     return false;
   }
 
-  if (currentPackage.value == null)
+  const packageId = currentPackage.value?.id;
+  if (packageId == null)
     return false;
 
   const payload: RewardPackageEntryUpsertDto = {
@@ -428,7 +453,7 @@ async function onConfirmEntry(): Promise<boolean | void> {
   isSubmittingEntry.value = true;
   try {
     if (editingEntryId.value == null) {
-      await createRewardPackageEntry(currentPackage.value.id, payload);
+      await createRewardPackageEntry(packageId, payload);
       toast({ type: 'success', text: t('views.economy.rewardPackages.messages.entryCreateSuccess') });
     }
     else {
@@ -448,6 +473,10 @@ async function onConfirmEntry(): Promise<boolean | void> {
 }
 
 async function onDeleteEntry(row: RewardPackageEntryDto) {
+  const id = resolveEntryId(row);
+  if (id == null)
+    return;
+
   const confirmed = await confirm({
     text: t('views.economy.rewardPackages.actions.deleteEntryConfirm'),
     type: 'warning',
@@ -455,7 +484,7 @@ async function onDeleteEntry(row: RewardPackageEntryDto) {
   if (!confirmed)
     return;
 
-  await deleteRewardPackageEntry(row.id);
+  await deleteRewardPackageEntry(id);
   toast({ type: 'success', text: t('views.economy.rewardPackages.messages.entryDeleteSuccess') });
   await reloadEntries();
 }

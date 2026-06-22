@@ -3208,7 +3208,7 @@
         "PlayerKilledZombie": "Player Killed Entity"
       },
       "rules": {
-        "hint": "MVP supports player join/leave, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, kicks, mutes, and restricted console commands.",
+        "hint": "MVP supports player join/leave, chat, and scheduled triggers. Actions support messages, whispers, announcements, item grants, economy changes, reward package execution, kicks, mutes, and restricted console commands.",
         "columns": {
           "name": "Name",
           "isEnabled": "Enabled",
@@ -3300,7 +3300,8 @@
             "cooldownScope": "Cooldown scope",
             "username": "Username",
             "webhookTargetKey": "Webhook target key",
-            "packageId": "Reward Package ID"
+            "packageId": "Reward Package ID",
+            "rewardPackage": "Reward package"
           },
           "targets": {
             "TriggerPlayer": "Trigger player",
@@ -3516,6 +3517,7 @@
             "sendPrivateMessage": "Sends a private message to the triggering player.",
             "giveItem": "Gives an item to the triggering player.",
             "adjustEconomy": "Adds or deducts currency from the triggering player account.",
+            "executeRewardPackage": "Executes a reusable reward package for the target player.",
             "sendAnnouncement": "Sends an audited server announcement.",
             "kickPlayer": "Kicks the target player. Requires allowKick=true.",
             "mutePlayer": "Mutes the target player. Requires allowMute=true.",
