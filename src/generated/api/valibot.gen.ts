@@ -452,12 +452,12 @@ export const vChatMessageQueryOrder = v.picklist([
  */
 export const vColoredChatFeatureSettingsDto = v.strictObject({
     isEnabled: v.optional(v.boolean()),
-    globalDefault: v.nullish(v.string()),
-    whisperDefault: v.nullish(v.string()),
-    friendsDefault: v.nullish(v.string()),
-    partyDefault: v.nullish(v.string()),
-    adminDefault: v.nullish(v.string()),
-    systemDefault: v.nullish(v.string()),
+    globalDefaultColor: v.nullish(v.string()),
+    whisperDefaultColor: v.nullish(v.string()),
+    friendsDefaultColor: v.nullish(v.string()),
+    partyDefaultColor: v.nullish(v.string()),
+    adminDefaultColor: v.nullish(v.string()),
+    systemDefaultColor: v.nullish(v.string()),
     playerColorTagPermission: v.optional(v.string())
 });
 
@@ -1359,6 +1359,62 @@ export const vEconomyUpsertShopItemRequestDto = v.strictObject({
     stockLimit: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     productType: v.optional(v.string()),
     rewardPackageId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Describes one purchased shop line in the structured API response.
+ */
+export const vEconomyShopPurchaseLineResultDto = v.strictObject({
+    shopItemId: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    shopItemName: v.string(),
+    productType: v.string(),
+    quantity: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    totalItems: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    totalCost: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')))
+});
+
+/**
+ * Structured result returned by the shop purchase endpoint.
+ */
+export const vEconomyShopPurchaseResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    failureKind: v.nullish(v.string()),
+    errorMessage: v.nullish(v.string()),
+    quantity: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    totalCost: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    totalItems: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    balanceAfter: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    output: v.array(v.string()),
+    lines: v.array(vEconomyShopPurchaseLineResultDto)
+});
+
+/**
+ * Carries one shop purchase line requested through the management API.
+ */
+export const vEconomyShopPurchaseLineRequestDto = v.strictObject({
+    shopItemId: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    quantity: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
+});
+
+/**
+ * Carries a management API shop purchase request.
+ */
+export const vEconomyShopPurchaseRequestDto = v.strictObject({
+    playerId: v.string(),
+    playerName: v.string(),
+    items: v.array(vEconomyShopPurchaseLineRequestDto)
 });
 
 /**
@@ -4093,6 +4149,11 @@ export const vEconomyShopUpdateItemBody = vEconomyUpsertShopItemRequestDto;
 export const vEconomyShopUpdateItemPath = v.object({
     id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
 });
+
+/**
+ * Purchase request containing the target player and requested shop lines.
+ */
+export const vEconomyShopPurchaseBody = vEconomyShopPurchaseRequestDto;
 
 export const vEconomyTransactionsGetTransactionsQuery = v.object({
     playerId: v.nullish(v.string()),

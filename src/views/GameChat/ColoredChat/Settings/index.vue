@@ -208,22 +208,22 @@ const isSubmitting = computed(() => updateSettingsMutation.isLoading.value || re
 function mapSettings(data: ColoredChatFeatureSettingsDto | null | undefined): FormModel {
   const source = data ?? {
     isEnabled: false,
-    globalDefault: null,
-    whisperDefault: null,
-    friendsDefault: null,
-    partyDefault: null,
-    adminDefault: null,
-    systemDefault: null,
+    globalDefaultColor: null,
+    whisperDefaultColor: null,
+    friendsDefaultColor: null,
+    partyDefaultColor: null,
+    adminDefaultColor: null,
+    systemDefaultColor: null,
     playerColorTagPermission: 'None',
   };
   return {
     isEnabled: source.isEnabled ?? false,
-    globalDefault: source.globalDefault ?? 'FFFFFF',
-    whisperDefault: source.whisperDefault ?? 'D00000',
-    friendsDefault: source.friendsDefault ?? '00BB00',
-    partyDefault: source.partyDefault ?? 'FFCC00',
-    adminDefault: source.adminDefault ?? 'FF4D4D',
-    systemDefault: source.systemDefault ?? 'FF8C00',
+    globalDefault: source.globalDefaultColor ?? 'FFFFFF',
+    whisperDefault: source.whisperDefaultColor ?? 'D00000',
+    friendsDefault: source.friendsDefaultColor ?? '00BB00',
+    partyDefault: source.partyDefaultColor ?? 'FFCC00',
+    adminDefault: source.adminDefaultColor ?? 'FF4D4D',
+    systemDefault: source.systemDefaultColor ?? 'FF8C00',
     playerColorTagPermission: source.playerColorTagPermission ?? 'None',
   };
 }
@@ -300,12 +300,12 @@ async function onReset() {
 function toPayload(values: FormModel): ColoredChatFeatureSettingsDto {
   return {
     isEnabled: values.isEnabled,
-    globalDefault: values.globalDefault || null,
-    whisperDefault: values.whisperDefault || null,
-    friendsDefault: values.friendsDefault || null,
-    partyDefault: values.partyDefault || null,
-    adminDefault: values.adminDefault || null,
-    systemDefault: values.systemDefault || null,
+    globalDefaultColor: values.globalDefault || null,
+    whisperDefaultColor: values.whisperDefault || null,
+    friendsDefaultColor: values.friendsDefault || null,
+    partyDefaultColor: values.partyDefault || null,
+    adminDefaultColor: values.adminDefault || null,
+    systemDefaultColor: values.systemDefault || null,
     playerColorTagPermission: values.playerColorTagPermission,
   };
 }
