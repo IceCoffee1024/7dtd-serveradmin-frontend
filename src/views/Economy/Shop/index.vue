@@ -39,6 +39,10 @@ interface FormModel {
   itemName: string;
   itemCount: number;
   rewardPackageId: number | null;
+  allowQualitySelection: boolean;
+  minQuality: number;
+  maxQuality: number;
+  qualityPriceMultiplierPercent: number;
   price: number;
   isEnabled: boolean;
   displayOrder: number;
@@ -130,6 +134,10 @@ function buildDefaults(): FormModel {
     itemName: '',
     itemCount: 1,
     rewardPackageId: null,
+    allowQualitySelection: false,
+    minQuality: 1,
+    maxQuality: 1,
+    qualityPriceMultiplierPercent: 0,
     price: 0,
     isEnabled: true,
     displayOrder: 0,
@@ -146,6 +154,10 @@ const schema = v.object({
   itemName: v.optional(v.string()),
   itemCount: v.pipe(v.number(), v.minValue(1)),
   rewardPackageId: v.optional(v.nullable(v.number())),
+  allowQualitySelection: v.boolean(),
+  minQuality: v.pipe(v.number(), v.minValue(1), v.maxValue(6)),
+  maxQuality: v.pipe(v.number(), v.minValue(1), v.maxValue(6)),
+  qualityPriceMultiplierPercent: v.pipe(v.number(), v.minValue(0)),
   price: v.pipe(v.number(), v.minValue(0)),
   isEnabled: v.boolean(),
   displayOrder: v.pipe(v.number(), v.minValue(0)),
@@ -187,6 +199,10 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
       if (value === 'RewardPackage') {
         model.itemName = '__reward_package__';
         model.itemCount = 1;
+        model.allowQualitySelection = false;
+        model.minQuality = 1;
+        model.maxQuality = 1;
+        model.qualityPriceMultiplierPercent = 0;
         loadRewardPackages();
       }
       else {
@@ -230,6 +246,50 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     el: 'el-input-number',
     props: { min: 0, precision: 0, class: 'w-full' },
     span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'allowQualitySelection',
+    label: t('views.economy.shop.form.fields.allowQualitySelection'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    span: { xs: 24, md: 12 },
+    show: model => model.productType !== 'RewardPackage',
+    onChange: (value, model) => {
+      if (value !== true) {
+        model.minQuality = 1;
+        model.maxQuality = 1;
+        model.qualityPriceMultiplierPercent = 0;
+      }
+      else {
+        model.minQuality = Number(model.minQuality) || 1;
+        model.maxQuality = Math.max(Number(model.maxQuality) || 1, Number(model.minQuality) || 1);
+      }
+    },
+  },
+  {
+    prop: 'minQuality',
+    label: t('views.economy.shop.form.fields.minQuality'),
+    el: 'el-input-number',
+    props: { min: 1, max: 6, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 8 },
+    show: model => model.productType !== 'RewardPackage' && model.allowQualitySelection === true,
+  },
+  {
+    prop: 'maxQuality',
+    label: t('views.economy.shop.form.fields.maxQuality'),
+    el: 'el-input-number',
+    props: { min: 1, max: 6, precision: 0, class: 'w-full' },
+    span: { xs: 24, md: 8 },
+    show: model => model.productType !== 'RewardPackage' && model.allowQualitySelection === true,
+  },
+  {
+    prop: 'qualityPriceMultiplierPercent',
+    label: t('views.economy.shop.form.fields.qualityPriceMultiplierPercent'),
+    el: 'el-input-number',
+    props: { min: 0, precision: 2, class: 'w-full' },
+    span: { xs: 24, md: 8 },
+    show: model => model.productType !== 'RewardPackage' && model.allowQualitySelection === true,
+    tooltip: t('views.economy.shop.form.tooltips.qualityPriceMultiplierPercent'),
   },
   {
     prop: 'stockLimit',
@@ -290,6 +350,11 @@ const columns = computed<MyTableColumn<EconomyShopItemDto>[]>(() => [
     label: t('views.economy.shop.columns.price'),
     slot: 'price',
     sortable: true,
+  },
+  {
+    prop: 'allowQualitySelection',
+    label: t('views.economy.shop.columns.qualitySelection'),
+    slot: 'qualitySelection',
   },
   {
     prop: 'isEnabled',
@@ -378,6 +443,10 @@ function openEdit(row: EconomyShopItemDto) {
   form.itemName = form.productType === 'RewardPackage' ? row.itemName || '__reward_package__' : row.itemName;
   form.itemCount = row.itemCount ?? 1;
   form.rewardPackageId = row.rewardPackageId ?? null;
+  form.allowQualitySelection = row.productType !== 'RewardPackage' && row.allowQualitySelection === true;
+  form.minQuality = row.minQuality ?? 1;
+  form.maxQuality = row.maxQuality ?? 1;
+  form.qualityPriceMultiplierPercent = row.qualityPriceMultiplierPercent ?? 0;
   form.price = row.price ?? 0;
   form.isEnabled = row.isEnabled ?? true;
   form.displayOrder = row.displayOrder ?? 0;
@@ -401,7 +470,12 @@ async function onConfirm(): Promise<boolean | void> {
       toast({ type: 'warning', text: t('views.economy.shop.messages.rewardPackageRequired') });
       return false;
     }
+    if (form.productType === 'GameItem' && form.allowQualitySelection && Number(form.maxQuality) < Number(form.minQuality)) {
+      toast({ type: 'warning', text: t('views.economy.shop.messages.invalidQualityRange') });
+      return false;
+    }
 
+    const allowQualitySelection = form.productType === 'GameItem' && form.allowQualitySelection;
     const payload: EconomyUpsertShopItemRequestDto = {
       name: form.name.trim(),
       description: form.description.trim() || null,
@@ -409,6 +483,10 @@ async function onConfirm(): Promise<boolean | void> {
       itemName: form.productType === 'RewardPackage' ? '__reward_package__' : form.itemName.trim(),
       itemCount: form.productType === 'RewardPackage' ? 1 : Number(form.itemCount),
       rewardPackageId: form.productType === 'RewardPackage' ? form.rewardPackageId : null,
+      allowQualitySelection,
+      minQuality: allowQualitySelection ? Number(form.minQuality) : 1,
+      maxQuality: allowQualitySelection ? Number(form.maxQuality) : 1,
+      qualityPriceMultiplierPercent: allowQualitySelection ? Number(form.qualityPriceMultiplierPercent) : 0,
       price: Number(form.price),
       isEnabled: form.isEnabled,
       displayOrder: Number(form.displayOrder),
@@ -484,6 +562,21 @@ async function onDelete(row: EconomyShopItemDto) {
             #{{ row.rewardPackageId ?? '--' }}
           </span>
           <span v-else class="text-xs font-mono">{{ row.itemName }}</span>
+        </template>
+
+        <template #qualitySelection="{ row }">
+          <div
+            v-if="row.productType !== 'RewardPackage' && row.allowQualitySelection"
+            class="text-xs leading-tight flex flex-col gap-0.5"
+          >
+            <span class="text-gray-800 font-medium dark:text-gray-100">
+              Q{{ row.minQuality ?? 1 }}-{{ row.maxQuality ?? 1 }}
+            </span>
+            <span class="text-gray-500 dark:text-gray-400">
+              +{{ row.qualityPriceMultiplierPercent ?? 0 }}%
+            </span>
+          </div>
+          <span v-else class="text-xs text-gray-400 dark:text-gray-500">-</span>
         </template>
 
         <template #isEnabled="{ row }">

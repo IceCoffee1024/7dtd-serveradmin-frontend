@@ -1700,7 +1700,8 @@
           "displayOrder": "Ordem",
           "stockLimit": "Limite de estoque",
           "soldCount": "Vendido",
-          "productType": "Type"
+          "productType": "Type",
+          "qualitySelection": "Quality"
         },
         "actions": {
           "add": "Adicionar item",
@@ -1721,7 +1722,14 @@
             "displayOrder": "Ordem de exibição",
             "stockLimit": "Limite de estoque (0 = ilimitado)",
             "productType": "Product Type",
-            "rewardPackageId": "Reward Package"
+            "rewardPackageId": "Reward Package",
+            "allowQualitySelection": "Selectable Quality",
+            "minQuality": "Min Quality",
+            "maxQuality": "Max Quality",
+            "qualityPriceMultiplierPercent": "Price Increase per Quality"
+          },
+          "tooltips": {
+            "qualityPriceMultiplierPercent": "Applied once for each quality level above 1. For example, 20% makes quality 3 cost base x 1.2 x 1.2."
           }
         },
         "messages": {
@@ -1729,7 +1737,8 @@
           "updateSuccess": "Item da loja atualizado.",
           "deleteSuccess": "Item da loja excluído.",
           "itemRequired": "Select a game item for this shop product.",
-          "rewardPackageRequired": "Select a reward package for this shop product."
+          "rewardPackageRequired": "Select a reward package for this shop product.",
+          "invalidQualityRange": "Max quality must be greater than or equal to min quality."
         },
         "productTypes": {
           "GameItem": "Game Item",

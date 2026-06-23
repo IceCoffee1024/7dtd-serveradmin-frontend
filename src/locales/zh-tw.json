@@ -1700,7 +1700,8 @@
           "displayOrder": "命令",
           "stockLimit": "庫存限制",
           "soldCount": "賣",
-          "productType": "商品类型"
+          "productType": "商品类型",
+          "qualitySelection": "品質選擇"
         },
         "actions": {
           "add": "新增項目",
@@ -1721,7 +1722,14 @@
             "displayOrder": "顯示順序",
             "stockLimit": "庫存限制（0 = 無限制）",
             "productType": "商品类型",
-            "rewardPackageId": "奖励包"
+            "rewardPackageId": "奖励包",
+            "allowQualitySelection": "允許選擇品質",
+            "minQuality": "最低品質",
+            "maxQuality": "最高品質",
+            "qualityPriceMultiplierPercent": "每級品質漲價"
+          },
+          "tooltips": {
+            "qualityPriceMultiplierPercent": "從品質 2 開始逐級疊加。例如 20% 時，品質 3 價格為基礎價 x 1.2 x 1.2。"
           }
         },
         "messages": {
@@ -1729,7 +1737,8 @@
           "updateSuccess": "商店商品已更新。",
           "deleteSuccess": "商店商品已刪除。",
           "itemRequired": "请选择该商品发放的游戏物品。",
-          "rewardPackageRequired": "请选择该商品关联的奖励包。"
+          "rewardPackageRequired": "请选择该商品关联的奖励包。",
+          "invalidQualityRange": "最高品質必須大於或等於最低品質。"
         },
         "productTypes": {
           "GameItem": "游戏物品",

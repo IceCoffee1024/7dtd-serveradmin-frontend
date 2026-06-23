@@ -2418,6 +2418,22 @@ export type EconomyShopItemDto = {
      */
     rewardPackageId?: number | null;
     /**
+     * Indicates whether buyers may choose a quality level for this game-item product.
+     */
+    allowQualitySelection?: boolean;
+    /**
+     * Lowest selectable quality level when quality selection is enabled.
+     */
+    minQuality?: number;
+    /**
+     * Highest selectable quality level when quality selection is enabled.
+     */
+    maxQuality?: number;
+    /**
+     * Per-quality-level price increase percentage applied from quality 2 upward.
+     */
+    qualityPriceMultiplierPercent?: number;
+    /**
      * Running count of units sold to all players.
      */
     soldCount?: number;
@@ -2480,6 +2496,22 @@ export type EconomyUpsertShopItemRequestDto = {
      * Optional reward package id for package products.
      */
     rewardPackageId?: number | null;
+    /**
+     * Indicates whether buyers may choose a quality level for this game-item product.
+     */
+    allowQualitySelection?: boolean;
+    /**
+     * Lowest selectable quality level when quality selection is enabled.
+     */
+    minQuality?: number;
+    /**
+     * Highest selectable quality level when quality selection is enabled.
+     */
+    maxQuality?: number;
+    /**
+     * Per-quality-level price increase percentage applied from quality 2 upward.
+     */
+    qualityPriceMultiplierPercent?: number;
 };
 
 /**
@@ -2549,6 +2581,10 @@ export type EconomyShopPurchaseLineResultDto = {
      */
     totalItems?: number;
     /**
+     * Selected quality level for this line when applicable.
+     */
+    quality?: number | null;
+    /**
      * Currency cost for this line.
      */
     totalCost?: number;
@@ -2584,6 +2620,10 @@ export type EconomyShopPurchaseLineRequestDto = {
      * Number of purchase units. Values below one are normalized to one by the purchase service.
      */
     quantity?: number;
+    /**
+     * Optional selected item quality for quality-selectable game-item products.
+     */
+    quality?: number | null;
 };
 
 /**
