@@ -7,8 +7,6 @@ export interface RewardPackageOption {
   disabled?: boolean;
 }
 
-export const rewardPackageCacheKey = ['manual', 'RewardPackages'];
-
 export async function loadRewardPackageOptions(includeDisabled = false): Promise<RewardPackageOption[]> {
   const response = await getRewardPackages({
     pageNumber: 1,

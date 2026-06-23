@@ -5,13 +5,9 @@ import type { MyFormField } from '~/composables/useMyForm';
 import type {
   EconomyShopItemDto,
   EconomyShopItemQueryOrder,
+  EconomyUpsertShopItemRequestDto,
 } from '~/generated/api/types.gen';
 import type { RewardPackageOption } from '~/queries/rewardPackages';
-import type {
-  EconomyShopItemWithRewardPackage,
-  EconomyShopProductType,
-  EconomyUpsertShopItemWithRewardPackage,
-} from '~/types/rewardPackageExtensions';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import { useI18n } from 'vue-i18n';
 import MyDialog from '~/components/MyDialog/index.vue';
@@ -48,6 +44,8 @@ interface FormModel {
   displayOrder: number;
   stockLimit: number;
 }
+
+type EconomyShopProductType = 'GameItem' | 'RewardPackage';
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
@@ -256,7 +254,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-const columns = computed<MyTableColumn<EconomyShopItemWithRewardPackage>[]>(() => [
+const columns = computed<MyTableColumn<EconomyShopItemDto>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
@@ -334,7 +332,7 @@ function toOrder(sortField: string | undefined): EconomyShopItemQueryOrder | und
   }
 }
 
-async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyShopItemWithRewardPackage>> {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyShopItemDto>> {
   const options = economyShopGetItemsQuery({
     query: {
       pageNumber: params.pageNumber,
@@ -354,7 +352,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 
   const response = state.data;
 
-  return { list: (response?.items ?? []) as EconomyShopItemWithRewardPackage[], total: response?.total ?? 0 };
+  return { list: response?.items ?? [], total: response?.total ?? 0 };
 }
 
 function openAdd() {
@@ -366,7 +364,7 @@ function openAdd() {
   nextTick(() => formRef.value?.clearValidate());
 }
 
-function openEdit(row: EconomyShopItemWithRewardPackage) {
+function openEdit(row: EconomyShopItemDto) {
   if (row.id == null) {
     return;
   }
@@ -404,7 +402,7 @@ async function onConfirm(): Promise<boolean | void> {
       return false;
     }
 
-    const payload: EconomyUpsertShopItemWithRewardPackage = {
+    const payload: EconomyUpsertShopItemRequestDto = {
       name: form.name.trim(),
       description: form.description.trim() || null,
       productType: form.productType,

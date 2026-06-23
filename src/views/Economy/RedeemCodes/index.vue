@@ -4,14 +4,11 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import type { MyFormField } from '~/composables/useMyForm';
 import type {
   EconomyCodeRedemptionDto,
+  EconomyCreateRedeemCodeRequestDto,
   EconomyRedeemCodeDto,
   EconomyRedeemCodeQueryOrder,
 } from '~/generated/api/types.gen';
 import type { RewardPackageOption } from '~/queries/rewardPackages';
-import type {
-  EconomyCreateRedeemCodeWithRewardPackage,
-  EconomyRedeemCodeWithRewardPackage,
-} from '~/types/rewardPackageExtensions';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
@@ -157,7 +154,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   },
 ]);
 
-const columns = computed<MyTableColumn<EconomyRedeemCodeWithRewardPackage>[]>(() => [
+const columns = computed<MyTableColumn<EconomyRedeemCodeDto>[]>(() => [
   {
     prop: 'keyword',
     label: t('components.myTable.keywordSearch'),
@@ -235,7 +232,7 @@ function toOrder(sortField: string | undefined): EconomyRedeemCodeQueryOrder | u
   }
 }
 
-async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyRedeemCodeWithRewardPackage>> {
+async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult<EconomyRedeemCodeDto>> {
   const options = economyRedeemCodeGetCodesQuery({
     query: {
       pageNumber: params.pageNumber,
@@ -255,7 +252,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 
   const response = state.data;
 
-  return { list: (response?.items ?? []) as EconomyRedeemCodeWithRewardPackage[], total: response?.total ?? 0 };
+  return { list: response?.items ?? [], total: response?.total ?? 0 };
 }
 
 function formatTimestamp(value: string | null | undefined): string {
@@ -306,7 +303,7 @@ async function onConfirm(): Promise<boolean | void> {
       return false;
     }
 
-    const payload: EconomyCreateRedeemCodeWithRewardPackage = {
+    const payload: EconomyCreateRedeemCodeRequestDto = {
       code: form.code.trim(),
       description: form.description.trim() || null,
       amount: Number(form.amount),

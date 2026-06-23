@@ -1795,64 +1795,64 @@
       "rewardPackages": {
         "columns": {
           "key": "識別碼",
-          "name": "名称",
+          "name": "名稱",
           "description": "描述",
-          "isEnabled": "已启用",
-          "updatedAt": "更新时间"
+          "isEnabled": "已啟用",
+          "updatedAt": "更新時間"
         },
         "actions": {
-          "entries": "条目",
-          "addEntry": "新增条目",
-          "edit": "编辑",
-          "delete": "删除",
-          "deleteConfirm": "确认删除奖励包“{name}”？",
-          "deleteEntryConfirm": "确认删除该奖励条目吗？"
+          "entries": "項目",
+          "addEntry": "新增項目",
+          "edit": "編輯",
+          "delete": "刪除",
+          "deleteConfirm": "確認刪除獎勵包「{name}」？",
+          "deleteEntryConfirm": "確認刪除此獎勵項目嗎？"
         },
         "form": {
-          "addTitle": "新增奖励包",
-          "editTitle": "编辑奖励包",
+          "addTitle": "新增獎勵包",
+          "editTitle": "編輯獎勵包",
           "fields": {
             "key": "唯一識別碼",
-            "name": "名称",
+            "name": "名稱",
             "description": "描述",
-            "isEnabled": "已启用"
+            "isEnabled": "已啟用"
           }
         },
         "entriesDialog": {
-          "title": "奖励条目：{name}"
+          "title": "獎勵項目：{name}"
         },
         "entryColumns": {
           "sortOrder": "排序",
-          "entryType": "类型",
-          "payloadJson": "负载 JSON",
-          "isEnabled": "已启用"
+          "entryType": "類型",
+          "payloadJson": "負載 JSON",
+          "isEnabled": "已啟用"
         },
         "entryForm": {
-          "addTitle": "新增奖励条目",
-          "editTitle": "编辑奖励条目",
+          "addTitle": "新增獎勵項目",
+          "editTitle": "編輯獎勵項目",
           "fields": {
-            "entryType": "条目类型",
-            "payloadJson": "负载 JSON",
+            "entryType": "項目類型",
+            "payloadJson": "負載 JSON",
             "sortOrder": "排序",
-            "isEnabled": "已启用"
+            "isEnabled": "已啟用"
           },
           "actions": {
-            "applyTemplate": "套用模板"
+            "applyTemplate": "套用範本"
           }
         },
         "entryTypes": {
-          "GameItem": "游戏物品",
-          "EconomyCurrency": "经济货币",
+          "GameItem": "遊戲物品",
+          "EconomyCurrency": "經濟貨幣",
           "ConsoleCommand": "控制台命令"
         },
         "messages": {
-          "createSuccess": "奖励包已创建。",
-          "updateSuccess": "奖励包已更新。",
-          "deleteSuccess": "奖励包已删除。",
-          "entryCreateSuccess": "奖励条目已创建。",
-          "entryUpdateSuccess": "奖励条目已更新。",
-          "entryDeleteSuccess": "奖励条目已删除。",
-          "invalidPayloadJson": "负载 JSON 格式无效。"
+          "createSuccess": "獎勵包已建立。",
+          "updateSuccess": "獎勵包已更新。",
+          "deleteSuccess": "獎勵包已刪除。",
+          "entryCreateSuccess": "獎勵項目已建立。",
+          "entryUpdateSuccess": "獎勵項目已更新。",
+          "entryDeleteSuccess": "獎勵項目已刪除。",
+          "invalidPayloadJson": "負載 JSON 格式無效。"
         }
       }
     },
