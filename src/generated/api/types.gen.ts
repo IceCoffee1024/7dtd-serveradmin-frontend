@@ -1885,9 +1885,17 @@ export type EconomyFeatureSettingsDto = {
      */
     payCommandName?: string | null;
     /**
+     * Alias names accepted in addition to PayCommandName.
+     */
+    payCommandAliases?: Array<string> | null;
+    /**
      * Primary chat command name for the daily reward claim.
      */
     dailyCommandName?: string | null;
+    /**
+     * Alias names accepted in addition to DailyCommandName.
+     */
+    dailyCommandAliases?: Array<string> | null;
     /**
      * Primary chat command name for the currency leaderboard.
      */
