@@ -16,6 +16,7 @@ import {
   exportEconomyTransactionsCsv,
 } from '~/queries/economy';
 import DetailDialog from './DetailDialog.vue';
+import { getTransactionAmountDisplay } from './transactionDisplay';
 
 defineOptions({ name: 'EconomyTransactionsPage' });
 
@@ -34,10 +35,23 @@ const detailRow = ref<TransactionRow | null>(null);
 const currentFilters = ref<EconomyTransactionFilters>({});
 const exporting = ref(false);
 
+const transactionTypeOptions = computed(() => [
+  { label: t('views.economy.transactions.typeOptions.adminGrant'), value: 'AdminGrant' },
+  { label: t('views.economy.transactions.typeOptions.adminDeduct'), value: 'AdminDeduct' },
+  { label: t('views.economy.transactions.typeOptions.transferOut'), value: 'TransferOut' },
+  { label: t('views.economy.transactions.typeOptions.transferIn'), value: 'TransferIn' },
+  { label: t('views.economy.transactions.typeOptions.dailyReward'), value: 'DailyReward' },
+  { label: t('views.economy.transactions.typeOptions.tax'), value: 'Tax' },
+  { label: t('views.economy.transactions.typeOptions.shopPurchase'), value: 'ShopPurchase' },
+  { label: t('views.economy.transactions.typeOptions.shopRefund'), value: 'ShopRefund' },
+  { label: t('views.economy.transactions.typeOptions.rewardPackageGrant'), value: 'RewardPackageGrant' },
+  { label: t('views.economy.transactions.typeOptions.rewardPackageDeduct'), value: 'RewardPackageDeduct' },
+]);
+
 const overviewItems = computed(() => [
   {
     label: t('views.economy.transactions.columns.type'),
-    value: 6,
+    value: `${transactionTypeOptions.value.length}+`,
     tone: 'primary',
   },
   {
@@ -93,18 +107,7 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
     sortable: true,
     search: {
       el: 'el-select',
-      options: [
-        { label: t('views.economy.transactions.typeOptions.adminGrant'), value: 'AdminGrant' },
-        { label: t('views.economy.transactions.typeOptions.adminDeduct'), value: 'AdminDeduct' },
-        { label: t('views.economy.transactions.typeOptions.transferOut'), value: 'TransferOut' },
-        { label: t('views.economy.transactions.typeOptions.transferIn'), value: 'TransferIn' },
-        { label: t('views.economy.transactions.typeOptions.dailyReward'), value: 'DailyReward' },
-        { label: t('views.economy.transactions.typeOptions.tax'), value: 'Tax' },
-        { label: t('views.economy.transactions.typeOptions.shopPurchase'), value: 'ShopPurchase' },
-        { label: t('views.economy.transactions.typeOptions.shopRefund'), value: 'ShopRefund' },
-        { label: t('views.economy.transactions.typeOptions.rewardPackageGrant'), value: 'RewardPackageGrant' },
-        { label: t('views.economy.transactions.typeOptions.rewardPackageDeduct'), value: 'RewardPackageDeduct' },
-      ],
+      options: transactionTypeOptions.value,
       props: { allowCreate: true, clearable: true, filterable: true },
       order: 3,
       span: 6,
@@ -271,9 +274,9 @@ function onViewPlayerProfile(row: TransactionRow) {
       <template #amount="{ row }">
         <span
           class="transactions-page__amount"
-          :class="row.direction === 'Income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
+          :class="getTransactionAmountDisplay(row.direction, row.amount).className"
         >
-          {{ row.direction === 'Income' ? '+' : '-' }}{{ row.amount }}
+          {{ getTransactionAmountDisplay(row.direction, row.amount).text }}
         </span>
       </template>
 

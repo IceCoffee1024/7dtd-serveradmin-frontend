@@ -16,8 +16,12 @@ export function getChatTypeLabel(chatType: ChatType | undefined, t: ComposerTran
       return t('views.coloredChat.settings.preview.channels.party');
     case 'Whisper':
       return t('views.coloredChat.settings.preview.channels.whisper');
-    default:
+    case 'Unknown':
+    case undefined:
+    case '':
       return t('common.unknown');
+    default:
+      return chatType;
   }
 }
 
