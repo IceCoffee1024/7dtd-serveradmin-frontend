@@ -12233,6 +12233,7 @@ export type RestartRunRestartData = {
 };
 
 export type RestartRunRestartErrors = {
+    400: ProblemDetailsDto;
     503: ProblemDetailsDto;
 };
 
