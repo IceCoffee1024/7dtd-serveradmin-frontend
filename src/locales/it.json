@@ -1670,7 +1670,11 @@
           "transferOut": "Trasferimento in uscita",
           "transferIn": "Trasferimento in",
           "dailyReward": "Premio giornaliero",
-          "tax": "Tassare"
+          "tax": "Tassare",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "Dettagli della transazione",

@@ -1,7 +1,7 @@
 import type { ComposerTranslation } from 'vue-i18n';
 import type { EnumProps } from '~/composables/table';
-import type { ChatType } from '~/generated/api/types.gen';
 
+export type ChatType = 'Global' | 'Friends' | 'Party' | 'Whisper' | 'Unknown' | (string & {});
 export type LiveChatTypeFilter = ChatType | 'All';
 
 export const CHAT_TYPE_VALUES: ChatType[] = ['Global', 'Friends', 'Party', 'Whisper', 'Unknown'];

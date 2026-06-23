@@ -1670,7 +1670,11 @@
           "transferOut": "轉出",
           "transferIn": "轉入",
           "dailyReward": "每日獎勵",
-          "tax": "稅"
+          "tax": "稅",
+          "shopPurchase": "商店購買",
+          "shopRefund": "商店退款",
+          "rewardPackageGrant": "獎勵包發放",
+          "rewardPackageDeduct": "獎勵包扣除"
         },
         "detailDialog": {
           "title": "交易詳情",

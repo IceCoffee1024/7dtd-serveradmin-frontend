@@ -147,49 +147,16 @@ export const vAppSettings = v.strictObject({
 });
 
 /**
- * Identifies the entry point that produced an audit log record.
- */
-export const vAuditLogSource = v.picklist([
-    'Api',
-    'ChatCommand',
-    'ConsoleCommand',
-    'System'
-]);
-
-/**
- * Classifies the business action captured by an audit log record.
- * These values are used by the management UI and downstream analytics to group operational changes
- * without depending on free-form summary text.
- */
-export const vAuditActionType = v.picklist([
-    'Create',
-    'Update',
-    'Delete',
-    'Enable',
-    'Disable',
-    'Execute',
-    'Send',
-    'Kick',
-    'Ban',
-    'Unban',
-    'Restart',
-    'Export',
-    'Grant',
-    'Revoke',
-    'Reset'
-]);
-
-/**
  * Represents a list item returned by the audit log management API.
  */
 export const vAuditLogDto = v.strictObject({
     id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
-    source: vAuditLogSource,
+    source: v.string(),
     operatorId: v.nullish(v.string()),
     operatorName: v.nullish(v.string()),
     sourceIp: v.nullish(v.string()),
-    actionType: vAuditActionType,
+    actionType: v.string(),
     resourceType: v.nullish(v.string()),
     resourceId: v.nullish(v.string()),
     summary: v.string(),
@@ -424,17 +391,6 @@ export const vPagedDtoOfChatMessageDto = v.strictObject({
     ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
     items: v.array(vChatMessageDto)
 });
-
-/**
- * Defines the in-game chat channel scope used by the server event pipeline.
- */
-export const vChatType = v.picklist([
-    'Global',
-    'Friends',
-    'Party',
-    'Whisper',
-    'Unknown'
-]);
 
 /**
  * Sortable columns supported by the chat history list endpoint.
@@ -1094,25 +1050,6 @@ export const vEconomyAccountDetailDto = v.intersect([vEconomyAccountDto, v.stric
     })]);
 
 /**
- * Business transaction types used by the economy feature.
- * Values match the strings persisted in the database and serialized by the API.
- */
-export const vEconomyTransactionType = v.picklist([
-    'AdminGrant',
-    'AdminDeduct',
-    'TransferOut',
-    'TransferIn',
-    'DailyReward',
-    'Tax'
-]);
-
-/**
- * Ledger entry direction: income or expense.
- * Values match the strings persisted in the database and serialized by the API.
- */
-export const vEconomyTransactionDirection = v.picklist(['Income', 'Expense']);
-
-/**
  * Represents a single economy transaction returned to management clients.
  */
 export const vEconomyTransactionDto = v.strictObject({
@@ -1121,8 +1058,8 @@ export const vEconomyTransactionDto = v.strictObject({
     playerName: v.string(),
     relatedPlayerId: v.nullish(v.string()),
     relatedPlayerName: v.nullish(v.string()),
-    type: vEconomyTransactionType,
-    direction: vEconomyTransactionDirection,
+    type: v.string(),
+    direction: v.string(),
     amount: v.optional(v.pipe(v.union([
         v.number(),
         v.string(),
@@ -2570,20 +2507,12 @@ export const vPlayerLocationSampleDto = v.strictObject({
     sessionId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
 });
 
-export const vPlayerTrackingSnapshotReason = v.picklist([
-    'Manual',
-    'Join',
-    'Leave',
-    'Save',
-    'Scheduled'
-]);
-
 export const vPlayerInventorySnapshotDto = v.strictObject({
     id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
     playerId: v.optional(v.string()),
     playerName: v.nullish(v.string()),
-    snapshotReason: v.optional(vPlayerTrackingSnapshotReason),
+    snapshotReason: v.optional(v.string()),
     itemHash: v.optional(v.string()),
     bagJson: v.nullish(v.string()),
     beltJson: v.nullish(v.string()),
@@ -3075,25 +3004,12 @@ export const vPagedDtoOfPlayerSessionDto = v.strictObject({
     items: v.array(vPlayerSessionDto)
 });
 
-export const vPlayerTrackingActivityType = v.picklist([
-    'Login',
-    'Joined',
-    'Left',
-    'Chat',
-    'Death',
-    'KillZombie',
-    'KillPlayer',
-    'Location',
-    'Inventory',
-    'Session'
-]);
-
 export const vPlayerActivityLogDto = v.strictObject({
     id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     createdAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
     playerId: v.optional(v.string()),
     playerName: v.nullish(v.string()),
-    activityType: v.optional(vPlayerTrackingActivityType),
+    activityType: v.optional(v.string()),
     summary: v.optional(v.string()),
     source: v.nullish(v.string()),
     x: v.nullish(v.number()),
@@ -3401,21 +3317,12 @@ export const vRewardPackageQueryOrder = v.picklist([
 ]);
 
 /**
- * Supported reward package entry kinds.
- */
-export const vRewardPackageEntryType = v.picklist([
-    'GameItem',
-    'EconomyCurrency',
-    'ConsoleCommand'
-]);
-
-/**
  * Reward package entry returned to management clients.
  */
 export const vRewardPackageEntryDto = v.strictObject({
     id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     packageId: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-    entryType: v.optional(vRewardPackageEntryType),
+    entryType: v.optional(v.string()),
     payloadJson: v.string(),
     sortOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     isEnabled: v.optional(v.boolean()),
@@ -3445,7 +3352,7 @@ export const vRewardPackageUpsertDto = v.strictObject({
  * Request used to create or update a reward package entry.
  */
 export const vRewardPackageEntryUpsertDto = v.strictObject({
-    entryType: v.optional(vRewardPackageEntryType),
+    entryType: v.optional(v.string()),
     payloadJson: v.string(),
     sortOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     isEnabled: v.optional(v.boolean())
@@ -3856,9 +3763,9 @@ export const vAppSettingsUpdateBody = vAppSettings;
 export const vAuditLogsGetQuery = v.object({
     startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
-    source: v.nullish(vAuditLogSource),
+    source: v.nullish(v.string()),
     operatorId: v.nullish(v.string()),
-    actionType: v.nullish(vAuditActionType),
+    actionType: v.nullish(v.string()),
     resourceType: v.nullish(v.string()),
     resourceId: v.nullish(v.string()),
     succeeded: v.nullish(v.boolean()),
@@ -3943,7 +3850,7 @@ export const vChatAddOrUpdateMuteBody = vMuteEntryUpsertDto;
 export const vChatMessagesGetQuery = v.object({
     playerId: v.nullish(v.string()),
     senderName: v.nullish(v.string()),
-    chatType: v.nullish(vChatType),
+    chatType: v.nullish(v.string()),
     startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
@@ -4160,7 +4067,7 @@ export const vEconomyShopPurchaseBody = vEconomyShopPurchaseRequestDto;
 export const vEconomyTransactionsGetTransactionsQuery = v.object({
     playerId: v.nullish(v.string()),
     playerName: v.nullish(v.string()),
-    type: v.nullish(vEconomyTransactionType),
+    type: v.nullish(v.string()),
     source: v.nullish(v.string()),
     startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
@@ -4174,7 +4081,7 @@ export const vEconomyTransactionsGetTransactionsQuery = v.object({
 export const vEconomyTransactionsExportTransactionsQuery = v.object({
     playerId: v.nullish(v.string()),
     playerName: v.nullish(v.string()),
-    type: v.nullish(vEconomyTransactionType),
+    type: v.nullish(v.string()),
     source: v.nullish(v.string()),
     startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
@@ -4602,7 +4509,7 @@ export const vPlayerTrackingGetPlayerActivitiesPath = v.object({
 });
 
 export const vPlayerTrackingGetPlayerActivitiesQuery = v.object({
-    activityType: v.nullish(vPlayerTrackingActivityType),
+    activityType: v.nullish(v.string()),
     startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),

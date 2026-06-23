@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
 import type {
-  AuditActionType,
   AuditLogDto,
   AuditLogQueryOrder,
-  AuditLogSource,
 } from '~/generated/api/types.gen';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
@@ -25,6 +23,7 @@ const sourceOptions = computed(() => [
   { label: t('views.auditLogs.sources.api'), value: 'Api' },
   { label: t('views.auditLogs.sources.chatCommand'), value: 'ChatCommand' },
   { label: t('views.auditLogs.sources.consoleCommand'), value: 'ConsoleCommand' },
+  { label: t('views.auditLogs.sources.system'), value: 'System' },
 ]);
 
 const actionTypeOptions = computed(() => [
@@ -116,7 +115,9 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     search: {
       el: 'el-select',
       props: {
+        allowCreate: true,
         clearable: true,
+        filterable: true,
         placeholder: t('views.auditLogs.placeholders.allSources'),
       },
       order: 2,
@@ -144,7 +145,9 @@ const columns = computed<MyTableColumn<AuditLogRow>[]>(() => [
     search: {
       el: 'el-select',
       props: {
+        allowCreate: true,
         clearable: true,
+        filterable: true,
         placeholder: t('views.auditLogs.placeholders.allActionTypes'),
       },
       order: 3,
@@ -228,9 +231,9 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
       keyword: toOptionalString(params.search?.keyword),
       startTime: toOptionalString(params.search?.startTime),
       endTime: toOptionalString(params.search?.endTime),
-      source: toOptionalSource(params.search?.source),
+      source: toOptionalString(params.search?.source),
       operatorId: toOptionalString(params.search?.operatorId),
-      actionType: toOptionalActionType(params.search?.actionType),
+      actionType: toOptionalString(params.search?.actionType),
       resourceType: toOptionalString(params.search?.resourceType),
       resourceId: toOptionalString(params.search?.resourceId),
       succeeded: toOptionalBoolean(params.search?.succeeded),
@@ -296,50 +299,6 @@ function toOptionalString(value: unknown): string | undefined {
 }
 
 /**
- * Narrows a search value to an audit source enum.
- * @param value - Raw search value.
- * @returns Source enum or undefined.
- */
-function toOptionalSource(value: unknown): AuditLogSource | undefined {
-  switch (value) {
-    case 'Api':
-    case 'ChatCommand':
-    case 'ConsoleCommand':
-      return value;
-    default:
-      return undefined;
-  }
-}
-
-/**
- * Narrows a search value to an audit action type enum.
- * @param value - Raw search value.
- * @returns Action type enum or undefined.
- */
-function toOptionalActionType(value: unknown): AuditActionType | undefined {
-  switch (value) {
-    case 'Create':
-    case 'Update':
-    case 'Delete':
-    case 'Enable':
-    case 'Disable':
-    case 'Execute':
-    case 'Send':
-    case 'Kick':
-    case 'Ban':
-    case 'Unban':
-    case 'Restart':
-    case 'Grant':
-    case 'Revoke':
-    case 'Export':
-    case 'Reset':
-      return value;
-    default:
-      return undefined;
-  }
-}
-
-/**
  * Converts a select value into an optional boolean filter.
  * @param value - Raw search value.
  * @returns Boolean filter or undefined.
@@ -361,6 +320,8 @@ function getSourceLabel(source: string): string {
       return t('views.auditLogs.sources.chatCommand');
     case 'ConsoleCommand':
       return t('views.auditLogs.sources.consoleCommand');
+    case 'System':
+      return t('views.auditLogs.sources.system');
     default:
       return source;
   }

@@ -1670,7 +1670,11 @@
           "transferOut": "Przenieś",
           "transferIn": "Przenieś w",
           "dailyReward": "Codzienna nagroda",
-          "tax": "Podatek"
+          "tax": "Podatek",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "Szczegóły transakcji",

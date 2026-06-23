@@ -1,4 +1,4 @@
-import type { ChatType } from '~/generated/api/types.gen';
+import type { ChatType } from '~/views/GameChat/chatType';
 import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 

@@ -11,7 +11,6 @@ import type {
   PlayerLocationSampleDto,
   PlayerLocationTrackDto,
   PlayerSessionDto,
-  PlayerTrackingActivityType,
 } from '~/generated/api/types.gen';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
@@ -113,7 +112,7 @@ const activityTypeOptions = computed(() => [
   { label: t('views.playerProfile.tracking.activityTypes.Inventory'), value: 'Inventory' as const },
   { label: t('views.playerProfile.tracking.activityTypes.Session'), value: 'Session' as const },
 ]);
-const activityType = ref<'all' | PlayerTrackingActivityType>('all');
+const activityType = ref<string>('all');
 
 const totalSessionSeconds = computed(() => sessions.value.reduce((total, item) => total + (item.durationSeconds ?? 0), 0));
 const latestLocation = computed(() => locations.value[0]);
@@ -168,6 +167,15 @@ function formatDurability(value: number | null | undefined): string {
   if (value == null)
     return '-';
   return `${Math.round(value)}%`;
+}
+
+function formatActivityType(value: string | null | undefined): string {
+  if (!value)
+    return '-';
+
+  const key = `views.playerProfile.tracking.activityTypes.${value}`;
+  const translated = t(key);
+  return translated === key ? value : translated;
 }
 
 function parseInventoryItems(json: string | null | undefined): unknown[] {
@@ -837,11 +845,20 @@ watch(() => route.query, applyRegionFromQuery);
     <section class="profile-panel">
       <div class="profile-panel__header">
         <h3>{{ t('views.playerProfile.sections.trackingActivity') }}</h3>
-        <el-segmented
+        <el-select
           v-model="activityType"
-          :options="activityTypeOptions"
+          allow-create
+          filterable
           size="small"
-        />
+          class="tracking-activity-type-select"
+        >
+          <el-option
+            v-for="item in activityTypeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </div>
       <el-table :data="activities" size="small" border>
         <el-table-column :label="t('views.playerProfile.tracking.createdAt')" width="170">
@@ -852,7 +869,7 @@ watch(() => route.query, applyRegionFromQuery);
         <el-table-column :label="t('views.playerProfile.tracking.activityType')" width="130">
           <template #default="{ row }">
             <el-tag effect="plain" size="small">
-              {{ t(`views.playerProfile.tracking.activityTypes.${row.activityType ?? 'Session'}`) }}
+              {{ formatActivityType(row.activityType) }}
             </el-tag>
           </template>
         </el-table-column>
@@ -951,6 +968,10 @@ watch(() => route.query, applyRegionFromQuery);
 .profile-panel__header :deep(.el-segmented) {
   max-width: 100%;
   overflow-x: auto;
+}
+
+.tracking-activity-type-select {
+  width: min(220px, 100%);
 }
 
 .tracking-summary {

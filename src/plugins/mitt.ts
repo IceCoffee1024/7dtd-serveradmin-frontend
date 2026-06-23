@@ -1,4 +1,5 @@
-import type { ChatType, PlayerBasicInfoDto } from '~/generated/api/types.gen';
+import type { PlayerBasicInfoDto } from '~/generated/api/types.gen';
+import type { ChatType } from '~/views/GameChat/chatType';
 import mitt from 'mitt';
 
 export const EVENT_TYPES = {

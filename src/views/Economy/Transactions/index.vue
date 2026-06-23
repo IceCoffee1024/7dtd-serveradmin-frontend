@@ -3,7 +3,6 @@ import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/co
 import type {
   EconomyTransactionDto,
   EconomyTransactionQueryOrder,
-  EconomyTransactionType,
 } from '~/generated/api/types.gen';
 import type { EconomyTransactionFilters } from '~/queries/economy';
 import { useQueryCache } from '@pinia/colada';
@@ -101,8 +100,12 @@ const columns = computed<MyTableColumn<TransactionRow>[]>(() => [
         { label: t('views.economy.transactions.typeOptions.transferIn'), value: 'TransferIn' },
         { label: t('views.economy.transactions.typeOptions.dailyReward'), value: 'DailyReward' },
         { label: t('views.economy.transactions.typeOptions.tax'), value: 'Tax' },
+        { label: t('views.economy.transactions.typeOptions.shopPurchase'), value: 'ShopPurchase' },
+        { label: t('views.economy.transactions.typeOptions.shopRefund'), value: 'ShopRefund' },
+        { label: t('views.economy.transactions.typeOptions.rewardPackageGrant'), value: 'RewardPackageGrant' },
+        { label: t('views.economy.transactions.typeOptions.rewardPackageDeduct'), value: 'RewardPackageDeduct' },
       ],
-      props: { clearable: true },
+      props: { allowCreate: true, clearable: true, filterable: true },
       order: 3,
       span: 6,
     },
@@ -153,7 +156,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
     keyword: params.search?.keyword?.trim() || undefined,
     playerId: toOptionalString(params.search?.playerId),
     playerName: toOptionalString(params.search?.playerName),
-    type: toOptionalTransactionType(params.search?.type),
+    type: toOptionalString(params.search?.type),
     source: toOptionalString(params.search?.source),
     startTime: toOptionalString(params.search?.startTime),
     endTime: toOptionalString(params.search?.endTime),
@@ -204,20 +207,6 @@ function toOptionalString(value: unknown): string | undefined {
 
   const trimmedValue = value.trim();
   return trimmedValue || undefined;
-}
-
-function toOptionalTransactionType(value: unknown): EconomyTransactionType | undefined {
-  switch (value) {
-    case 'AdminGrant':
-    case 'AdminDeduct':
-    case 'TransferOut':
-    case 'TransferIn':
-    case 'DailyReward':
-    case 'Tax':
-      return value;
-    default:
-      return undefined;
-  }
 }
 
 function toOrder(sortField: string | undefined): EconomyTransactionQueryOrder | undefined {

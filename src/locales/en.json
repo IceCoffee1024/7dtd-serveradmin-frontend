@@ -1670,7 +1670,11 @@
           "transferOut": "Transfer Out",
           "transferIn": "Transfer In",
           "dailyReward": "Daily Reward",
-          "tax": "Tax"
+          "tax": "Tax",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "Transaction Details",

@@ -1670,7 +1670,11 @@
           "transferOut": "외부로 이전",
           "transferIn": "환승",
           "dailyReward": "일일 보상",
-          "tax": "세"
+          "tax": "세",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "거래 세부정보",

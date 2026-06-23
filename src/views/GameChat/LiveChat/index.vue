@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LiveChatTypeFilter } from '../chatType';
-import type { ChatType, OnlinePlayerDto } from '~/generated/api/types.gen';
+import type { OnlinePlayerDto } from '~/generated/api/types.gen';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
 import dayjs from 'dayjs';
@@ -250,7 +250,7 @@ onBeforeUnmount(() => {
                 :class="chatTypeToneClass(item.chatType)"
               >
                 <span class="live-chat-message__channel-dot" />
-                {{ getChatTypeLabel(item.chatType as ChatType, t) }}
+                {{ getChatTypeLabel(item.chatType, t) }}
               </span>
               <span class="live-chat-message__sender">{{ displaySender(item.senderName) }}</span>
               <span v-if="formatTimestamp(item.timestamp)" class="live-chat-message__time">

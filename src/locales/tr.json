@@ -1670,7 +1670,11 @@
           "transferOut": "Dışarı Aktar",
           "transferIn": "Aktarım",
           "dailyReward": "Günlük Ödül",
-          "tax": "Vergi"
+          "tax": "Vergi",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "İşlem Detayları",

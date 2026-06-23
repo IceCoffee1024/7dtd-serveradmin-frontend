@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { MyTableColumn, MyTableFetchParams, MyTableFetchResult } from '~/composables/table';
-import type { ChatMessageDto, ChatMessageQueryOrder, ChatType } from '~/generated/api/types.gen';
+import type { ChatMessageDto, ChatMessageQueryOrder } from '~/generated/api/types.gen';
 import { useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { usePlayerProfileNavigation, useRoutePlayerTableSearch } from '~/composables';
 import { chatMessagesGetQuery } from '~/generated/api/@pinia/colada.gen';
-import { getChatTypeOptions, getChatTypeTagType } from '../chatType';
+import { getChatTypeLabel, getChatTypeOptions, getChatTypeTagType } from '../chatType';
 
 defineOptions({ name: 'ChatHistory' });
 
@@ -70,7 +70,9 @@ const columns = computed<MyTableColumn<ChatMessageRow>[]>(() => [
     search: {
       el: 'el-select',
       props: {
+        allowCreate: true,
         clearable: true,
+        filterable: true,
         placeholder: t('views.gameChat.history.placeholders.allChatTypes'),
       },
       order: 3,
@@ -126,7 +128,7 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
       keyword: toOptionalString(params.search?.keyword),
       senderName: toOptionalString(params.search?.senderName),
       playerId: toOptionalString(params.search?.playerId),
-      chatType: toOptionalChatType(params.search?.chatType),
+      chatType: toOptionalString(params.search?.chatType),
       startTime: toOptionalString(params.search?.startTime),
       endTime: toOptionalString(params.search?.endTime),
       order: toOrder(params.sortField),
@@ -182,19 +184,6 @@ function toOptionalString(value: unknown): string | undefined {
 
   const trimmedValue = value.trim();
   return trimmedValue || undefined;
-}
-
-function toOptionalChatType(value: unknown): ChatType | undefined {
-  switch (value) {
-    case 'Global':
-    case 'Friends':
-    case 'Party':
-    case 'Whisper':
-    case 'Unknown':
-      return value;
-    default:
-      return undefined;
-  }
 }
 
 /**
@@ -266,8 +255,8 @@ function onViewPlayerProfile(row: ChatMessageRow) {
       </template>
 
       <template #chatType="{ row }">
-        <el-tag size="small" round effect="plain" :type="getChatTypeTagType(row.chatType as ChatType)">
-          {{ chatTypeOptions.find(item => item.value === row.chatType)?.label ?? t('common.unknown') }}
+        <el-tag size="small" round effect="plain" :type="getChatTypeTagType(row.chatType)">
+          {{ getChatTypeLabel(row.chatType, t) }}
         </el-tag>
       </template>
 

@@ -1178,7 +1178,11 @@
           "transferOut": "转出",
           "transferIn": "转入",
           "dailyReward": "每日签到奖励",
-          "tax": "税费"
+          "tax": "税费",
+          "shopPurchase": "商店购买",
+          "shopRefund": "商店退款",
+          "rewardPackageGrant": "奖励包发放",
+          "rewardPackageDeduct": "奖励包扣除"
         },
         "detailDialog": {
           "title": "流水详情",

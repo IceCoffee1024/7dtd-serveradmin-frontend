@@ -3,7 +3,6 @@ import type { FormRules } from 'element-plus';
 import type {
   RewardPackageDto,
   RewardPackageEntryDto,
-  RewardPackageEntryType,
   RewardPackageEntryUpsertDto,
   RewardPackageQueryOrder,
   RewardPackageUpsertDto,
@@ -43,7 +42,7 @@ interface PackageFormModel {
 }
 
 interface EntryFormModel {
-  entryType: RewardPackageEntryType;
+  entryType: string;
   payloadJson: string;
   sortOrder: number;
   isEnabled: boolean;
@@ -147,7 +146,7 @@ const entryFields = computed<MyFormField<EntryFormModel>[]>(() => [
     options: entryTypeOptions.value,
     span: { xs: 24, md: 12 },
     onChange: (value, model) => {
-      model.payloadJson = buildSamplePayload(value as RewardPackageEntryType);
+      model.payloadJson = buildSamplePayload(String(value));
     },
   },
   {
@@ -240,7 +239,7 @@ function buildEntryDefaults(): EntryFormModel {
   };
 }
 
-function buildSamplePayload(entryType: RewardPackageEntryType): string {
+function buildSamplePayload(entryType: string): string {
   switch (entryType) {
     case 'EconomyCurrency':
       return JSON.stringify({ amount: 100, reason: 'Reward package: {PackageName}' }, null, 2);
@@ -302,6 +301,15 @@ async function fetchData(params: MyTableFetchParams): Promise<MyTableFetchResult
 
 function formatTimestamp(value: string | null | undefined): string {
   return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+}
+
+function formatEntryType(entryType: string | null | undefined): string {
+  if (!entryType)
+    return '-';
+
+  const key = `views.economy.rewardPackages.entryTypes.${entryType}`;
+  const translated = t(key);
+  return translated === key ? entryType : translated;
 }
 
 function openAddPackage() {
@@ -589,7 +597,7 @@ async function onDeleteEntry(row: RewardPackageEntryDto) {
         <el-table-column :label="t('views.economy.rewardPackages.entryColumns.entryType')" width="160">
           <template #default="{ row }">
             <el-tag type="info">
-              {{ t(`views.economy.rewardPackages.entryTypes.${row.entryType}`) }}
+              {{ formatEntryType(row.entryType) }}
             </el-tag>
           </template>
         </el-table-column>

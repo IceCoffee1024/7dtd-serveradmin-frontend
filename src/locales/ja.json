@@ -1670,7 +1670,11 @@
           "transferOut": "転出",
           "transferIn": "転入",
           "dailyReward": "毎日の報酬",
-          "tax": "税"
+          "tax": "税",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "取引詳細",

@@ -284,7 +284,7 @@ export type AuditLogDto = {
     /**
      * Entry point that produced the audit record.
      */
-    source: AuditLogSource;
+    source: string;
     /**
      * Stable operator identifier captured from the caller context when available.
      */
@@ -300,7 +300,7 @@ export type AuditLogDto = {
     /**
      * Normalized action code that categorizes the audited operation.
      */
-    actionType: AuditActionType;
+    actionType: string;
     /**
      * Logical category of the affected resource.
      */
@@ -326,18 +326,6 @@ export type AuditLogDto = {
      */
     errorMessage?: string | null;
 };
-
-/**
- * Identifies the entry point that produced an audit log record.
- */
-export type AuditLogSource = 'Api' | 'ChatCommand' | 'ConsoleCommand' | 'System';
-
-/**
- * Classifies the business action captured by an audit log record.
- * These values are used by the management UI and downstream analytics to group operational changes
- * without depending on free-form summary text.
- */
-export type AuditActionType = 'Create' | 'Update' | 'Delete' | 'Enable' | 'Disable' | 'Execute' | 'Send' | 'Kick' | 'Ban' | 'Unban' | 'Restart' | 'Export' | 'Grant' | 'Revoke' | 'Reset';
 
 /**
  * Supported sort fields for AuditLog list queries,
@@ -785,11 +773,6 @@ export type ChatMessageDto = {
      */
     message: string;
 };
-
-/**
- * Defines the in-game chat channel scope used by the server event pipeline.
- */
-export type ChatType = 'Global' | 'Friends' | 'Party' | 'Whisper' | 'Unknown';
 
 /**
  * Sortable columns supported by the chat history list endpoint.
@@ -2071,13 +2054,15 @@ export type EconomyTransactionDto = {
      */
     relatedPlayerName?: string | null;
     /**
-     * Business transaction type.
+     * Business transaction type. This value is intentionally extensible because feature modules can add
+     * transaction types such as shop purchases, refunds, reward package grants, or event-driven rewards.
      */
-    type: EconomyTransactionType;
+    type: string;
     /**
-     * Income or expense direction.
+     * Income or expense direction. This value is intentionally serialized as the persisted string so future
+     * ledger directions can be introduced without breaking historical reads.
      */
-    direction: EconomyTransactionDirection;
+    direction: string;
     /**
      * Absolute changed amount.
      */
@@ -2123,18 +2108,6 @@ export type EconomyTransactionDto = {
      */
     createdAt?: string;
 };
-
-/**
- * Business transaction types used by the economy feature.
- * Values match the strings persisted in the database and serialized by the API.
- */
-export type EconomyTransactionType = 'AdminGrant' | 'AdminDeduct' | 'TransferOut' | 'TransferIn' | 'DailyReward' | 'Tax';
-
-/**
- * Ledger entry direction: income or expense.
- * Values match the strings persisted in the database and serialized by the API.
- */
-export type EconomyTransactionDirection = 'Income' | 'Expense';
 
 /**
  * Carries a management request to increase or decrease one player's balance.
@@ -5237,7 +5210,7 @@ export type PlayerInventorySnapshotDto = {
     createdAt?: string;
     playerId?: string;
     playerName?: string | null;
-    snapshotReason?: PlayerTrackingSnapshotReason;
+    snapshotReason?: string;
     itemHash?: string;
     bagJson?: string | null;
     beltJson?: string | null;
@@ -5245,8 +5218,6 @@ export type PlayerInventorySnapshotDto = {
     totalItemCount?: number;
     changedFromSnapshotId?: number | null;
 };
-
-export type PlayerTrackingSnapshotReason = 'Manual' | 'Join' | 'Leave' | 'Save' | 'Scheduled';
 
 /**
  * Represents a paged query result with total count and current page items.
@@ -5993,7 +5964,7 @@ export type PlayerActivityLogDto = {
     createdAt?: string;
     playerId?: string;
     playerName?: string | null;
-    activityType?: PlayerTrackingActivityType;
+    activityType?: string;
     summary?: string;
     source?: string | null;
     x?: number | null;
@@ -6004,8 +5975,6 @@ export type PlayerActivityLogDto = {
     relatedEntity?: string | null;
     detailsJson?: string | null;
 };
-
-export type PlayerTrackingActivityType = 'Login' | 'Joined' | 'Left' | 'Chat' | 'Death' | 'KillZombie' | 'KillPlayer' | 'Location' | 'Inventory' | 'Session';
 
 /**
  * Represents a paged query result with total count and current page items.
@@ -6405,7 +6374,7 @@ export type RewardPackageEntryDto = {
     /**
      * Entry kind.
      */
-    entryType?: RewardPackageEntryType;
+    entryType?: string;
     /**
      * Entry-specific JSON payload.
      */
@@ -6427,11 +6396,6 @@ export type RewardPackageEntryDto = {
      */
     updatedAt?: string;
 };
-
-/**
- * Supported reward package entry kinds.
- */
-export type RewardPackageEntryType = 'GameItem' | 'EconomyCurrency' | 'ConsoleCommand';
 
 /**
  * Request used to create or update a reward package.
@@ -6462,7 +6426,7 @@ export type RewardPackageEntryUpsertDto = {
     /**
      * Entry kind.
      */
-    entryType?: RewardPackageEntryType;
+    entryType?: string;
     /**
      * Entry-specific JSON payload.
      */
@@ -7600,17 +7564,19 @@ export type AuditLogsGetData = {
          */
         endTime?: string | null;
         /**
-         * Optional source filter such as Api, ChatCommand, Console, or System.
+         * Optional source filter. This accepts the persisted source string so new subsystems can be queried without
+         * changing the public contract.
          */
-        source?: AuditLogSource | null;
+        source?: string | null;
         /**
          * Optional operator identifier filter.
          */
         operatorId?: string | null;
         /**
-         * Optional action type filter.
+         * Optional action type filter. This accepts the persisted action type string so feature-specific audit actions
+         * can be queried without changing the public contract.
          */
-        actionType?: AuditActionType | null;
+        actionType?: string | null;
         /**
          * Optional resource type filter.
          */
@@ -8105,9 +8071,10 @@ export type ChatMessagesGetData = {
          */
         senderName?: string | null;
         /**
-         * Optional chat channel filter.
+         * Optional chat channel filter. This accepts the persisted chat type string so new runtime chat channels can
+         * be queried without changing the public contract.
          */
-        chatType?: ChatType | null;
+        chatType?: string | null;
         /**
          * Optional lower bound for the capture timestamp in UTC.
          */
@@ -9411,9 +9378,10 @@ export type EconomyTransactionsGetTransactionsData = {
          */
         playerName?: string | null;
         /**
-         * Optional transaction type filter.
+         * Optional transaction type filter. This accepts the persisted transaction type string instead of a
+         * closed enum so newly added feature modules can be queried without changing the public contract.
          */
-        type?: EconomyTransactionType | null;
+        type?: string | null;
         /**
          * Optional source filter.
          */
@@ -9472,9 +9440,10 @@ export type EconomyTransactionsExportTransactionsData = {
          */
         playerName?: string | null;
         /**
-         * Optional transaction type filter.
+         * Optional transaction type filter. This accepts the persisted transaction type string instead of a
+         * closed enum so newly added feature modules can be queried without changing the public contract.
          */
-        type?: EconomyTransactionType | null;
+        type?: string | null;
         /**
          * Optional source filter.
          */
@@ -11864,7 +11833,7 @@ export type PlayerTrackingGetPlayerActivitiesData = {
         playerId: string;
     };
     query?: {
-        activityType?: PlayerTrackingActivityType | null;
+        activityType?: string | null;
         startTime?: string | null;
         endTime?: string | null;
         /**

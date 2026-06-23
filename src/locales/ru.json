@@ -1670,7 +1670,11 @@
           "transferOut": "Трансфер из",
           "transferIn": "Трансфер в",
           "dailyReward": "Ежедневная награда",
-          "tax": "Налог"
+          "tax": "Налог",
+          "shopPurchase": "Shop Purchase",
+          "shopRefund": "Shop Refund",
+          "rewardPackageGrant": "Reward Package Grant",
+          "rewardPackageDeduct": "Reward Package Deduct"
         },
         "detailDialog": {
           "title": "Детали транзакции",
