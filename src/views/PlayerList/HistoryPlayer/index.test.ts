@@ -9,6 +9,10 @@ const localesDir = path.resolve(currentDir, '../../../locales');
 const requiredLocaleKeys = [
   'views.playerList.totalTimePlayed',
   'views.playerList.longestLife',
+  'components.playerDetailsDialog.score',
+  'components.playerDetailsDialog.distanceWalked',
+  'components.playerDetailsDialog.totalItemsCrafted',
+  'components.playerDetailsDialog.currentLife',
 ];
 
 function flattenMessages(source: unknown, prefix = '', output: Record<string, unknown> = {}) {
@@ -43,5 +47,28 @@ describe('history player locale keys', () => {
         expect(messages[key], `${localeFile} should not leave ${key} empty`).not.toBe('');
       }
     }
+  });
+});
+
+describe('history player details action', () => {
+  it('opens player details dialog with the cached history source', () => {
+    const source = readFileSync(path.join(currentDir, 'index.vue'), 'utf8');
+
+    expect(source).toContain("playerDetailsDialogRef.value?.open(row.playerId, row.playerName, 'history')");
+  });
+});
+
+describe('history player ranking fields', () => {
+  it('shows and sorts every persisted ranking field from history snapshots', () => {
+    const source = readFileSync(path.join(currentDir, 'index.vue'), 'utf8');
+
+    for (const field of ['score', 'distanceWalked', 'totalItemsCrafted', 'currentLife']) {
+      expect(source, `missing column for ${field}`).toContain(`prop: '${field}'`);
+    }
+
+    expect(source).toContain("case 'score': return 'Score'");
+    expect(source).toContain("case 'distanceWalked': return 'DistanceWalked'");
+    expect(source).toContain("case 'totalItemsCrafted': return 'TotalItemsCrafted'");
+    expect(source).toContain("case 'currentLife': return 'CurrentLife'");
   });
 });

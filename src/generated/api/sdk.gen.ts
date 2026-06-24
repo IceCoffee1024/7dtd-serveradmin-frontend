@@ -1523,7 +1523,7 @@ export const gameServerGetHistoryPlayers = <ThrowOnError extends boolean = true>
 });
 
 /**
- * Returns a persisted player record by combined player identifier.
+ * Returns cached historical player details by combined player identifier.
  */
 export const gameServerGetHistoryPlayerById = <ThrowOnError extends boolean = true>(options: Options<GameServerGetHistoryPlayerByIdData, ThrowOnError>) => (options.client ?? client).get<GameServerGetHistoryPlayerByIdResponses, GameServerGetHistoryPlayerByIdErrors, ThrowOnError>({
     security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],

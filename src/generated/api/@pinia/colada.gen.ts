@@ -2230,7 +2230,7 @@ export const gameServerGetHistoryPlayersQuery = defineQueryOptions<Options<GameS
 export const gameServerGetHistoryPlayerByIdQueryKey = (options: Options<GameServerGetHistoryPlayerByIdData>) => createQueryKey('gameServerGetHistoryPlayerById', options, ['GameServer']);
 
 /**
- * Returns a persisted player record by combined player identifier.
+ * Returns cached historical player details by combined player identifier.
  */
 export const gameServerGetHistoryPlayerByIdQuery = defineQueryOptions<Options<GameServerGetHistoryPlayerByIdData>, GameServerGetHistoryPlayerByIdResponse, Error>((options: Options<GameServerGetHistoryPlayerByIdData>) => ({
     key: gameServerGetHistoryPlayerByIdQueryKey(options),

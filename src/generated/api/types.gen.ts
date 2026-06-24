@@ -4523,6 +4523,22 @@ export type HistoryPlayerDto = PlayerBasicInfoDto & {
      */
     totalTimePlayed: number;
     /**
+     * Server-defined score value accumulated by the player.
+     */
+    score: number;
+    /**
+     * Cumulative distance walked by the player, in meters.
+     */
+    distanceWalked: number;
+    /**
+     * Total number of items crafted by the player across all sessions.
+     */
+    totalItemsCrafted: number;
+    /**
+     * Duration of the player's current active survival run, in game minutes.
+     */
+    currentLife: number;
+    /**
      * Experience required to reach the next level.
      */
     expToNextLevel: number;
@@ -4604,7 +4620,7 @@ export type QuestpositionData = {
  * Supported sort fields for historical player list queries,
  * enabling the management UI to order persisted player records flexibly.
  */
-export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'LongestLife' | 'TotalTimePlayed' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
+export type HistoryPlayerQueryOrder = 'EntityId' | 'PlayerName' | 'PermissionLevel' | 'IsOnline' | 'PlayGroup' | 'LastLogin' | 'LastSeenAt' | 'Level' | 'GameStage' | 'ZombieKills' | 'PlayerKills' | 'Deaths' | 'LongestLife' | 'TotalTimePlayed' | 'Score' | 'DistanceWalked' | 'TotalItemsCrafted' | 'CurrentLife' | 'ExpToNextLevel' | 'SkillPoints' | 'LastKnownIp' | 'UpdatedAt';
 
 export type PlayerDetailsDto = PlayerBasicInfoDto & {
     /**
@@ -10762,9 +10778,9 @@ export type GameServerGetHistoryPlayerByIdErrors = {
 
 export type GameServerGetHistoryPlayerByIdResponses = {
     /**
-     * HTTP 200 with historical player data when found; otherwise HTTP 404.
+     * HTTP 200 with cached historical player details when found; otherwise HTTP 404.
      */
-    200: HistoryPlayerDto;
+    200: PlayerDetailsDto;
 };
 
 export type GameServerGetHistoryPlayerByIdResponse = GameServerGetHistoryPlayerByIdResponses[keyof GameServerGetHistoryPlayerByIdResponses];

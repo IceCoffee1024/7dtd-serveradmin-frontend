@@ -58,6 +58,15 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   { prop: 'zombieKills', label: t('views.playerList.zombieKills'), sortable: true },
   { prop: 'playerKills', label: t('views.playerList.playerKills'), sortable: true },
   { prop: 'deaths', label: t('views.playerList.deaths'), sortable: true },
+  { prop: 'score', label: t('components.playerDetailsDialog.score'), sortable: true },
+  {
+    prop: 'distanceWalked',
+    label: t('components.playerDetailsDialog.distanceWalked'),
+    slot: 'distanceWalked',
+    sortable: true,
+    exportFormatter: value => Number(value ?? 0).toFixed(1),
+  },
+  { prop: 'totalItemsCrafted', label: t('components.playerDetailsDialog.totalItemsCrafted'), sortable: true },
   {
     prop: 'totalTimePlayed',
     label: t('views.playerList.totalTimePlayed'),
@@ -69,6 +78,13 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
     prop: 'longestLife',
     label: t('views.playerList.longestLife'),
     slot: 'longestLife',
+    sortable: true,
+    exportFormatter: value => formatMinute(Number(value ?? 0)),
+  },
+  {
+    prop: 'currentLife',
+    label: t('components.playerDetailsDialog.currentLife'),
+    slot: 'currentLife',
     sortable: true,
     exportFormatter: value => formatMinute(Number(value ?? 0)),
   },
@@ -135,6 +151,10 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
     case 'deaths': return 'Deaths';
     case 'totalTimePlayed': return 'TotalTimePlayed';
     case 'longestLife': return 'LongestLife';
+    case 'score': return 'Score';
+    case 'distanceWalked': return 'DistanceWalked';
+    case 'totalItemsCrafted': return 'TotalItemsCrafted';
+    case 'currentLife': return 'CurrentLife';
     case 'expToNextLevel': return 'ExpToNextLevel';
     case 'skillPoints': return 'SkillPoints';
     case 'lastKnownIp': return 'LastKnownIp';
@@ -177,7 +197,7 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
     command: (row) => {
       if (!row)
         return;
-      playerDetailsDialogRef.value?.open(row.playerId, row.playerName);
+      playerDetailsDialogRef.value?.open(row.playerId, row.playerName, 'history');
     },
   },
 ]);
@@ -215,6 +235,12 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       </template>
       <template #longestLife="{ row }">
         {{ formatMinute(row.longestLife) }}
+      </template>
+      <template #currentLife="{ row }">
+        {{ formatMinute(row.currentLife) }}
+      </template>
+      <template #distanceWalked="{ row }">
+        {{ Number(row.distanceWalked ?? 0).toFixed(1) }}
       </template>
       <template #position="{ row }">
         {{ formatPosition(row.position) }}

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import MyDialog from '~/components/MyDialog/index.vue';
 import { useLatestAsync } from '~/composables/useLatestAsync';
-import { gameServerGetPlayerDetailsQuery } from '~/generated/api/@pinia/colada.gen';
+import { gameServerGetHistoryPlayerByIdQuery, gameServerGetPlayerDetailsQuery } from '~/generated/api/@pinia/colada.gen';
 import { formatMinute, formatPosition } from '~/utils';
 
 defineOptions({ name: 'PlayerDetailsDialog' });
@@ -14,6 +14,8 @@ interface DetailRow {
   label: string;
   value: string | number;
 }
+
+type PlayerDetailsSource = 'live' | 'history';
 
 const { t } = useI18n();
 const queryCache = useQueryCache();
@@ -57,16 +59,18 @@ function readStringArray(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-async function open(playerId: string, playerName: string) {
+async function open(playerId: string, playerName: string, source: PlayerDetailsSource = 'live') {
   title.value = `${playerName} (${playerId})`;
   reset();
   dialogRef.value?.open();
 
-  await executeLatest(async () => getModel(await fetchPlayerDetails(playerId)));
+  await executeLatest(async () => getModel(await fetchPlayerDetails(playerId, source)));
 }
 
-async function fetchPlayerDetails(playerId: string): Promise<PlayerDetailsDto> {
-  const options = gameServerGetPlayerDetailsQuery({ path: { playerId } });
+async function fetchPlayerDetails(playerId: string, source: PlayerDetailsSource): Promise<PlayerDetailsDto> {
+  const options = source === 'history'
+    ? gameServerGetHistoryPlayerByIdQuery({ path: { playerId } })
+    : gameServerGetPlayerDetailsQuery({ path: { playerId } });
   const entry = queryCache.ensure(options);
   const state = await queryCache.fetch(entry);
 
