@@ -4670,7 +4670,7 @@ export type PlayerDetailsDto = PlayerBasicInfoDto & {
     /**
      * Indicates whether the player is currently online.
      */
-    isOnline?: boolean;
+    isOnline: boolean;
     /**
      * Party or group association persisted for this player.
      */

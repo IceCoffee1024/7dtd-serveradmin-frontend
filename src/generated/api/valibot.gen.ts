@@ -2374,7 +2374,7 @@ export const vPlayerDetailsDto = v.intersect([vPlayerBasicInfoDto, v.strictObjec
         expToNextLevel: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
         skillPoints: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
         gameStage: v.nullable(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
-        isOnline: v.optional(v.boolean()),
+        isOnline: v.boolean(),
         playGroup: v.string(),
         lastLogin: v.pipe(v.string(), v.isoTimestamp()),
         acl: v.nullable(v.array(v.string())),
