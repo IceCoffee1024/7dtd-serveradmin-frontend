@@ -24,6 +24,7 @@ import {
   toAchievementDefinitionRow,
 } from '~/queries/achievement';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'AchievementDefinitionsPage' });
 
@@ -183,7 +184,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.achievement.definitions.form.fields.playerMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.achievement.definitions.form.tooltips.playerMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.achievement.definitions.form.tooltips.playerMessage', ['achievementName', 'playerName', 'threshold']),
     span: { xs: 24 },
   },
   {
@@ -191,7 +192,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.achievement.definitions.form.fields.broadcastMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.achievement.definitions.form.tooltips.broadcastMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.achievement.definitions.form.tooltips.broadcastMessage', ['achievementName', 'playerName', 'threshold']),
     span: { xs: 24 },
   },
   {
@@ -199,7 +200,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.achievement.definitions.form.fields.consoleCommands'),
     el: 'el-input',
     props: { type: 'textarea', rows: 3, clearable: true },
-    tooltip: t('views.achievement.definitions.form.tooltips.consoleCommands'),
+    tooltip: translateLiteralPlaceholders(t, 'views.achievement.definitions.form.tooltips.consoleCommands', ['playerId', 'playerName']),
     span: { xs: 24 },
   },
 ]);

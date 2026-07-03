@@ -16,6 +16,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'GameNoticePage' });
 
@@ -96,7 +97,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.gameNotice.settings.fields.bloodMoonNotice1'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.gameNotice.settings.tooltips.bloodMoonNotices'),
+    tooltip: translateLiteralPlaceholders(t, 'views.gameNotice.settings.tooltips.bloodMoonNotices', ['BloodMoonDays', 'BloodMoonStartTime', 'BloodMoonEndTime']),
     span: { xs: 24 },
   },
   {

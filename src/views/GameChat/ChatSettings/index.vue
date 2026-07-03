@@ -18,6 +18,7 @@ import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
 import ChatEffectPreview from '../components/ChatEffectPreview.vue';
+import { getMuteNotificationTooltip } from './muteNotificationTooltip';
 
 defineOptions({ name: 'ChatSettingsPage' });
 
@@ -170,7 +171,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.chatSettings.fields.muteAppliedPrivateMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2 },
-    tooltip: t('views.chatSettings.tooltips.muteAppliedPrivateMessage'),
+    tooltip: getMuteNotificationTooltip(t, 'muteAppliedPrivateMessage'),
     span: { xs: 24, md: 12 },
   },
   {
@@ -178,7 +179,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.chatSettings.fields.muteAppliedBroadcastMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2 },
-    tooltip: t('views.chatSettings.tooltips.muteAppliedBroadcastMessage'),
+    tooltip: getMuteNotificationTooltip(t, 'muteAppliedBroadcastMessage'),
     span: { xs: 24, md: 12 },
   },
   {
@@ -186,7 +187,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.chatSettings.fields.muteRemovedPrivateMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2 },
-    tooltip: t('views.chatSettings.tooltips.muteRemovedPrivateMessage'),
+    tooltip: getMuteNotificationTooltip(t, 'muteRemovedPrivateMessage'),
     span: { xs: 24, md: 12 },
   },
   {
@@ -194,7 +195,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.chatSettings.fields.muteRemovedBroadcastMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2 },
-    tooltip: t('views.chatSettings.tooltips.muteRemovedBroadcastMessage'),
+    tooltip: getMuteNotificationTooltip(t, 'muteRemovedBroadcastMessage'),
     span: { xs: 24, md: 12 },
   },
 ]);

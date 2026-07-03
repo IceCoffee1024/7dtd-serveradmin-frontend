@@ -16,6 +16,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'VoteRestartSettingsPage' });
 
@@ -181,7 +182,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteRestart.settings.fields.voteStartedMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.voteRestart.settings.tooltips.voteStartedMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteRestart.settings.tooltips.voteStartedMessage', ['Initiator', 'Duration', 'Command']),
     span: { xs: 24 },
   },
   {
@@ -203,7 +204,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteRestart.settings.fields.voteProgressMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.voteRestart.settings.tooltips.voteProgressMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteRestart.settings.tooltips.voteProgressMessage', ['Yes', 'No', 'Total', 'Threshold']),
     span: { xs: 24 },
   },
   {
@@ -218,7 +219,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteRestart.settings.fields.initiatorCooldownMessage'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.voteRestart.settings.tooltips.cooldownMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteRestart.settings.tooltips.cooldownMessage', ['RemainingSeconds']),
     span: { xs: 24 },
   },
   {
@@ -233,7 +234,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteRestart.settings.fields.notEnoughPlayersMessage'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.voteRestart.settings.tooltips.notEnoughPlayersMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteRestart.settings.tooltips.notEnoughPlayersMessage', ['MinPlayers', 'CurrentPlayers']),
     span: { xs: 24 },
   },
   {

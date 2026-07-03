@@ -30,6 +30,7 @@ import {
   eventAutomationUpdateRule,
   eventAutomationValidateRule,
 } from '~/generated/api/sdk.gen';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 import RuleActionBuilder from './components/RuleActionBuilder.vue';
 import RuleConditionBuilder from './components/RuleConditionBuilder.vue';
 import RuleDryRunSampleEditor from './components/RuleDryRunSampleEditor.vue';
@@ -125,7 +126,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendPrivateMessage',
         target: 'TriggerPlayer',
-        message: t('views.eventAutomation.rules.templates.welcomePrivateMessage.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.welcomePrivateMessage.message', ['playerName']),
       },
     ],
   },
@@ -138,7 +139,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     actions: [
       {
         type: 'SendGlobalMessage',
-        message: t('views.eventAutomation.rules.templates.welcomeBroadcast.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.welcomeBroadcast.message', ['playerName']),
       },
     ],
   },
@@ -155,7 +156,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendDiscordMessage',
         webhookTargetKey: 'public',
-        message: t('views.eventAutomation.rules.templates.discordPlayerJoined.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.discordPlayerJoined.message', ['playerName']),
       },
     ],
   },
@@ -240,7 +241,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendDiscordMessage',
         webhookTargetKey: 'admin',
-        message: t('views.eventAutomation.rules.templates.discordAdminKeyword.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.discordAdminKeyword.message', ['playerName', 'message']),
       },
     ],
   },
@@ -259,7 +260,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     actions: [
       {
         type: 'SendGlobalMessage',
-        message: t('views.eventAutomation.rules.templates.chatCommandBroadcast.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.chatCommandBroadcast.message', ['playerName']),
       },
     ],
   },
@@ -272,7 +273,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
     actions: [
       {
         type: 'SendAnnouncement',
-        message: t('views.eventAutomation.rules.templates.playerLeftAnnouncement.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.playerLeftAnnouncement.message', ['playerName']),
       },
     ],
   },
@@ -289,7 +290,7 @@ const ruleTemplates = computed<RuleTemplate[]>(() => [
       {
         type: 'SendDiscordMessage',
         webhookTargetKey: 'public',
-        message: t('views.eventAutomation.rules.templates.discordPlayerLeft.message'),
+        message: translateLiteralPlaceholders(t, 'views.eventAutomation.rules.templates.discordPlayerLeft.message', ['playerName']),
       },
     ],
   },

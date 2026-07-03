@@ -16,6 +16,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateScheduledCommandQueries } from '~/queries/scheduledCommand';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'ScheduledCommandSettingsPage' });
 
@@ -116,7 +117,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.scheduler.settings.fields.failureNotifyMessage'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.scheduler.settings.tooltips.failureNotifyMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.scheduler.settings.tooltips.failureNotifyMessage', ['taskName', 'error']),
     span: { xs: 24 },
   },
 ]);

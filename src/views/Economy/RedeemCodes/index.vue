@@ -26,6 +26,7 @@ import v from '~/plugins/valibot';
 import { invalidateEconomyRedeemCodeQueries } from '~/queries/economy';
 import { loadRewardPackageOptions } from '~/queries/rewardPackages';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'EconomyRedeemCodesPage' });
 
@@ -476,7 +477,7 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
               {{ t('views.economy.redeemCodes.form.fields.commandRewards') }}
             </span>
             <div class="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
-              {{ t('views.economy.redeemCodes.form.hints.commandRewards') }}
+              {{ translateLiteralPlaceholders(t, 'views.economy.redeemCodes.form.hints.commandRewards', ['EntityId', 'PlayerId', 'PlayerName']) }}
             </div>
           </div>
           <div class="redeem-codes-page__command-actions">
@@ -519,7 +520,7 @@ async function onViewRedemptions(row: EconomyRedeemCodeDto) {
             <span class="text-xs text-gray-400 text-right shrink-0 w-6 dark:text-gray-500">{{ index + 1 }}</span>
             <el-input
               v-model="commandRewards[index]"
-              :placeholder="t('views.economy.redeemCodes.form.placeholders.commandReward')"
+              :placeholder="translateLiteralPlaceholders(t, 'views.economy.redeemCodes.form.placeholders.commandReward', ['EntityId'])"
               class="font-mono flex-1"
               clearable
             />

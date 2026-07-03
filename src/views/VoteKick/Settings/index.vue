@@ -16,6 +16,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'VoteKickSettingsPage' });
 
@@ -191,7 +192,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteKick.settings.fields.voteStartedMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.voteKick.settings.tooltips.voteStartedMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteKick.settings.tooltips.voteStartedMessage', ['Initiator', 'Target', 'Duration', 'Command']),
     span: { xs: 24 },
   },
   {
@@ -213,7 +214,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteKick.settings.fields.voteProgressMessage'),
     el: 'el-input',
     props: { type: 'textarea', rows: 2, clearable: true },
-    tooltip: t('views.voteKick.settings.tooltips.voteProgressMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteKick.settings.tooltips.voteProgressMessage', ['Yes', 'No', 'Total', 'Threshold']),
     span: { xs: 24 },
   },
   {
@@ -228,7 +229,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteKick.settings.fields.cooldownMessage'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.voteKick.settings.tooltips.cooldownMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteKick.settings.tooltips.cooldownMessage', ['RemainingSeconds']),
     span: { xs: 24 },
   },
   {
@@ -272,7 +273,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.voteKick.settings.fields.notEnoughPlayersMessage'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.voteKick.settings.tooltips.notEnoughPlayersMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.voteKick.settings.tooltips.notEnoughPlayersMessage', ['MinPlayers', 'CurrentPlayers']),
     span: { xs: 24 },
   },
 ]);

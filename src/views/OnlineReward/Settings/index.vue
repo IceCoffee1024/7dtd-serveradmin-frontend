@@ -15,6 +15,7 @@ import {
 } from '~/generated/api/@pinia/colada.gen';
 import v from '~/plugins/valibot';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'OnlineRewardSettingsPage' });
 
@@ -102,7 +103,7 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
   {
     prop: 'playerMessage',
     label: t('views.onlineReward.settings.fields.playerMessage'),
-    tooltip: t('views.onlineReward.settings.fields.playerMessageHint'),
+    tooltip: translateLiteralPlaceholders(t, 'views.onlineReward.settings.fields.playerMessageHint', ['amount', 'currency', 'totalMinutes']),
     el: 'el-input',
     props: { clearable: true },
     span: { xs: 24 },

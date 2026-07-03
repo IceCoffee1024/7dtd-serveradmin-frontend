@@ -14,6 +14,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateBackupQueries } from '~/queries/backup';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'ServerConfigBackupConfigTab' });
 
@@ -96,9 +97,9 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
   { prop: 'compressToZip', label: t('views.backup.config.fields.compressToZip'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
   { prop: 'retentionCount', label: t('views.backup.config.fields.retentionCount'), el: 'el-input-number', props: { min: -1, precision: 0, class: 'w-full' }, tooltip: t('views.backup.tooltips.retentionCount'), span: { xs: 24, md: 12 } },
   { prop: 'broadcastOnStart', label: t('views.backup.fields.broadcastOnStart'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
-  { prop: 'broadcastStartMessage', label: t('views.backup.fields.broadcastStartMessage'), el: 'el-input', tooltip: t('views.backup.tooltips.broadcastMessage'), span: { xs: 24 } },
+  { prop: 'broadcastStartMessage', label: t('views.backup.fields.broadcastStartMessage'), el: 'el-input', tooltip: translateLiteralPlaceholders(t, 'views.backup.tooltips.broadcastMessage', ['taskName', 'status']), span: { xs: 24 } },
   { prop: 'broadcastOnComplete', label: t('views.backup.fields.broadcastOnComplete'), el: 'el-select', options: booleanOptions.value, span: { xs: 24, md: 12 } },
-  { prop: 'broadcastCompleteMessage', label: t('views.backup.fields.broadcastCompleteMessage'), el: 'el-input', tooltip: t('views.backup.tooltips.broadcastMessage'), span: { xs: 24 } },
+  { prop: 'broadcastCompleteMessage', label: t('views.backup.fields.broadcastCompleteMessage'), el: 'el-input', tooltip: translateLiteralPlaceholders(t, 'views.backup.tooltips.broadcastMessage', ['taskName', 'status']), span: { xs: 24 } },
 ]);
 
 const settingsQuery = useQuery(backupGetSettingsQuery());

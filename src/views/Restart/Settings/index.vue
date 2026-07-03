@@ -16,6 +16,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'RestartSettingsPage' });
 
@@ -144,7 +145,7 @@ const settingsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.restart.settings.fields.warningMessage'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.restart.settings.tooltips.warningMessage'),
+    tooltip: translateLiteralPlaceholders(t, 'views.restart.settings.tooltips.warningMessage', ['minutes']),
     span: { xs: 24 },
   },
   {
@@ -398,7 +399,7 @@ async function onCancelRestart() {
               <el-input-number v-model="stage.leadSeconds" :min="1" :precision="0" class="w-full" />
             </el-form-item>
             <el-form-item :label="t('views.restart.settings.warningStages.message')" class="flex-1">
-              <el-input v-model="stage.message" :placeholder="t('views.restart.settings.warningStages.messagePlaceholder')" />
+              <el-input v-model="stage.message" :placeholder="translateLiteralPlaceholders(t, 'views.restart.settings.warningStages.messagePlaceholder', ['minutes'])" />
             </el-form-item>
             <el-form-item class="flex-none">
               <IconButton

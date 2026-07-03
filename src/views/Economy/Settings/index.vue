@@ -16,6 +16,7 @@ import {
 import v from '~/plugins/valibot';
 import { invalidateEconomyQueries } from '~/queries/economy';
 import { generateElementRules } from '~/utils';
+import { translateLiteralPlaceholders } from '~/utils/i18nLiteralPlaceholders';
 
 defineOptions({ name: 'EconomySettingsPage' });
 
@@ -349,7 +350,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.balanceTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.balanceTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.balanceTip', ['balance', 'currency']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -357,7 +358,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.payUsageTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.payUsageTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.payUsageTip', ['currency']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -372,7 +373,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.paySuccessTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.paySuccessTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.paySuccessTip', ['amount', 'currency', 'playerName', 'tax']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -380,7 +381,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.dailySuccessTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.dailySuccessTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.dailySuccessTip', ['amount', 'currency', 'streak', 'bonusPercent']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -402,7 +403,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.buyUsageTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.buyUsageTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.buyUsageTip', ['currency']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -410,7 +411,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.buySuccessTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.buySuccessTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.buySuccessTip', ['name', 'quantity', 'cost', 'balance', 'currency']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -425,7 +426,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.redeemSuccessTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.redeemSuccessTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.redeemSuccessTip', ['amount', 'currency']),
     span: { xs: 24, md: 12 },
   },
   {
@@ -433,7 +434,7 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
     label: t('views.economy.settings.tips.fields.playerDiedPenaltyTip'),
     el: 'el-input',
     props: { clearable: true },
-    tooltip: t('views.economy.settings.tips.tooltips.playerDiedPenaltyTip'),
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.playerDiedPenaltyTip', ['amount', 'currency']),
     span: { xs: 24, md: 12 },
   },
 ]);
