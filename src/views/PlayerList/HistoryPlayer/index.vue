@@ -6,19 +6,33 @@ import type {
   PositionDto,
 } from '~/generated/api/types.gen';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
-import { useQueryCache } from '@pinia/colada';
+import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { resetPlayerProfile } from '~/api/playerProfileReset';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import { usePlayerProfileNavigation } from '~/composables';
+import { usePopup } from '~/composables/usePopup';
 import { gameServerGetHistoryPlayersQuery } from '~/generated/api/@pinia/colada.gen';
+import { invalidateGeneratedQueries } from '~/queries/generated';
 import { formatMinute, formatPosition } from '~/utils';
 
 type HistoryPlayerRow = HistoryPlayerDto;
 
 const { t } = useI18n();
+const { confirm: confirmPopup, toast } = usePopup();
 const { viewPlayerProfile } = usePlayerProfileNavigation();
 const queryCache = useQueryCache();
+const resetPlayerProfileMutation = useMutation({
+  mutation: async (row: HistoryPlayerRow) => {
+    return resetPlayerProfile(row.playerId, {
+      forceKickIfOnline: false,
+    });
+  },
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
+  },
+});
 
 const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
   {
@@ -198,6 +212,30 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       if (!row)
         return;
       playerDetailsDialogRef.value?.open(row.playerId, row.playerName, 'history');
+    },
+  },
+  {
+    label: t('views.playerList.resetProfile.title'),
+    divided: true,
+    disabled: row => row?.isOnline === true,
+    command: async (row) => {
+      if (!row)
+        return;
+      const confirmed = await confirmPopup({
+        title: t('views.playerList.resetProfile.title'),
+        text: t('views.playerList.resetProfile.confirmText', [row.playerName || row.playerId, row.playerId]),
+        type: 'warning',
+      });
+      if (!confirmed)
+        return;
+
+      try {
+        await resetPlayerProfileMutation.mutateAsync(row);
+        toast({ type: 'success', title: t('views.playerList.resetProfile.success') });
+      }
+      catch (error) {
+        console.error(error);
+      }
     },
   },
 ]);

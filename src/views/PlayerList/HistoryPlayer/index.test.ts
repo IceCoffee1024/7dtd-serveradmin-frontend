@@ -54,7 +54,17 @@ describe('history player details action', () => {
   it('opens player details dialog with the cached history source', () => {
     const source = readFileSync(path.join(currentDir, 'index.vue'), 'utf8');
 
-    expect(source).toContain("playerDetailsDialogRef.value?.open(row.playerId, row.playerName, 'history')");
+    expect(source).toContain('playerDetailsDialogRef.value?.open(row.playerId, row.playerName, \'history\')');
+  });
+});
+
+describe('history player profile reset action', () => {
+  it('resets native profile data without force-kicking from the history list', () => {
+    const source = readFileSync(path.join(currentDir, 'index.vue'), 'utf8');
+
+    expect(source).toContain('label: t(\'views.playerList.resetProfile.title\')');
+    expect(source).toContain('resetPlayerProfile(row.playerId');
+    expect(source).toContain('forceKickIfOnline: false');
   });
 });
 
@@ -66,9 +76,9 @@ describe('history player ranking fields', () => {
       expect(source, `missing column for ${field}`).toContain(`prop: '${field}'`);
     }
 
-    expect(source).toContain("case 'score': return 'Score'");
-    expect(source).toContain("case 'distanceWalked': return 'DistanceWalked'");
-    expect(source).toContain("case 'totalItemsCrafted': return 'TotalItemsCrafted'");
-    expect(source).toContain("case 'currentLife': return 'CurrentLife'");
+    expect(source).toContain('case \'score\': return \'Score\'');
+    expect(source).toContain('case \'distanceWalked\': return \'DistanceWalked\'');
+    expect(source).toContain('case \'totalItemsCrafted\': return \'TotalItemsCrafted\'');
+    expect(source).toContain('case \'currentLife\': return \'CurrentLife\'');
   });
 });

@@ -520,6 +520,14 @@
       "muteDuration": "음소거 기간(분, 0 또는 영구적인 경우 비어 있음)",
       "muteReason": "음소거 이유(선택사항)",
       "unmute": "음소거 해제",
+      "resetProfile": {
+        "title": "Reset Player Profile",
+        "onlineTitle": "Kick and Reset Player Profile",
+        "confirmText": "Reset native 7DTD profile data for {0} ({1})? Plugin data will not be cleared, and native save files will be moved to a backup directory first.",
+        "onlineConfirmText": "Kick {0} ({1}) first, then reset native 7DTD profile data after they go offline? Plugin data will not be cleared, and native save files will be moved to a backup directory first.",
+        "kickReason": "Resetting player profile. Please rejoin the server later.",
+        "success": "Player profile reset completed"
+      },
       "giveItem": {
         "title": "아이템 지급",
         "target": "대상 플레이어",

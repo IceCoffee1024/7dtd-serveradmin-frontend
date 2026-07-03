@@ -13,6 +13,7 @@ import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useMutation, useQueryCache } from '@pinia/colada';
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
+import { resetPlayerProfile } from '~/api/playerProfileReset';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
 import GameItemSelect from '~/components/GameItemSelect/index.vue';
 import MyDialog from '~/components/MyDialog/index.vue';
@@ -89,6 +90,17 @@ const giveItemToAllOnlinePlayersMutation = useMutation({
       throwOnError: true,
     });
     return data;
+  },
+});
+const resetPlayerProfileMutation = useMutation({
+  mutation: async (row: OnlinePlayerRow) => {
+    return resetPlayerProfile(row.playerId, {
+      forceKickIfOnline: true,
+      kickReason: t('views.playerList.resetProfile.kickReason'),
+    });
+  },
+  async onSettled() {
+    await invalidateGeneratedQueries('GameServer');
   },
 });
 const isGivingItem = computed(() => giveItemMutation.isLoading.value || giveItemToAllOnlinePlayersMutation.isLoading.value);
@@ -413,6 +425,29 @@ const contextMenuItems = computed<ContextMenuOption<OnlinePlayerRow>[]>(() => [
       try {
         await removeMuteMutation.mutateAsync({ body: [row.playerId] });
         toast({ type: 'success', title: t('views.playerList.unmute') });
+      }
+      catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  {
+    label: t('views.playerList.resetProfile.onlineTitle'),
+    divided: true,
+    command: async (row) => {
+      if (!row)
+        return;
+      const confirmed = await confirmPopup({
+        title: t('views.playerList.resetProfile.onlineTitle'),
+        text: t('views.playerList.resetProfile.onlineConfirmText', [row.playerName || row.playerId, row.playerId]),
+        type: 'warning',
+      });
+      if (!confirmed)
+        return;
+
+      try {
+        await resetPlayerProfileMutation.mutateAsync(row);
+        toast({ type: 'success', title: t('views.playerList.resetProfile.success') });
       }
       catch (error) {
         console.error(error);

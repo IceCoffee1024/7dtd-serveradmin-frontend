@@ -520,6 +520,14 @@
       "muteDuration": "靜音持續時間（分鐘，0 或為空表示永久）",
       "muteReason": "靜音原因（可選）",
       "unmute": "解除靜音",
+      "resetProfile": {
+        "title": "重置玩家資料",
+        "onlineTitle": "踢出並重置玩家資料",
+        "confirmText": "確定要重置 {0}（{1}）的 7DTD 原生角色資料嗎？插件資料不會清空，原生存檔會先移動到備份目錄。",
+        "onlineConfirmText": "確定要先踢出 {0}（{1}），離線後重置 7DTD 原生角色資料嗎？插件資料不會清空，原生存檔會先移動到備份目錄。",
+        "kickReason": "正在重置玩家資料，請稍後重新加入伺服器。",
+        "success": "玩家資料重置已完成"
+      },
       "giveItem": {
         "title": "發放物品",
         "target": "目標玩家",

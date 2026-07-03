@@ -520,6 +520,14 @@
       "muteDuration": "Duración del silencio (minutos, 0 o vacío para permanente)",
       "muteReason": "Motivo del silencio (opcional)",
       "unmute": "Quitar silencio",
+      "resetProfile": {
+        "title": "Reset Player Profile",
+        "onlineTitle": "Kick and Reset Player Profile",
+        "confirmText": "Reset native 7DTD profile data for {0} ({1})? Plugin data will not be cleared, and native save files will be moved to a backup directory first.",
+        "onlineConfirmText": "Kick {0} ({1}) first, then reset native 7DTD profile data after they go offline? Plugin data will not be cleared, and native save files will be moved to a backup directory first.",
+        "kickReason": "Resetting player profile. Please rejoin the server later.",
+        "success": "Player profile reset completed"
+      },
       "giveItem": {
         "title": "Entregar objeto",
         "target": "Jugador objetivo",

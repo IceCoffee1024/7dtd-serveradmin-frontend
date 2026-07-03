@@ -520,6 +520,14 @@
       "muteDuration": "禁言时长（分钟，0 或留空为永久）",
       "muteReason": "禁言原因（可选）",
       "unmute": "解除禁言",
+      "resetProfile": {
+        "title": "重置玩家资料",
+        "onlineTitle": "踢出并重置玩家资料",
+        "confirmText": "确定要重置 {0}（{1}）的 7DTD 原生角色资料吗？插件数据不会清空，原生存档会先移动到备份目录。",
+        "onlineConfirmText": "确定要先踢出 {0}（{1}），离线后重置 7DTD 原生角色资料吗？插件数据不会清空，原生存档会先移动到备份目录。",
+        "kickReason": "正在重置玩家资料，请稍后重新加入服务器。",
+        "success": "玩家资料重置已完成"
+      },
       "giveItem": {
         "title": "发放物品",
         "target": "目标玩家",
