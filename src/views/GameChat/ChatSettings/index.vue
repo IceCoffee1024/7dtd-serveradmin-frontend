@@ -31,6 +31,7 @@ interface FormModel {
   chatCommandSeparators: string;
   historyRetentionDays: number;
   excludeCommandsFromHistory: boolean;
+  hideRegisteredCommandGlobalMessages: boolean;
   muteNotifyMessage: string;
   muteAppliedPrivateMessage: string;
   muteAppliedBroadcastMessage: string;
@@ -58,6 +59,7 @@ function buildDefaults(): FormModel {
     chatCommandSeparators: ' ',
     historyRetentionDays: 0,
     excludeCommandsFromHistory: false,
+    hideRegisteredCommandGlobalMessages: false,
     muteNotifyMessage: '',
     muteAppliedPrivateMessage: '',
     muteAppliedBroadcastMessage: '',
@@ -79,6 +81,7 @@ const schema = v.object({
   chatCommandSeparators: v.pipe(v.string(), v.minLength(1)),
   historyRetentionDays: v.pipe(v.number(), v.minValue(0)),
   excludeCommandsFromHistory: v.boolean(),
+  hideRegisteredCommandGlobalMessages: v.boolean(),
   muteNotifyMessage: v.optional(v.string()),
   muteAppliedPrivateMessage: v.optional(v.string()),
   muteAppliedBroadcastMessage: v.optional(v.string()),
@@ -157,6 +160,14 @@ const fields = computed<MyFormField<FormModel>[]>(() => [
     el: 'el-select',
     options: booleanOptions.value,
     tooltip: t('views.chatSettings.tooltips.excludeCommandsFromHistory'),
+    span: { xs: 24, md: 12 },
+  },
+  {
+    prop: 'hideRegisteredCommandGlobalMessages',
+    label: t('views.chatSettings.fields.hideRegisteredCommandGlobalMessages'),
+    el: 'el-select',
+    options: booleanOptions.value,
+    tooltip: t('views.chatSettings.tooltips.hideRegisteredCommandGlobalMessages'),
     span: { xs: 24, md: 12 },
   },
   {
@@ -247,6 +258,7 @@ function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel
     chatCommandSeparators: [' '],
     historyRetentionDays: 0,
     excludeCommandsFromHistory: false,
+    hideRegisteredCommandGlobalMessages: false,
     muteNotifyMessage: null,
     muteAppliedPrivateMessage: null,
     muteAppliedBroadcastMessage: null,
@@ -262,6 +274,7 @@ function mapSettings(data: ChatFeatureSettingsDto | null | undefined): FormModel
     chatCommandSeparators: (source.chatCommandSeparators ?? [' ']).join(','),
     historyRetentionDays: source.historyRetentionDays ?? 0,
     excludeCommandsFromHistory: source.excludeCommandsFromHistory ?? false,
+    hideRegisteredCommandGlobalMessages: source.hideRegisteredCommandGlobalMessages ?? false,
     muteNotifyMessage: source.muteNotifyMessage ?? '',
     muteAppliedPrivateMessage: source.muteAppliedPrivateMessage ?? '',
     muteAppliedBroadcastMessage: source.muteAppliedBroadcastMessage ?? '',
@@ -279,6 +292,7 @@ function applyFormValues(values: FormModel): void {
   form.chatCommandSeparators = values.chatCommandSeparators;
   form.historyRetentionDays = values.historyRetentionDays;
   form.excludeCommandsFromHistory = values.excludeCommandsFromHistory;
+  form.hideRegisteredCommandGlobalMessages = values.hideRegisteredCommandGlobalMessages;
   form.muteNotifyMessage = values.muteNotifyMessage;
   form.muteAppliedPrivateMessage = values.muteAppliedPrivateMessage;
   form.muteAppliedBroadcastMessage = values.muteAppliedBroadcastMessage;
@@ -361,6 +375,7 @@ function toPayload(values: FormModel): ChatFeatureSettingsDto {
     chatCommandSeparators: splitCommaSeparated(values.chatCommandSeparators, false),
     historyRetentionDays: Number(values.historyRetentionDays ?? 0),
     excludeCommandsFromHistory: values.excludeCommandsFromHistory,
+    hideRegisteredCommandGlobalMessages: values.hideRegisteredCommandGlobalMessages,
     muteNotifyMessage: values.muteNotifyMessage || null,
     muteAppliedPrivateMessage: values.muteAppliedPrivateMessage || null,
     muteAppliedBroadcastMessage: values.muteAppliedBroadcastMessage || null,

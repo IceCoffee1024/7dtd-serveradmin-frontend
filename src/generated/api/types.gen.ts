@@ -648,6 +648,10 @@ export type ChatFeatureSettingsDto = {
      */
     excludeCommandsFromHistory?: boolean;
     /**
+     * When true, registered global chat commands are hidden from the game's public chat broadcast.
+     */
+    hideRegisteredCommandGlobalMessages?: boolean;
+    /**
      * Message sent back to a muted player when they attempt to chat.
      * Leave null or empty to send no notification.
      */
