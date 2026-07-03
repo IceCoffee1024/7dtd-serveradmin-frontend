@@ -12425,6 +12425,7 @@ export type RewardPackagesCreateEntryData = {
 };
 
 export type RewardPackagesCreateEntryErrors = {
+    400: ProblemDetailsDto;
     404: ProblemDetailsDto;
 };
 
@@ -12467,6 +12468,7 @@ export type RewardPackagesUpdateEntryData = {
 };
 
 export type RewardPackagesUpdateEntryErrors = {
+    400: ProblemDetailsDto;
     404: ProblemDetailsDto;
 };
 
