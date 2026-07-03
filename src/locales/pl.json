@@ -1539,6 +1539,7 @@
           "sectionTitle": "Komunikaty odpowiedzi na polecenia",
           "sectionDescription": "Zastąp domyślne wiadomości z poradami w grze wysyłane po wykonaniu polecenia. \nPozostaw puste, aby użyć wbudowanych ustawień domyślnych. \nObsługuje symbole zastępcze wymienione w etykietce narzędzia.",
           "fields": {
+            "zombieKillRewardTip": "Wskazówka nagrody za zabicie",
             "balanceTip": "Wskazówka dotycząca równowagi",
             "payUsageTip": "Zapłać wskazówkę dotyczącą użytkowania",
             "payTargetNotFoundTip": "Wskazówka: Nie znaleziono celu płatności",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Wskazówka dotycząca kary śmierci"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Obsługuje: {amount}, {currency}, {victim}",
             "balanceTip": "Obsługuje: {balance}, {currency}",
             "payUsageTip": "Obsługuje: {currency}",
             "paySuccessTip": "Obsługuje: {amount}, {currency}, {playerName}, {tax}",

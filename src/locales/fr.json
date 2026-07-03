@@ -1539,6 +1539,7 @@
           "sectionTitle": "Messages de réponse aux commandes",
           "sectionDescription": "Remplacez les messages d'astuces par défaut dans le jeu envoyés après l'exécution de la commande. \nLaissez vide pour utiliser les valeurs par défaut intégrées. \nPrend en charge les espaces réservés répertoriés dans l’info-bulle.",
           "fields": {
+            "zombieKillRewardTip": "Astuce de récompense d'élimination",
             "balanceTip": "Conseil d'équilibre",
             "payUsageTip": "Conseil d'utilisation payante",
             "payTargetNotFoundTip": "Objectif de paiement introuvable",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Astuce sur la peine de mort"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Prise en charge : {amount}, {currency}, {victim}",
             "balanceTip": "Prise en charge : {balance}, {currency}",
             "payUsageTip": "Prise en charge : {currency}",
             "paySuccessTip": "Prise en charge : {amount}, {currency}, {playerName}, {tax}",

@@ -1539,6 +1539,7 @@
           "sectionTitle": "コマンド応答メッセージ",
           "sectionDescription": "コマンド実行後に送信されるデフォルトのゲーム内ヒント メッセージをオーバーライドします。\n組み込みのデフォルトを使用するには、空白のままにします。\nツールチップにリストされるプレースホルダーをサポートします。",
           "fields": {
+            "zombieKillRewardTip": "キル報酬チップ",
             "balanceTip": "バランスチップ",
             "payUsageTip": "有料利用のヒント",
             "payTargetNotFoundTip": "支払い対象が見つかりません ヒント",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "死刑のヒント"
           },
           "tooltips": {
+            "zombieKillRewardTip": "サポート: {amount}、{currency}、{victim}",
             "balanceTip": "サポート: {balance}、{currency}",
             "payUsageTip": "サポート: {currency}",
             "paySuccessTip": "サポート: {amount}、{currency}、{playerName}、{tax}",

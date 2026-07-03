@@ -1539,6 +1539,7 @@
           "sectionTitle": "Command Response Messages",
           "sectionDescription": "Override the default in-game tip messages sent after command execution. Leave blank to use the built-in defaults. Supports placeholders listed in the tooltip.",
           "fields": {
+            "zombieKillRewardTip": "Kill Reward Tip",
             "balanceTip": "Balance Tip",
             "payUsageTip": "Pay Usage Tip",
             "payTargetNotFoundTip": "Pay Target Not Found Tip",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Death Penalty Tip"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Supports: {amount}, {currency}, {victim}",
             "balanceTip": "Supports: {balance}, {currency}",
             "payUsageTip": "Supports: {currency}",
             "paySuccessTip": "Supports: {amount}, {currency}, {playerName}, {tax}",

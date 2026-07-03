@@ -32,6 +32,7 @@ interface FormModel {
   leaderboardSize: number;
   zombieKillRewardEnabled: boolean;
   zombieKillRewardAmount: number;
+  zombieKillRewardTip: string;
   dailyStreakEnabled: boolean;
   dailyStreakBonusPercent: number;
   dailyStreakMaxDays: number;
@@ -92,6 +93,7 @@ function buildDefaults(): FormModel {
     leaderboardSize: 10,
     zombieKillRewardEnabled: false,
     zombieKillRewardAmount: 0,
+    zombieKillRewardTip: '',
     dailyStreakEnabled: false,
     dailyStreakBonusPercent: 10,
     dailyStreakMaxDays: 7,
@@ -145,6 +147,7 @@ const schema = v.object({
   leaderboardSize: v.pipe(v.number(), v.minValue(1)),
   zombieKillRewardEnabled: v.boolean(),
   zombieKillRewardAmount: v.pipe(v.number(), v.minValue(0)),
+  zombieKillRewardTip: v.optional(v.string()),
   dailyStreakEnabled: v.boolean(),
   dailyStreakBonusPercent: v.pipe(v.number(), v.minValue(0)),
   dailyStreakMaxDays: v.pipe(v.number(), v.minValue(1)),
@@ -346,6 +349,14 @@ const aliasesHelp = computed(() => t('views.economy.settings.commands.aliasesHel
 
 const tipsFields = computed<MyFormField<FormModel>[]>(() => [
   {
+    prop: 'zombieKillRewardTip',
+    label: t('views.economy.settings.tips.fields.zombieKillRewardTip'),
+    el: 'el-input',
+    props: { clearable: true },
+    tooltip: translateLiteralPlaceholders(t, 'views.economy.settings.tips.tooltips.zombieKillRewardTip', ['amount', 'currency', 'victim']),
+    span: { xs: 24, md: 12 },
+  },
+  {
     prop: 'balanceTip',
     label: t('views.economy.settings.tips.fields.balanceTip'),
     el: 'el-input',
@@ -440,6 +451,11 @@ const tipsFields = computed<MyFormField<FormModel>[]>(() => [
 ]);
 
 const tipPlaceholderGroups = computed(() => [
+  {
+    key: 'zombieKillReward',
+    label: t('views.economy.settings.tips.fields.zombieKillRewardTip'),
+    tokens: ['{amount}', '{currency}', '{victim}'],
+  },
   {
     key: 'balance',
     label: t('views.economy.settings.tips.fields.balanceTip'),
@@ -642,6 +658,7 @@ function mapSettings(data: EconomyFeatureSettingsDto | null | undefined): FormMo
     leaderboardSize: data.leaderboardSize ?? 10,
     zombieKillRewardEnabled: data.zombieKillRewardEnabled ?? false,
     zombieKillRewardAmount: data.zombieKillRewardAmount ?? 0,
+    zombieKillRewardTip: data.zombieKillRewardTip ?? '',
     dailyStreakEnabled: data.dailyStreakEnabled ?? false,
     dailyStreakBonusPercent: data.dailyStreakBonusPercent ?? 10,
     dailyStreakMaxDays: data.dailyStreakMaxDays ?? 7,
@@ -691,6 +708,7 @@ function applyFormValues(values: FormModel): void {
   form.leaderboardSize = values.leaderboardSize;
   form.zombieKillRewardEnabled = values.zombieKillRewardEnabled;
   form.zombieKillRewardAmount = values.zombieKillRewardAmount;
+  form.zombieKillRewardTip = values.zombieKillRewardTip;
   form.dailyStreakEnabled = values.dailyStreakEnabled;
   form.dailyStreakBonusPercent = values.dailyStreakBonusPercent;
   form.dailyStreakMaxDays = values.dailyStreakMaxDays;
@@ -802,6 +820,7 @@ function toPayload(values: FormModel): EconomyFeatureSettingsDto {
     leaderboardSize: Number(values.leaderboardSize ?? 10),
     zombieKillRewardEnabled: values.zombieKillRewardEnabled,
     zombieKillRewardAmount: Number(values.zombieKillRewardAmount ?? 0),
+    zombieKillRewardTip: values.zombieKillRewardTip.trim() || null,
     dailyStreakEnabled: values.dailyStreakEnabled,
     dailyStreakBonusPercent: Number(values.dailyStreakBonusPercent ?? 10),
     dailyStreakMaxDays: Number(values.dailyStreakMaxDays ?? 7),

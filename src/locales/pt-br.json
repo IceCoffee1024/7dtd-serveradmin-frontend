@@ -1539,6 +1539,7 @@
           "sectionTitle": "Mensagens de resposta de comando",
           "sectionDescription": "Substitua as mensagens de dicas padrão do jogo enviadas após a execução do comando. \nDeixe em branco para usar os padrões integrados. \nSuporta espaços reservados listados na dica de ferramenta.",
           "fields": {
+            "zombieKillRewardTip": "Dica de recompensa por abate",
             "balanceTip": "Dica de equilíbrio",
             "payUsageTip": "Dica de uso de pagamento",
             "payTargetNotFoundTip": "Dica de meta de pagamento não encontrada",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Dica sobre pena de morte"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Suporta: {amount}, {currency}, {victim}",
             "balanceTip": "Suporta: {balance}, {currency}",
             "payUsageTip": "Suporta: {currency}",
             "paySuccessTip": "Suporta: {amount}, {currency}, {playerName}, {tax}",

@@ -1047,6 +1047,7 @@
           "sectionTitle": "指令响应消息",
           "sectionDescription": "覆盖指令执行后游戏内发送的提示消息。留空将使用内置默认文本。支持占位符（见提示）。",
           "fields": {
+            "zombieKillRewardTip": "击杀奖励提示",
             "balanceTip": "余额提示",
             "payUsageTip": "转账用法提示",
             "payTargetNotFoundTip": "转账目标不存在提示",
@@ -1061,6 +1062,7 @@
             "playerDiedPenaltyTip": "死亡惩罚提示"
           },
           "tooltips": {
+            "zombieKillRewardTip": "支持占位符：{amount}, {currency}, {victim}",
             "balanceTip": "支持占位符：{balance}, {currency}",
             "payUsageTip": "支持占位符：{currency}",
             "paySuccessTip": "支持占位符：{amount}, {currency}, {playerName}, {tax}",

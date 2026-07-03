@@ -1539,6 +1539,7 @@
           "sectionTitle": "Mensajes de respuesta de comando",
           "sectionDescription": "Anula los mensajes de sugerencias predeterminados en el juego enviados después de la ejecución del comando. \nDéjelo en blanco para utilizar los valores predeterminados integrados. \nAdmite marcadores de posición enumerados en la información sobre herramientas.",
           "fields": {
+            "zombieKillRewardTip": "Consejo de recompensa por muerte",
             "balanceTip": "Consejo de equilibrio",
             "payUsageTip": "Consejo de uso de pago",
             "payTargetNotFoundTip": "Sugerencia de objetivo de pago no encontrado",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Consejo sobre la pena de muerte"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Admite: {amount}, {currency}, {victim}",
             "balanceTip": "Admite: {balance}, {currency}",
             "payUsageTip": "Admite: {currency}",
             "paySuccessTip": "Admite: {amount}, {currency}, {playerName}, {tax}",

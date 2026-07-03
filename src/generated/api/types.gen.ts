@@ -1824,6 +1824,10 @@ export type EconomyFeatureSettingsDto = {
      */
     zombieKillRewardAmount?: number;
     /**
+     * Private reward notification template sent after a qualifying kill. Supports {amount}, {currency}, and {victim}.
+     */
+    zombieKillRewardTip?: string | null;
+    /**
      * Indicates whether consecutive daily reward streaks grant bonus amounts.
      */
     dailyStreakEnabled?: boolean;

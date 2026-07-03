@@ -1539,6 +1539,7 @@
           "sectionTitle": "Messaggi di risposta ai comandi",
           "sectionDescription": "Sostituisci i messaggi di suggerimento predefiniti nel gioco inviati dopo l'esecuzione del comando. \nLascia vuoto per utilizzare le impostazioni predefinite integrate. \nSupporta i segnaposto elencati nella descrizione comando.",
           "fields": {
+            "zombieKillRewardTip": "Suggerimento ricompensa uccisione",
             "balanceTip": "Suggerimento per l'equilibrio",
             "payUsageTip": "Suggerimento sull'utilizzo del pagamento",
             "payTargetNotFoundTip": "Suggerimento per obiettivo di pagamento non trovato",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Suggerimento sulla pena di morte"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Supporta: {amount}, {currency}, {victim}",
             "balanceTip": "Supporta: {balance}, {currency}",
             "payUsageTip": "Supporta: {currency}",
             "paySuccessTip": "Supporta: {amount}, {currency}, {playerName}, {tax}",

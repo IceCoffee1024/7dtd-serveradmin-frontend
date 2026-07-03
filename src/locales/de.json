@@ -1539,6 +1539,7 @@
           "sectionTitle": "Befehlsantwortnachrichten",
           "sectionDescription": "Überschreiben Sie die standardmäßigen In-Game-Tippmeldungen, die nach der Befehlsausführung gesendet werden. \nLassen Sie das Feld leer, um die integrierten Standardeinstellungen zu verwenden. \nUnterstützt die im Tooltip aufgeführten Platzhalter.",
           "fields": {
+            "zombieKillRewardTip": "Kill-Belohnungstipp",
             "balanceTip": "Balance-Tipp",
             "payUsageTip": "Nutzungstipp bezahlen",
             "payTargetNotFoundTip": "Tipp „Zahlungsziel nicht gefunden“.",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Tipp zur Todesstrafe"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Unterstützt: {amount}, {currency}, {victim}",
             "balanceTip": "Unterstützt: {balance}, {currency}",
             "payUsageTip": "Unterstützt: {currency}",
             "paySuccessTip": "Unterstützt: {amount}, {currency}, {playerName}, {tax}",

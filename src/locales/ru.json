@@ -1539,6 +1539,7 @@
           "sectionTitle": "Сообщения ответа на команду",
           "sectionDescription": "Переопределить внутриигровые подсказки по умолчанию, отправляемые после выполнения команды. \nОставьте пустым, чтобы использовать встроенные значения по умолчанию. \nПоддерживает заполнители, перечисленные во всплывающей подсказке.",
           "fields": {
+            "zombieKillRewardTip": "Подсказка награды за убийство",
             "balanceTip": "Совет по балансу",
             "payUsageTip": "Совет по использованию оплаты",
             "payTargetNotFoundTip": "Цель выплаты не найдена. Совет",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Совет по смертной казни"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Поддерживает: {amount}, {currency}, {victim}",
             "balanceTip": "Поддерживает: {balance}, {currency}",
             "payUsageTip": "Поддерживает: {currency}",
             "paySuccessTip": "Поддерживается: {amount}, {currency}, {playerName}, {tax}",

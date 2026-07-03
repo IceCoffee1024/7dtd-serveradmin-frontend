@@ -1539,6 +1539,7 @@
           "sectionTitle": "命令回應訊息",
           "sectionDescription": "覆蓋命令執行後發送的預設遊戲內提示訊息。留空以使用內建預設值。支援工具提示中列出的佔位符。",
           "fields": {
+            "zombieKillRewardTip": "擊殺獎勵提示",
             "balanceTip": "平衡提示",
             "payUsageTip": "付費使用提示",
             "payTargetNotFoundTip": "未找到支付目標提示",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "死刑提示"
           },
           "tooltips": {
+            "zombieKillRewardTip": "支援佔位符：{amount}, {currency}, {victim}",
             "balanceTip": "支援：{balance}、{currency}",
             "payUsageTip": "支援：{currency}",
             "paySuccessTip": "支援：{amount}、{currency}、{playerName}、{tax}",

@@ -1539,6 +1539,7 @@
           "sectionTitle": "Komut Yanıt Mesajları",
           "sectionDescription": "Komutun yürütülmesinden sonra gönderilen varsayılan oyun içi ipucu mesajlarını geçersiz kılın. \nYerleşik varsayılanları kullanmak için boş bırakın. \nAraç ipucunda listelenen yer tutucuları destekler.",
           "fields": {
+            "zombieKillRewardTip": "Öldürme Ödülü İpucu",
             "balanceTip": "Denge İpucu",
             "payUsageTip": "Ödemeli Kullanım İpucu",
             "payTargetNotFoundTip": "Ödeme Hedefi Bulunamadı İpucu",
@@ -1553,6 +1554,7 @@
             "playerDiedPenaltyTip": "Ölüm Cezası İpucu"
           },
           "tooltips": {
+            "zombieKillRewardTip": "Destekler: {amount}, {currency}, {victim}",
             "balanceTip": "Destekler: {balance}, {currency}",
             "payUsageTip": "Destekler: {currency}",
             "paySuccessTip": "Destekler: {amount}, {currency}, {playerName}, {tax}",
