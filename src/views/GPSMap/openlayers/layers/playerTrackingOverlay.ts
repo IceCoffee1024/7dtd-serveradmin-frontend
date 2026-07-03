@@ -31,6 +31,17 @@ function toFiniteNumber(value: unknown): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
+export function shouldCreatePlayerTrackingOverlay(options: PlayerTrackingOverlayOptions): boolean {
+  if (options.playerId?.trim()) {
+    return true;
+  }
+
+  const centerX = toFiniteNumber(options.centerX);
+  const centerZ = toFiniteNumber(options.centerZ);
+  const radius = toFiniteNumber(options.radius);
+  return centerX != null && centerZ != null && radius != null && radius > 0;
+}
+
 function buildPointStyle(color: string, label?: string): Style {
   return new Style({
     image: new CircleStyle({

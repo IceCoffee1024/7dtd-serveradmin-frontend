@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { LAYER_ID } from './constants';
+import { shouldCreatePlayerTrackingOverlay } from './openlayers/layers/playerTrackingOverlay';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const localesDir = path.resolve(currentDir, '../../locales');
@@ -41,5 +42,12 @@ describe('gps map layer config', () => {
       expect(messages['views.map.drone'], `${localeFile} should define views.map.drone`).toEqual(expect.any(String));
       expect(messages['views.map.drone'], `${localeFile} should not leave views.map.drone empty`).not.toBe('');
     }
+  });
+
+  it('creates the player tracking overlay only for tracking or region preview params', () => {
+    expect(shouldCreatePlayerTrackingOverlay({})).toBe(false);
+    expect(shouldCreatePlayerTrackingOverlay({ playerId: 'EOS_123' })).toBe(true);
+    expect(shouldCreatePlayerTrackingOverlay({ centerX: 0, centerZ: 0, radius: 100 })).toBe(true);
+    expect(shouldCreatePlayerTrackingOverlay({ centerX: 0, centerZ: 0, radius: 0 })).toBe(false);
   });
 });

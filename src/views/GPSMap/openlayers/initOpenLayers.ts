@@ -7,7 +7,6 @@ import Projection from 'ol/proj/Projection';
 import View from 'ol/View';
 import { setupCoordinatesControl } from './controls/coordinates';
 import { setupGameTimeControl } from './controls/gameTime';
-import { setupLayerSwitcherControl } from './controls/layerSwitcher';
 import { setupMinimapControl } from './controls/minimap';
 import { setupRenderActionsControl } from './controls/renderActions';
 import { setupGlobalPopupOverlay } from './globalPopupOverlay';
@@ -100,8 +99,6 @@ export function initOpenLayers(
   setupGlobalSelectCluster(context);
   setupPlayerDragTeleportControl(map, onlinePlayersLayer, renderActionsElement);
   setupGlobalPopupOverlay(context, popupContainer);
-
-  setupLayerSwitcherControl(map);
 
   map.on('pointermove', (event) => {
     if (map.getViewport().classList.contains('is-player-drag-mode')) {

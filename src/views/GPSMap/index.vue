@@ -5,8 +5,9 @@ import { useQueryCache } from '@pinia/colada';
 import { useRoute, useRouter } from 'vue-router';
 import { gameServerGetMapInfoQuery } from '~/generated/api/@pinia/colada.gen';
 import { i18n } from '~/plugins/i18n';
+import { setupLayerSwitcherControl } from './openlayers/controls/layerSwitcher';
 import { initOpenLayers } from './openlayers/initOpenLayers';
-import { setupPlayerTrackingOverlay } from './openlayers/layers/playerTrackingOverlay';
+import { setupPlayerTrackingOverlay, shouldCreatePlayerTrackingOverlay } from './openlayers/layers/playerTrackingOverlay';
 import { layerRegistry } from './openlayers/mapRegistry';
 import PopupContainer from './PopupContainer.vue';
 import { MapLifecycle } from './types';
@@ -95,7 +96,7 @@ onMounted(async () => {
 
   if (mapContainerRef.value && popupContainerRef.value) {
     mapInstanceRef.value = initOpenLayers(mapContainerRef.value, mapInfo, popupContainerRef.value);
-    await setupPlayerTrackingOverlay({ map: mapInstanceRef.value, mapInfo }, {
+    const playerTrackingOverlayOptions = {
       playerId: firstQueryValue(route.query.trackingPlayerId),
       startTime: firstQueryValue(route.query.trackingStartTime),
       endTime: firstQueryValue(route.query.trackingEndTime),
@@ -103,7 +104,12 @@ onMounted(async () => {
       centerX: queryNumber(route.query.regionCenterX),
       centerZ: queryNumber(route.query.regionCenterZ),
       radius: queryNumber(route.query.regionRadius),
-    });
+    };
+    if (shouldCreatePlayerTrackingOverlay(playerTrackingOverlayOptions)) {
+      await setupPlayerTrackingOverlay({ map: mapInstanceRef.value, mapInfo }, playerTrackingOverlayOptions);
+    }
+
+    setupLayerSwitcherControl(mapInstanceRef.value);
     setupRegionPick(mapInstanceRef.value);
   }
 });
