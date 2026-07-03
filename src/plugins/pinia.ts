@@ -15,6 +15,7 @@ export function setupPinia(app: App) {
   app.use(PiniaColada, {
     queryOptions: {
       staleTime: 0,
+      refetchOnWindowFocus: false,
     },
   });
 };
