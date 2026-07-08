@@ -82,3 +82,15 @@ describe('history player ranking fields', () => {
     expect(source).toContain('case \'currentLife\': return \'CurrentLife\'');
   });
 });
+
+describe('history player time columns', () => {
+  it('keeps last login visible and hides last seen from the list surface', () => {
+    const source = readFileSync(path.join(currentDir, 'index.vue'), 'utf8');
+
+    expect(source).toContain('prop: \'lastLogin\'');
+    expect(source).toContain('case \'lastLogin\': return \'LastLogin\'');
+    expect(source).not.toContain('prop: \'lastSeenAt\'');
+    expect(source).not.toContain('case \'lastSeenAt\': return \'LastSeenAt\'');
+    expect(source).not.toContain('#lastSeenAt');
+  });
+});

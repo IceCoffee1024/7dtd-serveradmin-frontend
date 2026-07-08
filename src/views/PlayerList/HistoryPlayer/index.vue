@@ -7,7 +7,6 @@ import type {
 } from '~/generated/api/types.gen';
 import type { ContextMenuOption } from '~/plugins/contextMenu';
 import { useMutation, useQueryCache } from '@pinia/colada';
-import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { resetPlayerProfile } from '~/api/playerProfileReset';
 import serverFavoriteImgUrl from '~/assets/images/server_favorite.png';
@@ -16,6 +15,7 @@ import { usePopup } from '~/composables/usePopup';
 import { gameServerGetHistoryPlayersQuery } from '~/generated/api/@pinia/colada.gen';
 import { invalidateGeneratedQueries } from '~/queries/generated';
 import { formatMinute, formatPosition } from '~/utils';
+import { formatUtcTimestamp } from '~/utils/time';
 
 type HistoryPlayerRow = HistoryPlayerDto;
 
@@ -58,14 +58,7 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
     label: t('views.playerList.lastLogin'),
     slot: 'lastLogin',
     sortable: true,
-    exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
-  },
-  {
-    prop: 'lastSeenAt',
-    label: t('views.playerProfile.tracking.lastSeenAt'),
-    slot: 'lastSeenAt',
-    sortable: true,
-    exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
+    exportFormatter: value => formatTimestamp(value == null ? null : String(value), ''),
   },
   { prop: 'level', label: t('views.playerList.level'), sortable: true },
   { prop: 'gameStage', label: t('views.playerList.gameStage'), sortable: true },
@@ -116,7 +109,7 @@ const columns = computed<MyTableColumn<HistoryPlayerRow>[]>(() => [
     label: t('views.featureModules.state.updatedAt'),
     slot: 'updatedAt',
     sortable: true,
-    exportFormatter: value => (value ? dayjs(String(value)).format('YYYY-MM-DD HH:mm:ss') : ''),
+    exportFormatter: value => formatTimestamp(value == null ? null : String(value), ''),
   },
 ]);
 
@@ -157,7 +150,6 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
     case 'isOnline': return 'IsOnline';
     case 'playGroup': return 'PlayGroup';
     case 'lastLogin': return 'LastLogin';
-    case 'lastSeenAt': return 'LastSeenAt';
     case 'level': return 'Level';
     case 'gameStage': return 'GameStage';
     case 'zombieKills': return 'ZombieKills';
@@ -177,8 +169,8 @@ function toOrder(sortField: string | undefined): HistoryPlayerQueryOrder | undef
   }
 }
 
-function formatTimestamp(value: string | null | undefined): string {
-  return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '--';
+function formatTimestamp(value: string | null | undefined, fallback = '--'): string {
+  return formatUtcTimestamp(value, fallback);
 }
 
 const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
@@ -261,9 +253,6 @@ const contextMenuItems = computed<ContextMenuOption<HistoryPlayerRow>[]>(() => [
       </template>
       <template #lastLogin="{ row }">
         {{ formatTimestamp(row.lastLogin) }}
-      </template>
-      <template #lastSeenAt="{ row }">
-        {{ formatTimestamp(row.lastSeenAt) }}
       </template>
       <template #updatedAt="{ row }">
         {{ formatTimestamp(row.updatedAt) }}
