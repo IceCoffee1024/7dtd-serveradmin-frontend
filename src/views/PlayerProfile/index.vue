@@ -331,6 +331,7 @@ watch(() => route.query.tab, applyActiveTabFromQuery);
 
         <el-tab-pane name="assets" :label="t('views.playerProfile.tabs.assets')">
           <PlayerProfileAssetsPanel
+            :player-id="playerId"
             :homes="homes"
             :vehicles="vehicles"
             :format-time="formatTime"

@@ -586,7 +586,24 @@
         "inventoryDiff": "Inventory Diff",
         "inventoryCompensation": "Inventory Compensation",
         "locationTrack": "Location Track",
-        "regionSearch": "Region Search"
+        "regionSearch": "Region Search",
+        "landClaimContainers": "Land Claim Containers"
+      },
+      "landClaimContainers": {
+        "loadedOnlyHint": "Only containers in currently readable or loaded server areas are shown.",
+        "loadFailed": "Failed to load land claim containers",
+        "inventoryLoadFailed": "Failed to load container inventory",
+        "empty": "No readable land claim containers",
+        "inventoryEmpty": "This container has no items",
+        "container": "Container",
+        "items": "Items",
+        "lockState": "Lock State",
+        "owner": "Container Owner",
+        "locked": "Locked",
+        "unlocked": "Unlocked",
+        "password": "Password",
+        "accessing": "In Use",
+        "unknownContainer": "Unknown Container"
       },
       "fields": {
         "balance": "Balance",

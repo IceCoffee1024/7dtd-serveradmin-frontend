@@ -2,8 +2,10 @@
 import type { HomeLocationDto, VehicleLocationDto } from '~/generated/api/types.gen';
 import { useI18n } from 'vue-i18n';
 import { formatPosition } from '~/utils';
+import PlayerLandClaimContainersPanel from './PlayerLandClaimContainersPanel.vue';
 
 defineProps<{
+  playerId: string;
   homes: HomeLocationDto[];
   vehicles: VehicleLocationDto[];
   formatTime: (value: string | null | undefined) => string;
@@ -59,6 +61,8 @@ function formatHomePosition(home: HomeLocationDto): string {
         <el-table-column prop="storageItemCount" :label="t('views.map.storage')" width="120" />
       </el-table>
     </section>
+
+    <PlayerLandClaimContainersPanel :player-id="playerId" />
   </div>
 </template>
 

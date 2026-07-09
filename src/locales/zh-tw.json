@@ -586,7 +586,24 @@
         "inventoryDiff": "背包差异",
         "inventoryCompensation": "物品补偿",
         "locationTrack": "移动轨迹",
-        "regionSearch": "区域反查"
+        "regionSearch": "区域反查",
+        "landClaimContainers": "領地容器"
+      },
+      "landClaimContainers": {
+        "loadedOnlyHint": "僅顯示目前伺服器可讀取/已載入區域中的容器。",
+        "loadFailed": "領地容器載入失敗",
+        "inventoryLoadFailed": "容器物品載入失敗",
+        "empty": "暫無可讀取的領地容器",
+        "inventoryEmpty": "此容器暫無物品",
+        "container": "容器",
+        "items": "物品",
+        "lockState": "鎖定狀態",
+        "owner": "容器擁有者",
+        "locked": "已鎖定",
+        "unlocked": "未鎖定",
+        "password": "有密碼",
+        "accessing": "使用中",
+        "unknownContainer": "未知容器"
       },
       "fields": {
         "balance": "餘額",
