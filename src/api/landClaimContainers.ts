@@ -60,6 +60,16 @@ export async function getLandClaimContainers(playerId: string): Promise<LandClai
   return data ?? [];
 }
 
+export async function getAllLandClaimContainers(): Promise<LandClaimContainerSummaryDto[]> {
+  const { data } = await client.get<LandClaimContainerSummaryDto[], unknown, true>({
+    security,
+    url: '/api/GameServer/LandClaimContainers',
+    throwOnError: true,
+  });
+
+  return data ?? [];
+}
+
 export async function getLandClaimContainerInventory(
   playerId: string,
   position: ContainerPosition,

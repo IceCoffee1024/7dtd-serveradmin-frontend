@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HistoryPlayer from './HistoryPlayer/index.vue';
+import LandClaimContainers from './LandClaimContainers/index.vue';
 import OnlinePlayer from './OnlinePlayer/index.vue';
 
 defineOptions({ name: 'PlayerList' });
@@ -15,6 +16,9 @@ const activeTab = ref('online');
       </el-tab-pane>
       <el-tab-pane name="history" :label="$t('views.playerList.historyPlayers')" lazy>
         <HistoryPlayer />
+      </el-tab-pane>
+      <el-tab-pane name="containers" :label="$t('views.playerProfile.sections.landClaimContainers')" lazy>
+        <LandClaimContainers />
       </el-tab-pane>
     </el-tabs>
   </el-card>

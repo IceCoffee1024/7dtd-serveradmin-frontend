@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { client } from '~/generated/api/client.gen';
-import { getLandClaimContainerInventory, getLandClaimContainers } from './landClaimContainers';
+import { getAllLandClaimContainers, getLandClaimContainerInventory, getLandClaimContainers } from './landClaimContainers';
 
 vi.mock('~/generated/api/client.gen', () => ({
   client: {
@@ -32,6 +32,29 @@ describe('land claim containers api', () => {
       throwOnError: true,
     });
     expect(result).toHaveLength(1);
+  });
+
+  it('gets all readable land-claim container summaries for the global page', async () => {
+    vi.mocked(client.get).mockResolvedValue({
+      data: [
+        {
+          position: { x: 120, y: 64, z: 88 },
+          landClaimOwnerId: 'EOS_123',
+          landClaimOwnerName: 'Alice',
+          blockName: 'cntStorageGeneric',
+          itemCount: 4,
+        },
+      ],
+    } as Awaited<ReturnType<typeof client.get>>);
+
+    const result = await getAllLandClaimContainers();
+
+    expect(client.get).toHaveBeenCalledWith({
+      security: [{ scheme: 'basic', type: 'http' }, { name: 'Authorization', type: 'apiKey' }],
+      url: '/api/GameServer/LandClaimContainers',
+      throwOnError: true,
+    });
+    expect(result[0]?.landClaimOwnerId).toBe('EOS_123');
   });
 
   it('encodes player id and coordinates for inventory requests', async () => {

@@ -1,6 +1,7 @@
 export * from './table';
 export * from './useCommandHistory';
 export * from './useGameEventConnection';
+export * from './useGpsMapNavigation';
 export * from './useLatestAsync';
 export * from './useMenus';
 export * from './usePlayerProfileNavigation';
