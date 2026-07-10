@@ -1824,7 +1824,8 @@ export type EconomyFeatureSettingsDto = {
      */
     zombieKillRewardAmount?: number;
     /**
-     * Private reward notification template sent after a qualifying kill. Supports {amount}, {currency}, and {victim}.
+     * Private reward notification template. Supports {amount}, {currency}, and {victim}.
+     * Leave null or empty to send no notification.
      */
     zombieKillRewardTip?: string | null;
     /**
@@ -5685,6 +5686,142 @@ export type LandClaimsDto = {
 };
 
 /**
+ * Represents a read-only storage container found inside a player's land claim.
+ */
+export type LandClaimContainerSummaryDto = {
+    /**
+     * Container block position in world coordinates.
+     */
+    position: PositionDto;
+    /**
+     * Internal block name for the container.
+     */
+    blockName: string;
+    /**
+     * Localized display name for the container when available.
+     */
+    localizedName: string | null;
+    /**
+     * Player id recorded as the container owner.
+     */
+    ownerId: string | null;
+    /**
+     * Display name for the container owner when available.
+     */
+    ownerName: string | null;
+    /**
+     * Player id for the owner of the land claim being inspected.
+     */
+    landClaimOwnerId: string;
+    /**
+     * Display name for the owner of the land claim being inspected.
+     */
+    landClaimOwnerName: string;
+    /**
+     * Whether the container is locked. Null when the block has no lockable feature.
+     */
+    isLocked: boolean | null;
+    /**
+     * Whether the container has a password. Null when the block has no lockable feature.
+     */
+    hasPassword: boolean | null;
+    /**
+     * Whether another user is currently accessing the tile entity.
+     */
+    isUserAccessing: boolean;
+    /**
+     * Whether the storage is owned/player storage rather than untouched world loot.
+     */
+    isPlayerStorage: boolean;
+    /**
+     * Total number of storage slots in the container.
+     */
+    slotCount: number;
+    /**
+     * Number of non-empty item slots in the container.
+     */
+    itemCount: number;
+    /**
+     * True when this container was read from a currently loaded runtime chunk.
+     */
+    isLoaded: boolean;
+    /**
+     * Scope used to collect this container snapshot.
+     */
+    coverage: string;
+};
+
+/**
+ * Represents the item contents of a storage container inside a player's land claim.
+ */
+export type LandClaimContainerInventoryDto = {
+    /**
+     * Container block position in world coordinates.
+     */
+    position: PositionDto;
+    /**
+     * Internal block name for the container.
+     */
+    blockName: string;
+    /**
+     * Localized display name for the container when available.
+     */
+    localizedName: string | null;
+    /**
+     * Player id recorded as the container owner.
+     */
+    ownerId: string | null;
+    /**
+     * Display name for the container owner when available.
+     */
+    ownerName: string | null;
+    /**
+     * Player id for the owner of the land claim being inspected.
+     */
+    landClaimOwnerId: string;
+    /**
+     * Display name for the owner of the land claim being inspected.
+     */
+    landClaimOwnerName: string;
+    /**
+     * Whether the container is locked. Null when the block has no lockable feature.
+     */
+    isLocked: boolean | null;
+    /**
+     * Whether the container has a password. Null when the block has no lockable feature.
+     */
+    hasPassword: boolean | null;
+    /**
+     * Whether another user is currently accessing the tile entity.
+     */
+    isUserAccessing: boolean;
+    /**
+     * Whether the storage is owned/player storage rather than untouched world loot.
+     */
+    isPlayerStorage: boolean;
+    /**
+     * Total number of storage slots in the container.
+     */
+    slotCount: number;
+    /**
+     * Number of non-empty item slots in the container.
+     */
+    itemCount: number;
+    /**
+     * True when this container was read from a currently loaded runtime chunk.
+     */
+    isLoaded: boolean;
+    /**
+     * Scope used to collect this container snapshot.
+     */
+    coverage: string;
+    /**
+     * Non-empty item slots currently present in the container.
+     */
+    items: Array<InvItemDto>;
+};
+
+/**
  * Represents metadata for a server mod package discovered and loaded by the 7DTD mod runtime.
  */
 export type ModInfoDto = {
@@ -5724,6 +5861,66 @@ export type ModInfoDto = {
      * Directory name under the server's Mods/ folder where the mod package resides.
      */
     folderName: string;
+};
+
+/**
+ * Result returned after a native 7DTD player profile reset attempt.
+ */
+export type PlayerProfileResetResultDto = {
+    /**
+     * Whether the reset completed successfully.
+     */
+    succeeded?: boolean;
+    /**
+     * Failure kind when the reset did not complete.
+     */
+    failureKind?: string | null;
+    /**
+     * Failure detail when the reset did not complete.
+     */
+    errorMessage?: string | null;
+    /**
+     * Target cross-platform player id.
+     */
+    playerId?: string;
+    /**
+     * Whether the player was online when the request started.
+     */
+    wasOnline?: boolean;
+    /**
+     * Directory containing archived native profile artifacts.
+     */
+    archiveDirectory?: string | null;
+    /**
+     * Native profile artifact paths copied or moved into the archive directory.
+     */
+    archivedPaths?: Array<string>;
+    /**
+     * Native profile artifact paths removed from the live save directory.
+     */
+    removedPaths?: Array<string>;
+    /**
+     * Always false for this endpoint; plugin data is intentionally left intact.
+     */
+    pluginDataCleared?: boolean;
+};
+
+/**
+ * Request to reset a player's native 7DTD profile artifacts.
+ */
+export type PlayerProfileResetRequestDto = {
+    /**
+     * Whether an online target should be kicked and then reset after becoming offline.
+     */
+    forceKickIfOnline?: boolean;
+    /**
+     * Optional kick reason used when ForceKickIfOnline is true.
+     */
+    kickReason?: string | null;
+    /**
+     * Maximum seconds to wait for a kicked online player to become offline.
+     */
+    offlineWaitTimeoutSeconds?: number | null;
 };
 
 /**
@@ -5949,6 +6146,7 @@ export type PlayerTrackingFeatureSettingsDto = {
     trackChatActivity?: boolean;
     trackLocations?: boolean;
     trackInventorySnapshots?: boolean;
+    trackItemAcquisitions?: boolean;
     trackDailySummaries?: boolean;
     locationSampleIntervalSeconds?: number;
     locationMovementThresholdMeters?: number;
@@ -5958,6 +6156,7 @@ export type PlayerTrackingFeatureSettingsDto = {
     retentionDays?: number;
     locationRetentionDays?: number;
     inventorySnapshotRetentionDays?: number;
+    itemAcquisitionRetentionDays?: number;
     dailySummaryRetentionDays?: number;
     maxActivityLogsPerPlayer?: number;
     excludeAdmins?: boolean;
@@ -5977,6 +6176,11 @@ export type PlayerTrackingStatusDto = {
     activityCount?: number;
     locationSampleCount?: number;
     inventorySnapshotCount?: number;
+    itemAcquisitionCount?: number;
+    lastItemAcquisitionAt?: string | null;
+    pendingItemAcquisitionCount?: number;
+    droppedItemAcquisitionCount?: number;
+    missingItemAcquisitionBaselineCount?: number;
     dailySummaryCount?: number;
 };
 
@@ -6099,6 +6303,57 @@ export type PagedDtoOfPlayerInventorySnapshotDto = {
      * Items returned for the current page.
      */
     items: Array<PlayerInventorySnapshotDto>;
+};
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export type PagedDtoOfPlayerItemAcquisitionDto = {
+    /**
+     * Total number of records matching the query.
+     */
+    total: number;
+    /**
+     * Items returned for the current page.
+     */
+    items: Array<PlayerItemAcquisitionDto>;
+};
+
+export type PlayerItemAcquisitionDto = {
+    id?: number;
+    occurredAt?: string;
+    playerId?: string;
+    playerName?: string | null;
+    sourceKind?: PlayerItemAcquisitionSourceKind;
+    evidenceLevel?: PlayerItemAcquisitionEvidenceLevel;
+    sourceEntityId?: number | null;
+    sourceEntityClass?: string | null;
+    sourceLootList?: string | null;
+    sourceName?: string | null;
+    sourceX?: number;
+    sourceY?: number;
+    sourceZ?: number;
+    playerX?: number | null;
+    playerY?: number | null;
+    playerZ?: number | null;
+    operationReference?: string | null;
+    items?: Array<PlayerItemAcquisitionItemDto>;
+};
+
+export type PlayerItemAcquisitionSourceKind = 'EntityLootBag' | 'WorldDrop' | 'AdminGrant' | 'SystemGrant';
+
+export type PlayerItemAcquisitionEvidenceLevel = 'Confirmed' | 'Partial';
+
+export type PlayerItemAcquisitionItemDto = {
+    id?: number;
+    sortOrder?: number;
+    itemName?: string;
+    localizedItemName?: string | null;
+    count?: number;
+    quality?: number | null;
+    seed?: number | null;
+    useTimes?: number | null;
+    mods?: Array<string>;
 };
 
 export type PlayerInventorySnapshotCompareDto = {
@@ -6235,10 +6490,12 @@ export type PlayerTrackingCleanupResultDto = {
     activityCutoffUtc?: string | null;
     locationCutoffUtc?: string | null;
     inventoryCutoffUtc?: string | null;
+    itemAcquisitionCutoffUtc?: string | null;
     dailySummaryCutoffUtc?: string | null;
     deletedActivities?: number;
     deletedLocations?: number;
     deletedInventorySnapshots?: number;
+    deletedItemAcquisitions?: number;
     deletedDailySummaries?: number;
 };
 
@@ -11399,6 +11656,103 @@ export type GameServerGetLandClaims2Responses = {
 
 export type GameServerGetLandClaims2Response = GameServerGetLandClaims2Responses[keyof GameServerGetLandClaims2Responses];
 
+export type GameServerGetAllLandClaimContainersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Localization column to resolve block and item names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/LandClaimContainers';
+};
+
+export type GameServerGetAllLandClaimContainersResponses = {
+    /**
+     * Loaded player-storage containers that can be inspected from runtime chunks.
+     */
+    200: Array<LandClaimContainerSummaryDto>;
+};
+
+export type GameServerGetAllLandClaimContainersResponse = GameServerGetAllLandClaimContainersResponses[keyof GameServerGetAllLandClaimContainersResponses];
+
+export type GameServerGetLandClaimContainersData = {
+    body?: never;
+    path: {
+        /**
+         * Combined platform player identifier.
+         */
+        playerId: string;
+    };
+    query?: {
+        /**
+         * Localization column to resolve block and item names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/LandClaims/{playerId}/Containers';
+};
+
+export type GameServerGetLandClaimContainersErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type GameServerGetLandClaimContainersError = GameServerGetLandClaimContainersErrors[keyof GameServerGetLandClaimContainersErrors];
+
+export type GameServerGetLandClaimContainersResponses = {
+    /**
+     * Loaded player-storage containers that can be inspected from runtime chunks.
+     */
+    200: Array<LandClaimContainerSummaryDto>;
+};
+
+export type GameServerGetLandClaimContainersResponse = GameServerGetLandClaimContainersResponses[keyof GameServerGetLandClaimContainersResponses];
+
+export type GameServerGetLandClaimContainerInventoryData = {
+    body?: never;
+    path: {
+        /**
+         * Combined platform player identifier.
+         */
+        playerId: string;
+        /**
+         * Container world X coordinate.
+         */
+        x: number;
+        /**
+         * Container world Y coordinate.
+         */
+        y: number;
+        /**
+         * Container world Z coordinate.
+         */
+        z: number;
+    };
+    query?: {
+        /**
+         * Localization column to resolve item names against.
+         */
+        language?: Language | null;
+    };
+    url: '/api/GameServer/LandClaims/{playerId}/Containers/{x}/{y}/{z}/Inventory';
+};
+
+export type GameServerGetLandClaimContainerInventoryErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type GameServerGetLandClaimContainerInventoryError = GameServerGetLandClaimContainerInventoryErrors[keyof GameServerGetLandClaimContainerInventoryErrors];
+
+export type GameServerGetLandClaimContainerInventoryResponses = {
+    /**
+     * Container inventory snapshot when the container is loaded and belongs to the claim range.
+     */
+    200: LandClaimContainerInventoryDto;
+};
+
+export type GameServerGetLandClaimContainerInventoryResponse = GameServerGetLandClaimContainerInventoryResponses[keyof GameServerGetLandClaimContainerInventoryResponses];
+
 export type GameServerSettingsGetData = {
     body?: never;
     path?: never;
@@ -11477,6 +11831,38 @@ export type GameServerToggleModStatusResponses = {
 };
 
 export type GameServerToggleModStatusResponse = GameServerToggleModStatusResponses[keyof GameServerToggleModStatusResponses];
+
+export type GameServerResetPlayerProfileData = {
+    /**
+     * Reset options, including whether an online player should be kicked first.
+     */
+    body: PlayerProfileResetRequestDto;
+    path: {
+        /**
+         * The target player's cross-platform id.
+         */
+        playerId: string;
+    };
+    query?: never;
+    url: '/api/GameServer/Players/{playerId}/Profile/Reset';
+};
+
+export type GameServerResetPlayerProfileErrors = {
+    400: ProblemDetailsDto;
+    404: ProblemDetailsDto;
+    409: ProblemDetailsDto;
+};
+
+export type GameServerResetPlayerProfileError = GameServerResetPlayerProfileErrors[keyof GameServerResetPlayerProfileErrors];
+
+export type GameServerResetPlayerProfileResponses = {
+    /**
+     * Details about archived and removed native profile artifacts.
+     */
+    200: PlayerProfileResetResultDto;
+};
+
+export type GameServerResetPlayerProfileResponse = GameServerResetPlayerProfileResponses[keyof GameServerResetPlayerProfileResponses];
 
 export type GameServerKickPlayerData = {
     /**
@@ -12089,6 +12475,67 @@ export type PlayerTrackingCaptureInventorySnapshotResponses = {
 };
 
 export type PlayerTrackingCaptureInventorySnapshotResponse = PlayerTrackingCaptureInventorySnapshotResponses[keyof PlayerTrackingCaptureInventorySnapshotResponses];
+
+export type PlayerTrackingGetPlayerItemAcquisitionsData = {
+    body?: never;
+    path: {
+        playerId: string;
+    };
+    query?: {
+        startTime?: string | null;
+        endTime?: string | null;
+        itemName?: string | null;
+        sourceKind?: PlayerItemAcquisitionSourceKind | null;
+        /**
+         * 1-based page number; defaults to 1.
+         */
+        pageNumber?: number;
+        /**
+         * Number of records per page; pass a value less than 0 to return all records. Defaults to 10.
+         */
+        pageSize?: number;
+        /**
+         * Optional keyword applied as a server-side filter across relevant text fields.
+         */
+        keyword?: string | null;
+        /**
+         * Name of the field to sort by; null retains the default order.
+         */
+        order?: string | null;
+        /**
+         * Sorts results in descending order when true.
+         */
+        desc?: boolean;
+    };
+    url: '/api/PlayerTracking/Players/{playerId}/ItemAcquisitions';
+};
+
+export type PlayerTrackingGetPlayerItemAcquisitionsResponses = {
+    200: PagedDtoOfPlayerItemAcquisitionDto;
+};
+
+export type PlayerTrackingGetPlayerItemAcquisitionsResponse = PlayerTrackingGetPlayerItemAcquisitionsResponses[keyof PlayerTrackingGetPlayerItemAcquisitionsResponses];
+
+export type PlayerTrackingGetItemAcquisitionData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/api/PlayerTracking/ItemAcquisitions/{id}';
+};
+
+export type PlayerTrackingGetItemAcquisitionErrors = {
+    404: ProblemDetailsDto;
+};
+
+export type PlayerTrackingGetItemAcquisitionError = PlayerTrackingGetItemAcquisitionErrors[keyof PlayerTrackingGetItemAcquisitionErrors];
+
+export type PlayerTrackingGetItemAcquisitionResponses = {
+    200: PlayerItemAcquisitionDto;
+};
+
+export type PlayerTrackingGetItemAcquisitionResponse = PlayerTrackingGetItemAcquisitionResponses[keyof PlayerTrackingGetItemAcquisitionResponses];
 
 export type PlayerTrackingComparePlayerInventorySnapshotsData = {
     body?: never;

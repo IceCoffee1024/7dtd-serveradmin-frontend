@@ -26,6 +26,7 @@ interface FormModel {
   trackChatActivity: boolean;
   trackLocations: boolean;
   trackInventorySnapshots: boolean;
+  trackItemAcquisitions: boolean;
   trackDailySummaries: boolean;
   locationSampleIntervalSeconds: number;
   locationMovementThresholdMeters: number;
@@ -35,11 +36,17 @@ interface FormModel {
   retentionDays: number;
   locationRetentionDays: number;
   inventorySnapshotRetentionDays: number;
+  itemAcquisitionRetentionDays: number;
   dailySummaryRetentionDays: number;
   maxActivityLogsPerPlayer: number;
   excludeAdmins: boolean;
   excludedPlayerIdsText: string;
 }
+
+type PlayerTrackingSettingsCompat = PlayerTrackingFeatureSettingsDto & {
+  trackItemAcquisitions?: boolean;
+  itemAcquisitionRetentionDays?: number;
+};
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
@@ -85,6 +92,8 @@ const strategySummary = computed(() => {
     enabled.push(t('views.playerTracking.settings.summaryParts.locations'));
   if (form.trackInventorySnapshots)
     enabled.push(t('views.playerTracking.settings.summaryParts.inventory'));
+  if (form.trackItemAcquisitions)
+    enabled.push('物品获得');
   if (form.trackDailySummaries)
     enabled.push(t('views.playerTracking.settings.summaryParts.daily'));
 
@@ -101,6 +110,7 @@ function buildDefaults(): FormModel {
     trackChatActivity: true,
     trackLocations: false,
     trackInventorySnapshots: false,
+    trackItemAcquisitions: false,
     trackDailySummaries: true,
     locationSampleIntervalSeconds: 120,
     locationMovementThresholdMeters: 25,
@@ -110,6 +120,7 @@ function buildDefaults(): FormModel {
     retentionDays: 30,
     locationRetentionDays: 14,
     inventorySnapshotRetentionDays: 30,
+    itemAcquisitionRetentionDays: 90,
     dailySummaryRetentionDays: 180,
     maxActivityLogsPerPlayer: 5000,
     excludeAdmins: false,
@@ -128,6 +139,7 @@ function toTextList(value: string): string[] {
 
 function toFormModel(data?: PlayerTrackingFeatureSettingsDto | null): FormModel {
   const defaults = buildDefaults();
+  const compatible = data as PlayerTrackingSettingsCompat | null | undefined;
   return {
     isEnabled: data?.isEnabled ?? defaults.isEnabled,
     trackSessions: data?.trackSessions ?? defaults.trackSessions,
@@ -135,6 +147,7 @@ function toFormModel(data?: PlayerTrackingFeatureSettingsDto | null): FormModel 
     trackChatActivity: data?.trackChatActivity ?? defaults.trackChatActivity,
     trackLocations: data?.trackLocations ?? defaults.trackLocations,
     trackInventorySnapshots: data?.trackInventorySnapshots ?? defaults.trackInventorySnapshots,
+    trackItemAcquisitions: compatible?.trackItemAcquisitions ?? defaults.trackItemAcquisitions,
     trackDailySummaries: data?.trackDailySummaries ?? defaults.trackDailySummaries,
     locationSampleIntervalSeconds: data?.locationSampleIntervalSeconds ?? defaults.locationSampleIntervalSeconds,
     locationMovementThresholdMeters: data?.locationMovementThresholdMeters ?? defaults.locationMovementThresholdMeters,
@@ -144,6 +157,7 @@ function toFormModel(data?: PlayerTrackingFeatureSettingsDto | null): FormModel 
     retentionDays: data?.retentionDays ?? defaults.retentionDays,
     locationRetentionDays: data?.locationRetentionDays ?? defaults.locationRetentionDays,
     inventorySnapshotRetentionDays: data?.inventorySnapshotRetentionDays ?? defaults.inventorySnapshotRetentionDays,
+    itemAcquisitionRetentionDays: compatible?.itemAcquisitionRetentionDays ?? defaults.itemAcquisitionRetentionDays,
     dailySummaryRetentionDays: data?.dailySummaryRetentionDays ?? defaults.dailySummaryRetentionDays,
     maxActivityLogsPerPlayer: data?.maxActivityLogsPerPlayer ?? defaults.maxActivityLogsPerPlayer,
     excludeAdmins: data?.excludeAdmins ?? defaults.excludeAdmins,
@@ -152,13 +166,14 @@ function toFormModel(data?: PlayerTrackingFeatureSettingsDto | null): FormModel 
 }
 
 function toPayload(values: FormModel): PlayerTrackingFeatureSettingsDto {
-  return {
+  const payload: PlayerTrackingSettingsCompat = {
     isEnabled: values.isEnabled,
     trackSessions: values.trackSessions,
     trackActivityLogs: values.trackActivityLogs,
     trackChatActivity: values.trackChatActivity,
     trackLocations: values.trackLocations,
     trackInventorySnapshots: values.trackInventorySnapshots,
+    trackItemAcquisitions: values.trackItemAcquisitions,
     trackDailySummaries: values.trackDailySummaries,
     locationSampleIntervalSeconds: Number(values.locationSampleIntervalSeconds),
     locationMovementThresholdMeters: Number(values.locationMovementThresholdMeters),
@@ -168,11 +183,13 @@ function toPayload(values: FormModel): PlayerTrackingFeatureSettingsDto {
     retentionDays: Number(values.retentionDays),
     locationRetentionDays: Number(values.locationRetentionDays),
     inventorySnapshotRetentionDays: Number(values.inventorySnapshotRetentionDays),
+    itemAcquisitionRetentionDays: Number(values.itemAcquisitionRetentionDays),
     dailySummaryRetentionDays: Number(values.dailySummaryRetentionDays),
     maxActivityLogsPerPlayer: Number(values.maxActivityLogsPerPlayer),
     excludeAdmins: values.excludeAdmins,
     excludedPlayerIds: toTextList(values.excludedPlayerIdsText),
   };
+  return payload;
 }
 
 function applyFormModel(values: FormModel): void {
@@ -419,6 +436,9 @@ onBeforeRouteLeave(async () => {
             <el-checkbox v-model="form.inventorySnapshotOnLeave">
               {{ t('views.playerTracking.settings.fields.inventorySnapshotOnLeave') }}
             </el-checkbox>
+            <el-checkbox v-model="form.trackItemAcquisitions">
+              追踪物品获得来源
+            </el-checkbox>
           </div>
 
           <el-row :gutter="16" class="mt-4">
@@ -430,6 +450,9 @@ onBeforeRouteLeave(async () => {
             <el-col :xs="24" :md="12">
               <el-form-item :label="t('views.playerTracking.settings.fields.inventorySnapshotRetentionDays')">
                 <el-input-number v-model="form.inventorySnapshotRetentionDays" class="w-full" :min="1" :precision="0" />
+              </el-form-item>
+              <el-form-item label="物品获得记录保留天数">
+                <el-input-number v-model="form.itemAcquisitionRetentionDays" class="w-full" :min="1" :precision="0" />
               </el-form-item>
             </el-col>
           </el-row>

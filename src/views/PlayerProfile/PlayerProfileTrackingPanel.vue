@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ItemAcquisitionDto, ItemAcquisitionSourceKind } from '~/api/itemAcquisitions';
 import type {
   PlayerActivityLogDto,
   PlayerDailySummaryDto,
@@ -15,7 +16,9 @@ import type {
 import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
+import { getPlayerItemAcquisitions } from '~/api/itemAcquisitions';
 import { usePopup } from '~/composables';
+import { useGpsMapNavigation } from '~/composables/useGpsMapNavigation';
 import {
   playerTrackingCaptureInventorySnapshot,
   playerTrackingComparePlayerInventorySnapshots,
@@ -57,6 +60,7 @@ type PlayerInventoryCompensationExecuteResult = PlayerInventoryCompensationExecu
 
 const { t } = useI18n();
 const { toast, confirm } = usePopup();
+const { viewRegionOnMap: navigateRegionOnMap } = useGpsMapNavigation();
 const route = useRoute();
 const router = useRouter();
 
@@ -78,6 +82,12 @@ const compensationDraft = ref<PlayerInventoryCompensationDraftDto | null>(null);
 const compensationResult = ref<PlayerInventoryCompensationExecuteResult | null>(null);
 const locationTrack = ref<PlayerLocationTrackDto | null>(null);
 const regionHits = ref<PlayerLocationRegionHitDto[]>([]);
+const itemAcquisitions = ref<ItemAcquisitionDto[]>([]);
+
+const acquisitionQuery = reactive({
+  itemName: '',
+  sourceKind: undefined as ItemAcquisitionSourceKind | undefined,
+});
 
 const selectedFromSnapshotId = ref<number>();
 const selectedToSnapshotId = ref<number>();
@@ -178,6 +188,33 @@ function formatActivityType(value: string | null | undefined): string {
   return translated === key ? value : translated;
 }
 
+function formatItemAcquisitionSource(value: ItemAcquisitionSourceKind | null | undefined): string {
+  switch (value) {
+    case 'EntityLootBag': return '实体战利品包';
+    case 'WorldDrop': return '地面拾取';
+    case 'AdminGrant': return '管理员发放';
+    case 'SystemGrant': return '系统发放';
+    default: return '-';
+  }
+}
+
+function formatItemAcquisitionItems(row: ItemAcquisitionDto): string {
+  return (row.items ?? [])
+    .map(item => `${item.localizedItemName || item.itemName || '-'} x${item.count ?? 0}`)
+    .join(', ') || '-';
+}
+
+function viewItemAcquisitionOnMap(row: ItemAcquisitionDto): void {
+  if (row.sourceX == null || row.sourceZ == null)
+    return;
+
+  navigateRegionOnMap({
+    centerX: row.sourceX,
+    centerZ: row.sourceZ,
+    radius: 32,
+  });
+}
+
 function parseInventoryItems(json: string | null | undefined): unknown[] {
   if (!json)
     return [];
@@ -235,6 +272,7 @@ async function loadTrackingData(): Promise<void> {
       locationsResult,
       inventoryResult,
       dailyResult,
+      acquisitionsResult,
     ] = await Promise.all([
       playerTrackingGetPlayerSessions({
         path: { playerId: props.playerId },
@@ -270,6 +308,12 @@ async function loadTrackingData(): Promise<void> {
         },
         throwOnError: true,
       }),
+      getPlayerItemAcquisitions(props.playerId, {
+        pageNumber: 1,
+        pageSize: 20,
+        itemName: acquisitionQuery.itemName.trim() || undefined,
+        sourceKind: acquisitionQuery.sourceKind,
+      }),
     ]);
 
     sessions.value = sessionsResult.data?.items ?? [];
@@ -277,6 +321,7 @@ async function loadTrackingData(): Promise<void> {
     locations.value = locationsResult.data?.items ?? [];
     inventorySnapshots.value = inventoryResult.data?.items ?? [];
     dailySummaries.value = dailyResult.data?.items ?? [];
+    itemAcquisitions.value = acquisitionsResult.items ?? [];
     if (!selectedToSnapshotId.value)
       selectedToSnapshotId.value = inventorySnapshots.value[0]?.id;
     if (!selectedFromSnapshotId.value)
@@ -539,6 +584,51 @@ watch(() => route.query, applyRegionFromQuery);
           <strong>{{ formatTime(latestInventory?.createdAt) }}</strong>
         </div>
       </div>
+    </section>
+
+    <section class="profile-panel">
+      <div class="profile-panel__header">
+        <h3>物品获得</h3>
+      </div>
+      <div class="tracking-controls tracking-controls--acquisitions">
+        <el-input v-model="acquisitionQuery.itemName" clearable placeholder="物品名称" @keyup.enter="loadTrackingData" />
+        <el-select v-model="acquisitionQuery.sourceKind" clearable placeholder="来源">
+          <el-option label="实体战利品包" value="EntityLootBag" />
+          <el-option label="地面拾取" value="WorldDrop" />
+          <el-option label="管理员发放" value="AdminGrant" />
+          <el-option label="系统发放" value="SystemGrant" />
+        </el-select>
+        <el-button type="primary" @click="loadTrackingData">
+          {{ t('components.myTable.search') }}
+        </el-button>
+      </div>
+      <el-table :data="itemAcquisitions" size="small" border>
+        <el-table-column :label="t('views.playerProfile.tracking.createdAt')" width="170">
+          <template #default="{ row }">
+            {{ formatTime(row.occurredAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column :label="t('views.playerProfile.tracking.item')" min-width="220">
+          <template #default="{ row }">
+            {{ formatItemAcquisitionItems(row) }}
+          </template>
+        </el-table-column>
+        <el-table-column :label="t('views.playerProfile.tracking.source')" width="150">
+          <template #default="{ row }">
+            <el-tag effect="plain" size="small">
+              {{ formatItemAcquisitionSource(row.sourceKind) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column :label="t('views.playerList.position')" width="170">
+          <template #default="{ row }">
+            <el-button text size="small" @click="viewItemAcquisitionOnMap(row)">
+              {{ formatPosition({ x: row.sourceX, y: row.sourceY, z: row.sourceZ }) }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-empty v-if="itemAcquisitions.length === 0" description="暂无已记录的物品获得来源" />
     </section>
 
     <section class="profile-panel">
@@ -1010,6 +1100,10 @@ watch(() => route.query, applyRegionFromQuery);
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
+.tracking-controls--acquisitions {
+  grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr) auto;
+}
+
 .tracking-diff-summary,
 .tracking-actions {
   display: flex;
@@ -1037,7 +1131,8 @@ watch(() => route.query, applyRegionFromQuery);
 
 @media (max-width: 1180px) {
   .tracking-controls,
-  .tracking-controls--region {
+  .tracking-controls--region,
+  .tracking-controls--acquisitions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1050,7 +1145,8 @@ watch(() => route.query, applyRegionFromQuery);
 
   .tracking-summary,
   .tracking-controls,
-  .tracking-controls--region {
+  .tracking-controls--region,
+  .tracking-controls--acquisitions {
     grid-template-columns: 1fr;
   }
 }

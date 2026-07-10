@@ -10,6 +10,7 @@ Tracked data can include:
 - Session start/end time and total play time.
 - Last known position and sampled movement.
 - Inventory snapshot hashes and item totals.
+- Optional item-acquisition events for entity loot bags and ground-item pickups.
 - Daily aggregate counters for profile trends.
 
 The feature does not replace audit logs. Audit logs remain for admin actions and sensitive management operations. Player Tracking stores gameplay and operational activity.
@@ -26,8 +27,16 @@ Keep the default low-noise setup first:
 - Inventory snapshots disabled until needed.
 - Activity retention around 30 days.
 - Daily summary retention around 180 days.
+- Item acquisition tracking disabled until an administrator explicitly enables it; retain acquisition records around 90 days when enabled.
 
 Enable location sampling or inventory snapshots only after confirming storage growth and privacy expectations.
+Enable item acquisition tracking only when investigating source legitimacy. It records a confirmed source event, not a permanent identity for every item in a later merged stack.
+
+## Item Acquisition Audit
+
+When item acquisition tracking is enabled, the server records confirmed item stacks taken from an entity loot container, such as a zombie loot bag, and items collected from the ground. Each record includes the recipient, time, source type, source coordinates, entity/loot-list context when available, and item stack details.
+
+The audit does not reconstruct items acquired before it was enabled, player-to-player transfers, crafting, or sources from unsupported mods. A missing acquisition record is therefore an investigation lead, not proof of cheating. Use the source coordinate and nearby player/location records to review an incident.
 
 ## Runtime State
 
@@ -91,4 +100,3 @@ Minimum acceptance criteria:
 - Player profile Tracking tab loads without layout overflow.
 - Module center health does not show stale runtime errors.
 - Cleanup returns a structured result and writes an audit entry.
-

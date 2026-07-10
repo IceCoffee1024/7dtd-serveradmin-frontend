@@ -2756,6 +2756,49 @@ export const vLandClaimsDto = v.strictObject({
 });
 
 /**
+ * Represents a read-only storage container found inside a player's land claim.
+ */
+export const vLandClaimContainerSummaryDto = v.strictObject({
+    position: vPositionDto,
+    blockName: v.string(),
+    localizedName: v.nullable(v.string()),
+    ownerId: v.nullable(v.string()),
+    ownerName: v.nullable(v.string()),
+    landClaimOwnerId: v.string(),
+    landClaimOwnerName: v.string(),
+    isLocked: v.nullable(v.boolean()),
+    hasPassword: v.nullable(v.boolean()),
+    isUserAccessing: v.boolean(),
+    isPlayerStorage: v.boolean(),
+    slotCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    itemCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    isLoaded: v.boolean(),
+    coverage: v.string()
+});
+
+/**
+ * Represents the item contents of a storage container inside a player's land claim.
+ */
+export const vLandClaimContainerInventoryDto = v.strictObject({
+    position: vPositionDto,
+    blockName: v.string(),
+    localizedName: v.nullable(v.string()),
+    ownerId: v.nullable(v.string()),
+    ownerName: v.nullable(v.string()),
+    landClaimOwnerId: v.string(),
+    landClaimOwnerName: v.string(),
+    isLocked: v.nullable(v.boolean()),
+    hasPassword: v.nullable(v.boolean()),
+    isUserAccessing: v.boolean(),
+    isPlayerStorage: v.boolean(),
+    slotCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    itemCount: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    isLoaded: v.boolean(),
+    coverage: v.string(),
+    items: v.array(vInvItemDto)
+});
+
+/**
  * Represents metadata for a server mod package discovered and loaded by the 7DTD mod runtime.
  */
 export const vModInfoDto = v.strictObject({
@@ -2768,6 +2811,30 @@ export const vModInfoDto = v.strictObject({
     isLoaded: v.optional(v.boolean()),
     isUninstalled: v.optional(v.boolean()),
     folderName: v.string()
+});
+
+/**
+ * Result returned after a native 7DTD player profile reset attempt.
+ */
+export const vPlayerProfileResetResultDto = v.strictObject({
+    succeeded: v.optional(v.boolean()),
+    failureKind: v.nullish(v.string()),
+    errorMessage: v.nullish(v.string()),
+    playerId: v.optional(v.string()),
+    wasOnline: v.optional(v.boolean()),
+    archiveDirectory: v.nullish(v.string()),
+    archivedPaths: v.optional(v.array(v.string())),
+    removedPaths: v.optional(v.array(v.string())),
+    pluginDataCleared: v.optional(v.boolean())
+});
+
+/**
+ * Request to reset a player's native 7DTD profile artifacts.
+ */
+export const vPlayerProfileResetRequestDto = v.strictObject({
+    forceKickIfOnline: v.optional(v.boolean()),
+    kickReason: v.nullish(v.string()),
+    offlineWaitTimeoutSeconds: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(1), v.maxValue(120)))
 });
 
 /**
@@ -2946,6 +3013,7 @@ export const vPlayerTrackingFeatureSettingsDto = v.strictObject({
     trackChatActivity: v.optional(v.boolean()),
     trackLocations: v.optional(v.boolean()),
     trackInventorySnapshots: v.optional(v.boolean()),
+    trackItemAcquisitions: v.optional(v.boolean()),
     trackDailySummaries: v.optional(v.boolean()),
     locationSampleIntervalSeconds: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     locationMovementThresholdMeters: v.optional(v.number()),
@@ -2955,6 +3023,7 @@ export const vPlayerTrackingFeatureSettingsDto = v.strictObject({
     retentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     locationRetentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     inventorySnapshotRetentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    itemAcquisitionRetentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     dailySummaryRetentionDays: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     maxActivityLogsPerPlayer: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     excludeAdmins: v.optional(v.boolean()),
@@ -2990,6 +3059,19 @@ export const vPlayerTrackingStatusDto = v.strictObject({
         v.string(),
         v.bigint()
     ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    itemAcquisitionCount: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    lastItemAcquisitionAt: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    pendingItemAcquisitionCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    droppedItemAcquisitionCount: v.optional(v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807'))),
+    missingItemAcquisitionBaselineCount: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     dailySummaryCount: v.optional(v.pipe(v.union([
         v.number(),
         v.string(),
@@ -3106,6 +3188,60 @@ export const vPagedDtoOfPlayerInventorySnapshotDto = v.strictObject({
         v.bigint()
     ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
     items: v.array(vPlayerInventorySnapshotDto)
+});
+
+export const vPlayerItemAcquisitionSourceKind = v.picklist([
+    'EntityLootBag',
+    'WorldDrop',
+    'AdminGrant',
+    'SystemGrant'
+]);
+
+export const vPlayerItemAcquisitionEvidenceLevel = v.picklist(['Confirmed', 'Partial']);
+
+export const vPlayerItemAcquisitionItemDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    sortOrder: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    itemName: v.optional(v.string()),
+    localizedItemName: v.nullish(v.string()),
+    count: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    quality: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    seed: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    useTimes: v.nullish(v.number()),
+    mods: v.optional(v.array(v.string()))
+});
+
+export const vPlayerItemAcquisitionDto = v.strictObject({
+    id: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    occurredAt: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+    playerId: v.optional(v.string()),
+    playerName: v.nullish(v.string()),
+    sourceKind: v.optional(vPlayerItemAcquisitionSourceKind),
+    evidenceLevel: v.optional(vPlayerItemAcquisitionEvidenceLevel),
+    sourceEntityId: v.nullish(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    sourceEntityClass: v.nullish(v.string()),
+    sourceLootList: v.nullish(v.string()),
+    sourceName: v.nullish(v.string()),
+    sourceX: v.optional(v.number()),
+    sourceY: v.optional(v.number()),
+    sourceZ: v.optional(v.number()),
+    playerX: v.nullish(v.number()),
+    playerY: v.nullish(v.number()),
+    playerZ: v.nullish(v.number()),
+    operationReference: v.nullish(v.string()),
+    items: v.optional(v.array(vPlayerItemAcquisitionItemDto))
+});
+
+/**
+ * Represents a paged query result with total count and current page items.
+ */
+export const vPagedDtoOfPlayerItemAcquisitionDto = v.strictObject({
+    total: v.pipe(v.union([
+        v.number(),
+        v.string(),
+        v.bigint()
+    ]), v.transform(x => BigInt(x)), v.minValue(BigInt('-9223372036854775808'), 'Invalid value: Expected int64 to be >= -9223372036854775808'), v.maxValue(BigInt('9223372036854775807'), 'Invalid value: Expected int64 to be <= 9223372036854775807')),
+    items: v.array(vPlayerItemAcquisitionDto)
 });
 
 export const vPlayerInventoryDiffType = v.picklist([
@@ -3248,10 +3384,12 @@ export const vPlayerTrackingCleanupResultDto = v.strictObject({
     activityCutoffUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     locationCutoffUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     inventoryCutoffUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    itemAcquisitionCutoffUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     dailySummaryCutoffUtc: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
     deletedActivities: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     deletedLocations: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     deletedInventorySnapshots: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
+    deletedItemAcquisitions: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))),
     deletedDailySummaries: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')))
 });
 
@@ -4438,6 +4576,29 @@ export const vGameServerGetLandClaimsPath = v.object({
  */
 export const vGameServerRemovePlayerLandClaim2Body = vPositionDto;
 
+export const vGameServerGetAllLandClaimContainersQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGameServerGetLandClaimContainersPath = v.object({
+    playerId: v.string()
+});
+
+export const vGameServerGetLandClaimContainersQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
+export const vGameServerGetLandClaimContainerInventoryPath = v.object({
+    playerId: v.string(),
+    x: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    y: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')),
+    z: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
+});
+
+export const vGameServerGetLandClaimContainerInventoryQuery = v.object({
+    language: v.nullish(vLanguage)
+});
+
 /**
  * Setting key-value pairs to update.
  */
@@ -4445,6 +4606,15 @@ export const vGameServerSettingsPutBody = v.record(v.string(), v.string());
 
 export const vGameServerToggleModStatusQuery = v.object({
     folderName: v.string()
+});
+
+/**
+ * Reset options, including whether an online player should be kicked first.
+ */
+export const vGameServerResetPlayerProfileBody = vPlayerProfileResetRequestDto;
+
+export const vGameServerResetPlayerProfilePath = v.object({
+    playerId: v.string()
 });
 
 /**
@@ -4597,6 +4767,26 @@ export const vPlayerTrackingGetPlayerInventorySnapshotsQuery = v.object({
 
 export const vPlayerTrackingCaptureInventorySnapshotPath = v.object({
     playerId: v.string()
+});
+
+export const vPlayerTrackingGetPlayerItemAcquisitionsPath = v.object({
+    playerId: v.string()
+});
+
+export const vPlayerTrackingGetPlayerItemAcquisitionsQuery = v.object({
+    startTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    endTime: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
+    itemName: v.nullish(v.string()),
+    sourceKind: v.nullish(vPlayerItemAcquisitionSourceKind),
+    pageNumber: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 1),
+    pageSize: v.optional(v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647')), 10),
+    keyword: v.nullish(v.string()),
+    order: v.nullish(v.string()),
+    desc: v.optional(v.boolean())
+});
+
+export const vPlayerTrackingGetItemAcquisitionPath = v.object({
+    id: v.pipe(v.number(), v.integer(), v.minValue(-2147483648, 'Invalid value: Expected int32 to be >= -2147483648'), v.maxValue(2147483647, 'Invalid value: Expected int32 to be <= 2147483647'))
 });
 
 export const vPlayerTrackingComparePlayerInventorySnapshotsPath = v.object({
