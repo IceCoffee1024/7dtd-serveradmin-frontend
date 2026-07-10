@@ -15,7 +15,11 @@ export function normalizeUtcTimestamp(value: string | null | undefined): string 
   return `${text.replace(/^(\d{4}-\d{2}-\d{2})\s+/, '$1T')}Z`;
 }
 
-export function formatUtcTimestamp(value: string | null | undefined, fallback = '--'): string {
+export function formatUtcTimestamp(
+  value: string | null | undefined,
+  fallback = '--',
+  template = 'YYYY-MM-DD HH:mm:ss',
+): string {
   const normalized = normalizeUtcTimestamp(value);
-  return normalized ? dayjs(normalized).format('YYYY-MM-DD HH:mm:ss') : fallback;
+  return normalized ? dayjs(normalized).format(template) : fallback;
 }

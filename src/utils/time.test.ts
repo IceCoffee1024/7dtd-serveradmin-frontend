@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import dayjs from '~/plugins/dayjs';
 import { formatUtcTimestamp, normalizeUtcTimestamp } from './time';
 
 describe('normalizeUtcTimestamp', () => {
@@ -14,6 +15,11 @@ describe('normalizeUtcTimestamp', () => {
 });
 
 describe('formatUtcTimestamp', () => {
+  it('formats a UTC timestamp with a caller supplied template', () => {
+    expect(formatUtcTimestamp('2026-07-05T14:39:53Z', '--', 'MM-DD HH:mm'))
+      .toBe(dayjs('2026-07-05T14:39:53Z').format('MM-DD HH:mm'));
+  });
+
   it('returns the fallback for empty timestamps', () => {
     expect(formatUtcTimestamp(null)).toBe('--');
     expect(formatUtcTimestamp(undefined, '')).toBe('');

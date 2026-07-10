@@ -6,7 +6,6 @@ import type {
 } from '~/generated/api/types.gen';
 import { useQueryCache } from '@pinia/colada';
 import { useIntervalFn } from '@vueuse/core';
-import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import {
   devicesGetSystemMetricsSnapshotQuery,
@@ -14,6 +13,8 @@ import {
   gameServerGetStatisticsQuery,
   restartGetSettingsQuery,
 } from '~/generated/api/@pinia/colada.gen';
+import dayjs from '~/plugins/dayjs';
+import { formatUtcTimestamp } from '~/utils/time';
 import Monitor from './Monitor/index.vue';
 import Overview from './Overview/index.vue';
 import QuickActions from './QuickActions/index.vue';
@@ -184,7 +185,7 @@ const overviewSummary = computed(() => {
 });
 
 function formatCompactDate(value?: string | null): string {
-  return value ? dayjs(value).format('MM-DD HH:mm') : t('common.unknown');
+  return formatUtcTimestamp(value, t('common.unknown'), 'MM-DD HH:mm');
 }
 
 function formatNumber(value: number | null | undefined, digits = 0): string {

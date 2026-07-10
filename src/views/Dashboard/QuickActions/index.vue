@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useMutation } from '@pinia/colada';
-import dayjs from 'dayjs';
 import { useI18n } from 'vue-i18n';
 import { usePopup } from '~/composables';
 import { gameServerExecuteConsoleCommandMutation } from '~/generated/api/@pinia/colada.gen';
+import { formatUtcTimestamp } from '~/utils/time';
 
 interface Props {
   nextRestartAt?: string | null;
@@ -22,10 +22,10 @@ const actionLoading = ref<QuickActionType | null>(null);
 const executeConsoleCommandMutation = useMutation({
   ...gameServerExecuteConsoleCommandMutation(),
 });
-const restartLabel = computed(() => (
-  props.nextRestartAt
-    ? dayjs(props.nextRestartAt).format('MM-DD HH:mm')
-    : t('common.unknown')
+const restartLabel = computed(() => formatUtcTimestamp(
+  props.nextRestartAt,
+  t('common.unknown'),
+  'MM-DD HH:mm',
 ));
 
 const actionItems = computed(() => [
