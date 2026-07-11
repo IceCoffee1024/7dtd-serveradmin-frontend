@@ -31,6 +31,12 @@ Mutating: saveworld
 4. 按需要设置 `ExecuteOnMainThread`、`RequireGameStartDone`、`CaptureOutput` 和 `AllowConcurrentExecution`。游戏未完成启动时，启用 `RequireGameStartDone` 的任务会持久化一条 `Skipped` 运行记录；关闭并发时，前一次仍在执行会让新的 Cron 重叠触发在执行前被抑制，可能不写入历史记录。
 5. 保存后用播放按钮手动执行一次。确认对话框中的任务名称和命令目标无误；删除任务前先查看历史并确认不再需要其审计记录。
 
+<a href="/images/zh/automation-and-reliability/scheduler-tasks.png" target="_blank" rel="noopener" title="查看原图">
+  <img src="/images/zh/automation-and-reliability/scheduler-tasks.png" alt="计划任务列表的安全空状态">
+</a>
+
+*该图展示任务列表布局和创建入口；没有可安全展示的任务或下一次运行记录。*
+
 ### 历史 {#history}
 
 1. 按任务类型 `ConsoleCommands`、触发方式 `Cron`/`Manual`、成功状态和时间范围筛选，找到已写入历史的运行。关闭并发时，前一次运行仍在执行可能静默抑制新的 Cron 重叠触发，因此可能没有历史记录；此时确认任务仍启用且 Cron/时区配置正确，等待下一次符合条件的运行；回调被接纳后，再用可用的 `LastRun` 或历史记录核对结果。

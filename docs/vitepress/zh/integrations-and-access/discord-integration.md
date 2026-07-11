@@ -39,6 +39,10 @@ Bot Token、Webhook URL、代理密码、绑定码和频道 ID 都属于秘密�
 2. 运行诊断，检查代理 TCP、Discord REST API、Bot 实时连接和备用代理隧道结果。
 3. 某些 7DTD 或 Unity 运行环境中，默认 WebSocket 检查可能失败而备用代理路径可用。只有当诊断结果与 Bot 运行时状态一致时，才认为集成可用。
 
+![Discord 网络诊断入口](/images/zh/integrations-and-access/discord-diagnostics.png)
+
+*该图只展示诊断区域，不包含 Token、Webhook、频道标识或诊断结果。*
+
 ### 命令和 Slash Command {#commands}
 
 1. 保持命令白名单最小化。`listplayers` 可作为只读起点；内置的 `!serverstatus` 和 `!help` 由 Bot 处理，不需要加入控制台白名单。

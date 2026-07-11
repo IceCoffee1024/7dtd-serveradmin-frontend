@@ -31,6 +31,12 @@ TimeZoneId: Asia/Shanghai
 4. Choose `Save world before restart`, `Graceful`, or `Force` for the maintenance policy. Enter a `Custom restart command` only when the external launcher requires one; a custom command bypasses the built-in restart pipeline.
 5. To avoid a blood-moon window, enable scheduled deferral and set the pre-dusk protection hours and delay minutes. Save, confirm the success notice, and reload the settings to make sure the values were retained.
 
+<a href="/images/en/automation-and-reliability/restart-settings.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/automation-and-reliability/restart-settings.png" alt="Restart settings controls">
+</a>
+
+*Figure: View restart scheduling and related settings controls; use the values currently saved in your environment.*
+
 ### Run now {#run-now}
 
 1. Open the manual restart page and enter an auditable reason. Override warning seconds or restart mode only for this run; leaving them blank uses the configured defaults.

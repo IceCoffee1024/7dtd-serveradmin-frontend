@@ -28,6 +28,12 @@ The layer switcher can show map tiles, Region Grid, Land Claims, Offline Players
 4. When opening the map from Player Profile Tracking or a region search, check the time range, center X/Z, radius, and minimum distance. The overlay must match those query values.
 5. Treat GPS as a supporting action and return to Player Profile, Player List, or Logs for the management decision. If the UI exposes drag-to-teleport for an online marker, reconfirm player, destination, and maintenance authorization before submitting.
 
+<a href="/images/en/daily-operations/gps-map.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/daily-operations/gps-map.png" alt="GPS map controls without player markers">
+</a>
+
+*The screenshot shows the map controls without player or location identity markers.*
+
 ## Verify the result
 
 - A layer toggle affects only its markers; a selected marker's player/entity identity, coordinate, and state agree with backend lists.

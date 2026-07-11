@@ -28,6 +28,12 @@ GPS Map 是调查和导航辅助面板：把玩家、坐标、世界实体和追
 4. 从玩家画像的 Tracking 或区域搜索进入地图时，检查时间范围、中心 X/Z、半径和最小距离；轨迹覆盖层应与查询条件一致。
 5. 需要导航时把 GPS 作为辅助动作，回到 Player Profile、Player List 或日志完成管理决策。若界面提供拖拽在线玩家标记传送，必须再次确认玩家、目标坐标和维护授权后才提交。
 
+<a href="/images/zh/daily-operations/gps-map.png" target="_blank" rel="noopener" title="查看原图">
+  <img src="/images/zh/daily-operations/gps-map.png" alt="未显示玩家标记的 GPS 地图控件">
+</a>
+
+*该图展示地图控件，未显示玩家或位置身份标记。*
+
 ## 验证结果
 
 - 图层开关只影响对应标记；点击标记后弹窗中的玩家/实体身份、坐标和状态与后端列表一致。

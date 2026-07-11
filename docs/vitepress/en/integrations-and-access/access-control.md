@@ -35,6 +35,10 @@ Apply the smallest access rule needed, test it with a dedicated account, and ret
 4. Save, reload the table, and verify the effective rule with a dedicated test account. Do not test a new administrator level with the account that owns the only recovery path.
 5. To reverse a rule, remove the selected entry or replace it with the approved level, then confirm that a previously permitted or denied command now produces the expected result.
 
+![Command permission table](/images/en/integrations-and-access/access-control.png)
+
+*The command-permission table is shown without administrator accounts or ban-and-whitelist entries.*
+
 ## Verify the result
 
 - A Whitelist row shows only the intended player ID and display name; Ban shows its expiry and reason; Mute shows its mute expiry and reason.

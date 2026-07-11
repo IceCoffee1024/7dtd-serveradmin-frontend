@@ -53,6 +53,12 @@ ServerConfig: <SERVER_BACKUP_ROOT>/server-config
 3. Compare file-table creation time, size, and type with the run details. For a failure, fix destination permissions, free space, readable sources, and database connectivity before retrying, while retaining the failed row.
 4. Export required audit evidence before pruning old run rows by `HistoryRetentionDays`; before deleting files by `RetentionCount`, confirm that the recovery window no longer depends on them.
 
+<a href="/images/en/automation-and-reliability/backup-history.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/automation-and-reliability/backup-history.png" alt="Backup settings">
+</a>
+
+*The screenshot shows Backup settings controls; it does not show a run history, output file, or server path.*
+
 ## Verify the result
 
 - All three tabs show the saved enabled state, cron, destination, compression, and file retention; the shared time zone is effective for all three tasks.

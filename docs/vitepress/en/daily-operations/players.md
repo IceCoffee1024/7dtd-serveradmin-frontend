@@ -25,6 +25,12 @@ Select the correct person by stable identity, distinguish online state from hist
 3. Use **Land Claim Containers** when investigating land storage. It shows containers associated with player claims in areas the backend can currently read or has loaded; an empty or failed load is not proof that no container exists.
 4. Select the name or **Player Profile** action to open the hidden profile. Confirm identity, online state, and loaded-at time before any action.
 
+<a href="/images/en/daily-operations/player-list.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/daily-operations/player-list.png" alt="Player List safe empty state">
+</a>
+
+*The test console's empty Player List shows the list layout and operation column without exposing an account.*
+
 ### Player Profile details {#player-profile}
 
 - **Overview**: basic information, progress, access/moderation state, asset summary, and recent game events/chat.

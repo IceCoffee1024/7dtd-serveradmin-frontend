@@ -52,6 +52,12 @@ Automate messages, rewards, or constrained commands within controlled trigger an
 3. The controlled failure should produce a failed row, increase today's failure count, and appear as the recent failed rule. When Discord failure alerts are enabled, an alert should reach the configured target; an alert failure does not turn the original rule run into a success.
 4. After testing, preview the test-run cleanup and confirm the count before deleting. When cleaning expired runs by retention, keep formal business evidence separately.
 
+<a href="/images/en/automation-and-reliability/event-automation-run-history.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/automation-and-reliability/event-automation-run-history.png" alt="Event automation run history in its safe empty state">
+</a>
+
+*The run-history table is shown without rules or execution records.*
+
 ### Settings {#settings}
 
 1. Enable or disable Event automation and set `HistoryRetentionDays` in Settings. Disabling the module stops rule execution but does not delete rule configuration.

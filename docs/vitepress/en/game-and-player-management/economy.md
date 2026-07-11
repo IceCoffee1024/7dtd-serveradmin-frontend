@@ -39,6 +39,12 @@ Manage the economy from overview through accounts, transactions, settings, shop 
 5. In **Shop**, create or edit a product as either a `GameItem` or `RewardPackage`. For a game item, verify `ItemName`, count, price, quality rules, and enabled state. For a package product, select an existing reward-package ID and do not duplicate its payload in the shop row.
 6. Treat `StockLimit` as a global unit cap: a positive value limits the total item units sold to all players, while `0` means unlimited. Compare `SoldCount` and the remaining units before enabling a scarce product; quantity and batch purchases consume the same global counter.
 
+<a href="/images/en/game-and-player-management/economy-shop.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/game-and-player-management/economy-shop.png" alt="Economy shop list in its safe empty state">
+</a>
+
+*The screenshot shows the empty shop list and its management columns; no product or purchase data was available.*
+
 ### Reward packages {#reward-packages}
 
 7. In **Reward packages**, create or edit the stable package key/name and ordered entries (`GameItem`, `EconomyCurrency`, or restricted `ConsoleCommand`). Validate each JSON payload, enable only tested entries, and note the package ID/key used by a shop row or redeem code.

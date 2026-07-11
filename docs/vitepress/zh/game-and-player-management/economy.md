@@ -39,6 +39,12 @@ outline: deep
 5. 在 **商店** 创建或编辑 `GameItem` 或 `RewardPackage` 商品。游戏物品要核对 `ItemName`、数量、价格、品质规则和启用状态；奖励包商品选择已有奖励包 ID，不要在商店行重复维护载荷。
 6. 将 `StockLimit` 视为全局单位上限：正数限制所有玩家合计售出的物品单位数，`0` 表示无限。启用稀缺商品前比较 `SoldCount` 和剩余单位；数量和批量购买共用同一全局计数。
 
+<a href="/images/zh/game-and-player-management/economy-shop.png" target="_blank" rel="noopener" title="查看原图">
+  <img src="/images/zh/game-and-player-management/economy-shop.png" alt="经济商店列表的安全空状态">
+</a>
+
+*该图展示空商店列表和可用管理列；其中没有商品或购买数据。*
+
 ### 奖励包 {#reward-packages}
 
 7. 在 **奖励包** 创建或编辑稳定的包 key/名称以及有序条目（`GameItem`、`EconomyCurrency` 或受限的 `ConsoleCommand`）。校验每个 JSON 载荷，只启用测试过的条目，并记录商店行或兑换码引用的奖励包 ID/key。

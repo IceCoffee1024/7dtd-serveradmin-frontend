@@ -158,22 +158,13 @@ export default defineConfig({
   lastUpdated: true,
   themeConfig: commonTheme,
   locales: {
-    root: {
-      label: 'Language',
-      lang: 'en-US',
-      link: '/',
-      themeConfig: {
-        nav: [
-          { text: '中文', link: '/zh/' },
-          { text: 'English', link: '/en/' },
-        ],
-      },
-    },
     zh: {
       label: '简体中文',
       lang: 'zh-CN',
       link: '/zh/',
+      title: '7 Days to Die ServerAdmin 手册',
       themeConfig: {
+        siteTitle: '7DTD 服主管理',
         nav: navZh,
         sidebar: sidebarZh,
         outline: { level: 'deep', label: '本页目录' },
@@ -188,7 +179,9 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       link: '/en/',
+      title: '7 Days to Die ServerAdmin Manual',
       themeConfig: {
+        siteTitle: '7DTD ServerAdmin',
         nav: navEn,
         sidebar: sidebarEn,
         outline: { level: 'deep', label: 'On this page' },

@@ -43,6 +43,10 @@ Use gameplay activity records for player operations, incident review, and trends
 
 6. To investigate an item source, enable **Item acquisition** only after confirming the privacy and storage decision. Filter a player's acquisition records for entity loot containers (for example, a zombie loot bag) or ground pickups, then compare recipient, time, item stack, source coordinates, and entity/loot-list context when available with nearby location/activity records.
 
+![Player item acquisition audit in its safe empty state](/images/en/game-and-player-management/player-acquisition-audit.png)
+
+*The audit table is shown without acquisition rows, so no player identity or item history is captured.*
+
 ### Settings and retention {#settings}
 
 7. In **Settings and retention**, configure the core switches (sessions, activity, chat metadata, daily summaries), optional locations/inventory snapshots/item acquisition, sample intervals, movement threshold, snapshot timing, per-category retention, activity cap, admin exclusions, and excluded Player IDs. Save, reload, and run cleanup with a confirmed scope.

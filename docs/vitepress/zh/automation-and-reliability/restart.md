@@ -31,6 +31,12 @@ TimeZoneId: Asia/Shanghai
 4. 按维护策略选择 `重启前保存世界`、`Graceful` 或 `Force`。只有在明确知道外部启动器需要什么时才填写 `自定义重启命令`；填写后会跳过内置重启流程。
 5. 如需避开血月，启用血月窗口延期，并设置黄昏前保护小时数和每次延期分钟数。保存后确认页面提示成功，并再次读取设置确认值没有被回退。
 
+<a href="/images/zh/automation-and-reliability/restart-settings.png" target="_blank" rel="noopener" title="查看原图">
+  <img src="/images/zh/automation-and-reliability/restart-settings.png" alt="重启设置控件">
+</a>
+
+*图：查看重启计划及相关设置控件；以当前环境中保存后的值为准。*
+
 ### 立即执行 {#run-now}
 
 1. 进入手动重启页，填写可审计的原因；仅在本次确有需要时覆盖预警秒数或重启模式，留空表示使用设置中的默认值。

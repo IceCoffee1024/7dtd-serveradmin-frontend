@@ -52,6 +52,12 @@ outline: deep
 3. 受控失败应出现失败记录、今日失败数增加和最近失败规则；如果启用了 Discord 失败告警，告警应发送到配置的目标。告警失败不会把原规则运行改成成功。
 4. 测试结束后先用预览清理测试运行，再确认数量后执行删除；按保留天数清理过期运行时也要保留正式业务证据。
 
+<a href="/images/zh/automation-and-reliability/event-automation-run-history.png" target="_blank" rel="noopener" title="查看原图">
+  <img src="/images/zh/automation-and-reliability/event-automation-run-history.png" alt="事件自动化执行历史的安全空状态">
+</a>
+
+*该图展示执行历史表格，未包含规则或运行记录。*
+
 ### 设置 {#settings}
 
 1. 在设置中启用或停用事件自动化，并设置 `HistoryRetentionDays`。停用模块会停止规则运行，但不会替你删除规则配置。

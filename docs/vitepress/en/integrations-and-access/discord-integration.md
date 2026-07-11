@@ -39,6 +39,10 @@ Bot tokens, webhook URLs, proxy passwords, binding codes, and channel identifier
 2. Run diagnostics and inspect proxy TCP, Discord REST API, Bot real-time connection, and the alternate proxy tunnel result.
 3. A default WebSocket check can fail in some 7DTD or Unity runtimes while the alternate proxy path remains usable. Treat the integration as usable only when the diagnostic result and the Bot runtime status agree.
 
+![Discord network diagnostics entry point](/images/en/integrations-and-access/discord-diagnostics.png)
+
+*The screenshot shows the diagnostics area only; no token, webhook, channel identifier, or diagnostic result is captured.*
+
 ### Commands and slash commands
 
 1. Keep the command allow-list small. `listplayers` is a suitable read-only starting point; built-in `!serverstatus` and `!help` are handled by the Bot and do not require the console allow-list.

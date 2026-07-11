@@ -59,6 +59,10 @@ Login decisions follow this order:
 3. Add the test IP to the block-list and confirm the player is kicked with the configured message. Remove the entry, clear cache, and confirm the player can rejoin.
 4. Simulate a provider failure only in a controlled window, then confirm the configured unknown-country policy is applied to a real login. Restore the provider and policy after the test.
 
+![GeoIP recent decisions in their safe empty state](/images/en/integrations-and-access/geoip-recent-decisions.png)
+
+*The empty table shows the recent-decision view without test IPs, players, or policy results.*
+
 ## Verify the result
 
 - The status section shows the selected provider, cache count, last lookup, and last block without a stale error.

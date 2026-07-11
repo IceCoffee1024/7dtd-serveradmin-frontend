@@ -31,6 +31,12 @@ Mutating: saveworld
 4. Choose `ExecuteOnMainThread`, `RequireGameStartDone`, `CaptureOutput`, and `AllowConcurrentExecution` deliberately. With the game not fully started, `RequireGameStartDone` records a persisted `Skipped` run; with concurrency disabled, a new cron trigger can be suppressed while the prior run is still active and may not create a history row.
 5. Save, then use the play action to run once. Re-check the task name and command target in the confirmation dialog; before deleting a task, review its history and preserve any required audit evidence.
 
+<a href="/images/en/automation-and-reliability/scheduler-tasks.png" target="_blank" rel="noopener" title="Open full-size image">
+  <img src="/images/en/automation-and-reliability/scheduler-tasks.png" alt="Scheduler task list in its safe empty state">
+</a>
+
+*The Scheduler list shows its table layout and create control; no task or next-run record was available for capture.*
+
 ### History {#history}
 
 1. Filter by task type `ConsoleCommands`, trigger source `Cron`/`Manual`, success, and time range to find persisted runs. With concurrency disabled, an overlap may be silently suppressed while the prior run is active, leaving no history row; verify that the task remains enabled and its cron/time-zone configuration is correct, wait for the next eligible run, and use the available `LastRun` or history once a callback is admitted.

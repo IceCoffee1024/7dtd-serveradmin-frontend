@@ -53,6 +53,12 @@ ServerConfig: <SERVER_BACKUP_ROOT>/server-config
 3. 把文件表中的创建时间、大小和类型与运行详情对照。失败时先修复目录权限、空间、源文件可读性和数据库连接，再重试并保留失败记录。
 4. 按 `HistoryRetentionDays` 清理旧运行记录前，导出需要的审计证据；按 `RetentionCount` 删除文件前，确认恢复窗口没有依赖这些文件。
 
+<a href="/images/zh/automation-and-reliability/backup-history.png" target="_blank" rel="noopener" title="查看原图">
+  <img src="/images/zh/automation-and-reliability/backup-history.png" alt="备份设置">
+</a>
+
+*该图展示备份设置控件；未显示运行历史、输出文件或服务器路径。*
+
 ## 验证结果
 
 - 三个标签均显示保存后的启用状态、Cron、目标目录、压缩和文件保留数；共享时区在三个任务上生效。
