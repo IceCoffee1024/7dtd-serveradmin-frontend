@@ -30,7 +30,7 @@ Each uncached public player IP may be sent to the selected third-party provider.
 3. Choose a policy mode: **Disabled**, **Allow only listed countries**, or **Block listed countries**. Enter ISO country codes in the matching list and choose **Unknown country policy** and **Private/local IP policy** explicitly.
 4. Add exact IP or CIDR values to the allow-list or block-list for approved test clients and recovery administrators. Explicit exceptions are evaluated before country rules.
 5. Set the kick message and decide whether to log allowed decisions. Enable allowed logging temporarily when validating a new policy, then reduce noise if it is not needed.
-6. Save, run **Test lookup** for a public test IP and a private address, then inspect the result provider, country, cache flag, and error state. Use **Clear cache** after changing provider or policy assumptions.
+6. Save, run **Test lookup** for a public test IP and a private address, then inspect the result provider, country, cache flag, and error state. Use **Clear cache** after changing provider or cache settings, or when a policy test requires a fresh provider result.
 
 ### Cache behavior {#cache-behavior}
 
@@ -54,8 +54,8 @@ Login decisions follow this order:
 
 ### Live verification
 
-1. Keep the mode disabled and use **Test lookup** for the public test IP and private address. Inspect the direct lookup result; do not expect a disabled mode to create a recent login decision.
-2. Enable a harmless country policy that does not match the test operator and enable **Log allowed decisions** temporarily. Join with the dedicated test player and confirm an allowed decision appears in Recent decisions.
+1. Keep the mode disabled and use **Test lookup** for the public test IP and private address. This validates the provider lookup only; it does not exercise `PrivateIpPolicy` or create a recent login decision.
+2. Enable a harmless `AllowCountries` list that includes the test operator's expected country, or a `BlockCountries` list that excludes it, and enable **Log allowed decisions** temporarily. Join with the dedicated test player and confirm an allowed decision appears in Recent decisions.
 3. Add the test IP to the block-list and confirm the player is kicked with the configured message. Remove the entry, clear cache, and confirm the player can rejoin.
 4. Simulate a provider failure only in a controlled window, then confirm the configured unknown-country policy is applied to a real login. Restore the provider and policy after the test.
 
@@ -64,7 +64,8 @@ Login decisions follow this order:
 - The status section shows the selected provider, cache count, last lookup, and last block without a stale error.
 - Recent decisions contain the expected `Allowed`, `Blocked`, `LookupFailed`, or `Skipped` result and reason.
 - An explicit allow-list entry wins before country policy, and an explicit block-list entry blocks before a remote request.
-- Clearing cache changes the next lookup behavior after provider or settings changes, and removing a temporary block restores login.
+- Clearing cache changes the next lookup behavior after provider or cache TTL changes, and removing a temporary block restores login; country/IP policy changes re-evaluate the available lookup result.
+- Validate `PrivateIpPolicy` with a real private/loopback login attempt and its recent decision; a Test lookup result alone is not evidence for that policy.
 
 ## Limits and safety notes
 

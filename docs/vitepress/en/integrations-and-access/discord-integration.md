@@ -47,7 +47,7 @@ Bot tokens, webhook URLs, proxy passwords, binding codes, and channel identifier
 
 ## Verify the result
 
-- The Gateway runtime `state` is **Connected**, the separate `isReady` indicator is true, and diagnostics show the required Discord checks as passed. `Ready` is a Gateway event/readiness flag, not a second `state` value; a Connected session with `isReady` false still needs investigation.
+- The page confirms the Gateway runtime `state` is **Connected**, and diagnostics show the required Discord checks as passed. If you need to inspect readiness or the last error, use the browser Network panel to view the JSON from `/api/DiscordIntegration/BotStatus`; `isReady` is a separate readiness flag, not a second page state. Do not screenshot or commit sensitive fields from that response.
 - A webhook test reaches the intended test channel without exposing its URL in the result.
 - A game chat test reaches the public channel, and an inbound test reaches the game only when that bridge is enabled.
 - A command in the admin channel is accepted only when it is allow-listed and, if enabled, bound to an active administrator player. A public-channel or high-risk command is rejected.
@@ -56,8 +56,8 @@ Bot tokens, webhook URLs, proxy passwords, binding codes, and channel identifier
 
 ## Common failure branches {#common-failures}
 
-- **Slash command does not appear:** save the Bot settings, confirm the Bot reached `state=Connected` with `isReady=true`, verify the Guild ID and the `applications.commands` scope, then run **Sync slash commands** again. Verify that `/listplayers`, `/serverstatus`, or `/help` appears in the intended Guild rather than relying on a successful HTTP response alone.
-- **Token test succeeds but Gateway fails:** a token test proves the saved credential can call the Bot test endpoint, not that the long-lived Gateway session can connect. Run diagnostics, check the REST and Gateway steps separately, inspect `state`, `isReady`, and `lastError`, then check proxy, DNS, firewall, and reconnect status. Verify by observing a later READY event and a stable Connected state.
+- **Slash command does not appear:** save the Bot settings, confirm the page shows `state=Connected`, verify the Guild ID and the `applications.commands` scope, then run **Sync slash commands** again. If readiness needs confirmation, optionally inspect `isReady` in the `/api/DiscordIntegration/BotStatus` JSON. Verify that `/listplayers`, `/serverstatus`, or `/help` appears in the intended Guild rather than relying on a successful HTTP response alone.
+- **Token test succeeds but Gateway fails:** a token test proves the saved credential can call the Bot test endpoint, not that the long-lived Gateway session can connect. Run diagnostics, check the REST and Gateway steps separately, inspect the page state, and optionally inspect `isReady`/`lastError` in the `/api/DiscordIntegration/BotStatus` JSON. Then check proxy, DNS, firewall, and reconnect status. Verify by observing a later READY event and a stable Connected state without capturing the response in documentation.
 - **Command is rejected:** confirm the message is in the admin channel, the prefix and command spelling match, the command is in the allow-list, and an active account binding is present when required. High-risk commands remain blocked even when listed. Verify the expected rejection in the audit log before changing the policy.
 - **Webhook target is disabled:** enable the named target or select the default target in the bridge/alert setting. Confirm the target key matches an enabled row, save, and rerun the webhook test. Verify delivery in the test channel without exposing the URL.
 

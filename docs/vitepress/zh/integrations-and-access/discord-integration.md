@@ -47,7 +47,7 @@ Bot Token、Webhook URL、代理密码、绑定码和频道 ID 都属于秘密�
 
 ## 验证结果 {#verify-result}
 
-- Gateway 运行时 `state` 为 **Connected**，独立的 `isReady` 指示为 true，且诊断中的必需 Discord 检查通过。`Ready` 是 Gateway 事件/就绪标记，不是第二个 `state` 值；state 已 Connected 但 `isReady` 为 false 时仍需排查。
+- 页面确认 Gateway 运行时 `state` 为 **Connected**，且诊断中的必需 Discord 检查通过。需要核对就绪状态或最近错误时，可在浏览器 Network 面板查看 `/api/DiscordIntegration/BotStatus` 返回的 JSON；`isReady` 是独立的就绪标记，不是页面上的第二个 state。不要把该响应中的敏感字段截图或提交。
 - Webhook 测试消息到达预期测试频道，测试结果不会暴露 URL。
 - 游戏聊天在启用时到达公共频道；仅当启用反向桥接时，入站测试才会进入游戏。
 - 管理员频道命令只有在白名单中，并且在启用时绑定到有效管理员玩家才会接受；公共频道或高风险命令会被拒绝。
@@ -56,8 +56,8 @@ Bot Token、Webhook URL、代理密码、绑定码和频道 ID 都属于秘密�
 
 ## 常见故障分支 {#common-failures}
 
-- **Slash Command 不出现：** 保存 Bot 设置，确认 Bot 已达到 `state=Connected` 且 `isReady=true`，核对 Guild ID 和 `applications.commands` scope，再次执行 **同步 Slash Command**。应在目标 Guild 中看到 `/listplayers`、`/serverstatus` 或 `/help`，不要只依据 HTTP 请求成功判断。
-- **Token 测试成功但 Gateway 失败：** Token 测试只能证明已保存凭据可以调用 Bot 测试端点，不能证明长期 Gateway 会话能够连接。运行诊断，分别检查 REST 和 Gateway 步骤，查看 `state`、`isReady`、`lastError`，再检查代理、DNS、防火墙和重连状态。应观察到后续 READY 事件和稳定的 Connected 状态。
+- **Slash Command 不出现：** 保存 Bot 设置，确认页面显示 `state=Connected`，核对 Guild ID 和 `applications.commands` scope，再次执行 **同步 Slash Command**。需要确认就绪状态时，可选地在 `/api/DiscordIntegration/BotStatus` JSON 中查看 `isReady`。应在目标 Guild 中看到 `/listplayers`、`/serverstatus` 或 `/help`，不要只依据 HTTP 请求成功判断。
+- **Token 测试成功但 Gateway 失败：** Token 测试只能证明已保存凭据可以调用 Bot 测试端点，不能证明长期 Gateway 会话能够连接。运行诊断，分别检查 REST 和 Gateway 步骤，查看页面 state，并可选地在 `/api/DiscordIntegration/BotStatus` JSON 中查看 `isReady`、`lastError`，再检查代理、DNS、防火墙和重连状态。应观察到后续 READY 事件和稳定的 Connected 状态，不要把该响应截图写入文档。
 - **命令被拒绝：** 确认消息发在管理员频道，前缀和命令拼写正确，命令在白名单中，并且在需要时存在有效账号绑定。即使命令列入白名单，高风险命令仍会被阻止。先在审计日志中确认预期的拒绝，再修改策略。
 - **Webhook 目标被禁用：** 启用具名目标，或在桥接/告警设置中选择默认目标。确认目标 key 与启用的行一致，保存后重新测试 Webhook；在测试频道验证投递，但不要暴露 URL。
 
