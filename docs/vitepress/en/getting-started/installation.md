@@ -1,12 +1,20 @@
+---
+outline: deep
+---
+
 # Installation
 
-## Applicability, role, and prerequisites
-
-This page is for the deploying administrator. Prepare a maintainable 7DTD server, `<7DTD_SERVER_ROOT>`, the backend source or publish output, Node.js and pnpm, and a browser-reachable `<SERVERADMIN_API_BASE_URL>`. You must be able to restart the game server during a maintenance window and read Swagger.
+> For the deploying administrator. Requires a maintainable 7DTD server, `<7DTD_SERVER_ROOT>`, backend source or publish output, Node.js, pnpm, and a browser-reachable `<SERVERADMIN_API_BASE_URL>`. You must be able to restart the game server during a maintenance window and read Swagger.
 
 ## Purpose
 
 After installation, the backend should expose an API beside the game process, the frontend should load and target that API, and an administrator should be able to sign in and see dashboard data.
+
+## Before you begin
+
+- Prepare the server root, backend publish output, frontend workspace, and a maintenance window.
+- Confirm that the target API URL is sanitized in notes and that no password or token will be put in a `VITE_*` variable.
+- Confirm that the reverse proxy or static host can route `/api`, `/swagger`, and frontend page paths.
 
 ## Procedure
 
@@ -16,15 +24,18 @@ After installation, the backend should expose an API beside the game process, th
 4. **Build the frontend.** Run `pnpm build` and publish the static output to a supported static host or reverse proxy. Route `/api`, `/swagger`, and frontend page paths according to the hosting model.
 5. **Open the first session.** Open the frontend, choose the intended language, and sign in with the administrator account supplied by the deployment. If the page opens but requests fail, check the API base URL, reverse proxy, and browser Network panel first.
 
-## Observable verification
+## Verify the result
 
 - The Swagger URL returns non-empty JSON, and browser Network requests target the expected `<SERVERADMIN_API_BASE_URL>`.
 - After login, the dashboard shows online/offline state and samples such as FPS or memory; an unreachable backend produces an error or empty state rather than a fabricated success.
 - Player List and Console can load the commands allowed for the account; a disabled module is clearly unavailable in Feature Modules.
 
-## Limits and safety
+## Limits and safety notes
 
-- `VITE_*` values are exposed to the browser and must not contain tokens, passwords, or other secrets.
+::: warning
+`VITE_*` values are exposed to the browser and must not contain tokens, passwords, or other secrets.
+:::
+
 - Publishing static files does not start the backend and does not replace 7DTD save/configuration backups.
 - Reverse proxy, HTTPS, CORS, and authentication policies belong to the deployment environment. Re-run Swagger, login, and API request checks after changing them.
 
