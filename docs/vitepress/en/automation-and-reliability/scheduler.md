@@ -28,14 +28,14 @@ Mutating: saveworld
 1. Open Tasks and check module enablement, each task's `Enabled`, `Cron expression`, `TimeZoneId`, last status, and next run. The next-run value is a hint, not a replacement for the saved cron and time zone.
 2. Create or edit a `Console Commands` task with a unique name, description, enabled state, cron, and time zone, then add commands in order. Commands in one task share execution options and run one by one.
 3. Keep query commands such as `help` separate from commands that mutate the world, players, or configuration. Put only commands allowed by the account and backend policy in a task; `saveworld`, player kicks, and setting commands require a maintenance window, backup, and rollback plan.
-4. Choose `ExecuteOnMainThread`, `RequireGameStartDone`, `CaptureOutput`, and `AllowConcurrentExecution` deliberately. With the game not fully started, `RequireGameStartDone` records a `Skipped` run; with concurrency disabled, a new trigger is skipped while the prior run is still active.
+4. Choose `ExecuteOnMainThread`, `RequireGameStartDone`, `CaptureOutput`, and `AllowConcurrentExecution` deliberately. With the game not fully started, `RequireGameStartDone` records a persisted `Skipped` run; with concurrency disabled, a new cron trigger can be suppressed while the prior run is still active and may not create a history row.
 5. Save, then use the play action to run once. Re-check the task name and command target in the confirmation dialog; before deleting a task, review its history and preserve any required audit evidence.
 
 ### History {#history}
 
-1. Filter by task type `ConsoleCommands`, trigger source `Cron`/`Manual`, success, and time range to find the run.
+1. Filter by task type `ConsoleCommands`, trigger source `Cron`/`Manual`, success, and time range to find persisted runs. When no row appears for a suspected overlap, inspect the task runtime and scheduler logs.
 2. Open details and inspect `Status`, `Summary`, `ErrorMessage`, captured output, start/end time, duration, operator, and source IP. For a failure, map the error back to the individual command instead of relying on the task row's last status.
-3. Triage in this order: task and module enabled, valid cron, correct task time zone, game started, command inside the allowed boundary, no concurrency/startup skip, and dependent module response.
+3. Triage in this order: task and module enabled, valid cron, correct task time zone, game started, command inside the allowed boundary, no concurrency overlap suppression or startup skip, and dependent module response.
 4. For a state-changing task, compare the result with audit and game logs. `Success` means the execution chain caught no error; it does not guarantee the desired business outcome.
 
 ### Settings {#settings}
@@ -49,7 +49,7 @@ Mutating: saveworld
 
 - Tasks shows enabled state, cron, time zone, last status, and next run; an explicit task time zone is visibly distinct from the Settings default.
 - A read-only task produces a `Success` history row with the expected output; a controlled state-changing task produces the matching audit row and completes inside the maintenance window.
-- After a deliberately controlled invalid command, History shows `Failed` and its `ErrorMessage` or details identifies the command. An incomplete startup or concurrency conflict shows a `Skipped` reason.
+- After a deliberately controlled invalid command, History shows `Failed` and its `ErrorMessage` or details identifies the command. An incomplete startup with `RequireGameStartDone` persists a `Skipped` reason; a concurrency conflict may be suppressed before execution and leave no history row, so inspect task runtime and scheduler logs when no row appears.
 
 ## Limits and safety notes
 
