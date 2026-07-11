@@ -33,7 +33,7 @@ Mutating: saveworld
 
 ### History {#history}
 
-1. Filter by task type `ConsoleCommands`, trigger source `Cron`/`Manual`, success, and time range to find persisted runs. When no row appears for a suspected overlap, inspect the task runtime and scheduler logs.
+1. Filter by task type `ConsoleCommands`, trigger source `Cron`/`Manual`, success, and time range to find persisted runs. With concurrency disabled, an overlap may be silently suppressed while the prior run is active, leaving no history row; verify that the task remains enabled and its cron/time-zone configuration is correct, wait for the next eligible run, and use the available `LastRun` or history once a callback is admitted.
 2. Open details and inspect `Status`, `Summary`, `ErrorMessage`, captured output, start/end time, duration, operator, and source IP. For a failure, map the error back to the individual command instead of relying on the task row's last status.
 3. Triage in this order: task and module enabled, valid cron, correct task time zone, game started, command inside the allowed boundary, no concurrency overlap suppression or startup skip, and dependent module response.
 4. For a state-changing task, compare the result with audit and game logs. `Success` means the execution chain caught no error; it does not guarantee the desired business outcome.
@@ -49,7 +49,7 @@ Mutating: saveworld
 
 - Tasks shows enabled state, cron, time zone, last status, and next run; an explicit task time zone is visibly distinct from the Settings default.
 - A read-only task produces a `Success` history row with the expected output; a controlled state-changing task produces the matching audit row and completes inside the maintenance window.
-- After a deliberately controlled invalid command, History shows `Failed` and its `ErrorMessage` or details identifies the command. An incomplete startup with `RequireGameStartDone` persists a `Skipped` reason; a concurrency conflict may be suppressed before execution and leave no history row, so inspect task runtime and scheduler logs when no row appears.
+- After a deliberately controlled invalid command, History shows `Failed` and its `ErrorMessage` or details identifies the command. An incomplete startup with `RequireGameStartDone` persists a `Skipped` reason; a concurrency conflict may be silently suppressed before execution and leave no history row, so verify that the task remains enabled and its cron/time-zone configuration is correct, wait for the next eligible run, and use the available `LastRun` or history once a callback is admitted.
 
 ## Limits and safety notes
 

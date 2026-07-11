@@ -61,7 +61,7 @@ Automate messages, rewards, or constrained commands within controlled trigger an
 ## Verify the result
 
 - The rule editor and API validation accept only the four MVP triggers; dry-run returns a match result and action summary, and the saved table state matches Settings.
-- During a cooldown window, a second trigger suppresses the action; inspect Event automation module state and remaining cooldown, or verify a subsequent trigger after the window. A first-join test runs once for the same player. Suppressed cooldown/first-join triggers may return before a run-history row/status is written.
+- During a cooldown window, a second trigger suppresses the action; compare the available `lastTriggeredAt`/elapsed age with configured `cooldownSeconds`, and confirm the next eligible trigger. A first-join test runs once for the same player. Suppressed cooldown/first-join triggers may return before a run-history row/status is written.
 - The controlled failure has a failed run, error summary, and expandable details; today's failure count, the recent-failure link, and the Discord alert (when enabled) agree.
 - High-risk action flags, confirmation, backend security validation, and audit records are all present; a rejected action is an audit fact as well.
 
