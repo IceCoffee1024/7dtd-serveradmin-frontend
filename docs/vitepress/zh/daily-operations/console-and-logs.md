@@ -18,7 +18,7 @@ outline: deep
 
 ## 操作步骤
 
-### Console（控制台）
+### Console（控制台） {#console}
 
 1. 等待允许命令列表加载，在输入框使用自动完成查看命令说明和帮助；无效命令不会发送。
 2. 输入经确认的管理员命令并提交。前端按 `inMainThread: true` 请求后端，因此命令链仍可能同步占用游戏主线程；仅在确实需要主线程语义时运行。
@@ -26,11 +26,11 @@ outline: deep
 
 管理员需要指导或验证玩家时，才在此使用最小化的玩家命令。例如可用无副作用查询确认状态；不要在手册中复制真实玩家 ID、IP、密码或令牌。重启、踢出、封禁、发物品、传送、`saveworld` 和设置命令属于改变状态的操作，应从对应管理页面或受控流程执行。
 
-### Audit logs（审计日志）
+### Audit logs（审计日志） {#audit-logs}
 
 按关键词、时间范围、Source（Api、ChatCommand、ConsoleCommand、System）、Operator、Action Type（Create、Update、Delete、Enable、Disable、Execute、Send、Kick、Ban、Restart 等）、资源类型/ID和 Succeeded 筛选。重点查看 `errorMessage`、operator、summary 和 createdAt；失败记录是需要调查的事实，不要用“请求已发送”替代成功。
 
-### Game event logs（游戏事件日志）
+### Game event logs（游戏事件日志） {#game-event-logs}
 
 按关键词、玩家/目标玩家、事件类型和时间范围筛选 PlayerLogin、PlayerJoined、PlayerLeft、PlayerDied、PlayerKilledZombie、PlayerKilledPlayer。点击玩家 ID 进入画像，结合 Chat History 和 Audit Logs 判断是玩家行为、游戏事件还是管理员动作。
 
