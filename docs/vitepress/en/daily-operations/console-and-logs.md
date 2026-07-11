@@ -18,7 +18,7 @@ Run or verify only the necessary server commands under controlled permissions, t
 
 ## Procedure
 
-### Console
+## Console
 
 1. Wait for the allowed-command list, then use autocomplete to read a command's description and help. An unknown command is not sent.
 2. Enter a confirmed administrator command and submit it. The frontend sends `inMainThread: true`, so the backend can synchronously occupy the game main thread; use it only when main-thread semantics are required.
@@ -26,11 +26,11 @@ Run or verify only the necessary server commands under controlled permissions, t
 
 Include a player command here only when an administrator needs to instruct or verify a workflow. For example, use a read-only query to confirm state; never copy a real player ID, IP, password, or token into a manual. Restart, kick, ban, item grant, teleport, `saveworld`, and setting commands mutate state and belong in the relevant management page or controlled runbook.
 
-### Audit logs
+## Audit logs
 
 Filter by keyword, time range, Source (Api, ChatCommand, ConsoleCommand, System), Operator, Action Type (Create, Update, Delete, Enable, Disable, Execute, Send, Kick, Ban, Restart, and others), resource type/ID, and Succeeded. Inspect `errorMessage`, operator, summary, and createdAt. A failed row is an investigation fact; “request sent” is not a success proof.
 
-### Game event logs
+## Game event logs
 
 Filter by keyword, player/target player, event type, and time range for PlayerLogin, PlayerJoined, PlayerLeft, PlayerDied, PlayerKilledZombie, and PlayerKilledPlayer. Open a player ID in Profile and combine the result with Chat History and Audit Logs to distinguish player behavior, a game event, and an administrator action.
 

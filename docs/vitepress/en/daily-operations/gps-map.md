@@ -16,7 +16,7 @@ GPS Map is an investigation and navigation aid. It puts players, coordinates, wo
 - Prepare the player, region, time range, and coordinate values you intend to investigate.
 - Treat GPS as supporting evidence; keep Player List, Player Profile, Console, and Logs available for the management decision.
 
-### Layers and selection
+## Layers and selection
 
 The layer switcher can show map tiles, Region Grid, Land Claims, Offline Players, Online Players, Animals, Hostiles, Traders, Vehicles, Drones, and a Player Tracking overlay opened from a track query. Entity popups can show position, status, owner, fuel, or storage; vehicle inventory is available only when the backend can read the loaded vehicle.
 

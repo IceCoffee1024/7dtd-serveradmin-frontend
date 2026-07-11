@@ -16,7 +16,7 @@ Establish one operating model from installation and configuration through publis
 - Have `<7DTD_SERVER_ROOT>`, `<SERVERADMIN_API_BASE_URL>`, and an administrator account available without putting secret values in notes or browser variables.
 - Use the same backend Swagger document to generate the frontend client whenever an API changes.
 
-### Product boundary
+## Product boundary
 
 ServerAdmin has two parts that must stay compatible:
 
@@ -25,7 +25,7 @@ ServerAdmin has two parts that must stay compatible:
 
 The frontend cannot replace the game server or backend. A page can load while the backend is unreachable, but its data and actions are not reliable. A feature can also be unavailable because of backend settings, server-version support, or administrator permissions.
 
-### Version applicability
+## Version applicability
 
 This manual follows the current `main` menu and API. Frontend and backend versions must use a client generated from the same Swagger document. If backend endpoints change, restart the backend and wait for a non-empty HTTP 200 Swagger response before generating the client again. There is no version switch in this edition, and development addresses are not production addresses.
 

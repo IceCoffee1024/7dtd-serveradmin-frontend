@@ -16,7 +16,7 @@ GPS Map 是调查和导航辅助面板：把玩家、坐标、世界实体和追
 - 准备要调查的玩家、区域、时间范围和坐标值。
 - 将 GPS 作为辅助证据，并保留 Player List、Player Profile、控制台和日志用于管理决策。
 
-### 图层与选择
+## 图层与选择
 
 图层切换器可按需显示：地图图块、Region Grid、Land Claims、Offline Players、Online Players、Animals、Hostiles、Traders、Vehicles、Drones，以及从 Player Tracking 打开的轨迹覆盖层。实体弹窗可能显示位置、状态、所有者、燃料或库存；车辆库存只在后端可读且车辆已加载时可用。
 

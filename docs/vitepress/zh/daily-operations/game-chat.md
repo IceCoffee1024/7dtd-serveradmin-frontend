@@ -18,21 +18,21 @@ outline: deep
 
 ## 操作步骤
 
-### Live chat（实时聊天）
+## Live chat（实时聊天）
 
 1. 在 Live Chat 顶部按 All、Global、Whisper 或其他已注册频道筛选消息；先刷新在线玩家列表。
 2. 不选择玩家时，输入消息发送全局聊天；选择在线玩家后，编辑器显示 Whisper，发送为私聊。再次发送前检查目标标签、玩家名和 Entity ID。
 3. 发送后观察消息是否出现在对应频道和审计/游戏事件记录中；失败时保留错误文本，不要连续重试造成重复广播。
 
-### Chat history（历史聊天）
+## Chat history（历史聊天）
 
 使用关键词、Sender、Player ID、Channel 和 UTC 时间范围筛选；按时间、发送者、玩家 ID 或频道排序。点击稳定 Player ID 或发送者可进入隐藏 Player Profile。历史为空可能是保留天数、模块禁用或目标时间范围不匹配，并不代表实时聊天没有发生。
 
-### Chat settings（聊天设置）
+## Chat settings（聊天设置）
 
 在设置页确认核心服务启用状态、全局/私聊服务器名、命令前缀、是否允许无前缀命令、分隔符、历史保留天数、是否排除命令消息，以及注册命令是否隐藏全局广播。设置禁言通知、禁言/解禁后的私聊和全局模板时，使用页面支持的 `{player}`、`{playerName}`、`{playerId}`、`{reason}`、`{mutedUntil}` 占位符。保存后用一条测试消息确认预览与实际频道一致。
 
-### Colored chat（彩色聊天）
+## Colored chat（彩色聊天）
 
 先在 Settings 设置模块开关、默认频道颜色和玩家颜色标签权限（None、All Players 或 Admins Only），再在 Profiles 用稳定 Player ID 配置自定义名称、名称色、正文色和说明。优先为单个测试玩家验证，避免把富文本/颜色标签权限意外开放给所有玩家。
 

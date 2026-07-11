@@ -16,7 +16,7 @@ Dashboard is the duty entry point: decide whether the server is online, whether 
 - Confirm the backend and game process are running; keep [Console and logs](./console-and-logs) available for cross-checking.
 - Treat every displayed timestamp as a sample time, not proof of a live frame.
 
-### Main areas
+## Main areas
 
 - **Status and overview**: online/offline state, online players and maximum, FPS, and server version/region/language and game-time summary.
 - **Resource monitoring**: resident memory, heap, CPU/RAM/network samples, and counts for chunks, entities, items, zombies, and animals.
