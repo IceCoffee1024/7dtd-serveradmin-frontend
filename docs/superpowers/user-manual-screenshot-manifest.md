@@ -1,0 +1,24 @@
+# User Manual Screenshot Manifest
+
+Capture each locale separately from a sanitized test environment. A row is not complete until the console route, asset, caption focus, test-data check, and review are all verified. Never capture real identifiers, IP addresses, tokens, credentials, Discord secrets, or server filesystem paths.
+
+| Feature | Chinese console route | English console route | Chinese asset | English asset | Caption focus | Test-data check | Review |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Player list and profile tracking | `/#/zh-cn/player-list` | `/#/en/player-list` | `images/zh/daily-operations/player-list.png` | `images/en/daily-operations/player-list.png` | Locate a sanitized player row and open profile tracking details. | Pending sanitized capture | Not complete |
+| GPS map | `/#/zh-cn/gps-map` | `/#/en/gps-map` | `images/zh/daily-operations/gps-map.png` | `images/en/daily-operations/gps-map.png` | Show map controls and a non-identifying test marker. | Pending sanitized capture | Not complete |
+| Economy shop | `/#/zh-cn/economy/shop` | `/#/en/economy/shop` | `images/zh/game-and-player-management/economy-shop.png` | `images/en/game-and-player-management/economy-shop.png` | Show stock, price, and purchase-result controls with test data. | Pending sanitized capture | Not complete |
+| Player item acquisition audit | `/#/zh-cn/player-tracking` | `/#/en/player-tracking` | `images/zh/game-and-player-management/player-acquisition-audit.png` | `images/en/game-and-player-management/player-acquisition-audit.png` | Show an acquisition record without a real player identifier. | Pending sanitized capture | Not complete |
+| Restart settings | `/#/zh-cn/restart/settings` | `/#/en/restart/settings` | `images/zh/automation-and-reliability/restart-settings.png` | `images/en/automation-and-reliability/restart-settings.png` | Show confirmation, schedule, and safety controls before saving. | Pending sanitized capture | Not complete |
+| Scheduler tasks | `/#/zh-cn/scheduler/tasks` | `/#/en/scheduler/tasks` | `images/zh/automation-and-reliability/scheduler-tasks.png` | `images/en/automation-and-reliability/scheduler-tasks.png` | Show a test task, enabled state, and next-run information. | Pending sanitized capture | Not complete |
+| Backup settings and history | `/#/zh-cn/backup/settings` and `/#/zh-cn/backup/history` | `/#/en/backup/settings` and `/#/en/backup/history` | `images/zh/automation-and-reliability/backup-history.png` | `images/en/automation-and-reliability/backup-history.png` | Show retention settings and a successful test history entry. | Pending sanitized capture | Not complete |
+| Event automation rule and run history | `/#/zh-cn/event-automation/rules` and `/#/zh-cn/event-automation/runs` | `/#/en/event-automation/rules` and `/#/en/event-automation/runs` | `images/zh/automation-and-reliability/event-automation-run-history.png` | `images/en/automation-and-reliability/event-automation-run-history.png` | Show a test rule and its observable run result. | Pending sanitized capture | Not complete |
+| Discord diagnostics | `/#/zh-cn/discord-integration/settings` | `/#/en/discord-integration/settings` | `images/zh/integrations-and-access/discord-diagnostics.png` | `images/en/integrations-and-access/discord-diagnostics.png` | Show connection status and diagnostics without webhook data. | Pending sanitized capture | Not complete |
+| GeoIP recent decisions | `/#/zh-cn/geoip-access-control/settings` | `/#/en/geoip-access-control/settings` | `images/zh/integrations-and-access/geoip-recent-decisions.png` | `images/en/integrations-and-access/geoip-recent-decisions.png` | Show recent allow or deny decisions with sanitized addresses. | Pending sanitized capture | Not complete |
+| Permissions or ban-and-whitelist controls | `/#/zh-cn/permission` and `/#/zh-cn/ban-whitelist` | `/#/en/permission` and `/#/en/ban-whitelist` | `images/zh/integrations-and-access/access-control.png` | `images/en/integrations-and-access/access-control.png` | Show role or list controls without account or network identifiers. | Pending sanitized capture | Not complete |
+
+## Capture checklist
+
+- Confirm the active console locale matches the manifest route before capture.
+- Use dedicated test accounts and synthetic player, network, economy, and integration data.
+- Check the full viewport for identifiers, IP addresses, tokens, passwords, Discord credentials, webhook URLs, and real server filesystem paths.
+- Record the viewport, route, console result, and network result in the review record before changing a row to `Complete`.
