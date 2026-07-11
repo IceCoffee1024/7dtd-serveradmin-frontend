@@ -1,5 +1,9 @@
 .vite-ssg-temp
 
+# VitePress generated files
+**/.vitepress/cache/
+**/.vitepress/.temp/
+
 node_modules
 .DS_Store
 dist
