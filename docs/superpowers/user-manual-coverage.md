@@ -2,7 +2,7 @@
 
 This maintainer matrix is derived from `src/router/index.ts`. It contains one row for every unique non-authentication workflow route, including hidden `PlayerProfile` and `ApiDocumentation`. Parent routes point to the workflow page that owns their redirect target; child routes point to the corresponding page anchor.
 
-`Not authored` means the paired page has not yet been authored. A row may be changed to `Complete` only after both localized destinations exist, the links work in a built site, and the workflow has been reviewed. `Not reviewed` is the initial review state.
+`Authored` means the paired localized pages and destination anchors are present in source, but they are not yet considered built or reviewed. `Not authored` means the paired page or one of its destinations has not yet been authored. Documentation status is separate from `Review`: a row may be changed to `Complete` only after both localized destinations exist, the links work in a built site, and the workflow has been reviewed. `Not reviewed` is the initial review state.
 
 | Route | Console path | Chinese destination | English destination | Documentation status | Screenshot | Review |
 | --- | --- | --- | --- | --- | --- | --- |
