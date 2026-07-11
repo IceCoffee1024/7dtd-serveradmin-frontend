@@ -21,7 +21,7 @@ Complete one auditable baseline: rotate the initial credentials, prove frontend/
 1. **Sign in and change defaults.** Sign in with the initial deployment credentials and immediately change the username and password in Application Settings or backend configuration. Sign out and sign in again with the new values; do not put credentials in frontend environment variables or screenshots.
 2. **Prove backend connectivity.** In browser Network, check that requests target `<SERVERADMIN_API_BASE_URL>`, Swagger/API Documentation opens, and Dashboard returns status. For cross-origin hosting check CORS and the reverse proxy; for same-origin hosting ensure `/api` is not swallowed by the static host.
 3. **Check feature availability.** Open Feature Modules and inspect Chat, Colored Chat, Backup, Scheduler, and Player Tracking. Enable only features that have been tested and are needed for operations; a disabled module's page or command is not an available capability.
-4. **Set permissions.** In Permission, use a stable SteamID64, `Steam_...`, or `EOS_...` identity for each administrator, choose the lowest required server permission level, and create separate minimum rules for console commands. Test with a limited account so allowed commands are visible and unauthorized actions are rejected.
+4. **Set permissions.** In Permission, use a stable SteamID64, `Steam_...`, or `EOS_...` identity for each administrator. 7DTD uses `0` as the maximum privilege and `1000` as the default user level, so assign the least-privileged numeric level that still supports the operator's tasks and create separate command-permission rules. Test with a limited account so allowed commands are visible and unauthorized actions are rejected.
 5. **Set time zones explicitly.** In Scheduler and Backup settings, enter a platform time-zone ID such as `UTC` or `Asia/Shanghai` instead of relying on the browser zone. Save and check the next scheduled time and history timestamps.
 6. **Run the first backup test.** Configure a writable destination, retention count, and task time zone in Backup, enable the required backup sub-modules, and run a small manual backup. Confirm success, readable files, Backup History, and Audit Logs before adding a Cron schedule.
 
@@ -42,7 +42,7 @@ Frontend `VITE_*` values are exposed to the browser and must not contain passwor
 A successful backup is not a restore proof. Perform at least a readability or recovery exercise in an isolated location before relying on it.
 :::
 
-- Higher permission levels increase console and automation side effects; prefer dedicated operator accounts and small command allow-lists.
+- Lower numeric permission levels grant more 7DTD privilege; keep `0` for full administrators, prefer dedicated operator accounts, and use small command allow-lists.
 - A time-zone setting changes the schedules and displays that use it; it does not change the game world's time.
 
 ## Related pages

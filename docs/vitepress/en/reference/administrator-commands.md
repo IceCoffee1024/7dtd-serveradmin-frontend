@@ -8,7 +8,7 @@ outline: deep
 
 ## Scope and safety {#scope}
 
-The command aliases below are the current mod names. A command may be typed in the game console or sent through the [Console](../daily-operations/console-and-logs#console) workflow when the caller has the corresponding permission. Use a stable player identifier where possible, and keep the reason, target, and result in the audit record.
+The short command aliases below are the current mod entry points; some commands also expose longer aliases in the game server. A command may be typed in the game console or sent through the [Console](../daily-operations/console-and-logs#console) workflow when the caller has the corresponding permission. Use a stable player identifier where possible, and keep the reason, target, and result in the audit record.
 
 ::: warning
 The command output is an execution signal, not proof that a remote client or game process completed the side effect. Recheck the affected player, world, history, or server log after any mutating command.
@@ -31,9 +31,9 @@ The `State` column describes the command's intended effect. `Audit` identifies t
 | `ty-gm <Message> <SenderName>` | Broadcast a message to connected clients. | A send result or an error for invalid input. | Audit `GlobalMessage`; changes player-visible chat. |
 | `ty-pm <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <Message> <SenderName>` | Send a private message to one online player. | Target resolution and send result. | Audit `PlayerMessage`; changes player-visible chat. |
 | `ty-gi <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <ItemName> [Count] [Quality] [Durability] [ModsCsv]` | Grant an item; `all` can target all players. | Grant result; a full inventory can drop the item to the ground. | Audit when available; mutates inventory or world items. |
-| `ty-rpi <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <ItemName> [Toolbelt\|Backpack] [SlotIndex]` | Remove matching items or one slot from a player. | Removal count or a target/syntax error. | Audit `RemovePlayerItems`; destructive inventory mutation. |
+| `ty-rpi <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <ItemName> [Toolbelt\|Backpack] [SlotIndex]` | Remove matching items or one slot from a player. | Removal count or a target/syntax error. | Audit resource `PlayerInventory`, action `Revoke`; destructive inventory mutation. |
 | `ty-rplc <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME>` or `ty-rplc <X> <Y> <Z>` | Remove a player's claims or a claim at coordinates. | Removal result or a target-not-found error. | Audit when available; mutates land-claim ownership. |
-| `ty-rpp <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME>` | Reset the native 7DTD profile. | Confirmation/result from the reset operation. | Audit `ResetPlayer`; irreversible without a native save backup. |
+| `ty-rpp <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME>` | Reset the native 7DTD profile. | Confirmation/result from the reset operation. | Audit resource `PlayerProfile`, action `Reset`; irreversible without a native save backup. |
 | `ty-rs [<delay>] [-f\|force]` | Request a restart, optionally delayed or forced. | Request, countdown, or duplicate-request status. | Audit `Restart`; disconnects players and mutates live server state. |
 | `ty-setcvar <cvarName> <cvarValue>` or `ty-setcvar <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <cvarName> <cvarValue>` | Set a custom variable for the sender or an online player. | Variable assignment or player-not-found error. | Audit `PlayerCustomVar`; mutates live player state. |
 | `ty-re <ENTITY_ID>` or `ty-RemoveEntity <ENTITY_ID>` | Remove one game entity by entity ID. | Entity removal result or an error. | Audit when available; destructive world mutation. |

@@ -2,6 +2,8 @@
 
 Capture each locale separately from a sanitized test environment. A row is not complete until the console route, asset, caption focus, test-data check, viewport, console result, network result, and review are all verified. Never capture real identifiers, IP addresses, tokens, credentials, Discord secrets, or server filesystem paths.
 
+> **Current capture blocker (2026-07-11):** All rows remain `Not complete` because this checkout has no isolated test backend, dedicated test account, or synthetic console data environment. The configured frontend target is a real server address, so no console screenshot is captured until an operator provides a sanitized environment. This blocker applies to every row below; do not replace it with a production capture.
+
 | Feature | Chinese console route | English console route | Chinese asset | English asset | Caption focus | Test-data check | Viewport | Console result | Network result | Review |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Player list and profile tracking | `/#/zh-cn/player-list` | `/#/en/player-list` | `images/zh/daily-operations/player-list.png` | `images/en/daily-operations/player-list.png` | Locate a sanitized player row and open profile tracking details. | Pending sanitized capture | Pending capture | Pending capture | Pending capture | Not complete |

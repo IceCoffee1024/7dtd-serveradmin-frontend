@@ -8,7 +8,7 @@ outline: deep
 
 ## 范围与安全 {#scope}
 
-下表中的别名来自当前模组。拥有相应权限时，可以在游戏控制台输入命令，也可以通过[控制台](../daily-operations/console-and-logs#console)工作流发送命令。尽量使用稳定的玩家标识，并在审计记录中保留原因、目标和结果。
+下表中的短别名是当前模组入口；游戏服务器还可能提供较长的别名。拥有相应权限时，可以在游戏控制台输入命令，也可以通过[控制台](../daily-operations/console-and-logs#console)工作流发送命令。尽量使用稳定的玩家标识，并在审计记录中保留原因、目标和结果。
 
 ::: warning
 命令输出只能说明请求已被处理，不能证明远程客户端或游戏进程已经完成副作用。任何改变状态的命令都要重新检查玩家、世界、历史记录或服务器日志。
@@ -31,9 +31,9 @@ outline: deep
 | `ty-gm <Message> <SenderName>` | 向所有已连接客户端广播消息。 | 发送结果或无效输入错误。 | 审计 `GlobalMessage`；改变玩家可见聊天。 |
 | `ty-pm <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <Message> <SenderName>` | 向一名在线玩家发送私信。 | 目标解析和发送结果。 | 审计 `PlayerMessage`；改变玩家可见聊天。 |
 | `ty-gi <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <ItemName> [Count] [Quality] [Durability] [ModsCsv]` | 发放物品；使用 `all` 可指定所有玩家。 | 发放结果；背包已满时物品可能掉到地面。 | 可用时写入审计；改变背包或地面物品。 |
-| `ty-rpi <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <ItemName> [Toolbelt\|Backpack] [SlotIndex]` | 移除玩家匹配的物品或指定槽位物品。 | 移除数量或目标/语法错误。 | 审计 `RemovePlayerItems`；破坏性背包修改。 |
+| `ty-rpi <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <ItemName> [Toolbelt\|Backpack] [SlotIndex]` | 移除玩家匹配的物品或指定槽位物品。 | 移除数量或目标/语法错误。 | 审计资源 `PlayerInventory`、动作 `Revoke`；破坏性背包修改。 |
 | `ty-rplc <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME>` 或 `ty-rplc <X> <Y> <Z>` | 移除玩家的领地保护，或移除坐标处的保护。 | 移除结果或找不到目标错误。 | 可用时写入审计；改变领地保护所有权。 |
-| `ty-rpp <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME>` | 重置原生 7DTD 玩家档案。 | 重置操作的确认/结果。 | 审计 `ResetPlayer`；没有原生存档备份时无法撤销。 |
+| `ty-rpp <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME>` | 重置原生 7DTD 玩家档案。 | 重置操作的确认/结果。 | 审计资源 `PlayerProfile`、动作 `Reset`；没有原生存档备份时无法撤销。 |
 | `ty-rs [<delay>] [-f\|force]` | 请求重启，可延迟或强制执行。 | 请求、倒计时或重复请求状态。 | 审计 `Restart`；会断开玩家并改变线上状态。 |
 | `ty-setcvar <cvarName> <cvarValue>` 或 `ty-setcvar <PLAYER_ID\|ENTITY_ID\|PLAYER_NAME> <cvarName> <cvarValue>` | 为发送者或在线玩家设置自定义变量。 | 变量赋值或玩家不存在错误。 | 审计 `PlayerCustomVar`；改变在线玩家状态。 |
 | `ty-re <ENTITY_ID>` 或 `ty-RemoveEntity <ENTITY_ID>` | 按实体 ID 移除一个游戏实体。 | 移除结果或错误。 | 可用时写入审计；破坏性世界修改。 |

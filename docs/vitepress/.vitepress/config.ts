@@ -1,21 +1,21 @@
 import { defineConfig } from 'vitepress'
 
 const navZh = [
-  { text: '开始使用', link: '/zh/getting-started/overview' },
+  { text: '开始', link: '/zh/getting-started/overview' },
   { text: '日常运维', link: '/zh/daily-operations/dashboard' },
-  { text: '游戏与玩家管理', link: '/zh/game-and-player-management/feature-modules' },
-  { text: '自动化与可靠性', link: '/zh/automation-and-reliability/restart' },
+  { text: '游戏/玩家', link: '/zh/game-and-player-management/feature-modules' },
+  { text: '自动化', link: '/zh/automation-and-reliability/restart' },
   { text: '集成与访问', link: '/zh/integrations-and-access/server-configuration' },
-  { text: '参考与故障排查', link: '/zh/reference/console-menu-index' },
+  { text: '参考', link: '/zh/reference/console-menu-index' },
 ]
 
 const navEn = [
   { text: 'Getting started', link: '/en/getting-started/overview' },
   { text: 'Daily operations', link: '/en/daily-operations/dashboard' },
-  { text: 'Game and player management', link: '/en/game-and-player-management/feature-modules' },
-  { text: 'Automation and reliability', link: '/en/automation-and-reliability/restart' },
-  { text: 'Integrations and access', link: '/en/integrations-and-access/server-configuration' },
-  { text: 'Reference and troubleshooting', link: '/en/reference/console-menu-index' },
+  { text: 'Game/player', link: '/en/game-and-player-management/feature-modules' },
+  { text: 'Automation', link: '/en/automation-and-reliability/restart' },
+  { text: 'Integrations', link: '/en/integrations-and-access/server-configuration' },
+  { text: 'Reference', link: '/en/reference/console-menu-index' },
 ]
 
 const sidebarZh = [
