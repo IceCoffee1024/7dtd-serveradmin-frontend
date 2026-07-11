@@ -14,6 +14,7 @@ Use the running backend's Swagger/OpenAPI document as the source of truth for ro
 
 - Confirm the intended `<SERVERADMIN_API_BASE_URL>` and that the backend has finished starting after a publish or restart.
 - Obtain an authorized account for protected endpoints. Never place an access token, password, cookie, or private host in a public example.
+- Swagger UI or the raw document may be public or may require authentication, depending on the deployment policy. A public document is not automatically safe to expose; a protected document returning `401` or `403` is an authentication boundary, not a broken schema.
 - Use a test server or sanitized sample values such as `<PLAYER_ID>` and `<EXAMPLE_WEBHOOK_URL>` when trying requests.
 - Ensure the frontend and backend workspaces are on the same expected revision before regenerating code.
 
@@ -30,7 +31,7 @@ Use the running backend's Swagger/OpenAPI document as the source of truth for ro
 
 - The Swagger document is non-empty and lists the endpoint needed by the page.
 - The generated API client contains the expected route and DTO fields, and the frontend type-check passes.
-- A protected read-only request succeeds with the intended account, while an unauthorized request is rejected without leaking sensitive details.
+- A protected read-only request succeeds with the intended account, while an unauthorized request is rejected with the expected `401` or `403` boundary without leaking sensitive details. If the document is intentionally public, confirm that this exposure was approved separately.
 - The published frontend sends the same request shape shown in Swagger and renders the response without a schema mismatch.
 
 ## Limits and safety notes

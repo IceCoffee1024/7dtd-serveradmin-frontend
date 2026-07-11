@@ -32,6 +32,12 @@ Each uncached public player IP may be sent to the selected third-party provider.
 5. Set the kick message and decide whether to log allowed decisions. Enable allowed logging temporarily when validating a new policy, then reduce noise if it is not needed.
 6. Save, run **Test lookup** for a public test IP and a private address, then inspect the result provider, country, cache flag, and error state. Use **Clear cache** after changing provider or policy assumptions.
 
+### Cache behavior {#cache-behavior}
+
+- Lookup results are held in a process-local in-memory cache. A successful lookup uses `CacheTtlMinutes`; a failed lookup uses `FailureCacheTtlMinutes`.
+- Restarting the backend or game process clears this cache. **Clear cache** removes current entries without a restart.
+- Changing the provider or cache TTL settings invalidates the affected cache entries. Country/IP policy changes alter decision evaluation but may retain cached lookup metadata; use **Clear cache** when a fresh provider result is required.
+
 ### Evaluation order
 
 Login decisions follow this order:
@@ -48,10 +54,10 @@ Login decisions follow this order:
 
 ### Live verification
 
-1. Keep the mode disabled, test provider lookup, and confirm recent decisions are readable.
-2. Enable a harmless country policy that does not match the test operator, then join with the dedicated test player and confirm an allowed decision.
+1. Keep the mode disabled and use **Test lookup** for the public test IP and private address. Inspect the direct lookup result; do not expect a disabled mode to create a recent login decision.
+2. Enable a harmless country policy that does not match the test operator and enable **Log allowed decisions** temporarily. Join with the dedicated test player and confirm an allowed decision appears in Recent decisions.
 3. Add the test IP to the block-list and confirm the player is kicked with the configured message. Remove the entry, clear cache, and confirm the player can rejoin.
-4. Simulate a provider failure only in a controlled window, then confirm the configured unknown-country policy is applied. Restore the provider and policy after the test.
+4. Simulate a provider failure only in a controlled window, then confirm the configured unknown-country policy is applied to a real login. Restore the provider and policy after the test.
 
 ## Verify the result
 

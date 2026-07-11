@@ -29,7 +29,7 @@ Bot Token、Webhook URL、代理密码、绑定码和频道 ID 都属于秘密�
 2. 在 **Webhook 与频道** 中填写默认 Webhook 或 `public`、`admin`、`audit` 等具名目标。频道负责人批准目标前，保持对应目标禁用。
 3. 在 **聊天桥接** 中启用游戏到 Discord 的转发并选择目标键。只有公共频道和审核负责人准备好后才启用 Discord 到游戏；除非确有需要，保持私聊转发关闭。
 4. 在 **Bot 与命令** 中启用 Bot 集成，填写 Guild ID，并分别填写公共频道和管理员频道 ID 后保存。Bot 在线后再启用 Slash Command 管理；启用命令中继时只配置尽可能小的只读白名单。
-5. 在 **账号绑定** 中按需启用绑定作为第二层身份检查。创建短时一次性绑定码后，通过私密频道交给目标玩家；审计备注只记录码前缀。原始码只显示一次。
+5. 在 **账号绑定** 中按需启用绑定作为第二层身份检查。为玩家 ID 和显示名称创建短时一次性绑定码，通过私密频道交给目标玩家或管理员。在 **兑换绑定码** 表单中填写 code、Discord 用户 ID 和用户名并提交；兑换成功后会创建绑定，过期或已兑换的 code 会被拒绝。审计备注只记录码前缀，原始码只显示一次。
 6. 在 **告警与诊断** 中选择事件自动化失败告警的 Webhook 目标并配置简洁模板。中继测试只针对专用测试频道运行。
 7. 每次测试前先保存设置。测试使用已保存设置，页面会在存在未保存更改时提示确认。
 
@@ -47,12 +47,19 @@ Bot Token、Webhook URL、代理密码、绑定码和频道 ID 都属于秘密�
 
 ## 验证结果 {#verify-result}
 
-- Bot 状态为 **Connected** 或 **Ready**，诊断中的必需 Discord 检查通过。
+- Gateway 运行时 `state` 为 **Connected**，独立的 `isReady` 指示为 true，且诊断中的必需 Discord 检查通过。`Ready` 是 Gateway 事件/就绪标记，不是第二个 `state` 值；state 已 Connected 但 `isReady` 为 false 时仍需排查。
 - Webhook 测试消息到达预期测试频道，测试结果不会暴露 URL。
 - 游戏聊天在启用时到达公共频道；仅当启用反向桥接时，入站测试才会进入游戏。
 - 管理员频道命令只有在白名单中，并且在启用时绑定到有效管理员玩家才会接受；公共频道或高风险命令会被拒绝。
 - Slash Command 返回交互响应，审计日志同时包含成功和拒绝的命令尝试。
 - 受控的事件自动化失败产生一条失败运行记录和一条告警，不改变规则执行结果。
+
+## 常见故障分支 {#common-failures}
+
+- **Slash Command 不出现：** 保存 Bot 设置，确认 Bot 已达到 `state=Connected` 且 `isReady=true`，核对 Guild ID 和 `applications.commands` scope，再次执行 **同步 Slash Command**。应在目标 Guild 中看到 `/listplayers`、`/serverstatus` 或 `/help`，不要只依据 HTTP 请求成功判断。
+- **Token 测试成功但 Gateway 失败：** Token 测试只能证明已保存凭据可以调用 Bot 测试端点，不能证明长期 Gateway 会话能够连接。运行诊断，分别检查 REST 和 Gateway 步骤，查看 `state`、`isReady`、`lastError`，再检查代理、DNS、防火墙和重连状态。应观察到后续 READY 事件和稳定的 Connected 状态。
+- **命令被拒绝：** 确认消息发在管理员频道，前缀和命令拼写正确，命令在白名单中，并且在需要时存在有效账号绑定。即使命令列入白名单，高风险命令仍会被阻止。先在审计日志中确认预期的拒绝，再修改策略。
+- **Webhook 目标被禁用：** 启用具名目标，或在桥接/告警设置中选择默认目标。确认目标 key 与启用的行一致，保存后重新测试 Webhook；在测试频道验证投递，但不要暴露 URL。
 
 ## 限制与安全说明 {#limits-and-safety}
 

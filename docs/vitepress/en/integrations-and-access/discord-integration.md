@@ -29,7 +29,7 @@ Bot tokens, webhook URLs, proxy passwords, binding codes, and channel identifier
 2. In **Webhooks & channels**, enter the default webhook or named targets such as `public`, `admin`, and `audit`. Keep each target disabled until the channel owner has approved the destination.
 3. In **Chat bridge**, enable game-to-Discord forwarding and select a target key. Enable Discord-to-game chat only when the public channel and moderation owner are ready; keep whisper forwarding disabled unless it is explicitly needed.
 4. In **Bot & commands**, enable Bot integration, enter the Guild ID and separate public/admin channel IDs, then save. Enable slash-command management only after the Bot is online. Enable command relay only with a minimal allow-list of read-only commands where possible.
-5. In **Account binding**, enable binding when Discord commands need a second identity check. Create a short-lived one-time binding code, give it to the intended player through a private channel, and record only the code prefix in an audit note. The raw code is shown once.
+5. In **Account binding**, enable binding when Discord commands need a second identity check. Create a short-lived one-time binding code for the player ID and display name, then give it to the intended player or administrator through a private channel. In the **Redeem binding code** form, enter the code together with the Discord user ID and username and submit it. A successful redeem creates the binding; an expired or already redeemed code is rejected. Record only the code prefix in an audit note because the raw code is shown once.
 6. In **Alerts & diagnostics**, choose a webhook target for event-automation failures and configure a concise message template. Run relay tests only against the dedicated test channels.
 7. Save settings before each test. The test actions use saved settings, and the page prompts before testing unsaved changes.
 
@@ -47,12 +47,19 @@ Bot tokens, webhook URLs, proxy passwords, binding codes, and channel identifier
 
 ## Verify the result
 
-- Bot status is **Connected** or **Ready**, and diagnostics show the required Discord checks as passed.
+- The Gateway runtime `state` is **Connected**, the separate `isReady` indicator is true, and diagnostics show the required Discord checks as passed. `Ready` is a Gateway event/readiness flag, not a second `state` value; a Connected session with `isReady` false still needs investigation.
 - A webhook test reaches the intended test channel without exposing its URL in the result.
 - A game chat test reaches the public channel, and an inbound test reaches the game only when that bridge is enabled.
 - A command in the admin channel is accepted only when it is allow-listed and, if enabled, bound to an active administrator player. A public-channel or high-risk command is rejected.
 - Slash commands return an interaction response, and the audit log contains both successful and rejected command attempts.
 - A controlled event-automation failure produces one failure run and one alert without changing the rule's result.
+
+## Common failure branches {#common-failures}
+
+- **Slash command does not appear:** save the Bot settings, confirm the Bot reached `state=Connected` with `isReady=true`, verify the Guild ID and the `applications.commands` scope, then run **Sync slash commands** again. Verify that `/listplayers`, `/serverstatus`, or `/help` appears in the intended Guild rather than relying on a successful HTTP response alone.
+- **Token test succeeds but Gateway fails:** a token test proves the saved credential can call the Bot test endpoint, not that the long-lived Gateway session can connect. Run diagnostics, check the REST and Gateway steps separately, inspect `state`, `isReady`, and `lastError`, then check proxy, DNS, firewall, and reconnect status. Verify by observing a later READY event and a stable Connected state.
+- **Command is rejected:** confirm the message is in the admin channel, the prefix and command spelling match, the command is in the allow-list, and an active account binding is present when required. High-risk commands remain blocked even when listed. Verify the expected rejection in the audit log before changing the policy.
+- **Webhook target is disabled:** enable the named target or select the default target in the bridge/alert setting. Confirm the target key matches an enabled row, save, and rerun the webhook test. Verify delivery in the test channel without exposing the URL.
 
 ## Limits and safety notes
 
