@@ -23,7 +23,10 @@
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "typecheck": "vue-tsc --noEmit",
-    "verify:local": "pnpm api:gen && pnpm typecheck && pnpm lint && pnpm test:unit && pnpm locale:check && pnpm build:analyze"
+    "verify:local": "pnpm api:gen && pnpm typecheck && pnpm lint && pnpm test:unit && pnpm locale:check && pnpm build:analyze",
+    "docs:dev": "vitepress dev docs\\vitepress",
+    "docs:build": "vitepress build docs\\vitepress",
+    "docs:preview": "vitepress preview docs\\vitepress"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
@@ -76,6 +79,7 @@
     "unplugin-icons": "^23.0.1",
     "unplugin-vue-components": "^32.1.0",
     "vite": "^8.1.3",
+    "vitepress": "2.0.0-alpha.18",
     "vitest": "^4.1.9",
     "vue-tsc": "3.3.6"
   }
