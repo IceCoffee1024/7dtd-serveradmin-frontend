@@ -18,14 +18,14 @@ outline: deep
 
 ## 操作步骤
 
-## Player List 工作流
+### Player List 工作流
 
 1. 打开 **Online Players** 查看当前实体、等级、游戏阶段、击杀/死亡、IP、Ping、位置、技能点、平台 ID、稳定 Player ID 和权限等级。用玩家名搜索时，最终以稳定 Player ID 或平台 ID确认身份；Entity ID 可能随重连改变。
 2. 打开 **History Players** 查看不在线玩家和最后活动；将时间、名字和 ID 与聊天/事件记录交叉验证。
 3. 需要管理土地容器时使用 **Land Claim Containers** 标签。列表只显示后端当前可读或已加载区域内、与玩家领地关联的容器；加载失败或空库存不是“没有容器”的证明。
 4. 点击玩家名或 **Player Profile** 进入隐藏画像，确认顶部身份、在线状态和加载时间后再执行操作。
 
-## Player Profile 详情 {#player-profile}
+### Player Profile 详情 {#player-profile}
 
 - **Overview**：基础资料、进度、访问/处罚状态、资产摘要和最近游戏事件/聊天。
 - **Activity**：按时间查看 Login、Joined、Left、Chat、Death、Kill、Location、Inventory、Session 等活动，适合回答“发生了什么、何时发生”。

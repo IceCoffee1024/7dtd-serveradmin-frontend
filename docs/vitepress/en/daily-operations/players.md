@@ -18,14 +18,14 @@ Select the correct person by stable identity, distinguish online state from hist
 
 ## Procedure
 
-## Player List workflow
+### Player List workflow
 
 1. Open **Online Players** for current entity, level, game stage, kills/deaths, IP, ping, position, skill points, platform ID, stable Player ID, and permission level. A name search is only a start; confirm the stable Player ID or platform ID because Entity ID can change after reconnecting.
 2. Open **History Players** for offline players and last activity. Cross-check time, name, and ID with chat or event records.
 3. Use **Land Claim Containers** when investigating land storage. It shows containers associated with player claims in areas the backend can currently read or has loaded; an empty or failed load is not proof that no container exists.
 4. Select the name or **Player Profile** action to open the hidden profile. Confirm identity, online state, and loaded-at time before any action.
 
-## Player Profile details {#player-profile}
+### Player Profile details {#player-profile}
 
 - **Overview**: basic information, progress, access/moderation state, asset summary, and recent game events/chat.
 - **Activity**: Login, Joined, Left, Chat, Death, Kill, Location, Inventory, and Session events by time. Use it to answer what happened and when.
