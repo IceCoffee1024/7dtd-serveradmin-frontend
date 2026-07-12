@@ -97,42 +97,42 @@ automatically consumed GitHub configuration file.
 Copy this file into the GitHub Release body for
 IceCoffee1024/7DaysToDie-ServerAdmin, or copy it to that repository and pass it
 to `gh release create --notes-file`. This frontend repository does not publish
-the Release automatically. Replace every <PLACEHOLDER> before publishing.
+the Release automatically. Replace every {{PLACEHOLDER}} before publishing.
 -->
 
-# 7 Days to Die ServerAdmin <VERSION>
+# 7 Days to Die ServerAdmin {{VERSION}}
 
 ## English
 
 ### Release status
 
-- Status: <BETA_OR_STABLE>
-- Published: <YYYY-MM-DD>
-- Recommended download: `<ASSET_NAME>`
-- Intended use: <TEST_SERVER_OR_PRODUCTION_GUIDANCE>
+- Status: {{BETA_OR_STABLE}}
+- Published: {{YYYY_MM_DD}}
+- Recommended download: `{{ASSET_NAME}}`
+- Intended use: {{TEST_SERVER_OR_PRODUCTION_GUIDANCE}}
 
 ### Compatibility and prerequisites
 
-- 7 Days to Die: <SUPPORTED_7DTD_VERSION>
-- Platform notes: <SUPPORTED_PLATFORM_NOTES>
-- Required prerequisites: <VERIFIED_PREREQUISITES_OR_NONE>
-- Known incompatibilities: <KNOWN_INCOMPATIBILITIES_OR_NONE>
+- 7 Days to Die: {{SUPPORTED_7DTD_VERSION}}
+- Platform notes: {{SUPPORTED_PLATFORM_NOTES}}
+- Required prerequisites: {{VERIFIED_PREREQUISITES_OR_NONE}}
+- Known incompatibilities: {{KNOWN_INCOMPATIBILITIES_OR_NONE}}
 
 ### Verify the download
 
 ```text
-<ASSET_NAME>
-SHA-256: <SHA256>
+{{ASSET_NAME}}
+SHA-256: {{SHA256}}
 ```
 
 ### Install
 
 1. Stop the dedicated server if it is running.
-2. Extract `<ASSET_NAME>` into `<7DTD_SERVER_ROOT>/Mods/`.
-3. Confirm that `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/ModInfo.xml` exists; do
+2. Extract `{{ASSET_NAME}}` into `{{7DTD_SERVER_ROOT}}/Mods/`.
+3. Confirm that `{{7DTD_SERVER_ROOT}}/Mods/ServerAdmin/ModInfo.xml` exists; do
    not create `Mods/ServerAdmin/ServerAdmin/`.
-4. Start the server and open `<SERVERADMIN_URL>` from an allowed network.
-5. Sign in with `<INITIAL_USERNAME>` / `<INITIAL_PASSWORD>`, then change the
+4. Start the server and open `{{SERVERADMIN_URL}}` from an allowed network.
+5. Sign in with `{{INITIAL_USERNAME}}` / `{{INITIAL_PASSWORD}}`, then change the
    credentials before remote access.
 
 ### Upgrade and rollback
@@ -147,7 +147,7 @@ SHA-256: <SHA256>
 
 ### Security and support
 
-- Restrict `<SERVERADMIN_URL>` with firewall or reverse-proxy policy; do not
+- Restrict `{{SERVERADMIN_URL}}` with firewall or reverse-proxy policy; do not
   expose a default password on a public port.
 - Do not post live credentials, tokens, private paths, IP addresses, or player
   identifiers in reports.
@@ -156,11 +156,11 @@ SHA-256: <SHA256>
 
 ### Included modules and changes
 
-<MODULE_SUMMARY>
+{{MODULE_SUMMARY}}
 
 ### Known issues
 
-<KNOWN_ISSUES>
+{{KNOWN_ISSUES}}
 
 ---
 
@@ -168,33 +168,33 @@ SHA-256: <SHA256>
 
 ### 发布状态
 
-- 状态：<BETA_OR_STABLE>
-- 发布时间：<YYYY-MM-DD>
-- 推荐下载：`<ASSET_NAME>`
-- 适用范围：<TEST_SERVER_OR_PRODUCTION_GUIDANCE>
+- 状态：{{BETA_OR_STABLE}}
+- 发布时间：{{YYYY_MM_DD}}
+- 推荐下载：`{{ASSET_NAME}}`
+- 适用范围：{{TEST_SERVER_OR_PRODUCTION_GUIDANCE}}
 
 ### 兼容性与前置条件
 
-- 七日杀版本：<SUPPORTED_7DTD_VERSION>
-- 平台说明：<SUPPORTED_PLATFORM_NOTES>
-- 必需前置条件：<VERIFIED_PREREQUISITES_OR_NONE>
-- 已知不兼容项：<KNOWN_INCOMPATIBILITIES_OR_NONE>
+- 七日杀版本：{{SUPPORTED_7DTD_VERSION}}
+- 平台说明：{{SUPPORTED_PLATFORM_NOTES}}
+- 必需前置条件：{{VERIFIED_PREREQUISITES_OR_NONE}}
+- 已知不兼容项：{{KNOWN_INCOMPATIBILITIES_OR_NONE}}
 
 ### 校验下载文件
 
 ```text
-<ASSET_NAME>
-SHA-256: <SHA256>
+{{ASSET_NAME}}
+SHA-256: {{SHA256}}
 ```
 
 ### 安装
 
 1. 若专用服务器正在运行，先停止服务器。
-2. 将 `<ASSET_NAME>` 解压到 `<7DTD_SERVER_ROOT>/Mods/`。
-3. 确认 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/ModInfo.xml` 存在；不要形成
+2. 将 `{{ASSET_NAME}}` 解压到 `{{7DTD_SERVER_ROOT}}/Mods/`。
+3. 确认 `{{7DTD_SERVER_ROOT}}/Mods/ServerAdmin/ModInfo.xml` 存在；不要形成
    `Mods/ServerAdmin/ServerAdmin/`。
-4. 启动服务器，并从允许访问的网络打开 `<SERVERADMIN_URL>`。
-5. 使用 `<INITIAL_USERNAME>` / `<INITIAL_PASSWORD>` 登录；开放远程访问前
+4. 启动服务器，并从允许访问的网络打开 `{{SERVERADMIN_URL}}`。
+5. 使用 `{{INITIAL_USERNAME}}` / `{{INITIAL_PASSWORD}}` 登录；开放远程访问前
    立即修改凭据。
 
 ### 升级与回滚
@@ -207,18 +207,18 @@ SHA-256: <SHA256>
 
 ### 安全与支持
 
-- 使用防火墙或反向代理策略限制 `<SERVERADMIN_URL>`；不要将默认密码的
+- 使用防火墙或反向代理策略限制 `{{SERVERADMIN_URL}}`；不要将默认密码的
   管理端口直接暴露到公网。
 - 报告中不得包含真实凭据、令牌、私有路径、IP 地址或玩家标识。
 - 反馈请提供版本、复现步骤、脱敏后的服务器日志片段和截图。
 
 ### 包含模块与变更
 
-<MODULE_SUMMARY>
+{{MODULE_SUMMARY}}
 
 ### 已知问题
 
-<KNOWN_ISSUES>
+{{KNOWN_ISSUES}}
 ```
 
 - [x] **Step 2: Add permanent Release-ZIP-first conventions.**
@@ -248,13 +248,30 @@ and `Validation` sections of `user-manual-conventions.md`:
 Run:
 
 ```powershell
-rg -n "<ASSET_NAME>|SHA-256|Mods/ServerAdmin/ServerAdmin|<INITIAL_PASSWORD>" docs\superpowers\release-templates\github-release-body.md
+$templatePath = 'docs\superpowers\release-templates\github-release-body.md'
+$requiredTemplateText = @(
+  '{{VERSION}}',
+  '{{ASSET_NAME}}',
+  '{{SHA256}}',
+  '{{SUPPORTED_7DTD_VERSION}}',
+  '{{INITIAL_USERNAME}}',
+  '{{INITIAL_PASSWORD}}',
+  'Mods/ServerAdmin/ServerAdmin/'
+)
+$missingTemplateText = @(
+  $requiredTemplateText | Where-Object {
+    -not (Select-String -LiteralPath $templatePath -Pattern $_ -SimpleMatch -Quiet)
+  }
+)
+if ($missingTemplateText.Count -gt 0) {
+  throw "Release template is missing required text: $($missingTemplateText -join ', ')"
+}
 rg -n -i "Release ZIP|nested|mutable configuration|checksum" docs\superpowers\user-manual-conventions.md
 git diff --check
 ```
 
-Expected: each required release field and all four convention topics appear;
-`git diff --check` produces no output.
+Expected: each required curly release token, the nested-folder warning, and all
+four convention topics appear; `git diff --check` produces no output.
 
 - [x] **Step 4: Commit the release-authoring controls.**
 
@@ -765,12 +782,29 @@ stop the preview process and serve the already-built directory instead:
 
 ```powershell
 if ($null -ne $preview -and $preview.HasExited -eq $false) { Stop-Process -Id $preview.Id }
-Start-Process -WindowStyle Hidden -FilePath python -ArgumentList '-m', 'http.server', '4173', '--directory', 'docs/vitepress/.vitepress/dist'
+$staticPreview = Start-Process -WindowStyle Hidden -PassThru -FilePath python -ArgumentList '-m', 'http.server', '4173', '--directory', 'docs/vitepress/.vitepress/dist'
+try {
+  $ownerPaths = @(
+    '/zh/getting-started/installation',
+    '/zh/getting-started/upgrade',
+    '/en/getting-started/installation',
+    '/en/getting-started/upgrade'
+  )
+  foreach ($ownerPath in $ownerPaths) {
+    $response = Invoke-WebRequest -Uri "http://127.0.0.1:4173$ownerPath"
+    if ($response.StatusCode -ne 200) {
+      throw "Expected HTTP 200 for $ownerPath; got $($response.StatusCode)."
+    }
+  }
+}
+finally {
+  if ($null -ne $staticPreview -and $staticPreview.HasExited -eq $false) { Stop-Process -Id $staticPreview.Id }
+}
 ```
 
-Repeat the same four URL checks against the plain static server. Use Chrome
-DevTools MCP when available; no screenshot capture is required. Stop the server
-process that was started for preview after the checks complete.
+Repeat the same title and content checks against the plain static server. Only
+stop `$preview` and `$staticPreview` started by this procedure. Never stop an unrelated pre-existing server.
+Use Chrome DevTools MCP when available; no screenshot capture is required.
 
 - [x] **Step 4: Mark lifecycle review rows complete and record the verification in this plan.**
 
@@ -806,10 +840,10 @@ or unrelated user changes.
   status; Task 5 verifies parity, static output, navigation, and commit state.
 - **Scope:** The plan does not alter package generation, runtime configuration,
   backend authentication, default credentials, Release assets, or screenshots.
-- **No unresolved implementation placeholders:** angle-bracket strings occur
-  only in intentional Release-template and sanitized-documentation examples.
-  The historical-plan note uses a concrete Task 3 commit before Task 4 is
-  committed.
+- **No unresolved implementation placeholders:** intentional `{{...}}`
+  Release-template tokens and sanitized-documentation angle-bracket examples
+  are allowed. The historical-plan note uses a concrete Task 3 commit before
+  Task 4 is committed.
 - **Consistency:** Every public route remains unchanged; technical file names
   and command names are identical across locales; owner pages explicitly avoid
   source-deployment prerequisites.
