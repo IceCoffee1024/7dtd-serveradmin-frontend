@@ -769,49 +769,104 @@ Expected: exit code `0` and updated output under
 Run:
 
 ```powershell
-$preview = Start-Process -WindowStyle Hidden -PassThru -FilePath pnpm.cmd -ArgumentList 'docs:preview', '--host', '127.0.0.1', '--port', '4173'
-```
+function Get-FreeLoopbackPort {
+  $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, 0)
+  try {
+    $listener.Start()
+    return ([System.Net.IPEndPoint]$listener.LocalEndpoint).Port
+  }
+  finally {
+    $listener.Stop()
+  }
+}
 
-Open `/zh/getting-started/installation`, `/zh/getting-started/upgrade`,
-`/en/getting-started/installation`, and `/en/getting-started/upgrade`. Confirm
-the Release ZIP title, folder tree, configuration-preservation guidance,
-advanced publishing label, language switching, and no horizontal overflow.
-
-If the VitePress alpha preview repeats its known static-asset `404` behavior,
-stop the preview process and serve the already-built directory instead:
-
-```powershell
-if ($null -ne $preview -and $preview.HasExited -eq $false) { Stop-Process -Id $preview.Id }
-$staticPreview = Start-Process -WindowStyle Hidden -PassThru -FilePath python -ArgumentList '-m', 'http.server', '4173', '--directory', 'docs/vitepress/.vitepress/dist'
-try {
-  $ownerPaths = @(
-    '/zh/getting-started/installation',
-    '/zh/getting-started/upgrade',
-    '/en/getting-started/installation',
-    '/en/getting-started/upgrade'
+function Get-PreviewResponse {
+  param(
+    [string] $Uri,
+    [System.Diagnostics.Process] $Process,
+    [string] $ProcessName
   )
-  foreach ($ownerPath in $ownerPaths) {
-    $response = Invoke-WebRequest -Uri "http://127.0.0.1:4173$ownerPath"
-    if ($response.StatusCode -ne 200) {
-      throw "Expected HTTP 200 for $ownerPath; got $($response.StatusCode)."
-    }
-  }
 
-  # Repeat the same title and content checks against the plain static server while it is still running.
-  $ownerContentChecks = @{
-    '/zh/getting-started/installation' = @('从 Release ZIP 安装', 'ModInfo.xml', 'Mods/ServerAdmin/ServerAdmin/')
-    '/zh/getting-started/upgrade' = @('通过 Release ZIP 升级', '保留', 'appsettings.json')
-    '/en/getting-started/installation' = @('Install from a Release ZIP', 'ModInfo.xml', 'Mods/ServerAdmin/ServerAdmin/')
-    '/en/getting-started/upgrade' = @('Upgrade with a Release ZIP', 'Preserve', 'appsettings.json')
-  }
-  foreach ($ownerPath in $ownerPaths) {
-    $response = Invoke-WebRequest -Uri "http://127.0.0.1:4173$ownerPath"
-    foreach ($expectedText in $ownerContentChecks[$ownerPath]) {
+  $deadline = (Get-Date).AddSeconds(30)
+  $lastError = $null
+  do {
+    $Process.Refresh()
+    if ($Process.HasExited) {
+      throw "$ProcessName exited before serving $Uri."
+    }
+    try {
+      return Invoke-WebRequest -Uri $Uri -TimeoutSec 5
+    }
+    catch {
+      $lastError = $_.Exception.Message
+      Start-Sleep -Milliseconds 500
+    }
+  } while ((Get-Date) -lt $deadline)
+
+  throw "$ProcessName did not serve $Uri within 30 seconds: $lastError"
+}
+
+function Assert-OwnerPages {
+  param(
+    [string] $BaseUri,
+    [System.Diagnostics.Process] $Process,
+    [string] $ProcessName
+  )
+
+  $ownerChecks = @(
+    [pscustomobject]@{ Path = '/zh/getting-started/installation'; Text = @('从 Release ZIP 安装', 'ModInfo.xml', 'Mods/ServerAdmin/ServerAdmin/') },
+    [pscustomobject]@{ Path = '/zh/getting-started/upgrade'; Text = @('通过 Release ZIP 升级', '保留', 'appsettings.json') },
+    [pscustomobject]@{ Path = '/en/getting-started/installation'; Text = @('Install from a Release ZIP', 'ModInfo.xml', 'Mods/ServerAdmin/ServerAdmin/') },
+    [pscustomobject]@{ Path = '/en/getting-started/upgrade'; Text = @('Upgrade with a Release ZIP', 'Preserve', 'appsettings.json') }
+  )
+
+  foreach ($check in $ownerChecks) {
+    $response = Get-PreviewResponse -Uri "$BaseUri$($check.Path)" -Process $Process -ProcessName $ProcessName
+    if ($response.StatusCode -ne 200) {
+      throw "Expected HTTP 200 for $($check.Path); got $($response.StatusCode)."
+    }
+    foreach ($expectedText in $check.Text) {
       if (-not $response.Content.Contains($expectedText)) {
-        throw "Expected rendered HTML for $ownerPath to contain: $expectedText"
+        throw "Expected rendered HTML for $($check.Path) to contain: $expectedText"
       }
     }
   }
+}
+
+$previewPort = Get-FreeLoopbackPort
+$previewBaseUri = "http://127.0.0.1:$previewPort"
+$preview = $null
+try {
+  $preview = Start-Process -WindowStyle Hidden -PassThru -FilePath pnpm.cmd -ArgumentList @('exec', 'vitepress', 'preview', 'docs/vitepress', '--host', '127.0.0.1', '--port', "$previewPort")
+  $preview.Refresh()
+  if ($preview.HasExited) {
+    throw "VitePress preview exited before serving $previewBaseUri."
+  }
+  Assert-OwnerPages -BaseUri $previewBaseUri -Process $preview -ProcessName 'VitePress preview'
+}
+finally {
+  if ($null -ne $preview -and $preview.HasExited -eq $false) { Stop-Process -Id $preview.Id }
+}
+```
+
+The checks above assert HTTP 200, the locale-matched Release ZIP titles, and
+the folder-placement or configuration-preservation text at all four owner URLs.
+
+If the VitePress alpha preview repeats its known static-asset `404` behavior,
+let the main `finally` finish before starting a plain static server on a new
+loopback port:
+
+```powershell
+$staticPreviewPort = Get-FreeLoopbackPort
+$staticPreviewBaseUri = "http://127.0.0.1:$staticPreviewPort"
+$staticPreview = $null
+try {
+  $staticPreview = Start-Process -WindowStyle Hidden -PassThru -FilePath python -ArgumentList @('-m', 'http.server', "$staticPreviewPort", '--bind', '127.0.0.1', '--directory', 'docs/vitepress/.vitepress/dist')
+  $staticPreview.Refresh()
+  if ($staticPreview.HasExited) {
+    throw "Static preview exited before serving $staticPreviewBaseUri."
+  }
+  Assert-OwnerPages -BaseUri $staticPreviewBaseUri -Process $staticPreview -ProcessName 'Static preview'
 }
 finally {
   if ($null -ne $staticPreview -and $staticPreview.HasExited -eq $false) { Stop-Process -Id $staticPreview.Id }
