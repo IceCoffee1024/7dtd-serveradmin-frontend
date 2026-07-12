@@ -150,6 +150,18 @@ const sidebarEn = [
 
 const commonTheme = {
   search: { provider: 'local' as const },
+  socialLinks: [
+    {
+      icon: 'discord',
+      link: 'https://discord.gg/mX8qxharF',
+      ariaLabel: 'Discord community',
+    },
+    {
+      icon: 'github',
+      link: 'https://github.com/IceCoffee1024/7DaysToDie-ServerAdmin/',
+      ariaLabel: 'GitHub repository',
+    },
+  ],
 }
 
 export default defineConfig({
