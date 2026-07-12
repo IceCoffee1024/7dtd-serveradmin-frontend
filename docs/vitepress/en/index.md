@@ -4,11 +4,11 @@ This workflow manual is for server owners, administrators, and operations staff.
 
 ## Getting started and lifecycle
 
-- [Overview](/en/getting-started/overview): understand the frontend, backend, and game-server boundaries.
-- [Installation](/en/getting-started/installation): prepare dependencies and verify the first run.
-- [Upgrade](/en/getting-started/upgrade): back up before changes and complete post-upgrade checks.
+- [Overview](/en/getting-started/overview): understand the Release ZIP packaged deployment of the server mod and web console.
+- [Installation](/en/getting-started/installation): download a Release ZIP, extract it to Mods, and verify the first run.
+- [Upgrade](/en/getting-started/upgrade): back up and preserve configuration and data before Release replacement.
 - [Initial administrator configuration](/en/getting-started/initial-administrator-configuration): set up the first account and permissions.
-- [Publishing frontend and backend](/en/getting-started/publishing): publish build artifacts and verify reachability.
+- [Advanced: build and publish from source](/en/getting-started/publishing): for maintainers and deployment engineers changing backend APIs or building a custom frontend.
 
 ## Daily operations
 

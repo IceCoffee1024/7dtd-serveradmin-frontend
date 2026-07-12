@@ -4,7 +4,7 @@ outline: deep
 
 # Dashboard
 
-> For signed-in administrators and on-call operators. Requires a reachable backend and permission to read game-server statistics and system metrics. When data is empty or stale, start with [Frontend and backend publishing](../getting-started/publishing).
+> For signed-in administrators and on-call operators. Requires a reachable backend and permission to read game-server statistics and system metrics. When data is empty or stale, investigate through [Troubleshooting](../reference/troubleshooting).
 
 ## Purpose
 

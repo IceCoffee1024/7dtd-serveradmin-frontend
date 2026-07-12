@@ -2,9 +2,9 @@
 outline: deep
 ---
 
-# Frontend and backend publishing
+# Advanced: build and publish from source
 
-> For an operator publishing a backend mod or API change that requires a regenerated frontend client. Requires backend publish access, a restartable 7DTD service, the frontend workspace, and `<SERVERADMIN_API_BASE_URL>`.
+> For maintainers and deployment engineers changing backend APIs or building a custom frontend. Server owners installing a GitHub Release ZIP should use [Install from a Release ZIP](./installation) and do not need this workflow.
 
 ## Purpose
 

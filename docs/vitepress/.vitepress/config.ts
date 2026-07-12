@@ -26,7 +26,7 @@ const sidebarZh = [
       { text: '安装', link: '/zh/getting-started/installation' },
       { text: '升级', link: '/zh/getting-started/upgrade' },
       { text: '初始管理员配置', link: '/zh/getting-started/initial-administrator-configuration' },
-      { text: '发布前端与后端', link: '/zh/getting-started/publishing' },
+      { text: '高级：从源码构建与发布', link: '/zh/getting-started/publishing' },
     ],
   },
   {
@@ -91,7 +91,7 @@ const sidebarEn = [
       { text: 'Installation', link: '/en/getting-started/installation' },
       { text: 'Upgrade', link: '/en/getting-started/upgrade' },
       { text: 'Initial administrator configuration', link: '/en/getting-started/initial-administrator-configuration' },
-      { text: 'Publishing frontend and backend', link: '/en/getting-started/publishing' },
+      { text: 'Advanced: build and publish from source', link: '/en/getting-started/publishing' },
     ],
   },
   {

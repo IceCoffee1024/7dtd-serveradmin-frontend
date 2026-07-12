@@ -4,7 +4,7 @@ outline: deep
 
 # 初始管理员配置
 
-> 面向第一次登录的服务器管理员。需要完成[安装](./installation)，确认 `<SERVERADMIN_API_BASE_URL>` 的 Swagger 返回非空 HTTP 200，并取得部署交接的初始凭据。本手册不写入真实账号或密码。
+> 面向从 Release ZIP 第一次登录的服务器管理员。确认 Release ZIP 已安装，专用服务器已加载 `Mods/ServerAdmin`，并且包内管理控制台可在配置的 URL 打开。先使用 Release 随附账号改掉凭据，再开放远程访问。本手册不写入真实账号或密码。
 
 ## 目的
 
@@ -12,14 +12,14 @@ outline: deep
 
 ## 开始前
 
-- 确认后端已运行，API Documentation 页面能够访问 `<SERVERADMIN_API_BASE_URL>`。
+- 在替换 Release 随附账号前，将包内管理控制台仅限本地或受限访问。
 - 准备专用测试账号、平台时区 ID（如 `UTC` 或 `Asia/Shanghai`）和可写的备份目标。
-- 不要把凭据、数据库值或目标路径写入截图和前端环境变量。
+- 不要把凭据、数据库值或目标路径写入截图和配置记录。
 
 ## 操作步骤
 
-1. **首次登录并改默认值。** 使用部署交接的初始账号登录，立即在应用设置或后端配置中改用户名和密码。退出后用新凭据重新登录；不要把凭据写进前端环境变量或截图。
-2. **确认后端连接。** 在浏览器 Network 检查 API 请求是否到 `<SERVERADMIN_API_BASE_URL>`，Swagger/API 文档能打开，仪表盘能返回状态。跨域时检查 CORS 和反向代理；同源时确认 `/api` 路由没有被静态站点吞掉。
+1. **首次登录并改默认值。** 使用 Release 随附账号登录，在开放远程访问前立即在应用设置或后端配置中改用户名和密码。退出后用新凭据重新登录；不要把凭据写进截图或配置记录。
+2. **确认包内连接。** 打开仪表盘，确认服务器状态和采样时间能够加载，再打开一个受保护的只读页面，例如玩家列表或审计日志。若任一页面无法加载，检查专用服务器启动状态、配置端口和防火墙规则，然后按[故障排查](../reference/troubleshooting)处理。
 3. **检查功能模块可用性。** 打开 Feature Modules，确认 Chat、Colored Chat、Backup、Scheduler、Player Tracking 等模块的启用状态。只启用已验证且有运维需求的模块；禁用模块的页面或命令不应被当作可用能力。
 4. **设置权限。** 在 Permission 页面为每个管理员使用稳定的 SteamID64、`Steam_...` 或 `EOS_...` 标识。七日杀使用 `0` 表示最高权限、`1000` 表示默认用户等级，因此应分配仍能满足运维任务的最小数字权限等级，并为控制台命令单独建立规则。用测试账号验证“允许的命令可见、未授权操作被拒绝”。
 5. **统一时区。** 在 Scheduler 和 Backup 设置中明确填写平台时区 ID，例如 `UTC` 或 `Asia/Shanghai`，不要只依赖浏览器时区。保存后核对下一次计划执行时间和历史记录中的时间戳。
@@ -28,14 +28,14 @@ outline: deep
 ## 验证结果
 
 - 新管理员凭据可登录，旧凭据不再使用；应用设置保存后刷新仍保持。
-- 仪表盘和一个受保护 API 请求成功；Feature Modules 状态与实际页面一致。
+- 仪表盘和一个受保护的只读页面成功；Feature Modules 状态与实际页面一致。
 - 权限测试记录了允许与拒绝的结果；Scheduler/Backup 页面显示明确时区，而不是空值。
 - 第一次备份有成功状态、非空文件和对应审计条目；恢复所需的目标路径由值班人员确认可访问。
 
 ## 限制与安全说明
 
 ::: warning
-前端 `VITE_*` 变量会暴露给浏览器，不能保存密码、OAuth 令牌或数据库连接秘密。
+不要把密码、OAuth 令牌、数据库连接秘密或备份目标写入截图和共享配置记录。
 :::
 
 ::: danger
@@ -47,8 +47,8 @@ outline: deep
 
 ## 相关页面
 
-- [安装](./installation)
-- [前后端发布](./publishing)
+- [从 Release ZIP 安装](./installation)
+- [升级](./upgrade)
 - [备份与恢复](../automation-and-reliability/backup-and-recovery)
 - [访问控制](../integrations-and-access/access-control)
 - [故障排查](../reference/troubleshooting)

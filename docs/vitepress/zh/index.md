@@ -4,11 +4,11 @@
 
 ## 开始使用与生命周期
 
-- [概览](/zh/getting-started/overview)：了解前端、后端和游戏服务器的职责边界。
-- [安装](/zh/getting-started/installation)：准备依赖并验证首次运行。
-- [升级](/zh/getting-started/upgrade)：在变更前备份并完成升级后的检查。
+- [概览](/zh/getting-started/overview)：了解 Release ZIP 打包部署中的服务器模组和 Web 管理控制台边界。
+- [安装](/zh/getting-started/installation)：下载 Release ZIP、解压到 Mods 并验证首次运行。
+- [升级](/zh/getting-started/upgrade)：在替换 Release ZIP 前备份并保留配置和数据。
 - [初始管理员配置](/zh/getting-started/initial-administrator-configuration)：设置首次登录和权限。
-- [发布前端与后端](/zh/getting-started/publishing)：发布构建产物并确认服务可达。
+- [高级：从源码构建与发布](/zh/getting-started/publishing)：面向修改后端 API 或构建自定义前端的维护者和部署工程师。
 
 ## 日常运维
 

@@ -2,9 +2,9 @@
 outline: deep
 ---
 
-# 前端与后端发布
+# 高级：从源码构建与发布
 
-> 面向需要发布后端模组或 API 变更并重新生成前端客户端的运维人员。需要后端发布权限、可重启的 7DTD 服务、前端工作区和 `<SERVERADMIN_API_BASE_URL>`。
+> 面向修改后端 API 或构建自定义前端的维护者和部署工程师。通过 GitHub Release ZIP 安装的服主应使用[从 Release ZIP 安装](./installation)，无需执行本流程。
 
 ## 目的
 

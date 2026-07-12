@@ -4,37 +4,37 @@ outline: deep
 
 # Product Overview and Lifecycle
 
-> For server owners, administrators, and on-call operators. Requires a deployed 7 Days to Die server, a reachable ServerAdmin backend, and an administrator account. This manual describes current `main` behavior only; historical versions and disabled feature modules are out of scope.
+> For server owners, administrators, and on-call operators. Normal deployment uses one GitHub Release ZIP extracted as `Mods/ServerAdmin`; the package includes the server mod and web console. This manual describes current `main` behavior only; historical versions and disabled feature modules are out of scope.
 
 ## Purpose
 
-Establish one operating model from installation and configuration through publishing and daily duty, while making the frontend, backend, and game-server boundaries explicit.
+Establish one operating model from Release ZIP installation and initial administrator configuration through daily duty, while making the package, backend, and game-server boundaries explicit.
 
 ## Before you begin
 
-- Confirm that the game server, ServerAdmin backend, and frontend are owned and operated as one deployment.
-- Have `<7DTD_SERVER_ROOT>`, `<SERVERADMIN_API_BASE_URL>`, and an administrator account available without putting secret values in notes or browser variables.
-- Use the same backend Swagger document to generate the frontend client whenever an API changes.
+- Use the Release ZIP as one deployment unit: extract it as `Mods/ServerAdmin` so the server mod and web console stay paired.
+- Have access to the dedicated server, the configured packaged-console URL, and an administrator account without putting secret values in notes or screenshots.
+- Only maintainers and deployment engineers changing backend APIs or building a custom frontend use the advanced source workflow.
 
 ## Product boundary
 
-ServerAdmin has two parts that must stay compatible:
+The normal owner package has two parts that must stay compatible:
 
-- **The backend** is the server mod and HTTP API. It interacts with the game process, reads player/world state, and writes configuration, audit, and history data to the backend database.
-- **The frontend** is the Vue administration console. It reads data and submits management actions through the API, using a generated OpenAPI client for request shapes.
+- **The server mod** is installed under `Mods/ServerAdmin`. It interacts with the game process, reads player/world state, and writes configuration, audit, and history data to the backend database.
+- **The web console** is included in the same Release ZIP. It reads data and submits management actions through the server mod's HTTP API.
 
-The frontend cannot replace the game server or backend. A page can load while the backend is unreachable, but its data and actions are not reliable. A feature can also be unavailable because of backend settings, server-version support, or administrator permissions.
+The web console cannot replace the game server or server mod. A page can load while the server mod is unreachable, but its data and actions are not reliable. A feature can also be unavailable because of backend settings, server-version support, or administrator permissions.
 
 ## Version applicability
 
-This manual follows the current `main` menu and API. Frontend and backend versions must use a client generated from the same Swagger document. If backend endpoints change, restart the backend and wait for a non-empty HTTP 200 Swagger response before generating the client again. There is no version switch in this edition, and development addresses are not production addresses.
+This manual follows the current `main` menu and released package behavior. Keep the server mod and web console from the same Release ZIP together; do not replace individual package files from unrelated versions. Before a Release replacement, preserve configuration and data by following [Upgrade](./upgrade). Build and publish from source is an advanced maintainer workflow for backend API changes or a custom frontend, not part of normal owner deployment.
 
 ## Procedure
 
-1. Read [Installation](./installation) and prepare the server root, backend publish output, and frontend build environment. The deployment boundary and API endpoint are written down.
-2. Follow [Initial administrator configuration](./initial-administrator-configuration) for first login, password rotation, connectivity, permissions, time zone, and the first backup test. The administrator baseline is saved and auditable.
-3. Use [Publishing](./publishing) for releases and [Upgrade preparation](./upgrade) for backup and rollback. The frontend client is generated from the backend that is actually running.
-4. Start daily duty on the [Dashboard](../daily-operations/dashboard), then investigate through players, GPS, chat, and log pages. Each investigation ends at an observable record or a documented unavailable state.
+1. Follow [Installation](./installation) to download a Release ZIP, extract it as `Mods/ServerAdmin`, and verify the first run.
+2. Follow [Initial administrator configuration](./initial-administrator-configuration) for packaged-console login, credential rotation, connectivity, permissions, time zone, and the first backup test. The administrator baseline is saved and auditable.
+3. Start daily duty on the [Dashboard](../daily-operations/dashboard), then investigate through players, GPS, chat, and log pages. Each investigation ends at an observable record or a documented unavailable state.
+4. Before replacing a Release ZIP, follow [Upgrade](./upgrade) to preserve configuration and data and prepare rollback.
 
 ## Verify the result
 
@@ -46,7 +46,7 @@ This manual follows the current `main` menu and API. Frontend and backend versio
 ## Limits and safety notes
 
 ::: warning
-Never put tokens, passwords, real player IDs, real IP addresses, or server filesystem paths in documentation, screenshots, or `VITE_*` variables.
+Never put tokens, passwords, real player IDs, real IP addresses, or server filesystem paths in documentation or screenshots.
 :::
 
 ::: danger
@@ -60,6 +60,5 @@ Console commands, kicks, bans, teleports, item grants, and profile resets can af
 - [Installation](./installation)
 - [Upgrade](./upgrade)
 - [Initial administrator configuration](./initial-administrator-configuration)
-- [Frontend and backend publishing](./publishing)
 - [Dashboard](../daily-operations/dashboard)
 - [Troubleshooting](../reference/troubleshooting)
