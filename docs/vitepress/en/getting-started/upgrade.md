@@ -2,47 +2,43 @@
 outline: deep
 ---
 
-# Upgrade and rollback preparation
+# Upgrade with a Release ZIP
 
-> For an administrator with a maintenance window and permission to back up files and databases. Upgrade the frontend and backend that represent current `main`; never pair an old generated client with a new backend.
+> For an administrator with a maintenance window and backup access. Requires a current Release ZIP, a compatible target Release ZIP, and a recoverable backup of ServerAdmin configuration and data.
 
 ## Purpose
 
-Upgrade inside a reversible maintenance window, prove that Swagger and the generated client agree, and then return to daily operations.
+Replace released program files while retaining the operator-managed configuration and database needed by the live server.
 
 ## Before you begin
 
-1. Record the current frontend build, backend publish, server version, and configuration changes.
-2. Notify players and schedule a maintenance window; pause jobs that modify world or player data.
-3. Back up the backend database, ServerAdmin configuration, and server configuration/world saves under `<7DTD_SERVER_ROOT>`. Record the time, source, and recoverable location.
-4. Record whether `<SERVERADMIN_API_BASE_URL>/swagger/v1/swagger.json` currently returns non-empty HTTP 200, and record the frontend variable names (never secret values).
+- Record the running version and retain the archive or extracted directory as a rollback candidate.
+- Back up `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`, the ServerAdmin database under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/`, relevant game-server configuration, and world data.
+- Read the target Release compatibility, prerequisites, known issues, and manual configuration changes.
 
 ## Procedure
 
-1. Publish the new backend, keeping the previous output and configuration as a rollback candidate.
-2. Restart the 7DTD server and wait for process recovery; do not generate the client while Swagger is unavailable.
-3. Poll Swagger until it returns HTTP 200 with a non-empty JSON body.
-4. Run `pnpm api:gen` in the frontend, followed by `pnpm typecheck` and `pnpm locale:check`.
-5. Build and publish the frontend static files, clear proxy or CDN caches that can serve old JS, and sign in again.
+1. Notify players, stop the dedicated server, and confirm that the backup is locatable before replacing files.
+2. Extract the new archive into `<7DTD_SERVER_ROOT>/Mods/`. Replace released assemblies, dependencies, `wwwroot/`, and `Config/appsettings.Default.json`.
+3. Preserve `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` and the ServerAdmin database under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/`. The default file supplies shipped values; the writable override supplies administrator changes.
+4. Start the server, inspect the mod-load result, sign in, and perform a read-only Dashboard or Player List check.
+5. If startup, authentication, or migration fails, stop the server and restore matching prior program files together with the pre-upgrade `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` and ServerAdmin database backup.
 
 ## Verify the result
 
-- The Swagger document contains the paths expected by the new backend, and generated files under `src/generated/api/` have the expected update time.
-- Type and locale checks pass; open Dashboard, Player List, chat, Console, Audit Logs, and Game Event Logs at least once.
-- Run a read-only operation. Upgraded API requests return expected status codes, with no new failure records in Audit Logs.
+- The target version loads without a new dependency or migration failure.
+- Existing administrator configuration and expected management data remain after login.
 
 ## Limits and safety notes
 
 ::: danger
-If Swagger stays empty, the API returns 5xx, or a data migration fails, stop frontend publication, restore the previous backend and matching frontend build, and verify critical data from backups.
+After a database migration, old binaries alone are not a safe rollback. Restore the matching pre-upgrade database and configuration too.
 :::
-
-- Do not roll back only the frontend to hide a backend mismatch; the generated client must come from the backend that is actually running.
-- Upgrades and rollbacks can disconnect players. Restarts, migrations, backup restores, and world operations belong in a maintenance window and should remain audited.
 
 ## Related pages
 
 - [Installation](./installation)
-- [Frontend and backend publishing](./publishing)
+- [Initial administrator configuration](./initial-administrator-configuration)
 - [Backup and recovery](../automation-and-reliability/backup-and-recovery)
 - [Troubleshooting](../reference/troubleshooting)
+- [Advanced source publishing](./publishing)

@@ -2,47 +2,47 @@
 outline: deep
 ---
 
-# Installation
+# Install from a Release ZIP
 
-> For the deploying administrator. Requires a maintainable 7DTD server, `<7DTD_SERVER_ROOT>`, backend source or publish output, Node.js, pnpm, and a browser-reachable `<SERVERADMIN_API_BASE_URL>`. You must be able to restart the game server during a maintenance window and read Swagger.
+> For a 7 Days to Die dedicated-server owner or administrator. Requires a Release asset compatible with the server, filesystem access to `<7DTD_SERVER_ROOT>/Mods/`, and an approved initial administrator account.
 
 ## Purpose
 
-After installation, the backend should expose an API beside the game process, the frontend should load and target that API, and an administrator should be able to sign in and see dashboard data.
+Install the packaged ServerAdmin backend and web console together as one mod; no frontend repository or source build is required.
 
 ## Before you begin
 
-- Prepare the server root, backend publish output, frontend workspace, and a maintenance window.
-- Confirm that the target API URL is sanitized in notes and that no password or token will be put in a `VITE_*` variable.
-- Confirm that the reverse proxy or static host can route `/api`, `/swagger`, and frontend page paths.
+- Read the selected Release's compatibility, prerequisites, known issues, recommended asset name, and SHA-256 value when one is published.
+- Back up an existing `Mods/ServerAdmin/` directory before replacing it.
+- Decide whether the browser runs on the server host or a permitted remote network; do not expose initial credentials on a public port.
 
 ## Procedure
 
-1. **Prepare backend configuration.** Deploy the backend output to the ServerAdmin mod location under `<7DTD_SERVER_ROOT>` and set the web URL, administrator account, database path, and logging options for the environment. Do not commit a production password.
-2. **Start and verify the backend.** Start the 7DTD server and confirm that the backend listens at `<SERVERADMIN_API_BASE_URL>`. Request `<SERVERADMIN_API_BASE_URL>/swagger/v1/swagger.json`; continue only after HTTP 200 with a non-empty JSON document.
-3. **Install frontend dependencies.** Run `pnpm install` in the frontend repository. For a cross-origin deployment set `VITE_OPENAPI_BASE_URL=<SERVERADMIN_API_BASE_URL>`; leave it empty for same-origin hosting and set `VITE_APP_PUBLIC_BASE_PATH` for a sub-path deployment.
-4. **Build the frontend.** Run `pnpm build` and publish the static output to a supported static host or reverse proxy. Route `/api`, `/swagger`, and frontend page paths according to the hosting model.
-5. **Open the first session.** Open the frontend, choose the intended language, and sign in with the administrator account supplied by the deployment. If the page opens but requests fail, check the API base URL, reverse proxy, and browser Network panel first.
+1. Stop the dedicated server if it is running and download the exact `ServerAdmin.v<version>.zip` asset named by the Release.
+2. Verify the published SHA-256 when available, then extract into `<7DTD_SERVER_ROOT>/Mods/`.
+3. Confirm `ModInfo.xml` is directly under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/`; correct `Mods/ServerAdmin/ServerAdmin/` by moving the inner directory contents.
+4. Start the dedicated server and wait for ServerAdmin mod load. Open the configured URL; `http://localhost:<PORT>/` only works from the server host.
+5. Sign in with the Release-provided initial account, immediately change credentials, and restrict remote access through network policy.
 
 ## Verify the result
 
-- The Swagger URL returns non-empty JSON, and browser Network requests target the expected `<SERVERADMIN_API_BASE_URL>`.
-- After login, the dashboard shows online/offline state and samples such as FPS or memory; an unreachable backend produces an error or empty state rather than a fabricated success.
-- Player List and Console can load the commands allowed for the account; a disabled module is clearly unavailable in Feature Modules.
+- The server log shows the mod loaded without a compatibility or dependency failure.
+- The login page opens at the configured URL; sign-in shows Dashboard or a simple read-only page.
 
 ## Limits and safety notes
 
 ::: warning
-`VITE_*` values are exposed to the browser and must not contain tokens, passwords, or other secrets.
+Release notes define the game version and prerequisites. Do not install frontend build tooling or frontend sources to diagnose mod loading.
 :::
 
-- Publishing static files does not start the backend and does not replace 7DTD save/configuration backups.
-- Reverse proxy, HTTPS, CORS, and authentication policies belong to the deployment environment. Re-run Swagger, login, and API request checks after changing them.
+::: danger
+Do not expose a known initial credential on a public management port. Change it before remote access and restrict access through a firewall or existing reverse proxy.
+:::
 
 ## Related pages
 
 - [Upgrade](./upgrade)
 - [Initial administrator configuration](./initial-administrator-configuration)
-- [Frontend and backend publishing](./publishing)
-- [Dashboard](../daily-operations/dashboard)
+- [Advanced source publishing](./publishing)
 - [Backup and recovery](../automation-and-reliability/backup-and-recovery)
+- [Troubleshooting](../reference/troubleshooting)

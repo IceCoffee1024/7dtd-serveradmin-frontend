@@ -2,47 +2,43 @@
 outline: deep
 ---
 
-# 升级与回滚准备
+# 通过 Release ZIP 升级
 
-> 面向有维护窗口和文件/数据库备份权限的管理员。只升级当前 `main` 对应的前后端，不要把旧版生成客户端与新后端混用。
+> 面向拥有维护窗口和备份访问权限的管理员。需要当前 Release ZIP、与服务器兼容的目标 Release ZIP，以及可恢复的 ServerAdmin 配置和数据备份。
 
 ## 目的
 
-在可回滚的维护窗口中升级后端和前端，确认 Swagger 与生成客户端一致，再恢复日常操作。
+替换发布包中的程序文件，同时保留线上服务器需要的管理员配置和数据库。
 
 ## 开始前
 
-1. 记录当前前端构建版本、后端发布版本、服务器版本和配置变更。
-2. 通知玩家并安排维护窗口；停止会修改世界或玩家数据的自动任务。
-3. 备份后端数据库、ServerAdmin 配置、`<7DTD_SERVER_ROOT>` 下的服务器配置与世界存档。为备份记录时间、来源和可恢复位置。
-4. 记下当前 `<SERVERADMIN_API_BASE_URL>/swagger/v1/swagger.json` 是否能返回非空 HTTP 200，并保存前端环境变量名称（不要保存秘密值）。
+- 记录运行中的版本，并保留当前压缩包或已解压目录作为回滚候选。
+- 备份 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`、位于 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/` 的 ServerAdmin 数据库、相关游戏服务器配置和世界数据。
+- 阅读目标 Release 的兼容性、先决条件、已知问题和手动配置变更。
 
 ## 操作步骤
 
-1. 发布新后端，保留上一版发布物和配置作为回滚候选。
-2. 重启 7DTD 服务器；等待进程恢复，不要在 Swagger 尚未可用时生成客户端。
-3. 轮询 Swagger，直到 HTTP 200 且响应体为非空 JSON。
-4. 在前端执行 `pnpm api:gen`，然后执行 `pnpm typecheck` 和 `pnpm locale:check`。
-5. 构建并发布前端静态文件，清理可能缓存旧 JS 的代理或 CDN，再重新登录。
+1. 通知玩家、停止专用服务器，并确认能定位到可恢复的备份后再替换文件。
+2. 将新压缩包解压到 `<7DTD_SERVER_ROOT>/Mods/`，替换程序集、依赖、`wwwroot/` 和 `Config/appsettings.Default.json`。
+3. 保留 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` 与位于 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/` 的 ServerAdmin 数据库。默认配置文件提供随包默认值，可写覆盖文件保存管理员修改。
+4. 启动服务器，检查模组加载结果，登录后在仪表盘或玩家列表执行一次只读检查。
+5. 若启动、认证或迁移失败，停止服务器，并恢复相互匹配的旧程序文件以及升级前的 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` 和 ServerAdmin 数据库备份。
 
 ## 验证结果
 
-- Swagger 文档包含新后端需要的路径，生成的 `src/generated/api/` 文件有预期更新时间。
-- 类型检查和语言键检查通过；仪表盘、玩家列表、聊天、控制台、审计和游戏事件页面至少各打开一次。
-- 运行一个无副作用读取操作；升级后的 API 请求返回预期状态码，审计中没有异常失败记录。
+- 目标版本加载时没有新的依赖或迁移失败。
+- 登录后，既有管理员配置及预期管理数据仍然保留。
 
 ## 限制与安全说明
 
 ::: danger
-若 Swagger 持续为空、API 发生 5xx 或数据迁移异常，停止前端发布，恢复上一版后端和对应前端构建，并从备份验证关键数据。
+数据库迁移后，只恢复旧二进制文件不是安全回滚；必须同时恢复匹配的升级前数据库和配置备份。
 :::
-
-- 不要只回滚前端来掩盖后端不兼容；生成客户端必须来自正在运行的后端 Swagger。
-- 升级和回滚都可能断开玩家连接；重启、迁移、备份恢复和世界操作应在维护窗口执行并留存审计。
 
 ## 相关页面
 
 - [安装](./installation)
-- [前后端发布](./publishing)
+- [初始管理员配置](./initial-administrator-configuration)
 - [备份与恢复](../automation-and-reliability/backup-and-recovery)
 - [故障排查](../reference/troubleshooting)
+- [高级源码发布](./publishing)
