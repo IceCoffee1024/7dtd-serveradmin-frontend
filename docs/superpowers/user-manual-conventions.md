@@ -6,6 +6,7 @@
 - Player-facing in-game operations and commands are documented only where they affect an administrator workflow. This site is not a separate player guide.
 - Cover every currently visible console menu and its visible child pages in the first edition, including low-frequency modules, settings, histories, diagnostics, and the API documentation entry point.
 - Cover installation, upgrades, initial administrator configuration, frontend and backend publishing, backup and recovery, and troubleshooting in the first edition.
+- Treat a verified GitHub Release ZIP as the normal installation and upgrade path for server owners. Source builds, frontend environment variables, API generation, Swagger, and static hosting belong only in clearly labeled maintainer guidance.
 
 ## Languages
 
@@ -24,6 +25,8 @@
 - Organize navigation around administrator workflows, then provide a console-menu index that maps every visible menu and child page to its documentation.
 - Maintain Chinese and English pages as paired, independently localized content. Keep commands, configuration keys, API fields, and code blocks unchanged between languages.
 - Use sanitized placeholders for server addresses, tokens, player identifiers, and filesystem paths in examples.
+- Installation and upgrade pages must show the expected `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/ModInfo.xml` placement and warn against a nested `Mods/ServerAdmin/ServerAdmin/` directory.
+- When the product has shipped defaults plus a writable override, document the upgrade rule explicitly: replace released defaults, but back up and preserve mutable configuration and database files.
 
 ## Screenshots
 
@@ -39,3 +42,4 @@
 - Require a successful `pnpm docs:build`, local browser checks for both language roots and navigation, and a coverage matrix that maps every visible console route to both languages.
 - Use Chrome DevTools MCP to review representative high-risk workflows and every new screenshot for readability, locale correctness, and sensitive-data safety.
 - When product behavior or UI changes, update both language pages, the menu index, the coverage matrix, and affected screenshots together.
+- Validate that release communication names one recommended asset, compatibility, verified prerequisites, checksum, security/initial-login guidance, upgrade preservation rules, rollback boundary, known issues, and a sanitized support report format.
