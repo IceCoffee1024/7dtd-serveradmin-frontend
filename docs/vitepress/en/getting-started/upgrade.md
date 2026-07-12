@@ -13,16 +13,16 @@ Replace released program files while retaining the operator-managed configuratio
 ## Before you begin
 
 - Record the running version and retain the archive or extracted directory as a rollback candidate.
-- Back up `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`, the ServerAdmin database under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/`, relevant game-server configuration, and world data.
+- Back up `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`, the ServerAdmin database at the configured `DatabasePath` (its default is under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/`, but the configured path is authoritative), relevant game-server configuration, and world data.
 - Read the target Release compatibility, prerequisites, known issues, and manual configuration changes.
 
 ## Procedure
 
 1. Notify players, stop the dedicated server, and confirm that the backup is locatable before replacing files.
 2. Extract the new archive into `<7DTD_SERVER_ROOT>/Mods/`. Replace released assemblies, dependencies, `wwwroot/`, and `Config/appsettings.Default.json`.
-3. Preserve `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` and the ServerAdmin database under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/`. The default file supplies shipped values; the writable override supplies administrator changes.
+3. Preserve `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` and the ServerAdmin database at the configured `DatabasePath`. The released `Config/appsettings.Default.json` supplies shipped values; the writable override supplies administrator changes.
 4. Start the server, inspect the mod-load result, sign in, and perform a read-only Dashboard or Player List check.
-5. If startup, authentication, or migration fails, stop the server and restore matching prior program files together with the pre-upgrade `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` and ServerAdmin database backup.
+5. If startup, authentication, or migration fails, stop the server. Restore matching prior program files and the pre-upgrade `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json>`, then restore the ServerAdmin database backup to the configured `DatabasePath`.
 
 ## Verify the result
 

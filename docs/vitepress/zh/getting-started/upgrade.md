@@ -13,16 +13,16 @@ outline: deep
 ## 开始前
 
 - 记录运行中的版本，并保留当前压缩包或已解压目录作为回滚候选。
-- 备份 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`、位于 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/` 的 ServerAdmin 数据库、相关游戏服务器配置和世界数据。
+- 备份 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`、由配置项 `DatabasePath` 指向的 ServerAdmin 数据库（默认位于 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/`，但配置路径为准）、相关游戏服务器配置和世界数据。
 - 阅读目标 Release 的兼容性、先决条件、已知问题和手动配置变更。
 
 ## 操作步骤
 
 1. 通知玩家、停止专用服务器，并确认能定位到可恢复的备份后再替换文件。
 2. 将新压缩包解压到 `<7DTD_SERVER_ROOT>/Mods/`，替换程序集、依赖、`wwwroot/` 和 `Config/appsettings.Default.json`。
-3. 保留 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` 与位于 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/` 的 ServerAdmin 数据库。默认配置文件提供随包默认值，可写覆盖文件保存管理员修改。
+3. 保留 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` 与由配置项 `DatabasePath` 指向的 ServerAdmin 数据库。发布包中的 `Config/appsettings.Default.json` 提供随包默认值，可写覆盖文件保存管理员修改。
 4. 启动服务器，检查模组加载结果，登录后在仪表盘或玩家列表执行一次只读检查。
-5. 若启动、认证或迁移失败，停止服务器，并恢复相互匹配的旧程序文件以及升级前的 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` 和 ServerAdmin 数据库备份。
+5. 若启动、认证或迁移失败，停止服务器。恢复相互匹配的旧程序文件和升级前的 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json>`，然后将升级前的 ServerAdmin 数据库备份恢复到配置项 `DatabasePath` 指向的位置。
 
 ## 验证结果
 

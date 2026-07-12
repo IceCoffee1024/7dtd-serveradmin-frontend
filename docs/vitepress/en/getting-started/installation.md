@@ -21,7 +21,7 @@ Install the packaged ServerAdmin backend and web console together as one mod; no
 1. Stop the dedicated server if it is running and download the exact `ServerAdmin.v<version>.zip` asset named by the Release.
 2. Verify the published SHA-256 when available, then extract into `<7DTD_SERVER_ROOT>/Mods/`.
 3. Confirm `ModInfo.xml` is directly under `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/`; correct `Mods/ServerAdmin/ServerAdmin/` by moving the inner directory contents.
-4. Start the dedicated server and wait for ServerAdmin mod load. Open the configured URL; `http://localhost:<PORT>/` only works from the server host.
+4. Start the dedicated server and wait for ServerAdmin mod load. Open the configured URL; `http://localhost:<PORT>/` only works from the server host. A permitted remote browser uses `http://<SERVER_HOST>:<PORT>/` with the actual server host name or permitted/private IP, subject to firewall and network policy.
 5. Sign in with the Release-provided initial account, immediately change credentials, and restrict remote access through network policy.
 
 ## Verify the result

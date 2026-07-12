@@ -21,7 +21,7 @@ outline: deep
 1. 若专用服务器正在运行，先停止服务器，并下载 Release 指定的 `ServerAdmin.v<version>.zip`。
 2. 有校验值时验证 SHA-256，然后解压到 `<7DTD_SERVER_ROOT>/Mods/`。
 3. 确认 `ModInfo.xml` 直接位于 `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/`；若形成 `Mods/ServerAdmin/ServerAdmin/`，移动内层目录的内容。
-4. 正常启动专用服务器并等待 ServerAdmin 模组加载。打开已配置的管理地址；`http://localhost:<PORT>/` 只适用于在服务器主机上打开浏览器。
+4. 正常启动专用服务器并等待 ServerAdmin 模组加载。打开已配置的管理地址；`http://localhost:<PORT>/` 只适用于在服务器主机上打开浏览器。获准的远程浏览器使用 `http://<SERVER_HOST>:<PORT>/`，其中 `<SERVER_HOST>` 为实际服务器主机名或获准的私有 IP，且须遵守防火墙和网络策略。
 5. 使用 Release 提供的初始账号登录，立即修改凭据，并用服务器网络策略限制远程访问。
 
 ## 验证结果
