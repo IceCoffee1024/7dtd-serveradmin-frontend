@@ -796,14 +796,29 @@ try {
       throw "Expected HTTP 200 for $ownerPath; got $($response.StatusCode)."
     }
   }
+
+  # Repeat the same title and content checks against the plain static server while it is still running.
+  $ownerContentChecks = @{
+    '/zh/getting-started/installation' = @('从 Release ZIP 安装', 'ModInfo.xml', 'Mods/ServerAdmin/ServerAdmin/')
+    '/zh/getting-started/upgrade' = @('通过 Release ZIP 升级', '保留', 'appsettings.json')
+    '/en/getting-started/installation' = @('Install from a Release ZIP', 'ModInfo.xml', 'Mods/ServerAdmin/ServerAdmin/')
+    '/en/getting-started/upgrade' = @('Upgrade with a Release ZIP', 'Preserve', 'appsettings.json')
+  }
+  foreach ($ownerPath in $ownerPaths) {
+    $response = Invoke-WebRequest -Uri "http://127.0.0.1:4173$ownerPath"
+    foreach ($expectedText in $ownerContentChecks[$ownerPath]) {
+      if (-not $response.Content.Contains($expectedText)) {
+        throw "Expected rendered HTML for $ownerPath to contain: $expectedText"
+      }
+    }
+  }
 }
 finally {
   if ($null -ne $staticPreview -and $staticPreview.HasExited -eq $false) { Stop-Process -Id $staticPreview.Id }
 }
 ```
 
-Repeat the same title and content checks against the plain static server. Only
-stop `$preview` and `$staticPreview` started by this procedure. Never stop an unrelated pre-existing server.
+Only stop `$preview` and `$staticPreview` started by this procedure. Never stop an unrelated pre-existing server.
 Use Chrome DevTools MCP when available; no screenshot capture is required.
 
 - [x] **Step 4: Mark lifecycle review rows complete and record the verification in this plan.**
