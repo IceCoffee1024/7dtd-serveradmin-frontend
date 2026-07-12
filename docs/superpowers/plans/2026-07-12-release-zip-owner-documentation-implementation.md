@@ -780,6 +780,57 @@ function Get-FreeLoopbackPort {
   }
 }
 
+function Assert-LoopbackPortReleased {
+  param(
+    [int] $Port,
+    [string] $ProcessName
+  )
+
+  $deadline = (Get-Date).AddSeconds(15)
+  $lastError = $null
+  do {
+    $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
+    try {
+      $listener.Start()
+      return
+    }
+    catch {
+      $lastError = $_.Exception.Message
+      Start-Sleep -Milliseconds 250
+    }
+    finally {
+      $listener.Stop()
+    }
+  } while ((Get-Date) -lt $deadline)
+
+  throw "$ProcessName did not release loopback port ${Port}: $lastError"
+}
+
+function Stop-StartedProcessTree {
+  param(
+    [System.Diagnostics.Process] $Process,
+    [int] $Port,
+    [string] $ProcessName
+  )
+
+  if ($null -ne $Process) {
+    $Process.Refresh()
+    if (-not $Process.HasExited) {
+      & taskkill.exe /PID $Process.Id /T /F | Out-Null
+      $taskkillExit = $LASTEXITCODE
+      if ($taskkillExit -ne 0) {
+        $Process.Refresh()
+        if (-not $Process.HasExited) {
+          throw "taskkill failed for the known $ProcessName wrapper PID $($Process.Id): $taskkillExit"
+        }
+      }
+    }
+  }
+
+  # Rebinding proves that only this run's listener was released; it never stops a pre-existing process.
+  Assert-LoopbackPortReleased -Port $Port -ProcessName $ProcessName
+}
+
 function Get-PreviewResponse {
   param(
     [string] $Uri,
@@ -810,7 +861,8 @@ function Assert-OwnerPages {
   param(
     [string] $BaseUri,
     [System.Diagnostics.Process] $Process,
-    [string] $ProcessName
+    [string] $ProcessName,
+    [switch] $StaticHtml
   )
 
   $ownerChecks = @(
@@ -821,13 +873,14 @@ function Assert-OwnerPages {
   )
 
   foreach ($check in $ownerChecks) {
-    $response = Get-PreviewResponse -Uri "$BaseUri$($check.Path)" -Process $Process -ProcessName $ProcessName
+    $requestPath = if ($StaticHtml) { "$($check.Path).html" } else { $check.Path }
+    $response = Get-PreviewResponse -Uri "$BaseUri$requestPath" -Process $Process -ProcessName $ProcessName
     if ($response.StatusCode -ne 200) {
-      throw "Expected HTTP 200 for $($check.Path); got $($response.StatusCode)."
+      throw "Expected HTTP 200 for $requestPath; got $($response.StatusCode)."
     }
     foreach ($expectedText in $check.Text) {
       if (-not $response.Content.Contains($expectedText)) {
-        throw "Expected rendered HTML for $($check.Path) to contain: $expectedText"
+        throw "Expected rendered HTML for $requestPath to contain: $expectedText"
       }
     }
   }
@@ -845,7 +898,7 @@ try {
   Assert-OwnerPages -BaseUri $previewBaseUri -Process $preview -ProcessName 'VitePress preview'
 }
 finally {
-  if ($null -ne $preview -and $preview.HasExited -eq $false) { Stop-Process -Id $preview.Id }
+  Stop-StartedProcessTree -Process $preview -Port $previewPort -ProcessName 'VitePress preview'
 }
 ```
 
@@ -854,7 +907,8 @@ the folder-placement or configuration-preservation text at all four owner URLs.
 
 If the VitePress alpha preview repeats its known static-asset `404` behavior,
 let the main `finally` finish before starting a plain static server on a new
-loopback port:
+loopback port. The fallback requests the same four static `.html` artifacts;
+the visible navigation paths remain extensionless:
 
 ```powershell
 $staticPreviewPort = Get-FreeLoopbackPort
@@ -866,10 +920,10 @@ try {
   if ($staticPreview.HasExited) {
     throw "Static preview exited before serving $staticPreviewBaseUri."
   }
-  Assert-OwnerPages -BaseUri $staticPreviewBaseUri -Process $staticPreview -ProcessName 'Static preview'
+  Assert-OwnerPages -BaseUri $staticPreviewBaseUri -Process $staticPreview -ProcessName 'Static preview' -StaticHtml
 }
 finally {
-  if ($null -ne $staticPreview -and $staticPreview.HasExited -eq $false) { Stop-Process -Id $staticPreview.Id }
+  Stop-StartedProcessTree -Process $staticPreview -Port $staticPreviewPort -ProcessName 'Static preview'
 }
 ```
 
