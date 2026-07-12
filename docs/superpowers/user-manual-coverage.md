@@ -80,10 +80,10 @@ Lifecycle pages do not correspond to a console route, but they are reviewed with
 
 | Workflow | Chinese destination | English destination | Documentation status | Review |
 | --- | --- | --- | --- | --- |
-| Release ZIP installation | [/zh/getting-started/installation](/zh/getting-started/installation) | [/en/getting-started/installation](/en/getting-started/installation) | Authored | Not reviewed |
-| Release ZIP upgrade | [/zh/getting-started/upgrade](/zh/getting-started/upgrade) | [/en/getting-started/upgrade](/en/getting-started/upgrade) | Authored | Not reviewed |
-| Initial administrator configuration | [/zh/getting-started/initial-administrator-configuration](/zh/getting-started/initial-administrator-configuration) | [/en/getting-started/initial-administrator-configuration](/en/getting-started/initial-administrator-configuration) | Authored | Not reviewed |
-| Advanced source publishing | [/zh/getting-started/publishing](/zh/getting-started/publishing) | [/en/getting-started/publishing](/en/getting-started/publishing) | Authored | Not reviewed |
+| Release ZIP installation | [/zh/getting-started/installation](/zh/getting-started/installation) | [/en/getting-started/installation](/en/getting-started/installation) | Complete | Complete |
+| Release ZIP upgrade | [/zh/getting-started/upgrade](/zh/getting-started/upgrade) | [/en/getting-started/upgrade](/en/getting-started/upgrade) | Complete | Complete |
+| Initial administrator configuration | [/zh/getting-started/initial-administrator-configuration](/zh/getting-started/initial-administrator-configuration) | [/en/getting-started/initial-administrator-configuration](/en/getting-started/initial-administrator-configuration) | Complete | Complete |
+| Advanced source publishing | [/zh/getting-started/publishing](/zh/getting-started/publishing) | [/en/getting-started/publishing](/en/getting-started/publishing) | Complete | Complete |
 
 ## Review rules
 

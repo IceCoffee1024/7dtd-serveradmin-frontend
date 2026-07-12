@@ -15,7 +15,7 @@
 
 ### 2026-07-12 Release ZIP owner-documentation amendment
 
-- The 2026-07-12 Release ZIP owner-documentation amendment is implemented across `3d81084` (reusable bilingual release template), `0752782` (initial primary owner installation and upgrade workflows), `b5638ed` (configured `DatabasePath` and permitted remote-access clarification), `2ebecf1` (rollback-path correction), and `13a5d8c` (owner/source publishing separation), and is pending final static acceptance.
+- The 2026-07-12 Release ZIP owner-documentation amendment is implemented across `3d81084` (reusable bilingual release template), `0752782` (initial primary owner installation and upgrade workflows), `b5638ed` (configured `DatabasePath` and permitted remote-access clarification), `2ebecf1` (rollback-path correction), and `13a5d8c` (owner/source publishing separation); final static acceptance passed.
 - Release ZIP installation and upgrade are the primary owner workflows; source publishing is explicitly advanced. The reusable bilingual release body template is at `docs/superpowers/release-templates/github-release-body.md`.
 
 ---
