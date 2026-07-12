@@ -22,7 +22,7 @@ Replace released program files while retaining the operator-managed configuratio
 2. Extract the new archive into `<7DTD_SERVER_ROOT>/Mods/`. Replace released assemblies, dependencies, `wwwroot/`, and `Config/appsettings.Default.json`.
 3. Preserve `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json` and the ServerAdmin database at the configured `DatabasePath`. The released `Config/appsettings.Default.json` supplies shipped values; the writable override supplies administrator changes.
 4. Start the server, inspect the mod-load result, sign in, and perform a read-only Dashboard or Player List check.
-5. If startup, authentication, or migration fails, stop the server. Restore matching prior program files and the pre-upgrade `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json>`, then restore the ServerAdmin database backup to the configured `DatabasePath`.
+5. If startup, authentication, or migration fails, stop the server. Restore matching prior program files and the pre-upgrade `<7DTD_SERVER_ROOT>/Mods/ServerAdmin/Config/appsettings.json`, then restore the ServerAdmin database backup to the configured `DatabasePath`.
 
 ## Verify the result
 
