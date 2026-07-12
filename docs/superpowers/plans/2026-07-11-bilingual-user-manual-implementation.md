@@ -13,6 +13,11 @@
 - Tasks 1-7 were completed in the documented commits from `9b73386` through `c8bbd5b`.
 - Tasks 8 and 9 are complete: 22 separately captured, locale-matched images are embedded, verified in the static artifact, and recorded by the final documentation commit.
 
+### 2026-07-12 Release ZIP owner-documentation amendment
+
+- The 2026-07-12 Release ZIP owner-documentation amendment is implemented across `3d81084` (reusable bilingual release template), `2ebecf1` (primary owner installation and upgrade workflows), and `13a5d8c` (owner/source publishing separation), and is pending final static acceptance.
+- Release ZIP installation and upgrade are the primary owner workflows; source publishing is explicitly advanced. The reusable bilingual release body template is at `docs/superpowers/release-templates/github-release-body.md`.
+
 ---
 
 ## Starting State And Commit Boundary

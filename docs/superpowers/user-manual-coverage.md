@@ -1,6 +1,6 @@
 # User Manual Coverage Matrix
 
-This maintainer matrix is derived from `src/router/index.ts`. It contains one row for every unique non-authentication workflow route, including hidden `PlayerProfile` and `ApiDocumentation`. Parent routes point to the workflow page that owns their redirect target; child routes point to the corresponding page anchor.
+This maintainer matrix covers current console routes plus a lifecycle-documentation section for workflows without console routes. Its console-route table is derived from `src/router/index.ts`; it contains one row for every unique non-authentication workflow route, including hidden `PlayerProfile` and `ApiDocumentation`. Parent routes point to the workflow page that owns their redirect target; child routes point to the corresponding page anchor.
 
 `Authored` means the paired localized pages and destination anchors are present in source, but they are not yet considered built or reviewed. `Not authored` means the paired page or one of its destinations has not yet been authored. Documentation status is separate from `Review`: a row may be changed to `Complete` only after both localized destinations exist, the links work in a built site, and the workflow has been reviewed. `Not reviewed` is the initial review state.
 
@@ -73,6 +73,17 @@ This maintainer matrix is derived from `src/router/index.ts`. It contains one ro
 | GameEventLogs | `/:locale/game-event-logs` | [/zh/daily-operations/console-and-logs#game-event-logs](/zh/daily-operations/console-and-logs#game-event-logs) | [/en/daily-operations/console-and-logs#game-event-logs](/en/daily-operations/console-and-logs#game-event-logs) | Complete | Planned | Complete |
 | AppSettings | `/:locale/app-settings` | [/zh/integrations-and-access/application-settings](/zh/integrations-and-access/application-settings) | [/en/integrations-and-access/application-settings](/en/integrations-and-access/application-settings) | Complete | Text only | Complete |
 | ApiDocumentation | `/:locale/swagger` (redirects to `/swagger`) | [/zh/integrations-and-access/api-documentation](/zh/integrations-and-access/api-documentation) | [/en/integrations-and-access/api-documentation](/en/integrations-and-access/api-documentation) | Complete | Text only | Complete |
+
+## Lifecycle documentation
+
+Lifecycle pages do not correspond to a console route, but they are reviewed with the same paired-language and built-link standard.
+
+| Workflow | Chinese destination | English destination | Documentation status | Review |
+| --- | --- | --- | --- | --- |
+| Release ZIP installation | [/zh/getting-started/installation](/zh/getting-started/installation) | [/en/getting-started/installation](/en/getting-started/installation) | Authored | Not reviewed |
+| Release ZIP upgrade | [/zh/getting-started/upgrade](/zh/getting-started/upgrade) | [/en/getting-started/upgrade](/en/getting-started/upgrade) | Authored | Not reviewed |
+| Initial administrator configuration | [/zh/getting-started/initial-administrator-configuration](/zh/getting-started/initial-administrator-configuration) | [/en/getting-started/initial-administrator-configuration](/en/getting-started/initial-administrator-configuration) | Authored | Not reviewed |
+| Advanced source publishing | [/zh/getting-started/publishing](/zh/getting-started/publishing) | [/en/getting-started/publishing](/en/getting-started/publishing) | Authored | Not reviewed |
 
 ## Review rules
 
