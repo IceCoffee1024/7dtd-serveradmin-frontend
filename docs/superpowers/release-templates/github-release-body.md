@@ -21,6 +21,7 @@ the Release automatically. Replace every {{PLACEHOLDER}} before publishing.
 - 7 Days to Die: {{SUPPORTED_7DTD_VERSION}}
 - Platform notes: {{SUPPORTED_PLATFORM_NOTES}}
 - Required prerequisites: {{VERIFIED_PREREQUISITES_OR_NONE}}
+- Optional dependency: `0_TFP_Harmony`. ServerAdmin starts without it, but Harmony-based features may be unavailable when it is missing. Install or confirm it only when the Release compatibility notes say the required features need it.
 - Known incompatibilities: {{KNOWN_INCOMPATIBILITIES_OR_NONE}}
 
 ### Verify the download
@@ -76,6 +77,7 @@ SHA-256: {{SHA256}}
 - 七日杀版本：{{SUPPORTED_7DTD_VERSION}}
 - 平台说明：{{SUPPORTED_PLATFORM_NOTES}}
 - 必需前置条件：{{VERIFIED_PREREQUISITES_OR_NONE}}
+- 可选依赖：`0_TFP_Harmony`。没有它 ServerAdmin 仍可启动，但基于 Harmony 的功能可能不可用。仅当 Release 兼容性说明表明所需功能依赖它时，才安装或确认它。
 - 已知不兼容项：{{KNOWN_INCOMPATIBILITIES_OR_NONE}}
 
 ### 校验下载文件

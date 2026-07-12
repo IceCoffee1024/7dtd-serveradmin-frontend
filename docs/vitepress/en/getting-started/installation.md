@@ -13,6 +13,7 @@ Install the packaged ServerAdmin backend and web console together as one mod; no
 ## Before you begin
 
 - Read the selected Release's compatibility, prerequisites, known issues, recommended asset name, and SHA-256 value when one is published.
+- `0_TFP_Harmony` is an optional dependency. ServerAdmin starts without it, but Harmony-based features may be unavailable when it is missing. Install or confirm it only when the Release compatibility notes say the features you need require it.
 - Back up an existing `Mods/ServerAdmin/` directory before replacing it.
 - Decide whether the browser runs on the server host or a permitted remote network; do not expose initial credentials on a public port.
 
